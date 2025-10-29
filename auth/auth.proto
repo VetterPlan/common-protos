@@ -6,6 +6,7 @@ service AuthService {
   rpc Login (LoginRequest) returns (LoginResponse);
   rpc RefreshToken (RefreshTokenRequest) returns (LoginResponse);
   rpc ValidateToken (ValidateTokenRequest) returns (ValidateTokenResponse);
+  rpc Register (RegisterRequest) returns (RegisterResponse);
 }
 
 message LoginRequest {
