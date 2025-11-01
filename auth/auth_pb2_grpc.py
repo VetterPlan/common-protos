@@ -3,7 +3,7 @@
 import grpc
 import warnings
 
-from . import auth_pb2 as auth__pb2
+from protos.auth import auth_pb2 as auth_dot_auth__pb2
 
 GRPC_GENERATED_VERSION = '1.76.0'
 GRPC_VERSION = grpc.__version__
@@ -18,7 +18,7 @@ except ImportError:
 if _version_not_supported:
     raise RuntimeError(
         f'The grpc package installed is at version {GRPC_VERSION},'
-        + ' but the generated code in auth_pb2_grpc.py depends on'
+        + ' but the generated code in auth/auth_pb2_grpc.py depends on'
         + f' grpcio>={GRPC_GENERATED_VERSION}.'
         + f' Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}'
         + f' or downgrade your generated code using grpcio-tools<={GRPC_VERSION}.'
@@ -36,23 +36,28 @@ class AuthServiceStub(object):
         """
         self.Login = channel.unary_unary(
                 '/auth.AuthService/Login',
-                request_serializer=auth__pb2.LoginRequest.SerializeToString,
-                response_deserializer=auth__pb2.LoginResponse.FromString,
-                _registered_method=True)
-        self.Register = channel.unary_unary(
-                '/auth.AuthService/Register',
-                request_serializer=auth__pb2.RegisterRequest.SerializeToString,
-                response_deserializer=auth__pb2.RegisterResponse.FromString,
+                request_serializer=auth_dot_auth__pb2.LoginRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.LoginResponse.FromString,
                 _registered_method=True)
         self.RefreshToken = channel.unary_unary(
                 '/auth.AuthService/RefreshToken',
-                request_serializer=auth__pb2.RefreshTokenRequest.SerializeToString,
-                response_deserializer=auth__pb2.LoginResponse.FromString,
+                request_serializer=auth_dot_auth__pb2.RefreshTokenRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.LoginResponse.FromString,
                 _registered_method=True)
         self.ValidateToken = channel.unary_unary(
                 '/auth.AuthService/ValidateToken',
-                request_serializer=auth__pb2.ValidateTokenRequest.SerializeToString,
-                response_deserializer=auth__pb2.ValidateTokenResponse.FromString,
+                request_serializer=auth_dot_auth__pb2.ValidateTokenRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.ValidateTokenResponse.FromString,
+                _registered_method=True)
+        self.Register = channel.unary_unary(
+                '/auth.AuthService/Register',
+                request_serializer=auth_dot_auth__pb2.RegisterRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.RegisterResponse.FromString,
+                _registered_method=True)
+        self.VerifyEmail = channel.unary_unary(
+                '/auth.AuthService/VerifyEmail',
+                request_serializer=auth_dot_auth__pb2.VerifyEmailRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.VerifyEmailResponse.FromString,
                 _registered_method=True)
 
 
@@ -60,11 +65,6 @@ class AuthServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def Login(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-    def Register(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -82,28 +82,45 @@ class AuthServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def Register(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def VerifyEmail(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AuthServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'Login': grpc.unary_unary_rpc_method_handler(
                     servicer.Login,
-                    request_deserializer=auth__pb2.LoginRequest.FromString,
-                    response_serializer=auth__pb2.LoginResponse.SerializeToString,
-            ),
-            'Register': grpc.unary_unary_rpc_method_handler(
-                    servicer.Register,
-                    request_deserializer=auth__pb2.RegisterRequest.FromString,
-                    response_serializer=auth__pb2.RegisterResponse.SerializeToString,
+                    request_deserializer=auth_dot_auth__pb2.LoginRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.LoginResponse.SerializeToString,
             ),
             'RefreshToken': grpc.unary_unary_rpc_method_handler(
                     servicer.RefreshToken,
-                    request_deserializer=auth__pb2.RefreshTokenRequest.FromString,
-                    response_serializer=auth__pb2.LoginResponse.SerializeToString,
+                    request_deserializer=auth_dot_auth__pb2.RefreshTokenRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.LoginResponse.SerializeToString,
             ),
             'ValidateToken': grpc.unary_unary_rpc_method_handler(
                     servicer.ValidateToken,
-                    request_deserializer=auth__pb2.ValidateTokenRequest.FromString,
-                    response_serializer=auth__pb2.ValidateTokenResponse.SerializeToString,
+                    request_deserializer=auth_dot_auth__pb2.ValidateTokenRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.ValidateTokenResponse.SerializeToString,
+            ),
+            'Register': grpc.unary_unary_rpc_method_handler(
+                    servicer.Register,
+                    request_deserializer=auth_dot_auth__pb2.RegisterRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.RegisterResponse.SerializeToString,
+            ),
+            'VerifyEmail': grpc.unary_unary_rpc_method_handler(
+                    servicer.VerifyEmail,
+                    request_deserializer=auth_dot_auth__pb2.VerifyEmailRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.VerifyEmailResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -131,8 +148,8 @@ class AuthService(object):
             request,
             target,
             '/auth.AuthService/Login',
-            auth__pb2.LoginRequest.SerializeToString,
-            auth__pb2.LoginResponse.FromString,
+            auth_dot_auth__pb2.LoginRequest.SerializeToString,
+            auth_dot_auth__pb2.LoginResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -142,34 +159,6 @@ class AuthService(object):
             timeout,
             metadata,
             _registered_method=True)
-    
-    @staticmethod
-    def Register(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(
-            request,
-            target,
-            '/auth.AuthService/Register',
-            auth__pb2.RegisterRequest.SerializeToString,
-            auth__pb2.RegisterResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-            _registered_method=True)
-
 
     @staticmethod
     def RefreshToken(request,
@@ -186,8 +175,8 @@ class AuthService(object):
             request,
             target,
             '/auth.AuthService/RefreshToken',
-            auth__pb2.RefreshTokenRequest.SerializeToString,
-            auth__pb2.LoginResponse.FromString,
+            auth_dot_auth__pb2.RefreshTokenRequest.SerializeToString,
+            auth_dot_auth__pb2.LoginResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -213,8 +202,62 @@ class AuthService(object):
             request,
             target,
             '/auth.AuthService/ValidateToken',
-            auth__pb2.ValidateTokenRequest.SerializeToString,
-            auth__pb2.ValidateTokenResponse.FromString,
+            auth_dot_auth__pb2.ValidateTokenRequest.SerializeToString,
+            auth_dot_auth__pb2.ValidateTokenResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def Register(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/Register',
+            auth_dot_auth__pb2.RegisterRequest.SerializeToString,
+            auth_dot_auth__pb2.RegisterResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def VerifyEmail(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/VerifyEmail',
+            auth_dot_auth__pb2.VerifyEmailRequest.SerializeToString,
+            auth_dot_auth__pb2.VerifyEmailResponse.FromString,
             options,
             channel_credentials,
             insecure,
