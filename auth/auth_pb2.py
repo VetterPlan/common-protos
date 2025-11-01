@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0f\x61uth/auth.proto\x12\x04\x61uth\"2\n\x0cLoginRequest\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"D\n\x0fRegisterRequest\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\"#\n\x10RegisterResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\":\n\rLoginResponse\x12\x13\n\x0b\x61\x63\x63\x65ssToken\x18\x01 \x01(\t\x12\x14\n\x0crefreshToken\x18\x02 \x01(\t\"+\n\x13RefreshTokenRequest\x12\x14\n\x0crefreshToken\x18\x01 \x01(\t\"%\n\x14ValidateTokenRequest\x12\r\n\x05token\x18\x01 \x01(\t\"b\n\x15ValidateTokenResponse\x12\r\n\x05valid\x18\x01 \x01(\x08\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\x12\r\n\x05\x65mail\x18\x04 \x01(\t\x12\x0c\n\x04role\x18\x05 \x01(\t\"#\n\x12VerifyEmailRequest\x12\r\n\x05token\x18\x01 \x01(\t\"7\n\x13VerifyEmailResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t2\xc8\x02\n\x0b\x41uthService\x12\x30\n\x05Login\x12\x12.auth.LoginRequest\x1a\x13.auth.LoginResponse\x12>\n\x0cRefreshToken\x12\x19.auth.RefreshTokenRequest\x1a\x13.auth.LoginResponse\x12H\n\rValidateToken\x12\x1a.auth.ValidateTokenRequest\x1a\x1b.auth.ValidateTokenResponse\x12\x39\n\x08Register\x12\x15.auth.RegisterRequest\x1a\x16.auth.RegisterResponse\x12\x42\n\x0bVerifyEmail\x12\x18.auth.VerifyEmailRequest\x1a\x19.auth.VerifyEmailResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0f\x61uth/auth.proto\x12\x04\x61uth\"2\n\x0cLoginRequest\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"D\n\x0fRegisterRequest\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\"#\n\x10RegisterResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\":\n\rLoginResponse\x12\x13\n\x0b\x61\x63\x63\x65ssToken\x18\x01 \x01(\t\x12\x14\n\x0crefreshToken\x18\x02 \x01(\t\"+\n\x13RefreshTokenRequest\x12\x14\n\x0crefreshToken\x18\x01 \x01(\t\"%\n\x14ValidateTokenRequest\x12\r\n\x05token\x18\x01 \x01(\t\"b\n\x15ValidateTokenResponse\x12\r\n\x05valid\x18\x01 \x01(\x08\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\x12\r\n\x05\x65mail\x18\x04 \x01(\t\x12\x0c\n\x04role\x18\x05 \x01(\t\"#\n\x12VerifyEmailRequest\x12\r\n\x05token\x18\x01 \x01(\t\"7\n\x13VerifyEmailResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\"%\n\x0eSendOtpRequest\x12\x13\n\x0bphoneNumber\x18\x01 \x01(\t\"F\n\x0fSendOtpResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\x12\x11\n\texpiresAt\x18\x03 \x01(\t\"8\n\x10VerifyOtpRequest\x12\x13\n\x0bphoneNumber\x18\x01 \x01(\t\x12\x0f\n\x07otpCode\x18\x02 \x01(\t\"5\n\x11VerifyOtpResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t2\xbe\x03\n\x0b\x41uthService\x12\x30\n\x05Login\x12\x12.auth.LoginRequest\x1a\x13.auth.LoginResponse\x12>\n\x0cRefreshToken\x12\x19.auth.RefreshTokenRequest\x1a\x13.auth.LoginResponse\x12H\n\rValidateToken\x12\x1a.auth.ValidateTokenRequest\x1a\x1b.auth.ValidateTokenResponse\x12\x39\n\x08Register\x12\x15.auth.RegisterRequest\x1a\x16.auth.RegisterResponse\x12\x42\n\x0bVerifyEmail\x12\x18.auth.VerifyEmailRequest\x1a\x19.auth.VerifyEmailResponse\x12\x36\n\x07SendOtp\x12\x14.auth.SendOtpRequest\x1a\x15.auth.SendOtpResponse\x12<\n\tVerifyOtp\x12\x16.auth.VerifyOtpRequest\x1a\x17.auth.VerifyOtpResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -49,6 +49,14 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_VERIFYEMAILREQUEST']._serialized_end=463
   _globals['_VERIFYEMAILRESPONSE']._serialized_start=465
   _globals['_VERIFYEMAILRESPONSE']._serialized_end=520
-  _globals['_AUTHSERVICE']._serialized_start=523
-  _globals['_AUTHSERVICE']._serialized_end=851
+  _globals['_SENDOTPREQUEST']._serialized_start=522
+  _globals['_SENDOTPREQUEST']._serialized_end=559
+  _globals['_SENDOTPRESPONSE']._serialized_start=561
+  _globals['_SENDOTPRESPONSE']._serialized_end=631
+  _globals['_VERIFYOTPREQUEST']._serialized_start=633
+  _globals['_VERIFYOTPREQUEST']._serialized_end=689
+  _globals['_VERIFYOTPRESPONSE']._serialized_start=691
+  _globals['_VERIFYOTPRESPONSE']._serialized_end=744
+  _globals['_AUTHSERVICE']._serialized_start=747
+  _globals['_AUTHSERVICE']._serialized_end=1193
 # @@protoc_insertion_point(module_scope)

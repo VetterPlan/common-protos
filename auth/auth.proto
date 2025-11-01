@@ -8,6 +8,8 @@ service AuthService {
   rpc ValidateToken (ValidateTokenRequest) returns (ValidateTokenResponse);
   rpc Register (RegisterRequest) returns (RegisterResponse);
   rpc VerifyEmail (VerifyEmailRequest) returns (VerifyEmailResponse);
+  rpc SendOtp(SendOtpRequest) returns (SendOtpResponse);
+  rpc VerifyOtp(VerifyOtpRequest) returns (VerifyOtpResponse);
 }
 
 message LoginRequest {
@@ -51,6 +53,26 @@ message VerifyEmailRequest {
 }
 
 message VerifyEmailResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message SendOtpRequest {
+  string phoneNumber = 1;
+}
+
+message SendOtpResponse {
+  bool success = 1;
+  string message = 2;
+  string expiresAt = 3;
+}
+
+message VerifyOtpRequest {
+  string phoneNumber = 1;
+  string otpCode = 2;
+}
+
+message VerifyOtpResponse {
   bool success = 1;
   string message = 2;
 }
