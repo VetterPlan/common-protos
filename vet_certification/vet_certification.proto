@@ -1,0 +1,239 @@
+syntax = "proto3";
+
+package vet_certification;
+
+import "google/protobuf/timestamp.proto";
+
+// ═══════════════════════════════════════════════════════════════════════════
+// VET CERTIFICATION SERVICE
+//
+// Manages veterinary professional certifications and authorization to practice.
+// This service is the single source of truth for determining if a veterinarian
+// can legally practice in a given jurisdiction.
+// ═══════════════════════════════════════════════════════════════════════════
+
+service VetCertificationService {
+  // ─── CERTIFICATION LIFECYCLE ───
+
+  // Submit a new certification for review
+  rpc SubmitCertification (SubmitCertificationRequest) returns (CertificationResponse);
+
+  // Get a certification by ID
+  rpc GetCertification (GetCertificationRequest) returns (CertificationResponse);
+
+  // Get all certifications for a vet profile
+  rpc GetCertificationsByVetProfile (GetCertificationsByVetProfileRequest) returns (CertificationsResponse);
+
+  // ─── PRACTICE VALIDATION ───
+
+  // Validate if a vet can practice (main validation endpoint)
+  // Designed for high-frequency calls with caching support
+  rpc ValidateCanPractice (ValidateCanPracticeRequest) returns (ValidateCanPracticeResponse);
+
+  // Get the active certification for a vet in a specific country
+  rpc GetActiveCertification (GetActiveCertificationRequest) returns (CertificationResponse);
+
+  // ─── STATUS HISTORY ───
+
+  // Get the status change history for a certification
+  rpc GetStatusHistory (GetStatusHistoryRequest) returns (StatusHistoryResponse);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ENUMS
+// ═══════════════════════════════════════════════════════════════════════════
+
+enum CertificationStatus {
+  CERTIFICATION_STATUS_UNSPECIFIED = 0;
+  CERTIFICATION_STATUS_PENDING = 1;
+  CERTIFICATION_STATUS_APPROVED = 2;
+  CERTIFICATION_STATUS_REJECTED = 3;
+  CERTIFICATION_STATUS_SUSPENDED = 4;
+  CERTIFICATION_STATUS_EXPIRED = 5;
+  CERTIFICATION_STATUS_REVOKED = 6;
+}
+
+enum LicenseType {
+  LICENSE_TYPE_UNSPECIFIED = 0;
+  LICENSE_TYPE_NATIONAL = 1;
+  LICENSE_TYPE_STATE = 2;
+  LICENSE_TYPE_PROVISIONAL = 3;
+  LICENSE_TYPE_SPECIALIST = 4;
+}
+
+enum PracticeScope {
+  PRACTICE_SCOPE_UNSPECIFIED = 0;
+  PRACTICE_SCOPE_GENERAL = 1;
+  PRACTICE_SCOPE_SURGERY = 2;
+  PRACTICE_SCOPE_EMERGENCY = 3;
+  PRACTICE_SCOPE_DERMATOLOGY = 4;
+  PRACTICE_SCOPE_ONCOLOGY = 5;
+  PRACTICE_SCOPE_CARDIOLOGY = 6;
+  PRACTICE_SCOPE_OPHTHALMOLOGY = 7;
+  PRACTICE_SCOPE_NEUROLOGY = 8;
+  PRACTICE_SCOPE_DENTISTRY = 9;
+  PRACTICE_SCOPE_EXOTIC = 10;
+  PRACTICE_SCOPE_LARGE_ANIMALS = 11;
+  PRACTICE_SCOPE_REHABILITATION = 12;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CORE MESSAGES
+// ═══════════════════════════════════════════════════════════════════════════
+
+message Certification {
+  string id = 1;
+  string vet_profile_id = 2;
+
+  // License information
+  string license_number = 3;
+  LicenseType license_type = 4;
+
+  // Jurisdiction
+  string country = 5;                    // ISO 3166-1 alpha-2
+  string state_province = 6;             // Optional sub-national
+  string issuing_authority = 7;
+
+  // Scope of practice
+  PracticeScope scope = 8;
+  repeated string species_allowed = 9;
+
+  // Status and validity
+  CertificationStatus status = 10;
+  string valid_from = 11;                // ISO8601 date (YYYY-MM-DD)
+  string valid_until = 12;               // ISO8601 date (YYYY-MM-DD)
+
+  // Audit information
+  google.protobuf.Timestamp submitted_at = 13;
+  google.protobuf.Timestamp reviewed_at = 14;
+  string reviewed_by = 15;
+  string rejection_reason = 16;
+
+  // Timestamps
+  google.protobuf.Timestamp created_at = 17;
+  google.protobuf.Timestamp updated_at = 18;
+
+  // Computed fields
+  bool is_active = 19;
+  int32 days_until_expiration = 20;      // -1 if no expiration
+}
+
+message StatusHistoryEntry {
+  string id = 1;
+  string certification_id = 2;
+  CertificationStatus previous_status = 3;
+  CertificationStatus new_status = 4;
+  string reason = 5;
+  string reason_details = 6;
+  string changed_by = 7;
+  google.protobuf.Timestamp changed_at = 8;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SUBMIT CERTIFICATION
+// ═══════════════════════════════════════════════════════════════════════════
+
+message SubmitCertificationRequest {
+  string vet_profile_id = 1;             // Required: UUID of the vet profile
+
+  // License information
+  string license_number = 2;             // Required
+  LicenseType license_type = 3;          // Optional, defaults to NATIONAL
+
+  // Jurisdiction
+  string country = 4;                    // Required: ISO 3166-1 alpha-2
+  string state_province = 5;             // Optional
+  string issuing_authority = 6;          // Required
+
+  // Scope
+  PracticeScope scope = 7;               // Optional, defaults to GENERAL
+  repeated string species_allowed = 8;   // Optional, defaults to ["small_animals"]
+
+  // Validity dates
+  string valid_from = 9;                 // Optional: ISO8601 date
+  string valid_until = 10;               // Optional: ISO8601 date
+
+  // Request metadata
+  string submitted_by = 11;              // Required: UUID of submitter (usually same as vet_profile owner)
+}
+
+message CertificationResponse {
+  Certification certification = 1;
+}
+
+message CertificationsResponse {
+  repeated Certification certifications = 1;
+  int32 total_count = 2;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// GET CERTIFICATION
+// ═══════════════════════════════════════════════════════════════════════════
+
+message GetCertificationRequest {
+  string certification_id = 1;
+}
+
+message GetCertificationsByVetProfileRequest {
+  string vet_profile_id = 1;
+  bool include_inactive = 2;             // Include expired/revoked/etc
+}
+
+message GetActiveCertificationRequest {
+  string vet_profile_id = 1;
+  string country = 2;                    // ISO 3166-1 alpha-2
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// VALIDATE CAN PRACTICE
+//
+// This is the main validation endpoint used by other services.
+// Designed for:
+// - High-frequency calls (appointments, medical records, etc.)
+// - Caching support (response includes cache hints)
+// - Idempotency (same input = same output for given timestamp)
+// ═══════════════════════════════════════════════════════════════════════════
+
+message ValidateCanPracticeRequest {
+  string vet_profile_id = 1;             // Required: UUID of the vet profile
+  string country = 2;                    // Required: ISO 3166-1 alpha-2
+
+  // Optional filters for more specific validation
+  PracticeScope required_scope = 3;      // e.g., SURGERY for surgical procedures
+  string required_species = 4;           // e.g., "exotic" for exotic animals
+
+  // For point-in-time validation (useful for future appointments)
+  string check_date = 5;                 // ISO8601 date, defaults to today
+}
+
+message ValidateCanPracticeResponse {
+  bool can_practice = 1;                 // Main result: can the vet practice?
+
+  // Certification details (if found)
+  string certification_id = 2;
+  CertificationStatus status = 3;
+  string valid_until = 4;                // ISO8601 date
+
+  // If cannot practice, why?
+  string reason = 5;
+  repeated string missing_requirements = 6;
+
+  // Cache hints
+  int32 cache_ttl_seconds = 7;           // Suggested cache TTL
+  string cache_key = 8;                  // Suggested cache key for clients
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// STATUS HISTORY
+// ═══════════════════════════════════════════════════════════════════════════
+
+message GetStatusHistoryRequest {
+  string certification_id = 1;
+  int32 limit = 2;                       // Optional, defaults to 50
+  int32 offset = 3;                      // Optional, for pagination
+}
+
+message StatusHistoryResponse {
+  repeated StatusHistoryEntry entries = 1;
+  int32 total_count = 2;
+}

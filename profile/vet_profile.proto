@@ -1,0 +1,138 @@
+syntax = "proto3";
+
+package profile;
+
+import "google/protobuf/timestamp.proto";
+
+// ============================================================================
+// VET PROFILE SERVICE
+// ============================================================================
+
+service VetProfileService {
+  rpc CreateVetProfile (CreateVetProfileRequest) returns (VetProfileResponse);
+  rpc GetVetProfile (GetVetProfileRequest) returns (VetProfileResponse);
+  rpc UpdateVetProfile (UpdateVetProfileRequest) returns (VetProfileResponse);
+  rpc DeleteVetProfile (DeleteVetProfileRequest) returns (DeleteVetProfileResponse);
+  rpc UpdateVetProfileStatus (UpdateVetProfileStatusRequest) returns (VetProfileResponse);
+}
+
+// ============================================================================
+// ENUMS
+// ============================================================================
+
+enum VetProfileStatus {
+  VET_PROFILE_STATUS_UNSPECIFIED = 0;
+  INCOMPLETE = 1;                 // Missing required information
+  PENDING_VERIFICATION = 2;       // Ready for admin review
+  ACTIVE = 3;                     // Verified and can practice
+  SUSPENDED = 4;                  // Temporarily disabled
+}
+
+// ============================================================================
+// MESSAGES
+// ============================================================================
+
+message VetProfile {
+  string id = 1;
+  string user_id = 2;
+  
+  // Basic Information
+  string first_name = 3;
+  string last_name = 4;
+  string avatar_url = 5;
+  string phone_number = 6;
+  
+  // Professional Information
+  string professional_title = 7;  // e.g., "DVM", "VMD"
+  string bio = 8;
+  string years_of_experience = 9;
+  
+  // Practice Information
+  string clinic_name = 10;
+  string clinic_phone = 11;
+  string clinic_email = 12;
+  
+  // Specialties (declared by vet, NOT certified)
+  // Certified specialties are in vet-certification-service
+  repeated string declared_specialties = 13;
+  
+  // Languages spoken (ISO 639-1 codes)
+  repeated string languages = 14;
+  
+  // Availability settings (JSON string)
+  string availability_settings = 15;
+  
+  // Localization
+  string locale = 16;
+  string timezone = 17;
+  
+  // Status (profile completion, NOT certification)
+  VetProfileStatus status = 18;
+  
+  // Completion status
+  bool is_completed = 19;
+  
+  // Timestamps
+  google.protobuf.Timestamp created_at = 20;
+  google.protobuf.Timestamp updated_at = 21;
+}
+
+message CreateVetProfileRequest {
+  string user_id = 1;  // Required: user from auth-service
+  
+  // Optional initial data
+  optional string first_name = 2;
+  optional string last_name = 3;
+  optional string phone_number = 4;
+  optional string professional_title = 5;
+  optional string clinic_name = 6;
+  optional string locale = 7;
+  optional string timezone = 8;
+}
+
+message GetVetProfileRequest {
+  oneof identifier {
+    string user_id = 1;
+    string profile_id = 2;
+  }
+}
+
+message UpdateVetProfileRequest {
+  string user_id = 1;  // Required: identifies which profile to update
+  
+  // All fields optional - only provided fields will be updated
+  optional string first_name = 2;
+  optional string last_name = 3;
+  optional string avatar_url = 4;
+  optional string phone_number = 5;
+  optional string professional_title = 6;
+  optional string bio = 7;
+  optional string years_of_experience = 8;
+  optional string clinic_name = 9;
+  optional string clinic_phone = 10;
+  optional string clinic_email = 11;
+  repeated string declared_specialties = 12;  // Replaces existing list
+  repeated string languages = 13;  // Replaces existing list
+  optional string availability_settings = 14;  // JSON string
+  optional string locale = 15;
+  optional string timezone = 16;
+}
+
+message UpdateVetProfileStatusRequest {
+  string user_id = 1;
+  VetProfileStatus status = 2;
+  optional string reason = 3;  // For audit trail
+}
+
+message DeleteVetProfileRequest {
+  string user_id = 1;
+}
+
+message VetProfileResponse {
+  VetProfile profile = 1;
+}
+
+message DeleteVetProfileResponse {
+  bool success = 1;
+  string message = 2;
+}

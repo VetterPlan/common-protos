@@ -6,7 +6,21 @@ from protos.profile import profile_pb2 as protos_dot_profile_dot_profile__pb2
 
 
 class ProfileServiceStub(object):
-    """Missing associated documentation comment in .proto file."""
+    """============================================================================
+    LEGACY PROFILE SERVICE
+    ============================================================================
+    This service will be deprecated once all clients migrate to:
+    - ClientProfileService (client_profile.proto)
+    - VetProfileService (vet_profile.proto)
+
+    Deprecation Timeline:
+    - Semana 1-2: Legacy endpoints work, new endpoints available
+    - Semana 3-4: Warning logs on legacy endpoints
+    - Semana 5-6: Frontend migrated to new endpoints
+    - Semana 7+:  Remove legacy endpoints
+    ============================================================================
+
+    """
 
     def __init__(self, channel):
         """Constructor.
@@ -29,10 +43,29 @@ class ProfileServiceStub(object):
                 request_serializer=protos_dot_profile_dot_profile__pb2.UpdateProfileRequest.SerializeToString,
                 response_deserializer=protos_dot_profile_dot_profile__pb2.ProfileResponse.FromString,
                 )
+        self.GetUserProfiles = channel.unary_unary(
+                '/profile.ProfileService/GetUserProfiles',
+                request_serializer=protos_dot_profile_dot_profile__pb2.GetUserProfilesRequest.SerializeToString,
+                response_deserializer=protos_dot_profile_dot_profile__pb2.GetUserProfilesResponse.FromString,
+                )
 
 
 class ProfileServiceServicer(object):
-    """Missing associated documentation comment in .proto file."""
+    """============================================================================
+    LEGACY PROFILE SERVICE
+    ============================================================================
+    This service will be deprecated once all clients migrate to:
+    - ClientProfileService (client_profile.proto)
+    - VetProfileService (vet_profile.proto)
+
+    Deprecation Timeline:
+    - Semana 1-2: Legacy endpoints work, new endpoints available
+    - Semana 3-4: Warning logs on legacy endpoints
+    - Semana 5-6: Frontend migrated to new endpoints
+    - Semana 7+:  Remove legacy endpoints
+    ============================================================================
+
+    """
 
     def CreateProfile(self, request, context):
         """Missing associated documentation comment in .proto file."""
@@ -48,6 +81,13 @@ class ProfileServiceServicer(object):
 
     def UpdateProfile(self, request, context):
         """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetUserProfiles(self, request, context):
+        """NEW: Multi-role support
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -70,6 +110,11 @@ def add_ProfileServiceServicer_to_server(servicer, server):
                     request_deserializer=protos_dot_profile_dot_profile__pb2.UpdateProfileRequest.FromString,
                     response_serializer=protos_dot_profile_dot_profile__pb2.ProfileResponse.SerializeToString,
             ),
+            'GetUserProfiles': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetUserProfiles,
+                    request_deserializer=protos_dot_profile_dot_profile__pb2.GetUserProfilesRequest.FromString,
+                    response_serializer=protos_dot_profile_dot_profile__pb2.GetUserProfilesResponse.SerializeToString,
+            ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
             'profile.ProfileService', rpc_method_handlers)
@@ -78,7 +123,21 @@ def add_ProfileServiceServicer_to_server(servicer, server):
 
  # This class is part of an EXPERIMENTAL API.
 class ProfileService(object):
-    """Missing associated documentation comment in .proto file."""
+    """============================================================================
+    LEGACY PROFILE SERVICE
+    ============================================================================
+    This service will be deprecated once all clients migrate to:
+    - ClientProfileService (client_profile.proto)
+    - VetProfileService (vet_profile.proto)
+
+    Deprecation Timeline:
+    - Semana 1-2: Legacy endpoints work, new endpoints available
+    - Semana 3-4: Warning logs on legacy endpoints
+    - Semana 5-6: Frontend migrated to new endpoints
+    - Semana 7+:  Remove legacy endpoints
+    ============================================================================
+
+    """
 
     @staticmethod
     def CreateProfile(request,
@@ -128,5 +187,22 @@ class ProfileService(object):
         return grpc.experimental.unary_unary(request, target, '/profile.ProfileService/UpdateProfile',
             protos_dot_profile_dot_profile__pb2.UpdateProfileRequest.SerializeToString,
             protos_dot_profile_dot_profile__pb2.ProfileResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetUserProfiles(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.ProfileService/GetUserProfiles',
+            protos_dot_profile_dot_profile__pb2.GetUserProfilesRequest.SerializeToString,
+            protos_dot_profile_dot_profile__pb2.GetUserProfilesResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

@@ -49,13 +49,29 @@ class AuthServiceStub(object):
                 request_serializer=protos_dot_auth_dot_auth__pb2.VerifyOtpRequest.SerializeToString,
                 response_deserializer=protos_dot_auth_dot_auth__pb2.VerifyOtpResponse.FromString,
                 )
+        self.AssignRole = channel.unary_unary(
+                '/auth.AuthService/AssignRole',
+                request_serializer=protos_dot_auth_dot_auth__pb2.AssignRoleRequest.SerializeToString,
+                response_deserializer=protos_dot_auth_dot_auth__pb2.AssignRoleResponse.FromString,
+                )
+        self.GetUserRoles = channel.unary_unary(
+                '/auth.AuthService/GetUserRoles',
+                request_serializer=protos_dot_auth_dot_auth__pb2.GetUserRolesRequest.SerializeToString,
+                response_deserializer=protos_dot_auth_dot_auth__pb2.GetUserRolesResponse.FromString,
+                )
+        self.RemoveRole = channel.unary_unary(
+                '/auth.AuthService/RemoveRole',
+                request_serializer=protos_dot_auth_dot_auth__pb2.RemoveRoleRequest.SerializeToString,
+                response_deserializer=protos_dot_auth_dot_auth__pb2.RemoveRoleResponse.FromString,
+                )
 
 
 class AuthServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def Login(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Authentication
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -91,6 +107,25 @@ class AuthServiceServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def VerifyOtp(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def AssignRole(self, request, context):
+        """Role Management (NEW - Sprint 3)
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetUserRoles(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RemoveRole(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -133,6 +168,21 @@ def add_AuthServiceServicer_to_server(servicer, server):
                     servicer.VerifyOtp,
                     request_deserializer=protos_dot_auth_dot_auth__pb2.VerifyOtpRequest.FromString,
                     response_serializer=protos_dot_auth_dot_auth__pb2.VerifyOtpResponse.SerializeToString,
+            ),
+            'AssignRole': grpc.unary_unary_rpc_method_handler(
+                    servicer.AssignRole,
+                    request_deserializer=protos_dot_auth_dot_auth__pb2.AssignRoleRequest.FromString,
+                    response_serializer=protos_dot_auth_dot_auth__pb2.AssignRoleResponse.SerializeToString,
+            ),
+            'GetUserRoles': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetUserRoles,
+                    request_deserializer=protos_dot_auth_dot_auth__pb2.GetUserRolesRequest.FromString,
+                    response_serializer=protos_dot_auth_dot_auth__pb2.GetUserRolesResponse.SerializeToString,
+            ),
+            'RemoveRole': grpc.unary_unary_rpc_method_handler(
+                    servicer.RemoveRole,
+                    request_deserializer=protos_dot_auth_dot_auth__pb2.RemoveRoleRequest.FromString,
+                    response_serializer=protos_dot_auth_dot_auth__pb2.RemoveRoleResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -260,5 +310,56 @@ class AuthService(object):
         return grpc.experimental.unary_unary(request, target, '/auth.AuthService/VerifyOtp',
             protos_dot_auth_dot_auth__pb2.VerifyOtpRequest.SerializeToString,
             protos_dot_auth_dot_auth__pb2.VerifyOtpResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def AssignRole(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/auth.AuthService/AssignRole',
+            protos_dot_auth_dot_auth__pb2.AssignRoleRequest.SerializeToString,
+            protos_dot_auth_dot_auth__pb2.AssignRoleResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetUserRoles(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/auth.AuthService/GetUserRoles',
+            protos_dot_auth_dot_auth__pb2.GetUserRolesRequest.SerializeToString,
+            protos_dot_auth_dot_auth__pb2.GetUserRolesResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def RemoveRole(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/auth.AuthService/RemoveRole',
+            protos_dot_auth_dot_auth__pb2.RemoveRoleRequest.SerializeToString,
+            protos_dot_auth_dot_auth__pb2.RemoveRoleResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

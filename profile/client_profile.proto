@@ -1,0 +1,101 @@
+syntax = "proto3";
+
+package profile;
+
+import "google/protobuf/timestamp.proto";
+
+// ============================================================================
+// CLIENT PROFILE SERVICE
+// ============================================================================
+
+service ClientProfileService {
+  rpc CreateClientProfile (CreateClientProfileRequest) returns (ClientProfileResponse);
+  rpc GetClientProfile (GetClientProfileRequest) returns (ClientProfileResponse);
+  rpc UpdateClientProfile (UpdateClientProfileRequest) returns (ClientProfileResponse);
+  rpc DeleteClientProfile (DeleteClientProfileRequest) returns (DeleteClientProfileResponse);
+}
+
+// ============================================================================
+// MESSAGES
+// ============================================================================
+
+message ClientProfile {
+  string id = 1;
+  string user_id = 2;
+  
+  // Basic Information
+  string first_name = 3;
+  string last_name = 4;
+  string avatar_url = 5;
+  string phone_number = 6;
+  
+  // Personal Details
+  string birthdate = 7;  // ISO 8601 date format: YYYY-MM-DD
+  string gender = 8;
+  
+  // Localization
+  string locale = 9;
+  string timezone = 10;
+  
+  // Emergency Contact
+  string emergency_contact_name = 11;
+  string emergency_contact_phone = 12;
+  
+  // Preferences (JSON string)
+  string preferences = 13;
+  
+  // Status
+  bool is_completed = 14;
+  
+  // Timestamps
+  google.protobuf.Timestamp created_at = 15;
+  google.protobuf.Timestamp updated_at = 16;
+}
+
+message CreateClientProfileRequest {
+  string user_id = 1;  // Required: user from auth-service
+  
+  // Optional initial data
+  optional string first_name = 2;
+  optional string last_name = 3;
+  optional string phone_number = 4;
+  optional string locale = 5;
+  optional string timezone = 6;
+}
+
+message GetClientProfileRequest {
+  oneof identifier {
+    string user_id = 1;
+    string profile_id = 2;
+  }
+}
+
+message UpdateClientProfileRequest {
+  string user_id = 1;  // Required: identifies which profile to update
+  
+  // All fields optional - only provided fields will be updated
+  optional string first_name = 2;
+  optional string last_name = 3;
+  optional string avatar_url = 4;
+  optional string phone_number = 5;
+  optional string birthdate = 6;
+  optional string gender = 7;
+  optional string locale = 8;
+  optional string timezone = 9;
+  optional string emergency_contact_name = 10;
+  optional string emergency_contact_phone = 11;
+  optional string preferences = 12;  // JSON string
+}
+
+message DeleteClientProfileRequest {
+  string user_id = 1;
+}
+
+message ClientProfileResponse {
+  ClientProfile profile = 1;
+}
+
+message DeleteClientProfileResponse {
+  bool success = 1;
+  string message = 2;
+}
