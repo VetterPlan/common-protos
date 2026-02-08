@@ -1,0 +1,267 @@
+syntax = "proto3";
+
+package pet;
+
+import "google/protobuf/timestamp.proto";
+
+// ═══════════════════════════════════════════════════════════════════════════
+// PET SERVICE
+//
+// Manages pet registration, vaccination records, and allergy tracking.
+// This service is the single source of truth for pet data within VeterPlan.
+// Depends on: Auth Service (user_id), Profile Service (client_profile_id)
+// ═══════════════════════════════════════════════════════════════════════════
+
+service PetService {
+  // ─── PET CRUD ───
+
+  // Register a new pet for a client
+  rpc CreatePet (CreatePetRequest) returns (PetResponse);
+
+  // Get a pet by ID
+  rpc GetPet (GetPetRequest) returns (PetResponse);
+
+  // Get all pets for a client profile
+  rpc GetPetsByOwner (GetPetsByOwnerRequest) returns (PetsResponse);
+
+  // Update pet data
+  rpc UpdatePet (UpdatePetRequest) returns (PetResponse);
+
+  // Soft delete a pet (sets is_active = false)
+  rpc DeletePet (DeletePetRequest) returns (DeletePetResponse);
+
+  // ─── VACCINATIONS ───
+
+  // Register a vaccination for a pet
+  rpc AddVaccination (AddVaccinationRequest) returns (VaccinationResponse);
+
+  // Get vaccination history for a pet
+  rpc GetVaccinations (GetVaccinationsRequest) returns (VaccinationsResponse);
+
+  // Get upcoming vaccinations (for reminders/notifications)
+  rpc GetUpcomingVaccinations (GetUpcomingVaccinationsRequest) returns (VaccinationsResponse);
+
+  // ─── ALLERGIES ───
+
+  // Add an allergy record for a pet
+  rpc AddAllergy (AddAllergyRequest) returns (AllergyResponse);
+
+  // Get allergies for a pet
+  rpc GetAllergies (GetAllergiesRequest) returns (AllergiesResponse);
+
+  // Remove an allergy record
+  rpc RemoveAllergy (RemoveAllergyRequest) returns (RemoveAllergyResponse);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ENUMS
+// ═══════════════════════════════════════════════════════════════════════════
+
+enum Species {
+  SPECIES_UNSPECIFIED = 0;
+  SPECIES_DOG = 1;
+  SPECIES_CAT = 2;
+  SPECIES_BIRD = 3;
+  SPECIES_RABBIT = 4;
+  SPECIES_HAMSTER = 5;
+  SPECIES_FISH = 6;
+  SPECIES_REPTILE = 7;
+  SPECIES_OTHER = 8;
+}
+
+enum Gender {
+  GENDER_UNSPECIFIED = 0;
+  GENDER_MALE = 1;
+  GENDER_FEMALE = 2;
+  GENDER_UNKNOWN = 3;
+}
+
+enum AllergySeverity {
+  ALLERGY_SEVERITY_UNSPECIFIED = 0;
+  ALLERGY_SEVERITY_MILD = 1;
+  ALLERGY_SEVERITY_MODERATE = 2;
+  ALLERGY_SEVERITY_SEVERE = 3;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MESSAGES - Core Entities
+// ═══════════════════════════════════════════════════════════════════════════
+
+message Pet {
+  string id = 1;
+  string client_profile_id = 2;
+  string name = 3;
+  Species species = 4;
+  string breed = 5;
+  string birthdate = 6;          // ISO 8601 date (YYYY-MM-DD)
+  Gender gender = 7;
+  double weight_kg = 8;
+  string color = 9;
+  string microchip_id = 10;
+  string avatar_url = 11;
+  string notes = 12;
+  bool is_active = 13;
+  google.protobuf.Timestamp created_at = 14;
+  google.protobuf.Timestamp updated_at = 15;
+
+  // Embedded relations (when requested)
+  repeated Vaccination vaccinations = 16;
+  repeated Allergy allergies = 17;
+}
+
+message Vaccination {
+  string id = 1;
+  string pet_id = 2;
+  string vaccine_name = 3;
+  string date_administered = 4;  // ISO 8601 date
+  string next_due_date = 5;      // ISO 8601 date (for reminders)
+  string administered_by = 6;
+  string batch_number = 7;
+  string notes = 8;
+  bool is_overdue = 9;
+  int32 days_until_due = 10;
+  google.protobuf.Timestamp created_at = 11;
+  google.protobuf.Timestamp updated_at = 12;
+}
+
+message Allergy {
+  string id = 1;
+  string pet_id = 2;
+  string allergen = 3;
+  AllergySeverity severity = 4;
+  string notes = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MESSAGES - Requests
+// ═══════════════════════════════════════════════════════════════════════════
+
+// ─── Pet CRUD ───
+
+message CreatePetRequest {
+  string client_profile_id = 1;
+  string name = 2;
+  Species species = 3;
+  string breed = 4;
+  string birthdate = 5;          // ISO 8601
+  Gender gender = 6;
+  double weight_kg = 7;
+  string color = 8;
+  string microchip_id = 9;
+  string avatar_url = 10;
+  string notes = 11;
+}
+
+message GetPetRequest {
+  string pet_id = 1;
+  bool include_vaccinations = 2;  // Include vaccination history
+  bool include_allergies = 3;     // Include allergies
+}
+
+message GetPetsByOwnerRequest {
+  string client_profile_id = 1;
+  bool include_inactive = 2;      // Include soft-deleted pets
+  bool include_vaccinations = 3;
+  bool include_allergies = 4;
+}
+
+message UpdatePetRequest {
+  string pet_id = 1;
+  string name = 2;
+  Species species = 3;
+  string breed = 4;
+  string birthdate = 5;
+  Gender gender = 6;
+  double weight_kg = 7;
+  string color = 8;
+  string microchip_id = 9;
+  string avatar_url = 10;
+  string notes = 11;
+}
+
+message DeletePetRequest {
+  string pet_id = 1;
+}
+
+// ─── Vaccination ───
+
+message AddVaccinationRequest {
+  string pet_id = 1;
+  string vaccine_name = 2;
+  string date_administered = 3;   // ISO 8601
+  string next_due_date = 4;       // ISO 8601
+  string administered_by = 5;
+  string batch_number = 6;
+  string notes = 7;
+}
+
+message GetVaccinationsRequest {
+  string pet_id = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+}
+
+message GetUpcomingVaccinationsRequest {
+  string client_profile_id = 1;   // Get for all pets of this owner
+  int32 days_ahead = 2;           // How many days ahead to look (default: 30)
+}
+
+// ─── Allergies ───
+
+message AddAllergyRequest {
+  string pet_id = 1;
+  string allergen = 2;
+  AllergySeverity severity = 3;
+  string notes = 4;
+}
+
+message GetAllergiesRequest {
+  string pet_id = 1;
+}
+
+message RemoveAllergyRequest {
+  string allergy_id = 1;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MESSAGES - Responses
+// ═══════════════════════════════════════════════════════════════════════════
+
+message PetResponse {
+  Pet pet = 1;
+}
+
+message PetsResponse {
+  repeated Pet pets = 1;
+  int32 total_count = 2;
+}
+
+message DeletePetResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message VaccinationResponse {
+  Vaccination vaccination = 1;
+}
+
+message VaccinationsResponse {
+  repeated Vaccination vaccinations = 1;
+  int32 total_count = 2;
+}
+
+message AllergyResponse {
+  Allergy allergy = 1;
+}
+
+message AllergiesResponse {
+  repeated Allergy allergies = 1;
+  int32 total_count = 2;
+}
+
+message RemoveAllergyResponse {
+  bool success = 1;
+  string message = 2;
+}
