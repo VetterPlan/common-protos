@@ -13,6 +13,9 @@ service ClientProfileService {
   rpc GetClientProfile (GetClientProfileRequest) returns (ClientProfileResponse);
   rpc UpdateClientProfile (UpdateClientProfileRequest) returns (ClientProfileResponse);
   rpc DeleteClientProfile (DeleteClientProfileRequest) returns (DeleteClientProfileResponse);
+
+  // Multi-profile aggregation: returns both client and vet profile summaries
+  rpc GetUserProfiles (GetUserProfilesRequest) returns (GetUserProfilesResponse);
 }
 
 // ============================================================================
@@ -98,4 +101,42 @@ message ClientProfileResponse {
 message DeleteClientProfileResponse {
   bool success = 1;
   string message = 2;
+}
+
+// ============================================================================
+// Multi-Profile Support (GetUserProfiles)
+// ============================================================================
+
+message GetUserProfilesRequest {
+  string user_id = 1;
+}
+
+message GetUserProfilesResponse {
+  UserProfiles profiles = 1;
+}
+
+message UserProfiles {
+  string user_id = 1;
+  optional ClientProfileSummary client_profile = 2;
+  optional VetProfileSummary vet_profile = 3;
+  repeated string roles = 4;
+}
+
+message ClientProfileSummary {
+  string id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string avatar_url = 4;
+  bool is_completed = 5;
+}
+
+message VetProfileSummary {
+  string id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string avatar_url = 4;
+  string professional_title = 5;
+  string clinic_name = 6;
+  bool is_completed = 7;
+  string status = 8;
 }

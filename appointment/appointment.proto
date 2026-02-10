@@ -1,0 +1,326 @@
+syntax = "proto3";
+
+package appointment;
+
+import "google/protobuf/timestamp.proto";
+
+// ═══════════════════════════════════════════════════════════════════════════
+// APPOINTMENT SERVICE
+//
+// Core business service for VeterPlan's veterinary home visits marketplace.
+// Manages the full appointment lifecycle from request to completion,
+// including vet matching, state machine transitions, payments, and reviews.
+//
+// Depends on: Auth, Profile, Pet, VetCertification, Payment, Geolocation,
+//             Notification services.
+// ═══════════════════════════════════════════════════════════════════════════
+
+service AppointmentService {
+  // ─── LIFECYCLE ───
+
+  // Client requests a new appointment (creates REQUESTED state)
+  rpc RequestAppointment (RequestAppointmentRequest) returns (AppointmentResponse);
+
+  // Vet accepts an appointment (REQUESTED -> ACCEPTED, first-come-first-served)
+  rpc AcceptAppointment (AcceptAppointmentRequest) returns (AppointmentResponse);
+
+  // Update appointment status (EN_ROUTE, COMPLETED, etc.)
+  rpc UpdateAppointmentStatus (UpdateAppointmentStatusRequest) returns (AppointmentResponse);
+
+  // Vet confirms arrival with 6-digit PIN (ARRIVED -> IN_PROGRESS)
+  rpc ConfirmArrival (ConfirmArrivalRequest) returns (AppointmentResponse);
+
+  // Cancel an appointment (client, vet, or system)
+  rpc CancelAppointment (CancelAppointmentRequest) returns (AppointmentResponse);
+
+  // ─── QUERIES ───
+
+  // Get a single appointment by ID
+  rpc GetAppointment (GetAppointmentRequest) returns (AppointmentResponse);
+
+  // Get appointments for a client (with optional status filter)
+  rpc GetClientAppointments (GetClientAppointmentsRequest) returns (AppointmentsResponse);
+
+  // Get appointments for a vet (with optional status filter)
+  rpc GetVetAppointments (GetVetAppointmentsRequest) returns (AppointmentsResponse);
+
+  // ─── MATCHING ───
+
+  // Find available vets for a service at a location and time
+  rpc GetAvailableVets (GetAvailableVetsRequest) returns (AvailableVetsResponse);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ENUMS
+// ═══════════════════════════════════════════════════════════════════════════
+
+enum AppointmentStatus {
+  APPOINTMENT_STATUS_UNSPECIFIED = 0;
+  APPOINTMENT_STATUS_REQUESTED = 1;
+  APPOINTMENT_STATUS_ACCEPTED = 2;
+  APPOINTMENT_STATUS_EN_ROUTE = 3;
+  APPOINTMENT_STATUS_ARRIVED = 4;
+  APPOINTMENT_STATUS_IN_PROGRESS = 5;
+  APPOINTMENT_STATUS_COMPLETED = 6;
+  APPOINTMENT_STATUS_CANCELLED = 7;
+  APPOINTMENT_STATUS_NO_SHOW = 8;
+  APPOINTMENT_STATUS_REJECTED = 9;
+  APPOINTMENT_STATUS_EXPIRED = 10;
+}
+
+enum ServiceType {
+  SERVICE_TYPE_UNSPECIFIED = 0;
+  SERVICE_TYPE_CONSULTATION = 1;
+  SERVICE_TYPE_VACCINATION = 2;
+  SERVICE_TYPE_CHECKUP = 3;
+  SERVICE_TYPE_EMERGENCY = 4;
+  SERVICE_TYPE_SURGERY_MINOR = 5;
+  SERVICE_TYPE_GROOMING = 6;
+  SERVICE_TYPE_DENTAL = 7;
+  SERVICE_TYPE_DEWORMING = 8;
+  SERVICE_TYPE_LAB_WORK = 9;
+  SERVICE_TYPE_FOLLOW_UP = 10;
+  SERVICE_TYPE_EUTHANASIA = 11;
+  SERVICE_TYPE_OTHER = 12;
+}
+
+enum CancellationReason {
+  CANCELLATION_REASON_UNSPECIFIED = 0;
+  CANCELLATION_REASON_CLIENT_REQUEST = 1;
+  CANCELLATION_REASON_VET_UNAVAILABLE = 2;
+  CANCELLATION_REASON_WEATHER = 3;
+  CANCELLATION_REASON_PET_EMERGENCY = 4;
+  CANCELLATION_REASON_SCHEDULING_CONFLICT = 5;
+  CANCELLATION_REASON_NO_RESPONSE = 6;
+  CANCELLATION_REASON_SYSTEM_TIMEOUT = 7;
+  CANCELLATION_REASON_ADMIN_ACTION = 8;
+  CANCELLATION_REASON_OTHER = 9;
+}
+
+enum StatusChangeReason {
+  STATUS_CHANGE_REASON_UNSPECIFIED = 0;
+  STATUS_CHANGE_REASON_CLIENT_REQUESTED = 1;
+  STATUS_CHANGE_REASON_VET_ACCEPTED = 2;
+  STATUS_CHANGE_REASON_VET_REJECTED = 3;
+  STATUS_CHANGE_REASON_VET_EN_ROUTE = 4;
+  STATUS_CHANGE_REASON_GEOFENCE_ARRIVAL = 5;
+  STATUS_CHANGE_REASON_PIN_CONFIRMED = 6;
+  STATUS_CHANGE_REASON_VET_STARTED = 7;
+  STATUS_CHANGE_REASON_VET_COMPLETED = 8;
+  STATUS_CHANGE_REASON_CLIENT_CANCELLED = 9;
+  STATUS_CHANGE_REASON_VET_CANCELLED = 10;
+  STATUS_CHANGE_REASON_SYSTEM_EXPIRED = 11;
+  STATUS_CHANGE_REASON_SYSTEM_NO_SHOW = 12;
+  STATUS_CHANGE_REASON_ADMIN_OVERRIDE = 13;
+  STATUS_CHANGE_REASON_OTHER = 14;
+}
+
+enum UrgencyLevel {
+  URGENCY_LEVEL_UNSPECIFIED = 0;
+  URGENCY_LEVEL_ROUTINE = 1;
+  URGENCY_LEVEL_SOON = 2;
+  URGENCY_LEVEL_URGENT = 3;
+  URGENCY_LEVEL_EMERGENCY = 4;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MESSAGES - Core Entities
+// ═══════════════════════════════════════════════════════════════════════════
+
+message Appointment {
+  string id = 1;
+
+  // Parties
+  string client_profile_id = 2;
+  string vet_profile_id = 3;        // Empty until accepted
+  repeated string pet_ids = 4;
+
+  // Service
+  ServiceType service_type = 5;
+  UrgencyLevel urgency = 6;
+  int32 estimated_duration_minutes = 7;
+
+  // Status
+  AppointmentStatus status = 8;
+  string confirmation_code = 9;     // 6-digit PIN for arrival confirmation
+
+  // Scheduling
+  string scheduled_date = 10;       // ISO 8601 date (YYYY-MM-DD)
+  string scheduled_time_start = 11; // ISO 8601 datetime
+  string scheduled_time_end = 12;   // ISO 8601 datetime
+
+  // Location (denormalized from profile address)
+  string address_id = 13;
+  double address_lat = 14;
+  double address_lng = 15;
+  string address_text = 16;
+
+  // Notes
+  string client_notes = 17;
+  string vet_notes = 18;
+
+  // Payment
+  double estimated_price = 19;
+  double final_price = 20;
+  string currency = 21;
+  string payment_preauth_id = 22;
+
+  // Cancellation
+  CancellationReason cancellation_reason = 23;
+  string cancelled_by = 24;
+
+  // Timestamps
+  google.protobuf.Timestamp created_at = 25;
+  google.protobuf.Timestamp updated_at = 26;
+  google.protobuf.Timestamp accepted_at = 27;
+  google.protobuf.Timestamp en_route_at = 28;
+  google.protobuf.Timestamp arrived_at = 29;
+  google.protobuf.Timestamp started_at = 30;
+  google.protobuf.Timestamp completed_at = 31;
+  google.protobuf.Timestamp expires_at = 32;
+
+  // Embedded relations (when requested)
+  repeated StatusHistoryEntry status_history = 33;
+}
+
+message StatusHistoryEntry {
+  string id = 1;
+  string appointment_id = 2;
+  AppointmentStatus previous_status = 3;
+  AppointmentStatus new_status = 4;
+  StatusChangeReason reason = 5;
+  string reason_details = 6;
+  string changed_by = 7;            // "CLIENT" | "VET" | "SYSTEM" or UUID
+  google.protobuf.Timestamp changed_at = 8;
+}
+
+message AvailableVet {
+  string vet_profile_id = 1;
+  string display_name = 2;
+  string avatar_url = 3;
+  double distance_km = 4;
+  double rating = 5;
+  int32 review_count = 6;
+  double estimated_price = 7;
+  int32 estimated_arrival_minutes = 8;
+  repeated string certifications = 9;
+  repeated string specialties = 10;
+}
+
+message ServiceCatalogItem {
+  string id = 1;
+  string name = 2;
+  string slug = 3;
+  string description = 4;
+  ServiceType service_type = 5;
+  double base_price_min = 6;
+  double base_price_max = 7;
+  int32 duration_minutes_est = 8;
+  bool is_active = 9;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MESSAGES - Requests
+// ═══════════════════════════════════════════════════════════════════════════
+
+// ─── Lifecycle ───
+
+message RequestAppointmentRequest {
+  string client_profile_id = 1;
+  repeated string pet_ids = 2;
+  ServiceType service_type = 3;
+  UrgencyLevel urgency = 4;
+  string scheduled_date = 5;           // ISO 8601 date
+  string scheduled_time_start = 6;     // ISO 8601 datetime
+  int32 estimated_duration_minutes = 7;
+  string address_id = 8;
+  double address_lat = 9;
+  double address_lng = 10;
+  string address_text = 11;
+  string client_notes = 12;
+}
+
+message AcceptAppointmentRequest {
+  string appointment_id = 1;
+  string vet_profile_id = 2;
+  double estimated_price = 3;
+  int32 estimated_arrival_minutes = 4;
+  string vet_notes = 5;
+}
+
+message UpdateAppointmentStatusRequest {
+  string appointment_id = 1;
+  AppointmentStatus new_status = 2;
+  StatusChangeReason reason = 3;
+  string reason_details = 4;
+  string changed_by = 5;
+  // Optional fields for specific transitions
+  string vet_notes = 6;
+  double final_price = 7;
+}
+
+message ConfirmArrivalRequest {
+  string appointment_id = 1;
+  string confirmation_code = 2;       // 6-digit PIN
+}
+
+message CancelAppointmentRequest {
+  string appointment_id = 1;
+  CancellationReason reason = 2;
+  string reason_details = 3;
+  string cancelled_by = 4;            // user_id or "SYSTEM"
+}
+
+// ─── Queries ───
+
+message GetAppointmentRequest {
+  string appointment_id = 1;
+  bool include_status_history = 2;
+}
+
+message GetClientAppointmentsRequest {
+  string client_profile_id = 1;
+  AppointmentStatus status_filter = 2;  // UNSPECIFIED = all statuses
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message GetVetAppointmentsRequest {
+  string vet_profile_id = 1;
+  AppointmentStatus status_filter = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+// ─── Matching ───
+
+message GetAvailableVetsRequest {
+  ServiceType service_type = 1;
+  double address_lat = 2;
+  double address_lng = 3;
+  string scheduled_date = 4;           // ISO 8601 date
+  string scheduled_time_start = 5;     // ISO 8601 datetime
+  UrgencyLevel urgency = 6;
+  string pet_species = 7;             // For certification filtering
+  double radius_km = 8;               // Search radius (default: 15km)
+  int32 max_results = 9;              // Max vets to return (default: 5)
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MESSAGES - Responses
+// ═══════════════════════════════════════════════════════════════════════════
+
+message AppointmentResponse {
+  Appointment appointment = 1;
+}
+
+message AppointmentsResponse {
+  repeated Appointment appointments = 1;
+  int32 total_count = 2;
+}
+
+message AvailableVetsResponse {
+  repeated AvailableVet vets = 1;
+  int32 total_count = 2;
+  double search_radius_km = 3;
+}

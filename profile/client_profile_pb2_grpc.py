@@ -38,6 +38,11 @@ class ClientProfileServiceStub(object):
                 request_serializer=protos_dot_profile_dot_client__profile__pb2.DeleteClientProfileRequest.SerializeToString,
                 response_deserializer=protos_dot_profile_dot_client__profile__pb2.DeleteClientProfileResponse.FromString,
                 )
+        self.GetUserProfiles = channel.unary_unary(
+                '/profile.ClientProfileService/GetUserProfiles',
+                request_serializer=protos_dot_profile_dot_client__profile__pb2.GetUserProfilesRequest.SerializeToString,
+                response_deserializer=protos_dot_profile_dot_client__profile__pb2.GetUserProfilesResponse.FromString,
+                )
 
 
 class ClientProfileServiceServicer(object):
@@ -71,6 +76,13 @@ class ClientProfileServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetUserProfiles(self, request, context):
+        """Multi-profile aggregation: returns both client and vet profile summaries
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ClientProfileServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -93,6 +105,11 @@ def add_ClientProfileServiceServicer_to_server(servicer, server):
                     servicer.DeleteClientProfile,
                     request_deserializer=protos_dot_profile_dot_client__profile__pb2.DeleteClientProfileRequest.FromString,
                     response_serializer=protos_dot_profile_dot_client__profile__pb2.DeleteClientProfileResponse.SerializeToString,
+            ),
+            'GetUserProfiles': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetUserProfiles,
+                    request_deserializer=protos_dot_profile_dot_client__profile__pb2.GetUserProfilesRequest.FromString,
+                    response_serializer=protos_dot_profile_dot_client__profile__pb2.GetUserProfilesResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -173,5 +190,22 @@ class ClientProfileService(object):
         return grpc.experimental.unary_unary(request, target, '/profile.ClientProfileService/DeleteClientProfile',
             protos_dot_profile_dot_client__profile__pb2.DeleteClientProfileRequest.SerializeToString,
             protos_dot_profile_dot_client__profile__pb2.DeleteClientProfileResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetUserProfiles(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.ClientProfileService/GetUserProfiles',
+            protos_dot_profile_dot_client__profile__pb2.GetUserProfilesRequest.SerializeToString,
+            protos_dot_profile_dot_client__profile__pb2.GetUserProfilesResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
