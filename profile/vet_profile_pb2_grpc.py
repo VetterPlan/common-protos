@@ -43,6 +43,31 @@ class VetProfileServiceStub(object):
                 request_serializer=protos_dot_profile_dot_vet__profile__pb2.UpdateVetProfileStatusRequest.SerializeToString,
                 response_deserializer=protos_dot_profile_dot_vet__profile__pb2.VetProfileResponse.FromString,
                 )
+        self.SetServicePrice = channel.unary_unary(
+                '/profile.VetProfileService/SetServicePrice',
+                request_serializer=protos_dot_profile_dot_vet__profile__pb2.SetServicePriceRequest.SerializeToString,
+                response_deserializer=protos_dot_profile_dot_vet__profile__pb2.ServicePriceResponse.FromString,
+                )
+        self.GetVetServicePrices = channel.unary_unary(
+                '/profile.VetProfileService/GetVetServicePrices',
+                request_serializer=protos_dot_profile_dot_vet__profile__pb2.GetVetServicePricesRequest.SerializeToString,
+                response_deserializer=protos_dot_profile_dot_vet__profile__pb2.VetServicePricesResponse.FromString,
+                )
+        self.GetVetPriceForService = channel.unary_unary(
+                '/profile.VetProfileService/GetVetPriceForService',
+                request_serializer=protos_dot_profile_dot_vet__profile__pb2.GetVetPriceForServiceRequest.SerializeToString,
+                response_deserializer=protos_dot_profile_dot_vet__profile__pb2.ServicePriceResponse.FromString,
+                )
+        self.RemoveServicePrice = channel.unary_unary(
+                '/profile.VetProfileService/RemoveServicePrice',
+                request_serializer=protos_dot_profile_dot_vet__profile__pb2.RemoveServicePriceRequest.SerializeToString,
+                response_deserializer=protos_dot_profile_dot_vet__profile__pb2.RemoveServicePriceResponse.FromString,
+                )
+        self.GetVetsByService = channel.unary_unary(
+                '/profile.VetProfileService/GetVetsByService',
+                request_serializer=protos_dot_profile_dot_vet__profile__pb2.GetVetsByServiceRequest.SerializeToString,
+                response_deserializer=protos_dot_profile_dot_vet__profile__pb2.VetsByServiceResponse.FromString,
+                )
 
 
 class VetProfileServiceServicer(object):
@@ -82,6 +107,37 @@ class VetProfileServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SetServicePrice(self, request, context):
+        """─── Vet Service Pricing ───
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetVetServicePrices(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetVetPriceForService(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RemoveServicePrice(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetVetsByService(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_VetProfileServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -109,6 +165,31 @@ def add_VetProfileServiceServicer_to_server(servicer, server):
                     servicer.UpdateVetProfileStatus,
                     request_deserializer=protos_dot_profile_dot_vet__profile__pb2.UpdateVetProfileStatusRequest.FromString,
                     response_serializer=protos_dot_profile_dot_vet__profile__pb2.VetProfileResponse.SerializeToString,
+            ),
+            'SetServicePrice': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetServicePrice,
+                    request_deserializer=protos_dot_profile_dot_vet__profile__pb2.SetServicePriceRequest.FromString,
+                    response_serializer=protos_dot_profile_dot_vet__profile__pb2.ServicePriceResponse.SerializeToString,
+            ),
+            'GetVetServicePrices': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetVetServicePrices,
+                    request_deserializer=protos_dot_profile_dot_vet__profile__pb2.GetVetServicePricesRequest.FromString,
+                    response_serializer=protos_dot_profile_dot_vet__profile__pb2.VetServicePricesResponse.SerializeToString,
+            ),
+            'GetVetPriceForService': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetVetPriceForService,
+                    request_deserializer=protos_dot_profile_dot_vet__profile__pb2.GetVetPriceForServiceRequest.FromString,
+                    response_serializer=protos_dot_profile_dot_vet__profile__pb2.ServicePriceResponse.SerializeToString,
+            ),
+            'RemoveServicePrice': grpc.unary_unary_rpc_method_handler(
+                    servicer.RemoveServicePrice,
+                    request_deserializer=protos_dot_profile_dot_vet__profile__pb2.RemoveServicePriceRequest.FromString,
+                    response_serializer=protos_dot_profile_dot_vet__profile__pb2.RemoveServicePriceResponse.SerializeToString,
+            ),
+            'GetVetsByService': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetVetsByService,
+                    request_deserializer=protos_dot_profile_dot_vet__profile__pb2.GetVetsByServiceRequest.FromString,
+                    response_serializer=protos_dot_profile_dot_vet__profile__pb2.VetsByServiceResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -206,5 +287,90 @@ class VetProfileService(object):
         return grpc.experimental.unary_unary(request, target, '/profile.VetProfileService/UpdateVetProfileStatus',
             protos_dot_profile_dot_vet__profile__pb2.UpdateVetProfileStatusRequest.SerializeToString,
             protos_dot_profile_dot_vet__profile__pb2.VetProfileResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SetServicePrice(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.VetProfileService/SetServicePrice',
+            protos_dot_profile_dot_vet__profile__pb2.SetServicePriceRequest.SerializeToString,
+            protos_dot_profile_dot_vet__profile__pb2.ServicePriceResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetVetServicePrices(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.VetProfileService/GetVetServicePrices',
+            protos_dot_profile_dot_vet__profile__pb2.GetVetServicePricesRequest.SerializeToString,
+            protos_dot_profile_dot_vet__profile__pb2.VetServicePricesResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetVetPriceForService(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.VetProfileService/GetVetPriceForService',
+            protos_dot_profile_dot_vet__profile__pb2.GetVetPriceForServiceRequest.SerializeToString,
+            protos_dot_profile_dot_vet__profile__pb2.ServicePriceResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def RemoveServicePrice(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.VetProfileService/RemoveServicePrice',
+            protos_dot_profile_dot_vet__profile__pb2.RemoveServicePriceRequest.SerializeToString,
+            protos_dot_profile_dot_vet__profile__pb2.RemoveServicePriceResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetVetsByService(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.VetProfileService/GetVetsByService',
+            protos_dot_profile_dot_vet__profile__pb2.GetVetsByServiceRequest.SerializeToString,
+            protos_dot_profile_dot_vet__profile__pb2.VetsByServiceResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

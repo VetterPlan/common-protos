@@ -14,6 +14,13 @@ service VetProfileService {
   rpc UpdateVetProfile (UpdateVetProfileRequest) returns (VetProfileResponse);
   rpc DeleteVetProfile (DeleteVetProfileRequest) returns (DeleteVetProfileResponse);
   rpc UpdateVetProfileStatus (UpdateVetProfileStatusRequest) returns (VetProfileResponse);
+
+  // ─── Vet Service Pricing ───
+  rpc SetServicePrice (SetServicePriceRequest) returns (ServicePriceResponse);
+  rpc GetVetServicePrices (GetVetServicePricesRequest) returns (VetServicePricesResponse);
+  rpc GetVetPriceForService (GetVetPriceForServiceRequest) returns (ServicePriceResponse);
+  rpc RemoveServicePrice (RemoveServicePriceRequest) returns (RemoveServicePriceResponse);
+  rpc GetVetsByService (GetVetsByServiceRequest) returns (VetsByServiceResponse);
 }
 
 // ============================================================================
@@ -79,15 +86,15 @@ message VetProfile {
 
 message CreateVetProfileRequest {
   string user_id = 1;  // Required: user from auth-service
-  
+
   // Optional initial data
   optional string first_name = 2;
   optional string last_name = 3;
-  optional string phone_number = 4;
+  // field 4 removed (phone_number — already in auth-service)
   optional string professional_title = 5;
   optional string clinic_name = 6;
   optional string locale = 7;
-  optional string timezone = 8;
+  // field 8 removed (timezone — single-country, not needed)
 }
 
 message GetVetProfileRequest {
@@ -99,7 +106,7 @@ message GetVetProfileRequest {
 
 message UpdateVetProfileRequest {
   string user_id = 1;  // Required: identifies which profile to update
-  
+
   // All fields optional - only provided fields will be updated
   optional string first_name = 2;
   optional string last_name = 3;
@@ -115,7 +122,7 @@ message UpdateVetProfileRequest {
   repeated string languages = 13;  // Replaces existing list
   optional string availability_settings = 14;  // JSON string
   optional string locale = 15;
-  optional string timezone = 16;
+  // field 16 removed (timezone — single-country, not needed)
 }
 
 message UpdateVetProfileStatusRequest {
@@ -135,4 +142,80 @@ message VetProfileResponse {
 message DeleteVetProfileResponse {
   bool success = 1;
   string message = 2;
+}
+
+// ============================================================================
+// VET SERVICE PRICING
+// ============================================================================
+
+enum VetServiceType {
+  VET_SERVICE_TYPE_UNSPECIFIED = 0;
+  VET_SERVICE_TYPE_CONSULTATION = 1;
+  VET_SERVICE_TYPE_VACCINATION = 2;
+  VET_SERVICE_TYPE_DEWORMING = 3;
+  VET_SERVICE_TYPE_FOLLOW_UP = 4;
+  VET_SERVICE_TYPE_MEDICAL_CERTIFICATE = 5;
+  VET_SERVICE_TYPE_ULTRASOUND = 6;
+  VET_SERVICE_TYPE_ELECTROCARDIOGRAM = 7;
+}
+
+message ServicePrice {
+  string id = 1;
+  string vet_profile_id = 2;
+  VetServiceType service_type = 3;
+  double price = 4;
+  bool is_active = 5;
+  string notes = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+}
+
+message SetServicePriceRequest {
+  string vet_profile_id = 1;
+  VetServiceType service_type = 2;
+  double price = 3;
+  string notes = 4;
+}
+
+message ServicePriceResponse {
+  ServicePrice price = 1;
+}
+
+message GetVetServicePricesRequest {
+  string vet_profile_id = 1;
+}
+
+message VetServicePricesResponse {
+  repeated ServicePrice prices = 1;
+}
+
+message GetVetPriceForServiceRequest {
+  string vet_profile_id = 1;
+  VetServiceType service_type = 2;
+}
+
+message RemoveServicePriceRequest {
+  string vet_profile_id = 1;
+  VetServiceType service_type = 2;
+}
+
+message RemoveServicePriceResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message GetVetsByServiceRequest {
+  VetServiceType service_type = 1;
+}
+
+message VetByService {
+  string vet_profile_id = 1;
+  double price = 2;
+  string notes = 3;
+  string display_name = 4;
+}
+
+message VetsByServiceResponse {
+  repeated VetByService vets = 1;
+  int32 total_count = 2;
 }

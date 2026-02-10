@@ -72,16 +72,11 @@ enum ServiceType {
   SERVICE_TYPE_UNSPECIFIED = 0;
   SERVICE_TYPE_CONSULTATION = 1;
   SERVICE_TYPE_VACCINATION = 2;
-  SERVICE_TYPE_CHECKUP = 3;
-  SERVICE_TYPE_EMERGENCY = 4;
-  SERVICE_TYPE_SURGERY_MINOR = 5;
-  SERVICE_TYPE_GROOMING = 6;
-  SERVICE_TYPE_DENTAL = 7;
-  SERVICE_TYPE_DEWORMING = 8;
-  SERVICE_TYPE_LAB_WORK = 9;
-  SERVICE_TYPE_FOLLOW_UP = 10;
-  SERVICE_TYPE_EUTHANASIA = 11;
-  SERVICE_TYPE_OTHER = 12;
+  SERVICE_TYPE_DEWORMING = 3;
+  SERVICE_TYPE_FOLLOW_UP = 4;
+  SERVICE_TYPE_MEDICAL_CERTIFICATE = 5;
+  SERVICE_TYPE_ULTRASOUND = 6;
+  SERVICE_TYPE_ELECTROCARDIOGRAM = 7;
 }
 
 enum CancellationReason {
@@ -205,6 +200,8 @@ message AvailableVet {
   int32 estimated_arrival_minutes = 8;
   repeated string certifications = 9;
   repeated string specialties = 10;
+  double score = 11;
+  string price_notes = 12;
 }
 
 message ServiceCatalogItem {
