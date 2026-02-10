@@ -47,7 +47,6 @@ message VetProfile {
   string first_name = 3;
   string last_name = 4;
   string avatar_url = 5;
-  string phone_number = 6;
   
   // Professional Information
   string professional_title = 7;  // e.g., "DVM", "VMD"
@@ -71,7 +70,6 @@ message VetProfile {
   
   // Localization
   string locale = 16;
-  string timezone = 17;
   
   // Status (profile completion, NOT certification)
   VetProfileStatus status = 18;
@@ -90,11 +88,9 @@ message CreateVetProfileRequest {
   // Optional initial data
   optional string first_name = 2;
   optional string last_name = 3;
-  // field 4 removed (phone_number — already in auth-service)
   optional string professional_title = 5;
   optional string clinic_name = 6;
   optional string locale = 7;
-  // field 8 removed (timezone — single-country, not needed)
 }
 
 message GetVetProfileRequest {
@@ -111,7 +107,6 @@ message UpdateVetProfileRequest {
   optional string first_name = 2;
   optional string last_name = 3;
   optional string avatar_url = 4;
-  optional string phone_number = 5;
   optional string professional_title = 6;
   optional string bio = 7;
   optional string years_of_experience = 8;
@@ -122,7 +117,6 @@ message UpdateVetProfileRequest {
   repeated string languages = 13;  // Replaces existing list
   optional string availability_settings = 14;  // JSON string
   optional string locale = 15;
-  // field 16 removed (timezone — single-country, not needed)
 }
 
 message UpdateVetProfileStatusRequest {
