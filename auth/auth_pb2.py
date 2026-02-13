@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x16protos/auth/auth.proto\x12\x04\x61uth\"2\n\x0cLoginRequest\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"S\n\x0fRegisterRequest\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\r\n\x05phone\x18\x04 \x01(\t\"#\n\x10RegisterResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\":\n\rLoginResponse\x12\x13\n\x0b\x61\x63\x63\x65ssToken\x18\x01 \x01(\t\x12\x14\n\x0crefreshToken\x18\x02 \x01(\t\"+\n\x13RefreshTokenRequest\x12\x14\n\x0crefreshToken\x18\x01 \x01(\t\"%\n\x14ValidateTokenRequest\x12\r\n\x05token\x18\x01 \x01(\t\"\x91\x01\n\x15ValidateTokenResponse\x12\r\n\x05valid\x18\x01 \x01(\x08\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\x12\r\n\x05\x65mail\x18\x04 \x01(\t\x12\r\n\x05roles\x18\x05 \x03(\t\x12\x11\n\tuser_type\x18\x06 \x01(\t\x12\x19\n\x11is_email_verified\x18\x07 \x01(\x08\"#\n\x12VerifyEmailRequest\x12\r\n\x05token\x18\x01 \x01(\t\"7\n\x13VerifyEmailResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\"%\n\x0eSendOtpRequest\x12\x13\n\x0bphoneNumber\x18\x01 \x01(\t\"F\n\x0fSendOtpResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\x12\x11\n\texpiresAt\x18\x03 \x01(\t\"8\n\x10VerifyOtpRequest\x12\x13\n\x0bphoneNumber\x18\x01 \x01(\t\x12\x0f\n\x07otpCode\x18\x02 \x01(\t\"5\n\x11VerifyOtpResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\"l\n\x11\x41ssignRoleRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x11\n\trole_slug\x18\x02 \x01(\t\x12\x13\n\x0b\x61ssigned_by\x18\x03 \x01(\t\x12\x13\n\x06reason\x18\x04 \x01(\tH\x00\x88\x01\x01\x42\t\n\x07_reason\"`\n\x12\x41ssignRoleResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\x12(\n\nassignment\x18\x03 \x01(\x0b\x32\x14.auth.RoleAssignment\"&\n\x13GetUserRolesRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\"N\n\x14GetUserRolesResponse\x12#\n\x05roles\x18\x01 \x03(\x0b\x32\x14.auth.RoleAssignment\x12\x11\n\tuser_type\x18\x02 \x01(\t\"k\n\x11RemoveRoleRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x11\n\trole_slug\x18\x02 \x01(\t\x12\x12\n\nremoved_by\x18\x03 \x01(\t\x12\x13\n\x06reason\x18\x04 \x01(\tH\x00\x88\x01\x01\x42\t\n\x07_reason\"6\n\x12RemoveRoleResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\"q\n\x0eRoleAssignment\x12\x0f\n\x07role_id\x18\x01 \x01(\t\x12\x11\n\trole_slug\x18\x02 \x01(\t\x12\x11\n\trole_name\x18\x03 \x01(\t\x12\x13\n\x0b\x61ssigned_at\x18\x04 \x01(\t\x12\x13\n\x0b\x61ssigned_by\x18\x05 \x01(\t2\x87\x05\n\x0b\x41uthService\x12\x30\n\x05Login\x12\x12.auth.LoginRequest\x1a\x13.auth.LoginResponse\x12>\n\x0cRefreshToken\x12\x19.auth.RefreshTokenRequest\x1a\x13.auth.LoginResponse\x12H\n\rValidateToken\x12\x1a.auth.ValidateTokenRequest\x1a\x1b.auth.ValidateTokenResponse\x12\x39\n\x08Register\x12\x15.auth.RegisterRequest\x1a\x16.auth.RegisterResponse\x12\x42\n\x0bVerifyEmail\x12\x18.auth.VerifyEmailRequest\x1a\x19.auth.VerifyEmailResponse\x12\x36\n\x07SendOtp\x12\x14.auth.SendOtpRequest\x1a\x15.auth.SendOtpResponse\x12<\n\tVerifyOtp\x12\x16.auth.VerifyOtpRequest\x1a\x17.auth.VerifyOtpResponse\x12?\n\nAssignRole\x12\x17.auth.AssignRoleRequest\x1a\x18.auth.AssignRoleResponse\x12\x45\n\x0cGetUserRoles\x12\x19.auth.GetUserRolesRequest\x1a\x1a.auth.GetUserRolesResponse\x12?\n\nRemoveRole\x12\x17.auth.RemoveRoleRequest\x1a\x18.auth.RemoveRoleResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x16protos/auth/auth.proto\x12\x04\x61uth\"2\n\x0cLoginRequest\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"S\n\x0fRegisterRequest\x12\x10\n\x08username\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\x12\r\n\x05\x65mail\x18\x03 \x01(\t\x12\r\n\x05phone\x18\x04 \x01(\t\"#\n\x10RegisterResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\":\n\rLoginResponse\x12\x13\n\x0b\x61\x63\x63\x65ssToken\x18\x01 \x01(\t\x12\x14\n\x0crefreshToken\x18\x02 \x01(\t\"+\n\x13RefreshTokenRequest\x12\x14\n\x0crefreshToken\x18\x01 \x01(\t\"%\n\x14ValidateTokenRequest\x12\r\n\x05token\x18\x01 \x01(\t\"\x91\x01\n\x15ValidateTokenResponse\x12\r\n\x05valid\x18\x01 \x01(\x08\x12\x0f\n\x07user_id\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\x12\r\n\x05\x65mail\x18\x04 \x01(\t\x12\r\n\x05roles\x18\x05 \x03(\t\x12\x11\n\tuser_type\x18\x06 \x01(\t\x12\x19\n\x11is_email_verified\x18\x07 \x01(\x08\"#\n\x12VerifyEmailRequest\x12\r\n\x05token\x18\x01 \x01(\t\"b\n\x13VerifyEmailResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\x12\x13\n\x0b\x61\x63\x63\x65ssToken\x18\x03 \x01(\t\x12\x14\n\x0crefreshToken\x18\x04 \x01(\t\"%\n\x0eSendOtpRequest\x12\x13\n\x0bphoneNumber\x18\x01 \x01(\t\"F\n\x0fSendOtpResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\x12\x11\n\texpiresAt\x18\x03 \x01(\t\"8\n\x10VerifyOtpRequest\x12\x13\n\x0bphoneNumber\x18\x01 \x01(\t\x12\x0f\n\x07otpCode\x18\x02 \x01(\t\"5\n\x11VerifyOtpResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\"l\n\x11\x41ssignRoleRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x11\n\trole_slug\x18\x02 \x01(\t\x12\x13\n\x0b\x61ssigned_by\x18\x03 \x01(\t\x12\x13\n\x06reason\x18\x04 \x01(\tH\x00\x88\x01\x01\x42\t\n\x07_reason\"`\n\x12\x41ssignRoleResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\x12(\n\nassignment\x18\x03 \x01(\x0b\x32\x14.auth.RoleAssignment\"&\n\x13GetUserRolesRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\"N\n\x14GetUserRolesResponse\x12#\n\x05roles\x18\x01 \x03(\x0b\x32\x14.auth.RoleAssignment\x12\x11\n\tuser_type\x18\x02 \x01(\t\"k\n\x11RemoveRoleRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x11\n\trole_slug\x18\x02 \x01(\t\x12\x12\n\nremoved_by\x18\x03 \x01(\t\x12\x13\n\x06reason\x18\x04 \x01(\tH\x00\x88\x01\x01\x42\t\n\x07_reason\"6\n\x12RemoveRoleResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\"q\n\x0eRoleAssignment\x12\x0f\n\x07role_id\x18\x01 \x01(\t\x12\x11\n\trole_slug\x18\x02 \x01(\t\x12\x11\n\trole_name\x18\x03 \x01(\t\x12\x13\n\x0b\x61ssigned_at\x18\x04 \x01(\t\x12\x13\n\x0b\x61ssigned_by\x18\x05 \x01(\t2\x87\x05\n\x0b\x41uthService\x12\x30\n\x05Login\x12\x12.auth.LoginRequest\x1a\x13.auth.LoginResponse\x12>\n\x0cRefreshToken\x12\x19.auth.RefreshTokenRequest\x1a\x13.auth.LoginResponse\x12H\n\rValidateToken\x12\x1a.auth.ValidateTokenRequest\x1a\x1b.auth.ValidateTokenResponse\x12\x39\n\x08Register\x12\x15.auth.RegisterRequest\x1a\x16.auth.RegisterResponse\x12\x42\n\x0bVerifyEmail\x12\x18.auth.VerifyEmailRequest\x1a\x19.auth.VerifyEmailResponse\x12\x36\n\x07SendOtp\x12\x14.auth.SendOtpRequest\x1a\x15.auth.SendOtpResponse\x12<\n\tVerifyOtp\x12\x16.auth.VerifyOtpRequest\x1a\x17.auth.VerifyOtpResponse\x12?\n\nAssignRole\x12\x17.auth.AssignRoleRequest\x1a\x18.auth.AssignRoleResponse\x12\x45\n\x0cGetUserRoles\x12\x19.auth.GetUserRolesRequest\x1a\x1a.auth.GetUserRolesResponse\x12?\n\nRemoveRole\x12\x17.auth.RemoveRoleRequest\x1a\x18.auth.RemoveRoleResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -38,29 +38,29 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _globals['_VERIFYEMAILREQUEST']._serialized_start=498
   _globals['_VERIFYEMAILREQUEST']._serialized_end=533
   _globals['_VERIFYEMAILRESPONSE']._serialized_start=535
-  _globals['_VERIFYEMAILRESPONSE']._serialized_end=590
-  _globals['_SENDOTPREQUEST']._serialized_start=592
-  _globals['_SENDOTPREQUEST']._serialized_end=629
-  _globals['_SENDOTPRESPONSE']._serialized_start=631
-  _globals['_SENDOTPRESPONSE']._serialized_end=701
-  _globals['_VERIFYOTPREQUEST']._serialized_start=703
-  _globals['_VERIFYOTPREQUEST']._serialized_end=759
-  _globals['_VERIFYOTPRESPONSE']._serialized_start=761
-  _globals['_VERIFYOTPRESPONSE']._serialized_end=814
-  _globals['_ASSIGNROLEREQUEST']._serialized_start=816
-  _globals['_ASSIGNROLEREQUEST']._serialized_end=924
-  _globals['_ASSIGNROLERESPONSE']._serialized_start=926
-  _globals['_ASSIGNROLERESPONSE']._serialized_end=1022
-  _globals['_GETUSERROLESREQUEST']._serialized_start=1024
-  _globals['_GETUSERROLESREQUEST']._serialized_end=1062
-  _globals['_GETUSERROLESRESPONSE']._serialized_start=1064
-  _globals['_GETUSERROLESRESPONSE']._serialized_end=1142
-  _globals['_REMOVEROLEREQUEST']._serialized_start=1144
-  _globals['_REMOVEROLEREQUEST']._serialized_end=1251
-  _globals['_REMOVEROLERESPONSE']._serialized_start=1253
-  _globals['_REMOVEROLERESPONSE']._serialized_end=1307
-  _globals['_ROLEASSIGNMENT']._serialized_start=1309
-  _globals['_ROLEASSIGNMENT']._serialized_end=1422
-  _globals['_AUTHSERVICE']._serialized_start=1425
-  _globals['_AUTHSERVICE']._serialized_end=2072
+  _globals['_VERIFYEMAILRESPONSE']._serialized_end=633
+  _globals['_SENDOTPREQUEST']._serialized_start=635
+  _globals['_SENDOTPREQUEST']._serialized_end=672
+  _globals['_SENDOTPRESPONSE']._serialized_start=674
+  _globals['_SENDOTPRESPONSE']._serialized_end=744
+  _globals['_VERIFYOTPREQUEST']._serialized_start=746
+  _globals['_VERIFYOTPREQUEST']._serialized_end=802
+  _globals['_VERIFYOTPRESPONSE']._serialized_start=804
+  _globals['_VERIFYOTPRESPONSE']._serialized_end=857
+  _globals['_ASSIGNROLEREQUEST']._serialized_start=859
+  _globals['_ASSIGNROLEREQUEST']._serialized_end=967
+  _globals['_ASSIGNROLERESPONSE']._serialized_start=969
+  _globals['_ASSIGNROLERESPONSE']._serialized_end=1065
+  _globals['_GETUSERROLESREQUEST']._serialized_start=1067
+  _globals['_GETUSERROLESREQUEST']._serialized_end=1105
+  _globals['_GETUSERROLESRESPONSE']._serialized_start=1107
+  _globals['_GETUSERROLESRESPONSE']._serialized_end=1185
+  _globals['_REMOVEROLEREQUEST']._serialized_start=1187
+  _globals['_REMOVEROLEREQUEST']._serialized_end=1294
+  _globals['_REMOVEROLERESPONSE']._serialized_start=1296
+  _globals['_REMOVEROLERESPONSE']._serialized_end=1350
+  _globals['_ROLEASSIGNMENT']._serialized_start=1352
+  _globals['_ROLEASSIGNMENT']._serialized_end=1465
+  _globals['_AUTHSERVICE']._serialized_start=1468
+  _globals['_AUTHSERVICE']._serialized_end=2115
 # @@protoc_insertion_point(module_scope)

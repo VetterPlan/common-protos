@@ -64,6 +64,8 @@ message VerifyEmailRequest {
 message VerifyEmailResponse {
   bool success = 1;
   string message = 2;
+  string accessToken = 3;
+  string refreshToken = 4;
 }
 
 message SendOtpRequest {
