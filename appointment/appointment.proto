@@ -48,6 +48,25 @@ service AppointmentService {
 
   // Find available vets for a service at a location and time
   rpc GetAvailableVets (GetAvailableVetsRequest) returns (AvailableVetsResponse);
+
+  // ─── NEW: Appointment Modes + Slots ───
+
+  // Get vet's appointments for a specific date (called by Profile Service)
+  rpc GetVetAppointmentsForDate (GetVetAppointmentsForDateRequest) returns (GetVetAppointmentsForDateResponse);
+
+  // Get next available calculated slots (MVP aggregator)
+  rpc GetNextAvailableSlots (GetNextAvailableSlotsRequest) returns (GetNextAvailableSlotsResponse);
+
+  // Get pet's appointment history (for follow-up recommendations)
+  rpc GetPetAppointmentHistory (GetPetAppointmentHistoryRequest) returns (GetPetAppointmentHistoryResponse);
+
+  // ─── RECOMMENDATIONS ───
+
+  // Get vaccine recommendations for a pet (overdue, upcoming, suggested)
+  rpc GetVaccineRecommendations (GetVaccineRecommendationsRequest) returns (GetVaccineRecommendationsResponse);
+
+  // Get follow-up recommendations based on recent appointment history
+  rpc GetFollowUpRecommendations (GetFollowUpRecommendationsRequest) returns (GetFollowUpRecommendationsResponse);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -176,6 +195,13 @@ message Appointment {
 
   // Embedded relations (when requested)
   repeated StatusHistoryEntry status_history = 33;
+
+  // NEW: Appointment mode fields
+  string appointment_mode = 34;        // on_demand, flex_window, scheduled
+  string time_window_start = 35;       // ISO 8601 datetime
+  string time_window_end = 36;         // ISO 8601 datetime
+  string preferred_vet_id = 37;
+  string service_metadata = 38;        // JSON string
 }
 
 message StatusHistoryEntry {
@@ -202,6 +228,7 @@ message AvailableVet {
   repeated string specialties = 10;
   double score = 11;
   string price_notes = 12;
+  bool is_preferred = 13;              // true if preferred_vet_id matches
 }
 
 message ServiceCatalogItem {
@@ -235,6 +262,12 @@ message RequestAppointmentRequest {
   double address_lng = 10;
   string address_text = 11;
   string client_notes = 12;
+  // NEW FIELDS for appointment modes:
+  string appointment_mode = 13;        // on_demand, flex_window, scheduled
+  string time_window_start = 14;       // ISO 8601 UTC (required for FLEX_WINDOW/SCHEDULED)
+  string time_window_end = 15;         // ISO 8601 UTC (required for FLEX_WINDOW/SCHEDULED)
+  string preferred_vet_id = 16;        // Optional: "I want this specific vet"
+  string service_metadata = 17;        // JSON string with subtype info
 }
 
 message AcceptAppointmentRequest {
@@ -301,6 +334,11 @@ message GetAvailableVetsRequest {
   string pet_species = 7;             // For certification filtering
   double radius_km = 8;               // Search radius (default: 15km)
   int32 max_results = 9;              // Max vets to return (default: 5)
+  // NEW FIELDS for appointment modes:
+  string appointment_mode = 10;        // on_demand, flex_window, scheduled
+  string time_window_start = 11;       // ISO 8601 UTC
+  string time_window_end = 12;         // ISO 8601 UTC
+  string preferred_vet_id = 13;        // Optional: boost in ranking
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -320,4 +358,142 @@ message AvailableVetsResponse {
   repeated AvailableVet vets = 1;
   int32 total_count = 2;
   double search_radius_km = 3;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// NEW MESSAGES — Vet Appointments for Date (inter-service)
+// ═══════════════════════════════════════════════════════════════════════════
+
+message GetVetAppointmentsForDateRequest {
+  string vet_profile_id = 1;
+  string date = 2;                     // "2026-02-15"
+}
+
+message GetVetAppointmentsForDateResponse {
+  repeated VetAppointmentSlot appointments = 1;
+}
+
+message VetAppointmentSlot {
+  string appointment_id = 1;
+  string time_window_start = 2;        // ISO 8601 UTC
+  string time_window_end = 3;          // ISO 8601 UTC
+  string status = 4;                   // REQUESTED, ACCEPTED, etc.
+  string service_type = 5;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// NEW MESSAGES — Next Available Slots (MVP calculated slots)
+// ═══════════════════════════════════════════════════════════════════════════
+
+message GetNextAvailableSlotsRequest {
+  string service_type = 1;             // CONSULTATION, VACCINATION, etc.
+  double address_lat = 2;              // Client location
+  double address_lng = 3;
+  int32 hours_ahead = 4;              // How many hours ahead to search (default 48)
+  string service_metadata = 5;        // JSON string with subtype info (passthrough, does not affect slot logic)
+}
+
+message GetNextAvailableSlotsResponse {
+  repeated DaySlots days = 1;                  // Grouped by day
+  int32 total_vets_in_area = 2;
+  int32 service_duration_minutes = 3;          // Duration of the service
+}
+
+message DaySlots {
+  string date = 1;                     // "2026-02-15"
+  string day_label = 2;               // "Hoy", "Mañana", "Sábado 15"
+  repeated CalculatedSlot slots = 3;
+}
+
+message CalculatedSlot {
+  string slot_id = 1;                  // UUID for this slot
+  string start_time = 2;              // "10:00" (local Colombia time)
+  string end_time = 3;                // "11:00" (end of service visible to client)
+  string start_time_utc = 4;          // ISO 8601 UTC
+  string end_time_utc = 5;            // ISO 8601 UTC (includes buffer for overlap)
+  int32 available_vet_count = 6;
+  double lowest_price = 7;
+  double highest_price = 8;
+  repeated SlotVetPreview vets = 9;
+}
+
+message SlotVetPreview {
+  string vet_profile_id = 1;
+  string name = 2;
+  string avatar_initials = 3;
+  double rating = 4;
+  int32 review_count = 5;
+  double price = 6;
+  int32 eta_minutes = 7;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// NEW MESSAGES — Pet Appointment History (for follow-up recommendations)
+// ═══════════════════════════════════════════════════════════════════════════
+
+message GetPetAppointmentHistoryRequest {
+  string pet_id = 1;
+  int32 days_back = 2;                // default 90
+}
+
+message GetPetAppointmentHistoryResponse {
+  repeated PetAppointmentSummary appointments = 1;
+}
+
+message PetAppointmentSummary {
+  string appointment_id = 1;
+  string service_type = 2;
+  string vet_profile_id = 3;
+  string vet_name = 4;
+  string status = 5;
+  string completed_at = 6;
+  string service_metadata = 7;         // JSON string
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// NEW MESSAGES — Vaccine Recommendations
+// ═══════════════════════════════════════════════════════════════════════════
+
+message GetVaccineRecommendationsRequest {
+  string pet_id = 1;                   // UUID of the pet
+  string species = 2;                  // "DOG" or "CAT" (to filter catalog)
+}
+
+message VaccineRecommendation {
+  string vaccine_type = 1;             // "DOG_RABIA", "CAT_TRIPLE_FELINA", etc.
+  string vaccine_name = 2;             // "Antirrábica"
+  string category = 3;                 // "OVERDUE", "UPCOMING", "SUGGESTED"
+  int32 days_relative = 4;             // Negative if overdue (-15), positive if upcoming (12), 0 if suggested
+  string last_administered = 5;        // ISO 8601 or empty if never
+  string next_due_date = 6;            // ISO 8601 or empty if not applicable
+  string display_text = 7;             // "Venció hace 15 días" / "Vence en 12 días" / "Sin registro previo"
+}
+
+message GetVaccineRecommendationsResponse {
+  repeated VaccineRecommendation recommendations = 1;
+  bool has_vaccination_history = 2;    // false if the pet has never been vaccinated
+  string pet_name = 3;                 // For message "No encontramos historial para {pet_name}"
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// NEW MESSAGES — Follow-Up Recommendations
+// ═══════════════════════════════════════════════════════════════════════════
+
+message GetFollowUpRecommendationsRequest {
+  string pet_id = 1;
+}
+
+message FollowUpRecommendation {
+  string followup_type = 1;            // "POST_CONSULTATION", etc.
+  string name = 2;                     // "Control post-consulta"
+  string description = 3;              // "Con Dra. María López — hace 8 días"
+  string category = 4;                 // "RECOMMENDED" or "GENERIC"
+  string related_appointment_id = 5;   // UUID of the previous appointment (if applicable)
+  string related_vet_id = 6;           // UUID of the vet (for preferred_vet_id)
+  string related_vet_name = 7;         // Vet name (if applicable)
+}
+
+message GetFollowUpRecommendationsResponse {
+  repeated FollowUpRecommendation recommendations = 1;
+  bool has_recent_appointments = 2;
 }

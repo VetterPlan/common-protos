@@ -68,6 +68,51 @@ class VetProfileServiceStub(object):
                 request_serializer=protos_dot_profile_dot_vet__profile__pb2.GetVetsByServiceRequest.SerializeToString,
                 response_deserializer=protos_dot_profile_dot_vet__profile__pb2.VetsByServiceResponse.FromString,
                 )
+        self.SetWorkingHours = channel.unary_unary(
+                '/profile.VetProfileService/SetWorkingHours',
+                request_serializer=protos_dot_profile_dot_vet__profile__pb2.SetWorkingHoursRequest.SerializeToString,
+                response_deserializer=protos_dot_profile_dot_vet__profile__pb2.WorkingHoursResponse.FromString,
+                )
+        self.SetBulkWorkingHours = channel.unary_unary(
+                '/profile.VetProfileService/SetBulkWorkingHours',
+                request_serializer=protos_dot_profile_dot_vet__profile__pb2.SetBulkWorkingHoursRequest.SerializeToString,
+                response_deserializer=protos_dot_profile_dot_vet__profile__pb2.BulkWorkingHoursResponse.FromString,
+                )
+        self.GetWorkingHours = channel.unary_unary(
+                '/profile.VetProfileService/GetWorkingHours',
+                request_serializer=protos_dot_profile_dot_vet__profile__pb2.GetWorkingHoursRequest.SerializeToString,
+                response_deserializer=protos_dot_profile_dot_vet__profile__pb2.BulkWorkingHoursResponse.FromString,
+                )
+        self.RemoveWorkingDay = channel.unary_unary(
+                '/profile.VetProfileService/RemoveWorkingDay',
+                request_serializer=protos_dot_profile_dot_vet__profile__pb2.RemoveWorkingDayRequest.SerializeToString,
+                response_deserializer=protos_dot_profile_dot_vet__profile__pb2.RemoveWorkingDayResponse.FromString,
+                )
+        self.AddTimeOff = channel.unary_unary(
+                '/profile.VetProfileService/AddTimeOff',
+                request_serializer=protos_dot_profile_dot_vet__profile__pb2.AddTimeOffRequest.SerializeToString,
+                response_deserializer=protos_dot_profile_dot_vet__profile__pb2.TimeOffResponse.FromString,
+                )
+        self.GetTimeOff = channel.unary_unary(
+                '/profile.VetProfileService/GetTimeOff',
+                request_serializer=protos_dot_profile_dot_vet__profile__pb2.GetTimeOffRequest.SerializeToString,
+                response_deserializer=protos_dot_profile_dot_vet__profile__pb2.TimeOffListResponse.FromString,
+                )
+        self.RemoveTimeOff = channel.unary_unary(
+                '/profile.VetProfileService/RemoveTimeOff',
+                request_serializer=protos_dot_profile_dot_vet__profile__pb2.RemoveTimeOffRequest.SerializeToString,
+                response_deserializer=protos_dot_profile_dot_vet__profile__pb2.RemoveTimeOffResponse.FromString,
+                )
+        self.CheckVetAvailability = channel.unary_unary(
+                '/profile.VetProfileService/CheckVetAvailability',
+                request_serializer=protos_dot_profile_dot_vet__profile__pb2.CheckVetAvailabilityRequest.SerializeToString,
+                response_deserializer=protos_dot_profile_dot_vet__profile__pb2.CheckVetAvailabilityResponse.FromString,
+                )
+        self.GetVetAvailableSlots = channel.unary_unary(
+                '/profile.VetProfileService/GetVetAvailableSlots',
+                request_serializer=protos_dot_profile_dot_vet__profile__pb2.GetVetAvailableSlotsRequest.SerializeToString,
+                response_deserializer=protos_dot_profile_dot_vet__profile__pb2.VetAvailableSlotsResponse.FromString,
+                )
 
 
 class VetProfileServiceServicer(object):
@@ -138,6 +183,63 @@ class VetProfileServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SetWorkingHours(self, request, context):
+        """─── Working Hours ───
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetBulkWorkingHours(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetWorkingHours(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RemoveWorkingDay(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def AddTimeOff(self, request, context):
+        """─── Time Off ───
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetTimeOff(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RemoveTimeOff(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CheckVetAvailability(self, request, context):
+        """─── Availability Check (inter-service, called by Appointment Service) ───
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetVetAvailableSlots(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_VetProfileServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -190,6 +292,51 @@ def add_VetProfileServiceServicer_to_server(servicer, server):
                     servicer.GetVetsByService,
                     request_deserializer=protos_dot_profile_dot_vet__profile__pb2.GetVetsByServiceRequest.FromString,
                     response_serializer=protos_dot_profile_dot_vet__profile__pb2.VetsByServiceResponse.SerializeToString,
+            ),
+            'SetWorkingHours': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetWorkingHours,
+                    request_deserializer=protos_dot_profile_dot_vet__profile__pb2.SetWorkingHoursRequest.FromString,
+                    response_serializer=protos_dot_profile_dot_vet__profile__pb2.WorkingHoursResponse.SerializeToString,
+            ),
+            'SetBulkWorkingHours': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetBulkWorkingHours,
+                    request_deserializer=protos_dot_profile_dot_vet__profile__pb2.SetBulkWorkingHoursRequest.FromString,
+                    response_serializer=protos_dot_profile_dot_vet__profile__pb2.BulkWorkingHoursResponse.SerializeToString,
+            ),
+            'GetWorkingHours': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetWorkingHours,
+                    request_deserializer=protos_dot_profile_dot_vet__profile__pb2.GetWorkingHoursRequest.FromString,
+                    response_serializer=protos_dot_profile_dot_vet__profile__pb2.BulkWorkingHoursResponse.SerializeToString,
+            ),
+            'RemoveWorkingDay': grpc.unary_unary_rpc_method_handler(
+                    servicer.RemoveWorkingDay,
+                    request_deserializer=protos_dot_profile_dot_vet__profile__pb2.RemoveWorkingDayRequest.FromString,
+                    response_serializer=protos_dot_profile_dot_vet__profile__pb2.RemoveWorkingDayResponse.SerializeToString,
+            ),
+            'AddTimeOff': grpc.unary_unary_rpc_method_handler(
+                    servicer.AddTimeOff,
+                    request_deserializer=protos_dot_profile_dot_vet__profile__pb2.AddTimeOffRequest.FromString,
+                    response_serializer=protos_dot_profile_dot_vet__profile__pb2.TimeOffResponse.SerializeToString,
+            ),
+            'GetTimeOff': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetTimeOff,
+                    request_deserializer=protos_dot_profile_dot_vet__profile__pb2.GetTimeOffRequest.FromString,
+                    response_serializer=protos_dot_profile_dot_vet__profile__pb2.TimeOffListResponse.SerializeToString,
+            ),
+            'RemoveTimeOff': grpc.unary_unary_rpc_method_handler(
+                    servicer.RemoveTimeOff,
+                    request_deserializer=protos_dot_profile_dot_vet__profile__pb2.RemoveTimeOffRequest.FromString,
+                    response_serializer=protos_dot_profile_dot_vet__profile__pb2.RemoveTimeOffResponse.SerializeToString,
+            ),
+            'CheckVetAvailability': grpc.unary_unary_rpc_method_handler(
+                    servicer.CheckVetAvailability,
+                    request_deserializer=protos_dot_profile_dot_vet__profile__pb2.CheckVetAvailabilityRequest.FromString,
+                    response_serializer=protos_dot_profile_dot_vet__profile__pb2.CheckVetAvailabilityResponse.SerializeToString,
+            ),
+            'GetVetAvailableSlots': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetVetAvailableSlots,
+                    request_deserializer=protos_dot_profile_dot_vet__profile__pb2.GetVetAvailableSlotsRequest.FromString,
+                    response_serializer=protos_dot_profile_dot_vet__profile__pb2.VetAvailableSlotsResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -372,5 +519,158 @@ class VetProfileService(object):
         return grpc.experimental.unary_unary(request, target, '/profile.VetProfileService/GetVetsByService',
             protos_dot_profile_dot_vet__profile__pb2.GetVetsByServiceRequest.SerializeToString,
             protos_dot_profile_dot_vet__profile__pb2.VetsByServiceResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SetWorkingHours(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.VetProfileService/SetWorkingHours',
+            protos_dot_profile_dot_vet__profile__pb2.SetWorkingHoursRequest.SerializeToString,
+            protos_dot_profile_dot_vet__profile__pb2.WorkingHoursResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SetBulkWorkingHours(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.VetProfileService/SetBulkWorkingHours',
+            protos_dot_profile_dot_vet__profile__pb2.SetBulkWorkingHoursRequest.SerializeToString,
+            protos_dot_profile_dot_vet__profile__pb2.BulkWorkingHoursResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetWorkingHours(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.VetProfileService/GetWorkingHours',
+            protos_dot_profile_dot_vet__profile__pb2.GetWorkingHoursRequest.SerializeToString,
+            protos_dot_profile_dot_vet__profile__pb2.BulkWorkingHoursResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def RemoveWorkingDay(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.VetProfileService/RemoveWorkingDay',
+            protos_dot_profile_dot_vet__profile__pb2.RemoveWorkingDayRequest.SerializeToString,
+            protos_dot_profile_dot_vet__profile__pb2.RemoveWorkingDayResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def AddTimeOff(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.VetProfileService/AddTimeOff',
+            protos_dot_profile_dot_vet__profile__pb2.AddTimeOffRequest.SerializeToString,
+            protos_dot_profile_dot_vet__profile__pb2.TimeOffResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetTimeOff(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.VetProfileService/GetTimeOff',
+            protos_dot_profile_dot_vet__profile__pb2.GetTimeOffRequest.SerializeToString,
+            protos_dot_profile_dot_vet__profile__pb2.TimeOffListResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def RemoveTimeOff(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.VetProfileService/RemoveTimeOff',
+            protos_dot_profile_dot_vet__profile__pb2.RemoveTimeOffRequest.SerializeToString,
+            protos_dot_profile_dot_vet__profile__pb2.RemoveTimeOffResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def CheckVetAvailability(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.VetProfileService/CheckVetAvailability',
+            protos_dot_profile_dot_vet__profile__pb2.CheckVetAvailabilityRequest.SerializeToString,
+            protos_dot_profile_dot_vet__profile__pb2.CheckVetAvailabilityResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetVetAvailableSlots(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.VetProfileService/GetVetAvailableSlots',
+            protos_dot_profile_dot_vet__profile__pb2.GetVetAvailableSlotsRequest.SerializeToString,
+            protos_dot_profile_dot_vet__profile__pb2.VetAvailableSlotsResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

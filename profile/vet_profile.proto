@@ -21,6 +21,21 @@ service VetProfileService {
   rpc GetVetPriceForService (GetVetPriceForServiceRequest) returns (ServicePriceResponse);
   rpc RemoveServicePrice (RemoveServicePriceRequest) returns (RemoveServicePriceResponse);
   rpc GetVetsByService (GetVetsByServiceRequest) returns (VetsByServiceResponse);
+
+  // ─── Working Hours ───
+  rpc SetWorkingHours (SetWorkingHoursRequest) returns (WorkingHoursResponse);
+  rpc SetBulkWorkingHours (SetBulkWorkingHoursRequest) returns (BulkWorkingHoursResponse);
+  rpc GetWorkingHours (GetWorkingHoursRequest) returns (BulkWorkingHoursResponse);
+  rpc RemoveWorkingDay (RemoveWorkingDayRequest) returns (RemoveWorkingDayResponse);
+
+  // ─── Time Off ───
+  rpc AddTimeOff (AddTimeOffRequest) returns (TimeOffResponse);
+  rpc GetTimeOff (GetTimeOffRequest) returns (TimeOffListResponse);
+  rpc RemoveTimeOff (RemoveTimeOffRequest) returns (RemoveTimeOffResponse);
+
+  // ─── Availability Check (inter-service, called by Appointment Service) ───
+  rpc CheckVetAvailability (CheckVetAvailabilityRequest) returns (CheckVetAvailabilityResponse);
+  rpc GetVetAvailableSlots (GetVetAvailableSlotsRequest) returns (VetAvailableSlotsResponse);
 }
 
 // ============================================================================
@@ -212,4 +227,139 @@ message VetByService {
 message VetsByServiceResponse {
   repeated VetByService vets = 1;
   int32 total_count = 2;
+}
+
+// ============================================================================
+// WORKING HOURS
+// ============================================================================
+
+message WorkingHoursEntry {
+  string id = 1;
+  string vet_profile_id = 2;
+  int32 day_of_week = 3;        // 0=Monday, 6=Sunday
+  string start_time = 4;        // "08:00"
+  string end_time = 5;          // "18:00"
+  bool is_active = 6;
+}
+
+message SetWorkingHoursRequest {
+  string vet_profile_id = 1;
+  int32 day_of_week = 2;
+  string start_time = 3;        // "08:00"
+  string end_time = 4;          // "18:00"
+}
+
+message WorkingHoursResponse {
+  bool success = 1;
+  WorkingHoursEntry working_hours = 2;
+  string error = 3;
+}
+
+message SetBulkWorkingHoursRequest {
+  string vet_profile_id = 1;
+  repeated SetWorkingHoursEntry entries = 2;
+}
+
+message SetWorkingHoursEntry {
+  int32 day_of_week = 1;
+  string start_time = 2;
+  string end_time = 3;
+}
+
+message BulkWorkingHoursResponse {
+  bool success = 1;
+  repeated WorkingHoursEntry working_hours = 2;
+  string error = 3;
+}
+
+message GetWorkingHoursRequest {
+  string vet_profile_id = 1;
+  bool active_only = 2;         // default true
+}
+
+message RemoveWorkingDayRequest {
+  string vet_profile_id = 1;
+  int32 day_of_week = 2;
+}
+
+message RemoveWorkingDayResponse {
+  bool success = 1;
+  string error = 2;
+}
+
+// ============================================================================
+// TIME OFF
+// ============================================================================
+
+message TimeOffEntry {
+  string id = 1;
+  string vet_profile_id = 2;
+  string start_datetime = 3;    // ISO 8601 UTC
+  string end_datetime = 4;      // ISO 8601 UTC
+  string reason = 5;
+  string created_at = 6;
+}
+
+message AddTimeOffRequest {
+  string vet_profile_id = 1;
+  string start_datetime = 2;    // ISO 8601 UTC
+  string end_datetime = 3;      // ISO 8601 UTC
+  string reason = 4;
+}
+
+message TimeOffResponse {
+  bool success = 1;
+  TimeOffEntry time_off = 2;
+  string error = 3;
+}
+
+message GetTimeOffRequest {
+  string vet_profile_id = 1;
+  bool upcoming_only = 2;       // default true
+}
+
+message TimeOffListResponse {
+  repeated TimeOffEntry time_off = 1;
+  int32 total_count = 2;
+}
+
+message RemoveTimeOffRequest {
+  string vet_profile_id = 1;
+  string time_off_id = 2;
+}
+
+message RemoveTimeOffResponse {
+  bool success = 1;
+  string error = 2;
+}
+
+// ============================================================================
+// AVAILABILITY CHECK (inter-service)
+// ============================================================================
+
+message CheckVetAvailabilityRequest {
+  string vet_profile_id = 1;
+  string check_start = 2;       // ISO 8601 UTC — start of window to verify
+  string check_end = 3;         // ISO 8601 UTC — end of window to verify
+}
+
+message CheckVetAvailabilityResponse {
+  bool is_available = 1;        // true if within working_hours AND no time_off
+  string unavailable_reason = 2; // "OUTSIDE_WORKING_HOURS" / "TIME_OFF" / ""
+}
+
+message GetVetAvailableSlotsRequest {
+  string vet_profile_id = 1;
+  string date = 2;              // "2026-02-15" — date to get slots for
+}
+
+message VetAvailableSlotsResponse {
+  repeated TimeSlot available_slots = 1;
+  string date = 2;
+  string vet_profile_id = 3;
+}
+
+message TimeSlot {
+  string start_time = 1;        // "08:00"
+  string end_time = 2;          // "12:00"
 }

@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package geolocation;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// GEOLOCATION SERVICE
+//
+// MVP: Fixed transport buffer (15 min), Haversine distance, 5km radius.
+// Phase 2: Distance-based buffer, historical data.
+// Phase 3: Google Maps Directions API with real-time traffic.
+// ═══════════════════════════════════════════════════════════════════════════
+
+service GeolocationService {
+  // Calculate distance and estimated travel time between two points
+  rpc GetTravelEstimate (TravelEstimateRequest) returns (TravelEstimateResponse);
+
+  // Check if a point is within coverage radius
+  rpc CheckCoverage (CheckCoverageRequest) returns (CheckCoverageResponse);
+
+  // Get transport buffer for a pair of coordinates
+  rpc GetTransportBuffer (TransportBufferRequest) returns (TransportBufferResponse);
+}
+
+// ─── Messages ───
+
+message TravelEstimateRequest {
+  double origin_lat = 1;
+  double origin_lng = 2;
+  double destination_lat = 3;
+  double destination_lng = 4;
+}
+
+message TravelEstimateResponse {
+  double distance_km = 1;            // Haversine distance in km
+  int32 estimated_minutes = 2;       // MVP: always 15 min if < 5km
+  string method = 3;                 // "FIXED_BUFFER" (MVP) / "CALCULATED" (phase 2)
+}
+
+message CheckCoverageRequest {
+  double vet_lat = 1;
+  double vet_lng = 2;
+  double client_lat = 3;
+  double client_lng = 4;
+  double max_radius_km = 5;          // Max coverage radius
+}
+
+message CheckCoverageResponse {
+  bool is_within_coverage = 1;
+  double distance_km = 2;
+}
+
+message TransportBufferRequest {
+  double origin_lat = 1;
+  double origin_lng = 2;
+  double destination_lat = 3;
+  double destination_lng = 4;
+}
+
+message TransportBufferResponse {
+  int32 buffer_minutes = 1;          // MVP: 15 min fixed
+  string calculation_method = 2;     // "FIXED" / "DISTANCE_BASED" / "GOOGLE_MAPS"
+}
