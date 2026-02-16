@@ -105,7 +105,7 @@ message Pet {
   string client_profile_id = 2;
   string name = 3;
   Species species = 4;
-  string breed = 5;
+  string breed = 5;               // Free text — only for species without catalog (not DOG/CAT)
   string birthdate = 6;          // ISO 8601 date (YYYY-MM-DD)
   Gender gender = 7;
   double weight_kg = 8;
@@ -165,7 +165,7 @@ message CreatePetRequest {
   string client_profile_id = 1;
   string name = 2;
   Species species = 3;
-  string breed = 4;
+  string breed = 4;              // Free text — only for species without catalog (not DOG/CAT)
   string birthdate = 5;          // ISO 8601
   Gender gender = 6;
   double weight_kg = 7;
@@ -173,8 +173,8 @@ message CreatePetRequest {
   string microchip_id = 9;
   string avatar_url = 10;
   string notes = 11;
-  string breed_id = 12;          // Catalog breed ID (e.g. "DOG_LABRADOR_RETRIEVER")
-  string variety_id = 13;        // Catalog variety ID (optional)
+  string breed_id = 12;          // DOG/CAT: required catalog breed ID (e.g. "DOG_LABRADOR_RETRIEVER")
+  string variety_id = 13;        // DOG/CAT: optional catalog variety ID
 }
 
 message GetPetRequest {
@@ -194,7 +194,7 @@ message UpdatePetRequest {
   string pet_id = 1;
   string name = 2;
   Species species = 3;
-  string breed = 4;
+  string breed = 4;              // Free text — only for species without catalog (not DOG/CAT)
   string birthdate = 5;
   Gender gender = 6;
   double weight_kg = 7;
@@ -202,8 +202,8 @@ message UpdatePetRequest {
   string microchip_id = 9;
   string avatar_url = 10;
   string notes = 11;
-  string breed_id = 12;          // Catalog breed ID
-  string variety_id = 13;        // Catalog variety ID (optional)
+  string breed_id = 12;          // DOG/CAT: catalog breed ID
+  string variety_id = 13;        // DOG/CAT: optional catalog variety ID
 }
 
 message DeletePetRequest {
