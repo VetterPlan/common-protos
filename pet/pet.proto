@@ -51,6 +51,11 @@ service PetService {
 
   // Remove an allergy record
   rpc RemoveAllergy (RemoveAllergyRequest) returns (RemoveAllergyResponse);
+
+  // ─── AVATAR UPLOAD ───
+
+  // Generate a presigned URL for direct pet avatar upload to R2 storage
+  rpc GenerateAvatarUploadUrl (GeneratePetAvatarUploadUrlRequest) returns (GeneratePetAvatarUploadUrlResponse);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -264,4 +269,18 @@ message AllergiesResponse {
 message RemoveAllergyResponse {
   bool success = 1;
   string message = 2;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// AVATAR UPLOAD
+// ═══════════════════════════════════════════════════════════════════════════
+
+message GeneratePetAvatarUploadUrlRequest {
+  string file_extension = 1;    // e.g., "jpg", "png", "webp"
+  string content_type = 2;      // e.g., "image/jpeg", "image/png"
+}
+
+message GeneratePetAvatarUploadUrlResponse {
+  string upload_url = 1;        // Presigned PUT URL for direct upload to R2
+  string file_url = 2;          // Public CDN URL (to save in avatar_url after upload)
 }

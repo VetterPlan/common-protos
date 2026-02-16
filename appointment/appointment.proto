@@ -60,6 +60,11 @@ service AppointmentService {
   // Get pet's appointment history (for follow-up recommendations)
   rpc GetPetAppointmentHistory (GetPetAppointmentHistoryRequest) returns (GetPetAppointmentHistoryResponse);
 
+  // ─── AUDIT ───
+
+  // Get status change history for an appointment (audit log)
+  rpc GetAppointmentHistory (GetAppointmentHistoryRequest) returns (GetAppointmentHistoryResponse);
+
   // ─── RECOMMENDATIONS ───
 
   // Get vaccine recommendations for a pet (overdue, upcoming, suggested)
@@ -496,4 +501,20 @@ message FollowUpRecommendation {
 message GetFollowUpRecommendationsResponse {
   repeated FollowUpRecommendation recommendations = 1;
   bool has_recent_appointments = 2;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// NEW MESSAGES — Appointment History (audit log of status changes)
+// ═══════════════════════════════════════════════════════════════════════════
+
+message GetAppointmentHistoryRequest {
+  string appointment_id = 1;           // UUID of the appointment
+  int32 limit = 2;                     // Max entries to return (default 50)
+  int32 offset = 3;                    // Pagination offset
+}
+
+message GetAppointmentHistoryResponse {
+  repeated StatusHistoryEntry entries = 1;
+  int32 total_count = 2;
+  string appointment_id = 3;
 }

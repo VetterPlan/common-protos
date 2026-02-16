@@ -16,6 +16,10 @@ service ClientProfileService {
 
   // Multi-profile aggregation: returns both client and vet profile summaries
   rpc GetUserProfiles (GetUserProfilesRequest) returns (GetUserProfilesResponse);
+
+  // ─── Avatar Upload ───
+  // Generate a presigned URL for direct avatar upload to R2 storage
+  rpc GenerateAvatarUploadUrl (GenerateAvatarUploadUrlRequest) returns (GenerateAvatarUploadUrlResponse);
 }
 
 // ============================================================================
@@ -135,4 +139,18 @@ message VetProfileSummary {
   string clinic_name = 6;
   bool is_completed = 7;
   string status = 8;
+}
+
+// ============================================================================
+// AVATAR UPLOAD
+// ============================================================================
+
+message GenerateAvatarUploadUrlRequest {
+  string file_extension = 1;    // e.g., "jpg", "png", "webp"
+  string content_type = 2;      // e.g., "image/jpeg", "image/png"
+}
+
+message GenerateAvatarUploadUrlResponse {
+  string upload_url = 1;        // Presigned PUT URL for direct upload to R2
+  string file_url = 2;          // Public CDN URL (to save in avatar_url after upload)
 }

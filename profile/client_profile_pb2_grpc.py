@@ -43,6 +43,11 @@ class ClientProfileServiceStub(object):
                 request_serializer=protos_dot_profile_dot_client__profile__pb2.GetUserProfilesRequest.SerializeToString,
                 response_deserializer=protos_dot_profile_dot_client__profile__pb2.GetUserProfilesResponse.FromString,
                 )
+        self.GenerateAvatarUploadUrl = channel.unary_unary(
+                '/profile.ClientProfileService/GenerateAvatarUploadUrl',
+                request_serializer=protos_dot_profile_dot_client__profile__pb2.GenerateAvatarUploadUrlRequest.SerializeToString,
+                response_deserializer=protos_dot_profile_dot_client__profile__pb2.GenerateAvatarUploadUrlResponse.FromString,
+                )
 
 
 class ClientProfileServiceServicer(object):
@@ -83,6 +88,14 @@ class ClientProfileServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GenerateAvatarUploadUrl(self, request, context):
+        """─── Avatar Upload ───
+        Generate a presigned URL for direct avatar upload to R2 storage
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ClientProfileServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -110,6 +123,11 @@ def add_ClientProfileServiceServicer_to_server(servicer, server):
                     servicer.GetUserProfiles,
                     request_deserializer=protos_dot_profile_dot_client__profile__pb2.GetUserProfilesRequest.FromString,
                     response_serializer=protos_dot_profile_dot_client__profile__pb2.GetUserProfilesResponse.SerializeToString,
+            ),
+            'GenerateAvatarUploadUrl': grpc.unary_unary_rpc_method_handler(
+                    servicer.GenerateAvatarUploadUrl,
+                    request_deserializer=protos_dot_profile_dot_client__profile__pb2.GenerateAvatarUploadUrlRequest.FromString,
+                    response_serializer=protos_dot_profile_dot_client__profile__pb2.GenerateAvatarUploadUrlResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -207,5 +225,22 @@ class ClientProfileService(object):
         return grpc.experimental.unary_unary(request, target, '/profile.ClientProfileService/GetUserProfiles',
             protos_dot_profile_dot_client__profile__pb2.GetUserProfilesRequest.SerializeToString,
             protos_dot_profile_dot_client__profile__pb2.GetUserProfilesResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GenerateAvatarUploadUrl(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.ClientProfileService/GenerateAvatarUploadUrl',
+            protos_dot_profile_dot_client__profile__pb2.GenerateAvatarUploadUrlRequest.SerializeToString,
+            protos_dot_profile_dot_client__profile__pb2.GenerateAvatarUploadUrlResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

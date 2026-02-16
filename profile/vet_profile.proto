@@ -36,6 +36,10 @@ service VetProfileService {
   // ─── Availability Check (inter-service, called by Appointment Service) ───
   rpc CheckVetAvailability (CheckVetAvailabilityRequest) returns (CheckVetAvailabilityResponse);
   rpc GetVetAvailableSlots (GetVetAvailableSlotsRequest) returns (VetAvailableSlotsResponse);
+
+  // ─── Avatar Upload ───
+  // Generate a presigned URL for direct avatar upload to R2 storage
+  rpc GenerateAvatarUploadUrl (GenerateVetAvatarUploadUrlRequest) returns (GenerateVetAvatarUploadUrlResponse);
 }
 
 // ============================================================================
@@ -362,4 +366,18 @@ message VetAvailableSlotsResponse {
 message TimeSlot {
   string start_time = 1;        // "08:00"
   string end_time = 2;          // "12:00"
+}
+
+// ============================================================================
+// AVATAR UPLOAD
+// ============================================================================
+
+message GenerateVetAvatarUploadUrlRequest {
+  string file_extension = 1;    // e.g., "jpg", "png", "webp"
+  string content_type = 2;      // e.g., "image/jpeg", "image/png"
+}
+
+message GenerateVetAvatarUploadUrlResponse {
+  string upload_url = 1;        // Presigned PUT URL for direct upload to R2
+  string file_url = 2;          // Public CDN URL (to save in avatar_url after upload)
 }

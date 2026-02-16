@@ -78,6 +78,11 @@ class PetServiceStub(object):
                 request_serializer=protos_dot_pet_dot_pet__pb2.RemoveAllergyRequest.SerializeToString,
                 response_deserializer=protos_dot_pet_dot_pet__pb2.RemoveAllergyResponse.FromString,
                 )
+        self.GenerateAvatarUploadUrl = channel.unary_unary(
+                '/pet.PetService/GenerateAvatarUploadUrl',
+                request_serializer=protos_dot_pet_dot_pet__pb2.GeneratePetAvatarUploadUrlRequest.SerializeToString,
+                response_deserializer=protos_dot_pet_dot_pet__pb2.GeneratePetAvatarUploadUrlResponse.FromString,
+                )
 
 
 class PetServiceServicer(object):
@@ -173,6 +178,15 @@ class PetServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GenerateAvatarUploadUrl(self, request, context):
+        """─── AVATAR UPLOAD ───
+
+        Generate a presigned URL for direct pet avatar upload to R2 storage
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_PetServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -230,6 +244,11 @@ def add_PetServiceServicer_to_server(servicer, server):
                     servicer.RemoveAllergy,
                     request_deserializer=protos_dot_pet_dot_pet__pb2.RemoveAllergyRequest.FromString,
                     response_serializer=protos_dot_pet_dot_pet__pb2.RemoveAllergyResponse.SerializeToString,
+            ),
+            'GenerateAvatarUploadUrl': grpc.unary_unary_rpc_method_handler(
+                    servicer.GenerateAvatarUploadUrl,
+                    request_deserializer=protos_dot_pet_dot_pet__pb2.GeneratePetAvatarUploadUrlRequest.FromString,
+                    response_serializer=protos_dot_pet_dot_pet__pb2.GeneratePetAvatarUploadUrlResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -434,5 +453,22 @@ class PetService(object):
         return grpc.experimental.unary_unary(request, target, '/pet.PetService/RemoveAllergy',
             protos_dot_pet_dot_pet__pb2.RemoveAllergyRequest.SerializeToString,
             protos_dot_pet_dot_pet__pb2.RemoveAllergyResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GenerateAvatarUploadUrl(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/pet.PetService/GenerateAvatarUploadUrl',
+            protos_dot_pet_dot_pet__pb2.GeneratePetAvatarUploadUrlRequest.SerializeToString,
+            protos_dot_pet_dot_pet__pb2.GeneratePetAvatarUploadUrlResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

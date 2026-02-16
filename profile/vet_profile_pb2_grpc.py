@@ -113,6 +113,11 @@ class VetProfileServiceStub(object):
                 request_serializer=protos_dot_profile_dot_vet__profile__pb2.GetVetAvailableSlotsRequest.SerializeToString,
                 response_deserializer=protos_dot_profile_dot_vet__profile__pb2.VetAvailableSlotsResponse.FromString,
                 )
+        self.GenerateAvatarUploadUrl = channel.unary_unary(
+                '/profile.VetProfileService/GenerateAvatarUploadUrl',
+                request_serializer=protos_dot_profile_dot_vet__profile__pb2.GenerateVetAvatarUploadUrlRequest.SerializeToString,
+                response_deserializer=protos_dot_profile_dot_vet__profile__pb2.GenerateVetAvatarUploadUrlResponse.FromString,
+                )
 
 
 class VetProfileServiceServicer(object):
@@ -240,6 +245,14 @@ class VetProfileServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GenerateAvatarUploadUrl(self, request, context):
+        """─── Avatar Upload ───
+        Generate a presigned URL for direct avatar upload to R2 storage
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_VetProfileServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -337,6 +350,11 @@ def add_VetProfileServiceServicer_to_server(servicer, server):
                     servicer.GetVetAvailableSlots,
                     request_deserializer=protos_dot_profile_dot_vet__profile__pb2.GetVetAvailableSlotsRequest.FromString,
                     response_serializer=protos_dot_profile_dot_vet__profile__pb2.VetAvailableSlotsResponse.SerializeToString,
+            ),
+            'GenerateAvatarUploadUrl': grpc.unary_unary_rpc_method_handler(
+                    servicer.GenerateAvatarUploadUrl,
+                    request_deserializer=protos_dot_profile_dot_vet__profile__pb2.GenerateVetAvatarUploadUrlRequest.FromString,
+                    response_serializer=protos_dot_profile_dot_vet__profile__pb2.GenerateVetAvatarUploadUrlResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -672,5 +690,22 @@ class VetProfileService(object):
         return grpc.experimental.unary_unary(request, target, '/profile.VetProfileService/GetVetAvailableSlots',
             protos_dot_profile_dot_vet__profile__pb2.GetVetAvailableSlotsRequest.SerializeToString,
             protos_dot_profile_dot_vet__profile__pb2.VetAvailableSlotsResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GenerateAvatarUploadUrl(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.VetProfileService/GenerateAvatarUploadUrl',
+            protos_dot_profile_dot_vet__profile__pb2.GenerateVetAvatarUploadUrlRequest.SerializeToString,
+            protos_dot_profile_dot_vet__profile__pb2.GenerateVetAvatarUploadUrlResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

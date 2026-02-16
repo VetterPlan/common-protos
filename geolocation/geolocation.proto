@@ -17,7 +17,8 @@ service GeolocationService {
   // Check if a point is within coverage radius
   rpc CheckCoverage (CheckCoverageRequest) returns (CheckCoverageResponse);
 
-  // Get transport buffer for a pair of coordinates
+  // DEPRECATED: Use GetTravelEstimate.estimated_minutes instead.
+  // This RPC is a subset of GetTravelEstimate. Will be removed in next iteration.
   rpc GetTransportBuffer (TransportBufferRequest) returns (TransportBufferResponse);
 }
 
