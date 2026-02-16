@@ -56,6 +56,14 @@ service PetService {
 
   // Generate a presigned URL for direct pet avatar upload to R2 storage
   rpc GenerateAvatarUploadUrl (GeneratePetAvatarUploadUrlRequest) returns (GeneratePetAvatarUploadUrlResponse);
+
+  // ─── BREED CATALOG ───
+
+  // Get breed catalog filtered by species (reads from in-memory domain constants)
+  rpc GetBreedCatalog (GetBreedCatalogRequest) returns (GetBreedCatalogResponse);
+
+  // Search breeds by name for autocomplete (min 2 chars)
+  rpc SearchBreeds (SearchBreedsRequest) returns (SearchBreedsResponse);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -112,6 +120,14 @@ message Pet {
   // Embedded relations (when requested)
   repeated Vaccination vaccinations = 16;
   repeated Allergy allergies = 17;
+
+  // Structured breed (from domain catalog)
+  string breed_id = 18;          // e.g. "DOG_LABRADOR_RETRIEVER"
+  string variety_id = 19;        // e.g. "DOG_LABRADOR_RETRIEVER_AMERICAN"
+  string breed_name = 20;        // Denormalized: "Labrador Retriever"
+  string variety_name = 21;      // Denormalized: "Americano"
+  string breed_size = 22;        // e.g. "LARGE"
+  string breed_group = 23;       // e.g. "SPORTING"
 }
 
 message Vaccination {
@@ -157,6 +173,8 @@ message CreatePetRequest {
   string microchip_id = 9;
   string avatar_url = 10;
   string notes = 11;
+  string breed_id = 12;          // Catalog breed ID (e.g. "DOG_LABRADOR_RETRIEVER")
+  string variety_id = 13;        // Catalog variety ID (optional)
 }
 
 message GetPetRequest {
@@ -184,6 +202,8 @@ message UpdatePetRequest {
   string microchip_id = 9;
   string avatar_url = 10;
   string notes = 11;
+  string breed_id = 12;          // Catalog breed ID
+  string variety_id = 13;        // Catalog variety ID (optional)
 }
 
 message DeletePetRequest {
@@ -269,6 +289,48 @@ message AllergiesResponse {
 message RemoveAllergyResponse {
   bool success = 1;
   string message = 2;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// AVATAR UPLOAD
+// ═══════════════════════════════════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════════════════════════════════
+// BREED CATALOG
+// ═══════════════════════════════════════════════════════════════════════════
+
+message GetBreedCatalogRequest {
+  string species = 1;            // "DOG" or "CAT"
+  string group = 2;              // Optional: filter by group (e.g. "TERRIER", "LONGHAIR")
+}
+
+message BreedEntry {
+  string id = 1;                 // e.g. "DOG_LABRADOR_RETRIEVER"
+  string name = 2;               // "Labrador Retriever"
+  string name_es = 3;            // "Labrador Retriever"
+  string species = 4;            // "DOG"
+  string group = 5;              // "SPORTING"
+  string size = 6;               // "LARGE"
+  repeated BreedVariety varieties = 7;
+}
+
+message BreedVariety {
+  string id = 1;                 // e.g. "DOG_LABRADOR_RETRIEVER_AMERICAN"
+  string name = 2;               // "Americano"
+}
+
+message GetBreedCatalogResponse {
+  repeated BreedEntry breeds = 1;
+  int32 total_count = 2;
+}
+
+message SearchBreedsRequest {
+  string species = 1;            // "DOG" or "CAT"
+  string query = 2;              // Search term (min 2 chars)
+}
+
+message SearchBreedsResponse {
+  repeated BreedEntry breeds = 1;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════

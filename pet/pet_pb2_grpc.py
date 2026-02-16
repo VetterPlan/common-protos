@@ -83,6 +83,16 @@ class PetServiceStub(object):
                 request_serializer=protos_dot_pet_dot_pet__pb2.GeneratePetAvatarUploadUrlRequest.SerializeToString,
                 response_deserializer=protos_dot_pet_dot_pet__pb2.GeneratePetAvatarUploadUrlResponse.FromString,
                 )
+        self.GetBreedCatalog = channel.unary_unary(
+                '/pet.PetService/GetBreedCatalog',
+                request_serializer=protos_dot_pet_dot_pet__pb2.GetBreedCatalogRequest.SerializeToString,
+                response_deserializer=protos_dot_pet_dot_pet__pb2.GetBreedCatalogResponse.FromString,
+                )
+        self.SearchBreeds = channel.unary_unary(
+                '/pet.PetService/SearchBreeds',
+                request_serializer=protos_dot_pet_dot_pet__pb2.SearchBreedsRequest.SerializeToString,
+                response_deserializer=protos_dot_pet_dot_pet__pb2.SearchBreedsResponse.FromString,
+                )
 
 
 class PetServiceServicer(object):
@@ -187,6 +197,22 @@ class PetServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetBreedCatalog(self, request, context):
+        """─── BREED CATALOG ───
+
+        Get breed catalog filtered by species (reads from in-memory domain constants)
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SearchBreeds(self, request, context):
+        """Search breeds by name for autocomplete (min 2 chars)
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_PetServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -249,6 +275,16 @@ def add_PetServiceServicer_to_server(servicer, server):
                     servicer.GenerateAvatarUploadUrl,
                     request_deserializer=protos_dot_pet_dot_pet__pb2.GeneratePetAvatarUploadUrlRequest.FromString,
                     response_serializer=protos_dot_pet_dot_pet__pb2.GeneratePetAvatarUploadUrlResponse.SerializeToString,
+            ),
+            'GetBreedCatalog': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetBreedCatalog,
+                    request_deserializer=protos_dot_pet_dot_pet__pb2.GetBreedCatalogRequest.FromString,
+                    response_serializer=protos_dot_pet_dot_pet__pb2.GetBreedCatalogResponse.SerializeToString,
+            ),
+            'SearchBreeds': grpc.unary_unary_rpc_method_handler(
+                    servicer.SearchBreeds,
+                    request_deserializer=protos_dot_pet_dot_pet__pb2.SearchBreedsRequest.FromString,
+                    response_serializer=protos_dot_pet_dot_pet__pb2.SearchBreedsResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -470,5 +506,39 @@ class PetService(object):
         return grpc.experimental.unary_unary(request, target, '/pet.PetService/GenerateAvatarUploadUrl',
             protos_dot_pet_dot_pet__pb2.GeneratePetAvatarUploadUrlRequest.SerializeToString,
             protos_dot_pet_dot_pet__pb2.GeneratePetAvatarUploadUrlResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetBreedCatalog(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/pet.PetService/GetBreedCatalog',
+            protos_dot_pet_dot_pet__pb2.GetBreedCatalogRequest.SerializeToString,
+            protos_dot_pet_dot_pet__pb2.GetBreedCatalogResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SearchBreeds(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/pet.PetService/SearchBreeds',
+            protos_dot_pet_dot_pet__pb2.SearchBreedsRequest.SerializeToString,
+            protos_dot_pet_dot_pet__pb2.SearchBreedsResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
