@@ -64,6 +64,9 @@ service PetService {
 
   // Search breeds by name for autocomplete (min 2 chars)
   rpc SearchBreeds (SearchBreedsRequest) returns (SearchBreedsResponse);
+
+  // Hard delete all pets for a client profile (testing utility)
+  rpc HardDeletePetsByOwner (HardDeletePetsByOwnerRequest) returns (HardDeletePetsByOwnerResponse);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -345,4 +348,18 @@ message GeneratePetAvatarUploadUrlRequest {
 message GeneratePetAvatarUploadUrlResponse {
   string upload_url = 1;        // Presigned PUT URL for direct upload to R2
   string file_url = 2;          // Public CDN URL (to save in avatar_url after upload)
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// HARD DELETE (Testing Utility)
+// ═══════════════════════════════════════════════════════════════════════════
+
+message HardDeletePetsByOwnerRequest {
+  string client_profile_id = 1;
+}
+
+message HardDeletePetsByOwnerResponse {
+  bool success = 1;
+  string message = 2;
+  int32 deleted_count = 3;
 }

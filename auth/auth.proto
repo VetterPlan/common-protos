@@ -16,6 +16,9 @@ service AuthService {
   rpc AssignRole (AssignRoleRequest) returns (AssignRoleResponse);
   rpc GetUserRoles (GetUserRolesRequest) returns (GetUserRolesResponse);
   rpc RemoveRole (RemoveRoleRequest) returns (RemoveRoleResponse);
+
+  // Hard delete (testing utility)
+  rpc HardDeleteUser (HardDeleteUserRequest) returns (HardDeleteUserResponse);
 }
 
 message LoginRequest {
@@ -132,4 +135,18 @@ message RoleAssignment {
   string role_name = 3;
   string assigned_at = 4;  // ISO 8601 timestamp
   string assigned_by = 5;  // UUID of assigner (if available)
+}
+
+// ============================================================================
+// HARD DELETE (Testing Utility)
+// ============================================================================
+
+message HardDeleteUserRequest {
+  string user_id = 1;
+}
+
+message HardDeleteUserResponse {
+  bool success = 1;
+  string message = 2;
+  int32 deleted_count = 3;
 }

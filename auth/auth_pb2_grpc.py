@@ -64,6 +64,11 @@ class AuthServiceStub(object):
                 request_serializer=protos_dot_auth_dot_auth__pb2.RemoveRoleRequest.SerializeToString,
                 response_deserializer=protos_dot_auth_dot_auth__pb2.RemoveRoleResponse.FromString,
                 )
+        self.HardDeleteUser = channel.unary_unary(
+                '/auth.AuthService/HardDeleteUser',
+                request_serializer=protos_dot_auth_dot_auth__pb2.HardDeleteUserRequest.SerializeToString,
+                response_deserializer=protos_dot_auth_dot_auth__pb2.HardDeleteUserResponse.FromString,
+                )
 
 
 class AuthServiceServicer(object):
@@ -131,6 +136,13 @@ class AuthServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def HardDeleteUser(self, request, context):
+        """Hard delete (testing utility)
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AuthServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -183,6 +195,11 @@ def add_AuthServiceServicer_to_server(servicer, server):
                     servicer.RemoveRole,
                     request_deserializer=protos_dot_auth_dot_auth__pb2.RemoveRoleRequest.FromString,
                     response_serializer=protos_dot_auth_dot_auth__pb2.RemoveRoleResponse.SerializeToString,
+            ),
+            'HardDeleteUser': grpc.unary_unary_rpc_method_handler(
+                    servicer.HardDeleteUser,
+                    request_deserializer=protos_dot_auth_dot_auth__pb2.HardDeleteUserRequest.FromString,
+                    response_serializer=protos_dot_auth_dot_auth__pb2.HardDeleteUserResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -361,5 +378,22 @@ class AuthService(object):
         return grpc.experimental.unary_unary(request, target, '/auth.AuthService/RemoveRole',
             protos_dot_auth_dot_auth__pb2.RemoveRoleRequest.SerializeToString,
             protos_dot_auth_dot_auth__pb2.RemoveRoleResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def HardDeleteUser(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/auth.AuthService/HardDeleteUser',
+            protos_dot_auth_dot_auth__pb2.HardDeleteUserRequest.SerializeToString,
+            protos_dot_auth_dot_auth__pb2.HardDeleteUserResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

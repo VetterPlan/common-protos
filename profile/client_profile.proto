@@ -20,6 +20,9 @@ service ClientProfileService {
   // ─── Avatar Upload ───
   // Generate a presigned URL for direct avatar upload to R2 storage
   rpc GenerateAvatarUploadUrl (GenerateAvatarUploadUrlRequest) returns (GenerateAvatarUploadUrlResponse);
+
+  // Hard delete all profiles for a user (testing utility)
+  rpc HardDeleteUserProfiles (HardDeleteUserProfilesRequest) returns (HardDeleteUserProfilesResponse);
 }
 
 // ============================================================================
@@ -153,4 +156,18 @@ message GenerateAvatarUploadUrlRequest {
 message GenerateAvatarUploadUrlResponse {
   string upload_url = 1;        // Presigned PUT URL for direct upload to R2
   string file_url = 2;          // Public CDN URL (to save in avatar_url after upload)
+}
+
+// ============================================================================
+// HARD DELETE (Testing Utility)
+// ============================================================================
+
+message HardDeleteUserProfilesRequest {
+  string user_id = 1;
+}
+
+message HardDeleteUserProfilesResponse {
+  bool success = 1;
+  string message = 2;
+  int32 deleted_count = 3;
 }
