@@ -517,6 +517,9 @@ message AddPaymentMethodRequest {
   string nequi_phone = 7;
   // Required by Wompi for payment source creation
   string customer_email = 8;
+  // Card expiry from frontend tokenization (fallback when Wompi doesn't return them)
+  int32 card_expiry_month = 9;
+  int32 card_expiry_year = 10;
 }
 
 message GetPaymentMethodsRequest {
