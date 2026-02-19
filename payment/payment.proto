@@ -515,6 +515,8 @@ message AddPaymentMethodRequest {
   string holder_name = 6;
   // Nequi-specific
   string nequi_phone = 7;
+  // Required by Wompi for payment source creation
+  string customer_email = 8;
 }
 
 message GetPaymentMethodsRequest {
