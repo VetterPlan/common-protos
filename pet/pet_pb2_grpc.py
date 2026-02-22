@@ -93,6 +93,16 @@ class PetServiceStub(object):
                 request_serializer=protos_dot_pet_dot_pet__pb2.SearchBreedsRequest.SerializeToString,
                 response_deserializer=protos_dot_pet_dot_pet__pb2.SearchBreedsResponse.FromString,
                 )
+        self.HardDeletePetsByOwner = channel.unary_unary(
+                '/pet.PetService/HardDeletePetsByOwner',
+                request_serializer=protos_dot_pet_dot_pet__pb2.HardDeletePetsByOwnerRequest.SerializeToString,
+                response_deserializer=protos_dot_pet_dot_pet__pb2.HardDeletePetsByOwnerResponse.FromString,
+                )
+        self.ExtractVaccinationCard = channel.unary_unary(
+                '/pet.PetService/ExtractVaccinationCard',
+                request_serializer=protos_dot_pet_dot_pet__pb2.ExtractVaccinationCardRequest.SerializeToString,
+                response_deserializer=protos_dot_pet_dot_pet__pb2.ExtractVaccinationCardResponse.FromString,
+                )
 
 
 class PetServiceServicer(object):
@@ -213,6 +223,24 @@ class PetServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def HardDeletePetsByOwner(self, request, context):
+        """Hard delete all pets for a client profile (testing utility)
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ExtractVaccinationCard(self, request, context):
+        """─── VACCINATION CARD OCR ───
+
+        Extract vaccination data from a card image (handwritten or printed) using AI vision.
+        Returns structured fields matching the PetVaccination model.
+        Does NOT persist data — the client reviews extracted data and calls AddVaccination to save.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_PetServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -285,6 +313,16 @@ def add_PetServiceServicer_to_server(servicer, server):
                     servicer.SearchBreeds,
                     request_deserializer=protos_dot_pet_dot_pet__pb2.SearchBreedsRequest.FromString,
                     response_serializer=protos_dot_pet_dot_pet__pb2.SearchBreedsResponse.SerializeToString,
+            ),
+            'HardDeletePetsByOwner': grpc.unary_unary_rpc_method_handler(
+                    servicer.HardDeletePetsByOwner,
+                    request_deserializer=protos_dot_pet_dot_pet__pb2.HardDeletePetsByOwnerRequest.FromString,
+                    response_serializer=protos_dot_pet_dot_pet__pb2.HardDeletePetsByOwnerResponse.SerializeToString,
+            ),
+            'ExtractVaccinationCard': grpc.unary_unary_rpc_method_handler(
+                    servicer.ExtractVaccinationCard,
+                    request_deserializer=protos_dot_pet_dot_pet__pb2.ExtractVaccinationCardRequest.FromString,
+                    response_serializer=protos_dot_pet_dot_pet__pb2.ExtractVaccinationCardResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -540,5 +578,39 @@ class PetService(object):
         return grpc.experimental.unary_unary(request, target, '/pet.PetService/SearchBreeds',
             protos_dot_pet_dot_pet__pb2.SearchBreedsRequest.SerializeToString,
             protos_dot_pet_dot_pet__pb2.SearchBreedsResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def HardDeletePetsByOwner(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/pet.PetService/HardDeletePetsByOwner',
+            protos_dot_pet_dot_pet__pb2.HardDeletePetsByOwnerRequest.SerializeToString,
+            protos_dot_pet_dot_pet__pb2.HardDeletePetsByOwnerResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def ExtractVaccinationCard(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/pet.PetService/ExtractVaccinationCard',
+            protos_dot_pet_dot_pet__pb2.ExtractVaccinationCardRequest.SerializeToString,
+            protos_dot_pet_dot_pet__pb2.ExtractVaccinationCardResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

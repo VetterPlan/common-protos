@@ -67,6 +67,13 @@ service PetService {
 
   // Hard delete all pets for a client profile (testing utility)
   rpc HardDeletePetsByOwner (HardDeletePetsByOwnerRequest) returns (HardDeletePetsByOwnerResponse);
+
+  // ─── VACCINATION CARD OCR ───
+
+  // Extract vaccination data from a card image (handwritten or printed) using AI vision.
+  // Returns structured fields matching the PetVaccination model.
+  // Does NOT persist data — the client reviews extracted data and calls AddVaccination to save.
+  rpc ExtractVaccinationCard (ExtractVaccinationCardRequest) returns (ExtractVaccinationCardResponse);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -362,4 +369,37 @@ message HardDeletePetsByOwnerResponse {
   bool success = 1;
   string message = 2;
   int32 deleted_count = 3;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// VACCINATION CARD OCR / ENTITY EXTRACTION
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Request: send raw image bytes (WebP/JPEG/PNG).
+// gRPC proto bytes field is binary — no base64 overhead on the wire.
+// The mobile app should send raw bytes directly (NOT a base64 string).
+message ExtractVaccinationCardRequest {
+  bytes image_data = 1;    // Raw image bytes (WebP/JPEG/PNG). Max 5 MB recommended.
+  string pet_id = 2;       // Optional: pet UUID for audit context
+  string hint = 3;         // Optional: user hint to improve extraction
+                           // e.g. "carnet escrito en español", "fecha en formato DD/MM/AAAA"
+}
+
+// Extracted fields matching the PetVaccination model.
+// Empty string means the field was not found or was illegible.
+message ExtractedVaccinationData {
+  string vaccine_name = 1;       // e.g. "Rabia", "Múltiple", "Quíntuple"
+  string date_administered = 2;  // ISO 8601 YYYY-MM-DD or empty string
+  string next_due_date = 3;      // ISO 8601 YYYY-MM-DD or empty string
+  string administered_by = 4;    // Vet name or clinic name
+  string batch_number = 5;       // Lot / batch number
+  string notes = 6;              // Any other visible relevant info
+}
+
+message ExtractVaccinationCardResponse {
+  bool success = 1;
+  ExtractedVaccinationData data = 2;
+  float confidence = 3;          // 0.0–1.0: overall extraction confidence
+  repeated string warnings = 4;  // Specific uncertainties, e.g. "date format unclear"
+  string error_message = 5;      // Populated only when success=false
 }
