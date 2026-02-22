@@ -398,7 +398,7 @@ message ExtractedVaccinationData {
 
 message ExtractVaccinationCardResponse {
   bool success = 1;
-  ExtractedVaccinationData data = 2;
+  repeated ExtractedVaccinationData vaccinations = 2;  // One entry per vaccination found on the card
   float confidence = 3;          // 0.0–1.0: overall extraction confidence
   repeated string warnings = 4;  // Specific uncertainties, e.g. "date format unclear"
   string error_message = 5;      // Populated only when success=false
