@@ -226,6 +226,8 @@ message VetByService {
   double price = 2;
   string notes = 3;
   string display_name = 4;
+  double lat = 5;              // Coordenada geográfica del vet (para Geolocation Service)
+  double lng = 6;              // 0.0 si no está configurada
 }
 
 message VetsByServiceResponse {

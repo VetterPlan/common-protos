@@ -292,6 +292,9 @@ message UpdateAppointmentStatusRequest {
   // Optional fields for specific transitions
   string vet_notes = 6;
   double final_price = 7;
+  // Vet current location — used for EN_ROUTE ETA calculation via GetLiveETA
+  double vet_lat = 8;
+  double vet_lng = 9;
 }
 
 message ConfirmArrivalRequest {
