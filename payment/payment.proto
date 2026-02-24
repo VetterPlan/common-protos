@@ -105,6 +105,28 @@ service PaymentService {
 
   // Get vet earnings summary by period.
   rpc GetVetEarnings (GetVetEarningsRequest) returns (VetEarningsResponse);
+
+  // ─── DISPUTES (FASE 3) ───
+
+  // Client opens a dispute for a completed appointment.
+  rpc OpenDispute (OpenDisputeRequest) returns (DisputeResponse);
+
+  // Admin resolves a dispute (refund or keep payment).
+  rpc ResolveDispute (ResolveDisputeRequest) returns (DisputeResponse);
+
+  // Get dispute by ID.
+  rpc GetDispute (GetDisputeRequest) returns (DisputeResponse);
+
+  // List disputes (admin/client).
+  rpc ListDisputes (ListDisputesRequest) returns (ListDisputesResponse);
+
+  // ─── PROMOTIONS (FASE 3 — disabled until PROMOTIONS_ENABLED=true) ───
+
+  // Validate and return discount for a promo code (does not apply it yet).
+  rpc ValidatePromoCode (ValidatePromoCodeRequest) returns (ValidatePromoCodeResponse);
+
+  // Get vet commission tier based on completed appointment count.
+  rpc GetVetCommissionTier (GetVetCommissionTierRequest) returns (GetVetCommissionTierResponse);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -120,6 +142,8 @@ enum PaymentStatus {
   PAYMENT_STATUS_REFUNDED = 5;
   PAYMENT_STATUS_FAILED = 6;
   PAYMENT_STATUS_VOIDED = 7;
+  // Capture was attempted but failed (Wompi down/timeout) — retries in progress
+  PAYMENT_STATUS_CAPTURE_FAILED = 8;
 }
 
 enum PaymentGateway {
@@ -297,6 +321,11 @@ message Payment {
   google.protobuf.Timestamp captured_at = 25;
   google.protobuf.Timestamp voided_at = 26;
   google.protobuf.Timestamp refunded_at = 27;
+
+  // Capture retry tracking
+  google.protobuf.Timestamp capture_failed_at = 28;
+  int32 capture_retry_count = 29;
+  google.protobuf.Timestamp capture_next_retry_at = 30;
 }
 
 message Wallet {
@@ -652,4 +681,112 @@ message ChargeVetCancellationFeeRequest {
   string payment_id = 1;       // Payment for the cancelled appointment
   string vet_profile_id = 2;   // Vet whose wallet will be debited
   string idempotency_key = 3;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// FASE 3 — DISPUTES
+// ═══════════════════════════════════════════════════════════════════════════
+
+enum DisputeStatus {
+  DISPUTE_STATUS_UNSPECIFIED = 0;
+  DISPUTE_STATUS_OPEN = 1;
+  DISPUTE_STATUS_UNDER_REVIEW = 2;
+  DISPUTE_STATUS_RESOLVED_CLIENT = 3;
+  DISPUTE_STATUS_RESOLVED_VET = 4;
+  DISPUTE_STATUS_CANCELLED = 5;
+}
+
+enum DisputeReason {
+  DISPUTE_REASON_UNSPECIFIED = 0;
+  DISPUTE_REASON_SERVICE_NOT_RENDERED = 1;
+  DISPUTE_REASON_QUALITY_ISSUE = 2;
+  DISPUTE_REASON_INCORRECT_CHARGE = 3;
+  DISPUTE_REASON_VET_NO_SHOW = 4;
+  DISPUTE_REASON_OTHER = 5;
+}
+
+message Dispute {
+  string id = 1;
+  string payment_id = 2;
+  string appointment_id = 3;
+  string opened_by = 4;
+  DisputeReason reason = 5;
+  string reason_details = 6;
+  DisputeStatus status = 7;
+  string resolved_by = 8;
+  string resolution_notes = 9;
+  string refund_id = 10;
+  google.protobuf.Timestamp created_at = 11;
+  google.protobuf.Timestamp resolved_at = 12;
+}
+
+message OpenDisputeRequest {
+  string payment_id = 1;
+  string appointment_id = 2;
+  string opened_by = 3;          // client_profile_id
+  DisputeReason reason = 4;
+  string reason_details = 5;
+  string idempotency_key = 6;
+}
+
+message ResolveDisputeRequest {
+  string dispute_id = 1;
+  string resolved_by = 2;        // admin_id
+  // RESOLVED_CLIENT triggers a full refund; RESOLVED_VET closes with no refund
+  DisputeStatus resolution = 3;
+  string resolution_notes = 4;
+  string idempotency_key = 5;
+}
+
+message GetDisputeRequest {
+  string dispute_id = 1;
+}
+
+message ListDisputesRequest {
+  string payment_id = 2;         // filter by payment (optional)
+  string opened_by = 3;          // filter by client (optional)
+  DisputeStatus status_filter = 4;
+  int32 limit = 5;
+  int32 offset = 6;
+}
+
+message DisputeResponse {
+  Dispute dispute = 1;
+}
+
+message ListDisputesResponse {
+  repeated Dispute disputes = 1;
+  int32 total_count = 2;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// FASE 3 — PROMOTIONS (feature-flagged)
+// ═══════════════════════════════════════════════════════════════════════════
+
+message ValidatePromoCodeRequest {
+  string code = 1;
+  string client_profile_id = 2;
+  string service_type = 3;       // to check SPECIFIC_SERVICE promos
+  double appointment_amount = 4; // to calculate discount
+}
+
+message ValidatePromoCodeResponse {
+  bool is_valid = 1;
+  string promo_id = 2;
+  double discount_amount = 3;    // COP amount to deduct
+  double final_amount = 4;
+  string error_message = 5;      // set when is_valid=false
+}
+
+// ─── Tiered commission ───
+
+message GetVetCommissionTierRequest {
+  string vet_profile_id = 1;
+}
+
+message GetVetCommissionTierResponse {
+  string tier = 1;               // "bronze" | "silver" | "gold" | "platinum"
+  int32 platform_fee_percent = 2;
+  int32 completed_appointments = 3;
+  int32 next_tier_threshold = 4; // 0 if already at top tier
 }

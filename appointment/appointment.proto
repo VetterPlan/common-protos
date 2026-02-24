@@ -60,6 +60,12 @@ service AppointmentService {
   // Get pet's appointment history (for follow-up recommendations)
   rpc GetPetAppointmentHistory (GetPetAppointmentHistoryRequest) returns (GetPetAppointmentHistoryResponse);
 
+  // ─── REAL-TIME LOCATION ───
+
+  // Vet pushes current GPS position (called ~every 10s while EN_ROUTE).
+  // Stores position in Redis with TTL=90s for client ETA polling.
+  rpc UpdateVetLocation (UpdateVetLocationRequest) returns (UpdateVetLocationResponse);
+
   // ─── AUDIT ───
 
   // Get status change history for an appointment (audit log)
@@ -520,4 +526,19 @@ message GetAppointmentHistoryResponse {
   repeated StatusHistoryEntry entries = 1;
   int32 total_count = 2;
   string appointment_id = 3;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// NEW MESSAGES — Real-time vet location
+// ═══════════════════════════════════════════════════════════════════════════
+
+message UpdateVetLocationRequest {
+  string appointment_id = 1;           // UUID — must be in EN_ROUTE or ARRIVED status
+  string vet_profile_id = 2;           // For ownership validation
+  double lat = 3;
+  double lng = 4;
+}
+
+message UpdateVetLocationResponse {
+  bool success = 1;
 }
