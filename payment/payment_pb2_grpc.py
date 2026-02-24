@@ -58,6 +58,11 @@ class PaymentServiceStub(object):
                 request_serializer=protos_dot_payment_dot_payment__pb2.ChargeNoShowFeeRequest.SerializeToString,
                 response_deserializer=protos_dot_payment_dot_payment__pb2.PaymentResponse.FromString,
                 )
+        self.ChargeVetCancellationFee = channel.unary_unary(
+                '/payment.PaymentService/ChargeVetCancellationFee',
+                request_serializer=protos_dot_payment_dot_payment__pb2.ChargeVetCancellationFeeRequest.SerializeToString,
+                response_deserializer=protos_dot_payment_dot_payment__pb2.PaymentResponse.FromString,
+                )
         self.AddTip = channel.unary_unary(
                 '/payment.PaymentService/AddTip',
                 request_serializer=protos_dot_payment_dot_payment__pb2.AddTipRequest.SerializeToString,
@@ -209,6 +214,13 @@ class PaymentServiceServicer(object):
 
     def ChargeNoShowFee(self, request, context):
         """Charge no-show fee (30% capture + 70% void + partial refund).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ChargeVetCancellationFee(self, request, context):
+        """Charge 10% cancellation fee to vet wallet when vet cancels from ACCEPTED/EN_ROUTE.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -386,6 +398,11 @@ def add_PaymentServiceServicer_to_server(servicer, server):
             'ChargeNoShowFee': grpc.unary_unary_rpc_method_handler(
                     servicer.ChargeNoShowFee,
                     request_deserializer=protos_dot_payment_dot_payment__pb2.ChargeNoShowFeeRequest.FromString,
+                    response_serializer=protos_dot_payment_dot_payment__pb2.PaymentResponse.SerializeToString,
+            ),
+            'ChargeVetCancellationFee': grpc.unary_unary_rpc_method_handler(
+                    servicer.ChargeVetCancellationFee,
+                    request_deserializer=protos_dot_payment_dot_payment__pb2.ChargeVetCancellationFeeRequest.FromString,
                     response_serializer=protos_dot_payment_dot_payment__pb2.PaymentResponse.SerializeToString,
             ),
             'AddTip': grpc.unary_unary_rpc_method_handler(
@@ -605,6 +622,23 @@ class PaymentService(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/payment.PaymentService/ChargeNoShowFee',
             protos_dot_payment_dot_payment__pb2.ChargeNoShowFeeRequest.SerializeToString,
+            protos_dot_payment_dot_payment__pb2.PaymentResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def ChargeVetCancellationFee(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/payment.PaymentService/ChargeVetCancellationFee',
+            protos_dot_payment_dot_payment__pb2.ChargeVetCancellationFeeRequest.SerializeToString,
             protos_dot_payment_dot_payment__pb2.PaymentResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

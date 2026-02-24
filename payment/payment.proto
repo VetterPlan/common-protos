@@ -38,6 +38,9 @@ service PaymentService {
   // Charge no-show fee (30% capture + 70% void + partial refund).
   rpc ChargeNoShowFee (ChargeNoShowFeeRequest) returns (PaymentResponse);
 
+  // Charge 10% cancellation fee to vet wallet when vet cancels from ACCEPTED/EN_ROUTE.
+  rpc ChargeVetCancellationFee (ChargeVetCancellationFeeRequest) returns (PaymentResponse);
+
   // Add tip post-appointment. Goes to vet wallet.
   rpc AddTip (AddTipRequest) returns (PaymentResponse);
 
@@ -641,4 +644,12 @@ message VetEarningsResponse {
   double pending_payout = 8;
   double wallet_balance = 9;
   int32 total_appointments = 10;
+}
+
+// ─── Vet Cancellation Fee (P1.8) ───
+
+message ChargeVetCancellationFeeRequest {
+  string payment_id = 1;       // Payment for the cancelled appointment
+  string vet_profile_id = 2;   // Vet whose wallet will be debited
+  string idempotency_key = 3;
 }

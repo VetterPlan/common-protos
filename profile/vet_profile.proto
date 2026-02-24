@@ -35,7 +35,11 @@ service VetProfileService {
 
   // ─── Availability Check (inter-service, called by Appointment Service) ───
   rpc CheckVetAvailability (CheckVetAvailabilityRequest) returns (CheckVetAvailabilityResponse);
+  rpc CheckBulkVetAvailability (CheckBulkVetAvailabilityRequest) returns (BulkVetAvailabilityResponse);
   rpc GetVetAvailableSlots (GetVetAvailableSlotsRequest) returns (VetAvailableSlotsResponse);
+
+  // ─── Cancellation Strikes (inter-service, called by Appointment Service) ───
+  rpc IncrementCancellationStrike (IncrementCancellationStrikeRequest) returns (IncrementCancellationStrikeResponse);
 
   // ─── Avatar Upload ───
   // Generate a presigned URL for direct avatar upload to R2 storage
@@ -382,4 +386,37 @@ message GenerateVetAvatarUploadUrlRequest {
 message GenerateVetAvatarUploadUrlResponse {
   string upload_url = 1;        // Presigned PUT URL for direct upload to R2
   string file_url = 2;          // Public CDN URL (to save in avatar_url after upload)
+}
+
+// ============================================================================
+// BULK AVAILABILITY CHECK (P1.9 — replaces N+1 CheckVetAvailability loop)
+// ============================================================================
+
+message CheckBulkVetAvailabilityRequest {
+  repeated string vet_profile_ids = 1;
+  string check_start = 2;       // ISO 8601 UTC
+  string check_end = 3;         // ISO 8601 UTC
+}
+
+message VetAvailabilityResult {
+  string vet_profile_id = 1;
+  bool is_available = 2;
+  string unavailable_reason = 3;  // "" | "OUTSIDE_WORKING_HOURS" | "TIME_OFF"
+}
+
+message BulkVetAvailabilityResponse {
+  repeated VetAvailabilityResult results = 1;
+}
+
+// ============================================================================
+// CANCELLATION STRIKES (P1.8 — vet cancellation fee system)
+// ============================================================================
+
+message IncrementCancellationStrikeRequest {
+  string vet_profile_id = 1;
+}
+
+message IncrementCancellationStrikeResponse {
+  int32 strike_count = 1;         // Total strikes active (within 30-day window)
+  bool suspended = 2;             // True if vet was suspended (3+ strikes)
 }

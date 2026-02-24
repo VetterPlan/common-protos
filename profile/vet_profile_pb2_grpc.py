@@ -108,10 +108,20 @@ class VetProfileServiceStub(object):
                 request_serializer=protos_dot_profile_dot_vet__profile__pb2.CheckVetAvailabilityRequest.SerializeToString,
                 response_deserializer=protos_dot_profile_dot_vet__profile__pb2.CheckVetAvailabilityResponse.FromString,
                 )
+        self.CheckBulkVetAvailability = channel.unary_unary(
+                '/profile.VetProfileService/CheckBulkVetAvailability',
+                request_serializer=protos_dot_profile_dot_vet__profile__pb2.CheckBulkVetAvailabilityRequest.SerializeToString,
+                response_deserializer=protos_dot_profile_dot_vet__profile__pb2.BulkVetAvailabilityResponse.FromString,
+                )
         self.GetVetAvailableSlots = channel.unary_unary(
                 '/profile.VetProfileService/GetVetAvailableSlots',
                 request_serializer=protos_dot_profile_dot_vet__profile__pb2.GetVetAvailableSlotsRequest.SerializeToString,
                 response_deserializer=protos_dot_profile_dot_vet__profile__pb2.VetAvailableSlotsResponse.FromString,
+                )
+        self.IncrementCancellationStrike = channel.unary_unary(
+                '/profile.VetProfileService/IncrementCancellationStrike',
+                request_serializer=protos_dot_profile_dot_vet__profile__pb2.IncrementCancellationStrikeRequest.SerializeToString,
+                response_deserializer=protos_dot_profile_dot_vet__profile__pb2.IncrementCancellationStrikeResponse.FromString,
                 )
         self.GenerateAvatarUploadUrl = channel.unary_unary(
                 '/profile.VetProfileService/GenerateAvatarUploadUrl',
@@ -239,8 +249,21 @@ class VetProfileServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def CheckBulkVetAvailability(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def GetVetAvailableSlots(self, request, context):
         """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def IncrementCancellationStrike(self, request, context):
+        """─── Cancellation Strikes (inter-service, called by Appointment Service) ───
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -346,10 +369,20 @@ def add_VetProfileServiceServicer_to_server(servicer, server):
                     request_deserializer=protos_dot_profile_dot_vet__profile__pb2.CheckVetAvailabilityRequest.FromString,
                     response_serializer=protos_dot_profile_dot_vet__profile__pb2.CheckVetAvailabilityResponse.SerializeToString,
             ),
+            'CheckBulkVetAvailability': grpc.unary_unary_rpc_method_handler(
+                    servicer.CheckBulkVetAvailability,
+                    request_deserializer=protos_dot_profile_dot_vet__profile__pb2.CheckBulkVetAvailabilityRequest.FromString,
+                    response_serializer=protos_dot_profile_dot_vet__profile__pb2.BulkVetAvailabilityResponse.SerializeToString,
+            ),
             'GetVetAvailableSlots': grpc.unary_unary_rpc_method_handler(
                     servicer.GetVetAvailableSlots,
                     request_deserializer=protos_dot_profile_dot_vet__profile__pb2.GetVetAvailableSlotsRequest.FromString,
                     response_serializer=protos_dot_profile_dot_vet__profile__pb2.VetAvailableSlotsResponse.SerializeToString,
+            ),
+            'IncrementCancellationStrike': grpc.unary_unary_rpc_method_handler(
+                    servicer.IncrementCancellationStrike,
+                    request_deserializer=protos_dot_profile_dot_vet__profile__pb2.IncrementCancellationStrikeRequest.FromString,
+                    response_serializer=protos_dot_profile_dot_vet__profile__pb2.IncrementCancellationStrikeResponse.SerializeToString,
             ),
             'GenerateAvatarUploadUrl': grpc.unary_unary_rpc_method_handler(
                     servicer.GenerateAvatarUploadUrl,
@@ -677,6 +710,23 @@ class VetProfileService(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
+    def CheckBulkVetAvailability(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.VetProfileService/CheckBulkVetAvailability',
+            protos_dot_profile_dot_vet__profile__pb2.CheckBulkVetAvailabilityRequest.SerializeToString,
+            protos_dot_profile_dot_vet__profile__pb2.BulkVetAvailabilityResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
     def GetVetAvailableSlots(request,
             target,
             options=(),
@@ -690,6 +740,23 @@ class VetProfileService(object):
         return grpc.experimental.unary_unary(request, target, '/profile.VetProfileService/GetVetAvailableSlots',
             protos_dot_profile_dot_vet__profile__pb2.GetVetAvailableSlotsRequest.SerializeToString,
             protos_dot_profile_dot_vet__profile__pb2.VetAvailableSlotsResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def IncrementCancellationStrike(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.VetProfileService/IncrementCancellationStrike',
+            protos_dot_profile_dot_vet__profile__pb2.IncrementCancellationStrikeRequest.SerializeToString,
+            protos_dot_profile_dot_vet__profile__pb2.IncrementCancellationStrikeResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
