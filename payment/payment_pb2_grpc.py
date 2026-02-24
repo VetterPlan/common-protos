@@ -158,6 +158,36 @@ class PaymentServiceStub(object):
                 request_serializer=protos_dot_payment_dot_payment__pb2.GetVetEarningsRequest.SerializeToString,
                 response_deserializer=protos_dot_payment_dot_payment__pb2.VetEarningsResponse.FromString,
                 )
+        self.OpenDispute = channel.unary_unary(
+                '/payment.PaymentService/OpenDispute',
+                request_serializer=protos_dot_payment_dot_payment__pb2.OpenDisputeRequest.SerializeToString,
+                response_deserializer=protos_dot_payment_dot_payment__pb2.DisputeResponse.FromString,
+                )
+        self.ResolveDispute = channel.unary_unary(
+                '/payment.PaymentService/ResolveDispute',
+                request_serializer=protos_dot_payment_dot_payment__pb2.ResolveDisputeRequest.SerializeToString,
+                response_deserializer=protos_dot_payment_dot_payment__pb2.DisputeResponse.FromString,
+                )
+        self.GetDispute = channel.unary_unary(
+                '/payment.PaymentService/GetDispute',
+                request_serializer=protos_dot_payment_dot_payment__pb2.GetDisputeRequest.SerializeToString,
+                response_deserializer=protos_dot_payment_dot_payment__pb2.DisputeResponse.FromString,
+                )
+        self.ListDisputes = channel.unary_unary(
+                '/payment.PaymentService/ListDisputes',
+                request_serializer=protos_dot_payment_dot_payment__pb2.ListDisputesRequest.SerializeToString,
+                response_deserializer=protos_dot_payment_dot_payment__pb2.ListDisputesResponse.FromString,
+                )
+        self.ValidatePromoCode = channel.unary_unary(
+                '/payment.PaymentService/ValidatePromoCode',
+                request_serializer=protos_dot_payment_dot_payment__pb2.ValidatePromoCodeRequest.SerializeToString,
+                response_deserializer=protos_dot_payment_dot_payment__pb2.ValidatePromoCodeResponse.FromString,
+                )
+        self.GetVetCommissionTier = channel.unary_unary(
+                '/payment.PaymentService/GetVetCommissionTier',
+                request_serializer=protos_dot_payment_dot_payment__pb2.GetVetCommissionTierRequest.SerializeToString,
+                response_deserializer=protos_dot_payment_dot_payment__pb2.GetVetCommissionTierResponse.FromString,
+                )
 
 
 class PaymentServiceServicer(object):
@@ -367,6 +397,52 @@ class PaymentServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def OpenDispute(self, request, context):
+        """─── DISPUTES (FASE 3) ───
+
+        Client opens a dispute for a completed appointment.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ResolveDispute(self, request, context):
+        """Admin resolves a dispute (refund or keep payment).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetDispute(self, request, context):
+        """Get dispute by ID.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListDisputes(self, request, context):
+        """List disputes (admin/client).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ValidatePromoCode(self, request, context):
+        """─── PROMOTIONS (FASE 3 — disabled until PROMOTIONS_ENABLED=true) ───
+
+        Validate and return discount for a promo code (does not apply it yet).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetVetCommissionTier(self, request, context):
+        """Get vet commission tier based on completed appointment count.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_PaymentServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -499,6 +575,36 @@ def add_PaymentServiceServicer_to_server(servicer, server):
                     servicer.GetVetEarnings,
                     request_deserializer=protos_dot_payment_dot_payment__pb2.GetVetEarningsRequest.FromString,
                     response_serializer=protos_dot_payment_dot_payment__pb2.VetEarningsResponse.SerializeToString,
+            ),
+            'OpenDispute': grpc.unary_unary_rpc_method_handler(
+                    servicer.OpenDispute,
+                    request_deserializer=protos_dot_payment_dot_payment__pb2.OpenDisputeRequest.FromString,
+                    response_serializer=protos_dot_payment_dot_payment__pb2.DisputeResponse.SerializeToString,
+            ),
+            'ResolveDispute': grpc.unary_unary_rpc_method_handler(
+                    servicer.ResolveDispute,
+                    request_deserializer=protos_dot_payment_dot_payment__pb2.ResolveDisputeRequest.FromString,
+                    response_serializer=protos_dot_payment_dot_payment__pb2.DisputeResponse.SerializeToString,
+            ),
+            'GetDispute': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetDispute,
+                    request_deserializer=protos_dot_payment_dot_payment__pb2.GetDisputeRequest.FromString,
+                    response_serializer=protos_dot_payment_dot_payment__pb2.DisputeResponse.SerializeToString,
+            ),
+            'ListDisputes': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListDisputes,
+                    request_deserializer=protos_dot_payment_dot_payment__pb2.ListDisputesRequest.FromString,
+                    response_serializer=protos_dot_payment_dot_payment__pb2.ListDisputesResponse.SerializeToString,
+            ),
+            'ValidatePromoCode': grpc.unary_unary_rpc_method_handler(
+                    servicer.ValidatePromoCode,
+                    request_deserializer=protos_dot_payment_dot_payment__pb2.ValidatePromoCodeRequest.FromString,
+                    response_serializer=protos_dot_payment_dot_payment__pb2.ValidatePromoCodeResponse.SerializeToString,
+            ),
+            'GetVetCommissionTier': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetVetCommissionTier,
+                    request_deserializer=protos_dot_payment_dot_payment__pb2.GetVetCommissionTierRequest.FromString,
+                    response_serializer=protos_dot_payment_dot_payment__pb2.GetVetCommissionTierResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -963,5 +1069,107 @@ class PaymentService(object):
         return grpc.experimental.unary_unary(request, target, '/payment.PaymentService/GetVetEarnings',
             protos_dot_payment_dot_payment__pb2.GetVetEarningsRequest.SerializeToString,
             protos_dot_payment_dot_payment__pb2.VetEarningsResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def OpenDispute(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/payment.PaymentService/OpenDispute',
+            protos_dot_payment_dot_payment__pb2.OpenDisputeRequest.SerializeToString,
+            protos_dot_payment_dot_payment__pb2.DisputeResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def ResolveDispute(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/payment.PaymentService/ResolveDispute',
+            protos_dot_payment_dot_payment__pb2.ResolveDisputeRequest.SerializeToString,
+            protos_dot_payment_dot_payment__pb2.DisputeResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetDispute(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/payment.PaymentService/GetDispute',
+            protos_dot_payment_dot_payment__pb2.GetDisputeRequest.SerializeToString,
+            protos_dot_payment_dot_payment__pb2.DisputeResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def ListDisputes(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/payment.PaymentService/ListDisputes',
+            protos_dot_payment_dot_payment__pb2.ListDisputesRequest.SerializeToString,
+            protos_dot_payment_dot_payment__pb2.ListDisputesResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def ValidatePromoCode(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/payment.PaymentService/ValidatePromoCode',
+            protos_dot_payment_dot_payment__pb2.ValidatePromoCodeRequest.SerializeToString,
+            protos_dot_payment_dot_payment__pb2.ValidatePromoCodeResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetVetCommissionTier(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/payment.PaymentService/GetVetCommissionTier',
+            protos_dot_payment_dot_payment__pb2.GetVetCommissionTierRequest.SerializeToString,
+            protos_dot_payment_dot_payment__pb2.GetVetCommissionTierResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
