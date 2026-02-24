@@ -21,6 +21,7 @@ service VetProfileService {
   rpc GetVetPriceForService (GetVetPriceForServiceRequest) returns (ServicePriceResponse);
   rpc RemoveServicePrice (RemoveServicePriceRequest) returns (RemoveServicePriceResponse);
   rpc GetVetsByService (GetVetsByServiceRequest) returns (VetsByServiceResponse);
+  rpc GetServiceTypePriceRanges (GetServiceTypePriceRangesRequest) returns (ServiceTypePriceRangesResponse);
 
   // ─── Working Hours ───
   rpc SetWorkingHours (SetWorkingHoursRequest) returns (WorkingHoursResponse);
@@ -237,6 +238,22 @@ message VetByService {
 message VetsByServiceResponse {
   repeated VetByService vets = 1;
   int32 total_count = 2;
+}
+
+message GetServiceTypePriceRangesRequest {
+  // Empty — returns all service types that have active vets
+}
+
+message ServiceTypePriceRange {
+  string service_type = 1;       // "consultation", "vaccination", etc.
+  double min_price = 2;          // Lowest price across active vets (COP)
+  double max_price = 3;          // Highest price across active vets (COP)
+  int32 vet_count = 4;           // Number of active vets offering this service
+}
+
+message ServiceTypePriceRangesResponse {
+  repeated ServiceTypePriceRange ranges = 1;
+  int32 total_service_types = 2;
 }
 
 // ============================================================================

@@ -68,6 +68,11 @@ class VetProfileServiceStub(object):
                 request_serializer=protos_dot_profile_dot_vet__profile__pb2.GetVetsByServiceRequest.SerializeToString,
                 response_deserializer=protos_dot_profile_dot_vet__profile__pb2.VetsByServiceResponse.FromString,
                 )
+        self.GetServiceTypePriceRanges = channel.unary_unary(
+                '/profile.VetProfileService/GetServiceTypePriceRanges',
+                request_serializer=protos_dot_profile_dot_vet__profile__pb2.GetServiceTypePriceRangesRequest.SerializeToString,
+                response_deserializer=protos_dot_profile_dot_vet__profile__pb2.ServiceTypePriceRangesResponse.FromString,
+                )
         self.SetWorkingHours = channel.unary_unary(
                 '/profile.VetProfileService/SetWorkingHours',
                 request_serializer=protos_dot_profile_dot_vet__profile__pb2.SetWorkingHoursRequest.SerializeToString,
@@ -193,6 +198,12 @@ class VetProfileServiceServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def GetVetsByService(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetServiceTypePriceRanges(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -328,6 +339,11 @@ def add_VetProfileServiceServicer_to_server(servicer, server):
                     servicer.GetVetsByService,
                     request_deserializer=protos_dot_profile_dot_vet__profile__pb2.GetVetsByServiceRequest.FromString,
                     response_serializer=protos_dot_profile_dot_vet__profile__pb2.VetsByServiceResponse.SerializeToString,
+            ),
+            'GetServiceTypePriceRanges': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetServiceTypePriceRanges,
+                    request_deserializer=protos_dot_profile_dot_vet__profile__pb2.GetServiceTypePriceRangesRequest.FromString,
+                    response_serializer=protos_dot_profile_dot_vet__profile__pb2.ServiceTypePriceRangesResponse.SerializeToString,
             ),
             'SetWorkingHours': grpc.unary_unary_rpc_method_handler(
                     servicer.SetWorkingHours,
@@ -570,6 +586,23 @@ class VetProfileService(object):
         return grpc.experimental.unary_unary(request, target, '/profile.VetProfileService/GetVetsByService',
             protos_dot_profile_dot_vet__profile__pb2.GetVetsByServiceRequest.SerializeToString,
             protos_dot_profile_dot_vet__profile__pb2.VetsByServiceResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetServiceTypePriceRanges(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.VetProfileService/GetServiceTypePriceRanges',
+            protos_dot_profile_dot_vet__profile__pb2.GetServiceTypePriceRangesRequest.SerializeToString,
+            protos_dot_profile_dot_vet__profile__pb2.ServiceTypePriceRangesResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
