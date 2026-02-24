@@ -19,6 +19,9 @@ service AuthService {
 
   // Hard delete (testing utility)
   rpc HardDeleteUser (HardDeleteUserRequest) returns (HardDeleteUserResponse);
+
+  // Admin: look up a user account by email address
+  rpc FindUserByEmail (FindUserByEmailRequest) returns (FindUserByEmailResponse);
 }
 
 message LoginRequest {
@@ -151,4 +154,22 @@ message HardDeleteUserResponse {
   bool success = 1;
   string message = 2;
   int32 deleted_count = 3;
+}
+
+// ============================================================================
+// FIND USER BY EMAIL (Admin utility)
+// ============================================================================
+
+message FindUserByEmailRequest {
+  string email = 1;
+}
+
+message FindUserByEmailResponse {
+  string user_id = 1;
+  string email = 2;
+  bool is_active = 3;
+  bool is_email_verified = 4;
+  string created_at = 5;
+  repeated string roles = 6;
+  string user_type = 7;
 }

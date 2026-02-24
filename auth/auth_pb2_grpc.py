@@ -69,6 +69,11 @@ class AuthServiceStub(object):
                 request_serializer=protos_dot_auth_dot_auth__pb2.HardDeleteUserRequest.SerializeToString,
                 response_deserializer=protos_dot_auth_dot_auth__pb2.HardDeleteUserResponse.FromString,
                 )
+        self.FindUserByEmail = channel.unary_unary(
+                '/auth.AuthService/FindUserByEmail',
+                request_serializer=protos_dot_auth_dot_auth__pb2.FindUserByEmailRequest.SerializeToString,
+                response_deserializer=protos_dot_auth_dot_auth__pb2.FindUserByEmailResponse.FromString,
+                )
 
 
 class AuthServiceServicer(object):
@@ -143,6 +148,13 @@ class AuthServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def FindUserByEmail(self, request, context):
+        """Admin: look up a user account by email address
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AuthServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -200,6 +212,11 @@ def add_AuthServiceServicer_to_server(servicer, server):
                     servicer.HardDeleteUser,
                     request_deserializer=protos_dot_auth_dot_auth__pb2.HardDeleteUserRequest.FromString,
                     response_serializer=protos_dot_auth_dot_auth__pb2.HardDeleteUserResponse.SerializeToString,
+            ),
+            'FindUserByEmail': grpc.unary_unary_rpc_method_handler(
+                    servicer.FindUserByEmail,
+                    request_deserializer=protos_dot_auth_dot_auth__pb2.FindUserByEmailRequest.FromString,
+                    response_serializer=protos_dot_auth_dot_auth__pb2.FindUserByEmailResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -395,5 +412,22 @@ class AuthService(object):
         return grpc.experimental.unary_unary(request, target, '/auth.AuthService/HardDeleteUser',
             protos_dot_auth_dot_auth__pb2.HardDeleteUserRequest.SerializeToString,
             protos_dot_auth_dot_auth__pb2.HardDeleteUserResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def FindUserByEmail(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/auth.AuthService/FindUserByEmail',
+            protos_dot_auth_dot_auth__pb2.FindUserByEmailRequest.SerializeToString,
+            protos_dot_auth_dot_auth__pb2.FindUserByEmailResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
