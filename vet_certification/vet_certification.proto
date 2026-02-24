@@ -37,6 +37,11 @@ service VetCertificationService {
 
   // Get the status change history for a certification
   rpc GetStatusHistory (GetStatusHistoryRequest) returns (StatusHistoryResponse);
+
+  // ─── ADMIN ACTIONS ───
+
+  // Review a certification (admin: approve, reject, suspend, revoke)
+  rpc ReviewCertification (ReviewCertificationRequest) returns (CertificationResponse);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -236,4 +241,16 @@ message GetStatusHistoryRequest {
 message StatusHistoryResponse {
   repeated StatusHistoryEntry entries = 1;
   int32 total_count = 2;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// REVIEW CERTIFICATION (Admin)
+// ═══════════════════════════════════════════════════════════════════════════
+
+message ReviewCertificationRequest {
+  string certification_id = 1;      // Required: UUID of the certification
+  string reviewer_id = 2;           // Required: UUID of the admin user
+  CertificationStatus new_status = 3; // Required: target status
+  string reason = 4;                // Required: StatusChangeReason value
+  string notes = 5;                 // Optional: human-readable notes / rejection reason
 }

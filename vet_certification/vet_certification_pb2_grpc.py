@@ -53,6 +53,11 @@ class VetCertificationServiceStub(object):
                 request_serializer=protos_dot_vet__certification_dot_vet__certification__pb2.GetStatusHistoryRequest.SerializeToString,
                 response_deserializer=protos_dot_vet__certification_dot_vet__certification__pb2.StatusHistoryResponse.FromString,
                 )
+        self.ReviewCertification = channel.unary_unary(
+                '/vet_certification.VetCertificationService/ReviewCertification',
+                request_serializer=protos_dot_vet__certification_dot_vet__certification__pb2.ReviewCertificationRequest.SerializeToString,
+                response_deserializer=protos_dot_vet__certification_dot_vet__certification__pb2.CertificationResponse.FromString,
+                )
 
 
 class VetCertificationServiceServicer(object):
@@ -114,6 +119,15 @@ class VetCertificationServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ReviewCertification(self, request, context):
+        """─── ADMIN ACTIONS ───
+
+        Review a certification (admin: approve, reject, suspend, revoke)
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_VetCertificationServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -146,6 +160,11 @@ def add_VetCertificationServiceServicer_to_server(servicer, server):
                     servicer.GetStatusHistory,
                     request_deserializer=protos_dot_vet__certification_dot_vet__certification__pb2.GetStatusHistoryRequest.FromString,
                     response_serializer=protos_dot_vet__certification_dot_vet__certification__pb2.StatusHistoryResponse.SerializeToString,
+            ),
+            'ReviewCertification': grpc.unary_unary_rpc_method_handler(
+                    servicer.ReviewCertification,
+                    request_deserializer=protos_dot_vet__certification_dot_vet__certification__pb2.ReviewCertificationRequest.FromString,
+                    response_serializer=protos_dot_vet__certification_dot_vet__certification__pb2.CertificationResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -265,5 +284,22 @@ class VetCertificationService(object):
         return grpc.experimental.unary_unary(request, target, '/vet_certification.VetCertificationService/GetStatusHistory',
             protos_dot_vet__certification_dot_vet__certification__pb2.GetStatusHistoryRequest.SerializeToString,
             protos_dot_vet__certification_dot_vet__certification__pb2.StatusHistoryResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def ReviewCertification(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/vet_certification.VetCertificationService/ReviewCertification',
+            protos_dot_vet__certification_dot_vet__certification__pb2.ReviewCertificationRequest.SerializeToString,
+            protos_dot_vet__certification_dot_vet__certification__pb2.CertificationResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
