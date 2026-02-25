@@ -42,6 +42,9 @@ service VetProfileService {
   // ─── Cancellation Strikes (inter-service, called by Appointment Service) ───
   rpc IncrementCancellationStrike (IncrementCancellationStrikeRequest) returns (IncrementCancellationStrikeResponse);
 
+  // ─── Admin: list all vet profiles ───
+  rpc ListVetProfiles (ListVetProfilesRequest) returns (ListVetProfilesResponse);
+
   // ─── Avatar Upload ───
   // Generate a presigned URL for direct avatar upload to R2 storage
   rpc GenerateAvatarUploadUrl (GenerateVetAvatarUploadUrlRequest) returns (GenerateVetAvatarUploadUrlResponse);
@@ -436,4 +439,19 @@ message IncrementCancellationStrikeRequest {
 message IncrementCancellationStrikeResponse {
   int32 strike_count = 1;         // Total strikes active (within 30-day window)
   bool suspended = 2;             // True if vet was suspended (3+ strikes)
+}
+
+// ============================================================================
+// ADMIN LIST
+// ============================================================================
+
+message ListVetProfilesRequest {
+  optional int32 limit = 1;          // default 50, max 200
+  optional int32 offset = 2;         // for pagination
+  optional string status_filter = 3; // "active", "pending_verification", "suspended", "incomplete" — empty = all
+}
+
+message ListVetProfilesResponse {
+  repeated VetProfile profiles = 1;
+  int32 total_count = 2;
 }

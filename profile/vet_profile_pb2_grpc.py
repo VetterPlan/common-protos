@@ -128,6 +128,11 @@ class VetProfileServiceStub(object):
                 request_serializer=protos_dot_profile_dot_vet__profile__pb2.IncrementCancellationStrikeRequest.SerializeToString,
                 response_deserializer=protos_dot_profile_dot_vet__profile__pb2.IncrementCancellationStrikeResponse.FromString,
                 )
+        self.ListVetProfiles = channel.unary_unary(
+                '/profile.VetProfileService/ListVetProfiles',
+                request_serializer=protos_dot_profile_dot_vet__profile__pb2.ListVetProfilesRequest.SerializeToString,
+                response_deserializer=protos_dot_profile_dot_vet__profile__pb2.ListVetProfilesResponse.FromString,
+                )
         self.GenerateAvatarUploadUrl = channel.unary_unary(
                 '/profile.VetProfileService/GenerateAvatarUploadUrl',
                 request_serializer=protos_dot_profile_dot_vet__profile__pb2.GenerateVetAvatarUploadUrlRequest.SerializeToString,
@@ -279,6 +284,13 @@ class VetProfileServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ListVetProfiles(self, request, context):
+        """─── Admin: list all vet profiles ───
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def GenerateAvatarUploadUrl(self, request, context):
         """─── Avatar Upload ───
         Generate a presigned URL for direct avatar upload to R2 storage
@@ -399,6 +411,11 @@ def add_VetProfileServiceServicer_to_server(servicer, server):
                     servicer.IncrementCancellationStrike,
                     request_deserializer=protos_dot_profile_dot_vet__profile__pb2.IncrementCancellationStrikeRequest.FromString,
                     response_serializer=protos_dot_profile_dot_vet__profile__pb2.IncrementCancellationStrikeResponse.SerializeToString,
+            ),
+            'ListVetProfiles': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListVetProfiles,
+                    request_deserializer=protos_dot_profile_dot_vet__profile__pb2.ListVetProfilesRequest.FromString,
+                    response_serializer=protos_dot_profile_dot_vet__profile__pb2.ListVetProfilesResponse.SerializeToString,
             ),
             'GenerateAvatarUploadUrl': grpc.unary_unary_rpc_method_handler(
                     servicer.GenerateAvatarUploadUrl,
@@ -790,6 +807,23 @@ class VetProfileService(object):
         return grpc.experimental.unary_unary(request, target, '/profile.VetProfileService/IncrementCancellationStrike',
             protos_dot_profile_dot_vet__profile__pb2.IncrementCancellationStrikeRequest.SerializeToString,
             protos_dot_profile_dot_vet__profile__pb2.IncrementCancellationStrikeResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def ListVetProfiles(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.VetProfileService/ListVetProfiles',
+            protos_dot_profile_dot_vet__profile__pb2.ListVetProfilesRequest.SerializeToString,
+            protos_dot_profile_dot_vet__profile__pb2.ListVetProfilesResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

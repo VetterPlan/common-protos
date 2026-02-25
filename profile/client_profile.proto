@@ -17,6 +17,9 @@ service ClientProfileService {
   // Multi-profile aggregation: returns both client and vet profile summaries
   rpc GetUserProfiles (GetUserProfilesRequest) returns (GetUserProfilesResponse);
 
+  // ─── Admin: list all client profiles ───
+  rpc ListClientProfiles (ListClientProfilesRequest) returns (ListClientProfilesResponse);
+
   // ─── Avatar Upload ───
   // Generate a presigned URL for direct avatar upload to R2 storage
   rpc GenerateAvatarUploadUrl (GenerateAvatarUploadUrlRequest) returns (GenerateAvatarUploadUrlResponse);
@@ -156,6 +159,21 @@ message GenerateAvatarUploadUrlRequest {
 message GenerateAvatarUploadUrlResponse {
   string upload_url = 1;        // Presigned PUT URL for direct upload to R2
   string file_url = 2;          // Public CDN URL (to save in avatar_url after upload)
+}
+
+// ============================================================================
+// ADMIN LIST
+// ============================================================================
+
+message ListClientProfilesRequest {
+  optional int32 limit = 1;    // default 50, max 200
+  optional int32 offset = 2;   // for pagination
+  optional bool is_completed = 3; // filter by completion status
+}
+
+message ListClientProfilesResponse {
+  repeated ClientProfile profiles = 1;
+  int32 total_count = 2;
 }
 
 // ============================================================================

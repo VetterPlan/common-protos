@@ -43,10 +43,20 @@ class ClientProfileServiceStub(object):
                 request_serializer=protos_dot_profile_dot_client__profile__pb2.GetUserProfilesRequest.SerializeToString,
                 response_deserializer=protos_dot_profile_dot_client__profile__pb2.GetUserProfilesResponse.FromString,
                 )
+        self.ListClientProfiles = channel.unary_unary(
+                '/profile.ClientProfileService/ListClientProfiles',
+                request_serializer=protos_dot_profile_dot_client__profile__pb2.ListClientProfilesRequest.SerializeToString,
+                response_deserializer=protos_dot_profile_dot_client__profile__pb2.ListClientProfilesResponse.FromString,
+                )
         self.GenerateAvatarUploadUrl = channel.unary_unary(
                 '/profile.ClientProfileService/GenerateAvatarUploadUrl',
                 request_serializer=protos_dot_profile_dot_client__profile__pb2.GenerateAvatarUploadUrlRequest.SerializeToString,
                 response_deserializer=protos_dot_profile_dot_client__profile__pb2.GenerateAvatarUploadUrlResponse.FromString,
+                )
+        self.HardDeleteUserProfiles = channel.unary_unary(
+                '/profile.ClientProfileService/HardDeleteUserProfiles',
+                request_serializer=protos_dot_profile_dot_client__profile__pb2.HardDeleteUserProfilesRequest.SerializeToString,
+                response_deserializer=protos_dot_profile_dot_client__profile__pb2.HardDeleteUserProfilesResponse.FromString,
                 )
 
 
@@ -88,9 +98,23 @@ class ClientProfileServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ListClientProfiles(self, request, context):
+        """─── Admin: list all client profiles ───
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def GenerateAvatarUploadUrl(self, request, context):
         """─── Avatar Upload ───
         Generate a presigned URL for direct avatar upload to R2 storage
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def HardDeleteUserProfiles(self, request, context):
+        """Hard delete all profiles for a user (testing utility)
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -124,10 +148,20 @@ def add_ClientProfileServiceServicer_to_server(servicer, server):
                     request_deserializer=protos_dot_profile_dot_client__profile__pb2.GetUserProfilesRequest.FromString,
                     response_serializer=protos_dot_profile_dot_client__profile__pb2.GetUserProfilesResponse.SerializeToString,
             ),
+            'ListClientProfiles': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListClientProfiles,
+                    request_deserializer=protos_dot_profile_dot_client__profile__pb2.ListClientProfilesRequest.FromString,
+                    response_serializer=protos_dot_profile_dot_client__profile__pb2.ListClientProfilesResponse.SerializeToString,
+            ),
             'GenerateAvatarUploadUrl': grpc.unary_unary_rpc_method_handler(
                     servicer.GenerateAvatarUploadUrl,
                     request_deserializer=protos_dot_profile_dot_client__profile__pb2.GenerateAvatarUploadUrlRequest.FromString,
                     response_serializer=protos_dot_profile_dot_client__profile__pb2.GenerateAvatarUploadUrlResponse.SerializeToString,
+            ),
+            'HardDeleteUserProfiles': grpc.unary_unary_rpc_method_handler(
+                    servicer.HardDeleteUserProfiles,
+                    request_deserializer=protos_dot_profile_dot_client__profile__pb2.HardDeleteUserProfilesRequest.FromString,
+                    response_serializer=protos_dot_profile_dot_client__profile__pb2.HardDeleteUserProfilesResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -229,6 +263,23 @@ class ClientProfileService(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
+    def ListClientProfiles(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.ClientProfileService/ListClientProfiles',
+            protos_dot_profile_dot_client__profile__pb2.ListClientProfilesRequest.SerializeToString,
+            protos_dot_profile_dot_client__profile__pb2.ListClientProfilesResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
     def GenerateAvatarUploadUrl(request,
             target,
             options=(),
@@ -242,5 +293,22 @@ class ClientProfileService(object):
         return grpc.experimental.unary_unary(request, target, '/profile.ClientProfileService/GenerateAvatarUploadUrl',
             protos_dot_profile_dot_client__profile__pb2.GenerateAvatarUploadUrlRequest.SerializeToString,
             protos_dot_profile_dot_client__profile__pb2.GenerateAvatarUploadUrlResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def HardDeleteUserProfiles(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/profile.ClientProfileService/HardDeleteUserProfiles',
+            protos_dot_profile_dot_client__profile__pb2.HardDeleteUserProfilesRequest.SerializeToString,
+            protos_dot_profile_dot_client__profile__pb2.HardDeleteUserProfilesResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
