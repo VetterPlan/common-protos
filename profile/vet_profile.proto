@@ -107,6 +107,9 @@ message VetProfile {
   // Timestamps
   google.protobuf.Timestamp created_at = 20;
   google.protobuf.Timestamp updated_at = 21;
+
+  // Cancellation strikes (no-show / late cancellations)
+  int32 cancellation_strikes = 22;
 }
 
 message CreateVetProfileRequest {

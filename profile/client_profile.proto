@@ -145,6 +145,7 @@ message VetProfileSummary {
   string clinic_name = 6;
   bool is_completed = 7;
   string status = 8;
+  int32 cancellation_strikes = 9;
 }
 
 // ============================================================================
