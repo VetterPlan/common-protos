@@ -127,6 +127,20 @@ service PaymentService {
 
   // Get vet commission tier based on completed appointment count.
   rpc GetVetCommissionTier (GetVetCommissionTierRequest) returns (GetVetCommissionTierResponse);
+
+  // ─── ADMIN REPORTS ───
+
+  // Income report by period (global, by vet, by service).
+  rpc AdminReportIncome (AdminReportIncomeRequest) returns (AdminReportIncomeResponse);
+
+  // Top vets by earnings in period.
+  rpc AdminTopVetsByIncome (AdminTopVetsByIncomeRequest) returns (AdminTopVetsByIncomeResponse);
+
+  // Dispute stats: total payments, total disputes, dispute rate.
+  rpc AdminDisputeStats (AdminDisputeStatsRequest) returns (AdminDisputeStatsResponse);
+
+  // Commission summary grouped by tier (Bronze/Silver/Gold/Platinum).
+  rpc AdminCommissionByTier (AdminCommissionByTierRequest) returns (AdminCommissionByTierResponse);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -789,4 +803,78 @@ message GetVetCommissionTierResponse {
   int32 platform_fee_percent = 2;
   int32 completed_appointments = 3;
   int32 next_tier_threshold = 4; // 0 if already at top tier
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ADMIN REPORTS
+// ═══════════════════════════════════════════════════════════════════════════
+
+message AdminReportIncomeRequest {
+  string period_start = 1;        // ISO 8601 date "YYYY-MM-DD"
+  string period_end = 2;         // ISO 8601 date "YYYY-MM-DD"
+}
+
+message IncomeGlobalSummary {
+  double total_revenue = 1;
+  double platform_fees = 2;
+  double vet_payouts = 3;
+}
+
+message IncomeByVet {
+  string vet_profile_id = 1;
+  string vet_name = 2;
+  double total_earnings = 3;
+  int32 appointment_count = 4;
+}
+
+message IncomeByService {
+  string service_type = 1;
+  double total_revenue = 2;
+  int32 appointment_count = 3;
+}
+
+message AdminReportIncomeResponse {
+  IncomeGlobalSummary global = 1;
+  repeated IncomeByVet by_vet = 2;
+  repeated IncomeByService by_service = 3;
+}
+
+message AdminTopVetsByIncomeRequest {
+  int32 limit = 1;               // default 10
+  string period_start = 2;
+  string period_end = 3;
+}
+
+message TopVetByIncome {
+  string vet_profile_id = 1;
+  string vet_name = 2;
+  double total_earnings = 3;
+  int32 appointment_count = 4;
+  string tier = 5;
+}
+
+message AdminTopVetsByIncomeResponse {
+  repeated TopVetByIncome vets = 1;
+}
+
+message AdminDisputeStatsRequest {}
+
+message AdminDisputeStatsResponse {
+  int32 total_payments = 1;      // CAPTURED payments (successful charges)
+  int32 total_disputes = 2;
+  int32 open_disputes = 3;
+  double dispute_rate = 4;       // total_disputes / total_payments (0.0-1.0)
+}
+
+message AdminCommissionByTierRequest {}
+
+message CommissionByTierEntry {
+  string tier = 1;
+  int32 vet_count = 2;
+  double total_earnings = 3;
+  double platform_fees = 4;
+}
+
+message AdminCommissionByTierResponse {
+  repeated CommissionByTierEntry tiers = 1;
 }

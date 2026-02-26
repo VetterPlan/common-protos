@@ -188,6 +188,26 @@ class PaymentServiceStub(object):
                 request_serializer=protos_dot_payment_dot_payment__pb2.GetVetCommissionTierRequest.SerializeToString,
                 response_deserializer=protos_dot_payment_dot_payment__pb2.GetVetCommissionTierResponse.FromString,
                 )
+        self.AdminReportIncome = channel.unary_unary(
+                '/payment.PaymentService/AdminReportIncome',
+                request_serializer=protos_dot_payment_dot_payment__pb2.AdminReportIncomeRequest.SerializeToString,
+                response_deserializer=protos_dot_payment_dot_payment__pb2.AdminReportIncomeResponse.FromString,
+                )
+        self.AdminTopVetsByIncome = channel.unary_unary(
+                '/payment.PaymentService/AdminTopVetsByIncome',
+                request_serializer=protos_dot_payment_dot_payment__pb2.AdminTopVetsByIncomeRequest.SerializeToString,
+                response_deserializer=protos_dot_payment_dot_payment__pb2.AdminTopVetsByIncomeResponse.FromString,
+                )
+        self.AdminDisputeStats = channel.unary_unary(
+                '/payment.PaymentService/AdminDisputeStats',
+                request_serializer=protos_dot_payment_dot_payment__pb2.AdminDisputeStatsRequest.SerializeToString,
+                response_deserializer=protos_dot_payment_dot_payment__pb2.AdminDisputeStatsResponse.FromString,
+                )
+        self.AdminCommissionByTier = channel.unary_unary(
+                '/payment.PaymentService/AdminCommissionByTier',
+                request_serializer=protos_dot_payment_dot_payment__pb2.AdminCommissionByTierRequest.SerializeToString,
+                response_deserializer=protos_dot_payment_dot_payment__pb2.AdminCommissionByTierResponse.FromString,
+                )
 
 
 class PaymentServiceServicer(object):
@@ -443,6 +463,36 @@ class PaymentServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def AdminReportIncome(self, request, context):
+        """─── ADMIN REPORTS ───
+
+        Income report by period (global, by vet, by service).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def AdminTopVetsByIncome(self, request, context):
+        """Top vets by earnings in period.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def AdminDisputeStats(self, request, context):
+        """Dispute stats: total payments, total disputes, dispute rate.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def AdminCommissionByTier(self, request, context):
+        """Commission summary grouped by tier (Bronze/Silver/Gold/Platinum).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_PaymentServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -605,6 +655,26 @@ def add_PaymentServiceServicer_to_server(servicer, server):
                     servicer.GetVetCommissionTier,
                     request_deserializer=protos_dot_payment_dot_payment__pb2.GetVetCommissionTierRequest.FromString,
                     response_serializer=protos_dot_payment_dot_payment__pb2.GetVetCommissionTierResponse.SerializeToString,
+            ),
+            'AdminReportIncome': grpc.unary_unary_rpc_method_handler(
+                    servicer.AdminReportIncome,
+                    request_deserializer=protos_dot_payment_dot_payment__pb2.AdminReportIncomeRequest.FromString,
+                    response_serializer=protos_dot_payment_dot_payment__pb2.AdminReportIncomeResponse.SerializeToString,
+            ),
+            'AdminTopVetsByIncome': grpc.unary_unary_rpc_method_handler(
+                    servicer.AdminTopVetsByIncome,
+                    request_deserializer=protos_dot_payment_dot_payment__pb2.AdminTopVetsByIncomeRequest.FromString,
+                    response_serializer=protos_dot_payment_dot_payment__pb2.AdminTopVetsByIncomeResponse.SerializeToString,
+            ),
+            'AdminDisputeStats': grpc.unary_unary_rpc_method_handler(
+                    servicer.AdminDisputeStats,
+                    request_deserializer=protos_dot_payment_dot_payment__pb2.AdminDisputeStatsRequest.FromString,
+                    response_serializer=protos_dot_payment_dot_payment__pb2.AdminDisputeStatsResponse.SerializeToString,
+            ),
+            'AdminCommissionByTier': grpc.unary_unary_rpc_method_handler(
+                    servicer.AdminCommissionByTier,
+                    request_deserializer=protos_dot_payment_dot_payment__pb2.AdminCommissionByTierRequest.FromString,
+                    response_serializer=protos_dot_payment_dot_payment__pb2.AdminCommissionByTierResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -1171,5 +1241,73 @@ class PaymentService(object):
         return grpc.experimental.unary_unary(request, target, '/payment.PaymentService/GetVetCommissionTier',
             protos_dot_payment_dot_payment__pb2.GetVetCommissionTierRequest.SerializeToString,
             protos_dot_payment_dot_payment__pb2.GetVetCommissionTierResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def AdminReportIncome(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/payment.PaymentService/AdminReportIncome',
+            protos_dot_payment_dot_payment__pb2.AdminReportIncomeRequest.SerializeToString,
+            protos_dot_payment_dot_payment__pb2.AdminReportIncomeResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def AdminTopVetsByIncome(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/payment.PaymentService/AdminTopVetsByIncome',
+            protos_dot_payment_dot_payment__pb2.AdminTopVetsByIncomeRequest.SerializeToString,
+            protos_dot_payment_dot_payment__pb2.AdminTopVetsByIncomeResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def AdminDisputeStats(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/payment.PaymentService/AdminDisputeStats',
+            protos_dot_payment_dot_payment__pb2.AdminDisputeStatsRequest.SerializeToString,
+            protos_dot_payment_dot_payment__pb2.AdminDisputeStatsResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def AdminCommissionByTier(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/payment.PaymentService/AdminCommissionByTier',
+            protos_dot_payment_dot_payment__pb2.AdminCommissionByTierRequest.SerializeToString,
+            protos_dot_payment_dot_payment__pb2.AdminCommissionByTierResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

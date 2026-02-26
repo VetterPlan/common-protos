@@ -106,6 +106,11 @@ class AppointmentServiceStub(object):
                 request_serializer=protos_dot_appointment_dot_appointment__pb2.GetFollowUpRecommendationsRequest.SerializeToString,
                 response_deserializer=protos_dot_appointment_dot_appointment__pb2.GetFollowUpRecommendationsResponse.FromString,
                 )
+        self.AdminReportAppointments = channel.unary_unary(
+                '/appointment.AppointmentService/AdminReportAppointments',
+                request_serializer=protos_dot_appointment_dot_appointment__pb2.AdminReportAppointmentsRequest.SerializeToString,
+                response_deserializer=protos_dot_appointment_dot_appointment__pb2.AdminReportAppointmentsResponse.FromString,
+                )
 
 
 class AppointmentServiceServicer(object):
@@ -248,6 +253,15 @@ class AppointmentServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def AdminReportAppointments(self, request, context):
+        """─── ADMIN REPORTS ───
+
+        Appointments count by status in period (for admin analytics).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AppointmentServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -330,6 +344,11 @@ def add_AppointmentServiceServicer_to_server(servicer, server):
                     servicer.GetFollowUpRecommendations,
                     request_deserializer=protos_dot_appointment_dot_appointment__pb2.GetFollowUpRecommendationsRequest.FromString,
                     response_serializer=protos_dot_appointment_dot_appointment__pb2.GetFollowUpRecommendationsResponse.SerializeToString,
+            ),
+            'AdminReportAppointments': grpc.unary_unary_rpc_method_handler(
+                    servicer.AdminReportAppointments,
+                    request_deserializer=protos_dot_appointment_dot_appointment__pb2.AdminReportAppointmentsRequest.FromString,
+                    response_serializer=protos_dot_appointment_dot_appointment__pb2.AdminReportAppointmentsResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -622,5 +641,22 @@ class AppointmentService(object):
         return grpc.experimental.unary_unary(request, target, '/appointment.AppointmentService/GetFollowUpRecommendations',
             protos_dot_appointment_dot_appointment__pb2.GetFollowUpRecommendationsRequest.SerializeToString,
             protos_dot_appointment_dot_appointment__pb2.GetFollowUpRecommendationsResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def AdminReportAppointments(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/appointment.AppointmentService/AdminReportAppointments',
+            protos_dot_appointment_dot_appointment__pb2.AdminReportAppointmentsRequest.SerializeToString,
+            protos_dot_appointment_dot_appointment__pb2.AdminReportAppointmentsResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

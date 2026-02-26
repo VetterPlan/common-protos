@@ -78,6 +78,11 @@ service AppointmentService {
 
   // Get follow-up recommendations based on recent appointment history
   rpc GetFollowUpRecommendations (GetFollowUpRecommendationsRequest) returns (GetFollowUpRecommendationsResponse);
+
+  // ─── ADMIN REPORTS ───
+
+  // Appointments count by status in period (for admin analytics).
+  rpc AdminReportAppointments (AdminReportAppointmentsRequest) returns (AdminReportAppointmentsResponse);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -541,4 +546,23 @@ message UpdateVetLocationRequest {
 
 message UpdateVetLocationResponse {
   bool success = 1;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ADMIN REPORTS
+// ═══════════════════════════════════════════════════════════════════════════
+
+message AdminReportAppointmentsRequest {
+  string period_start = 1;       // ISO 8601 date "YYYY-MM-DD"
+  string period_end = 2;         // ISO 8601 date "YYYY-MM-DD"
+}
+
+message AppointmentCountByStatus {
+  AppointmentStatus status = 1;
+  int32 count = 2;
+}
+
+message AdminReportAppointmentsResponse {
+  int32 total = 1;
+  repeated AppointmentCountByStatus by_status = 2;
 }
