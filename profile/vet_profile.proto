@@ -306,8 +306,8 @@ message BulkWorkingHoursResponse {
 }
 
 message GetWorkingHoursRequest {
-  string vet_profile_id = 1;
-  bool active_only = 2;         // default true
+  repeated string vet_profile_ids = 1;  // 1 or N vets; response entries include vet_profile_id
+  bool active_only = 2;                 // default true
 }
 
 message RemoveWorkingDayRequest {
