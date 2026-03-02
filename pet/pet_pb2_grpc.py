@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from protos.pet import pet_pb2 as protos_dot_pet_dot_pet__pb2
+from pet import pet_pb2 as pet_dot_pet__pb2
 
 
 class PetServiceStub(object):
@@ -25,83 +25,88 @@ class PetServiceStub(object):
         """
         self.CreatePet = channel.unary_unary(
                 '/pet.PetService/CreatePet',
-                request_serializer=protos_dot_pet_dot_pet__pb2.CreatePetRequest.SerializeToString,
-                response_deserializer=protos_dot_pet_dot_pet__pb2.PetResponse.FromString,
+                request_serializer=pet_dot_pet__pb2.CreatePetRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.PetResponse.FromString,
                 )
         self.GetPet = channel.unary_unary(
                 '/pet.PetService/GetPet',
-                request_serializer=protos_dot_pet_dot_pet__pb2.GetPetRequest.SerializeToString,
-                response_deserializer=protos_dot_pet_dot_pet__pb2.PetResponse.FromString,
+                request_serializer=pet_dot_pet__pb2.GetPetRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.PetResponse.FromString,
                 )
         self.GetPetsByOwner = channel.unary_unary(
                 '/pet.PetService/GetPetsByOwner',
-                request_serializer=protos_dot_pet_dot_pet__pb2.GetPetsByOwnerRequest.SerializeToString,
-                response_deserializer=protos_dot_pet_dot_pet__pb2.PetsResponse.FromString,
+                request_serializer=pet_dot_pet__pb2.GetPetsByOwnerRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.PetsResponse.FromString,
                 )
         self.UpdatePet = channel.unary_unary(
                 '/pet.PetService/UpdatePet',
-                request_serializer=protos_dot_pet_dot_pet__pb2.UpdatePetRequest.SerializeToString,
-                response_deserializer=protos_dot_pet_dot_pet__pb2.PetResponse.FromString,
+                request_serializer=pet_dot_pet__pb2.UpdatePetRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.PetResponse.FromString,
                 )
         self.DeletePet = channel.unary_unary(
                 '/pet.PetService/DeletePet',
-                request_serializer=protos_dot_pet_dot_pet__pb2.DeletePetRequest.SerializeToString,
-                response_deserializer=protos_dot_pet_dot_pet__pb2.DeletePetResponse.FromString,
+                request_serializer=pet_dot_pet__pb2.DeletePetRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.DeletePetResponse.FromString,
                 )
         self.AddVaccination = channel.unary_unary(
                 '/pet.PetService/AddVaccination',
-                request_serializer=protos_dot_pet_dot_pet__pb2.AddVaccinationRequest.SerializeToString,
-                response_deserializer=protos_dot_pet_dot_pet__pb2.VaccinationResponse.FromString,
+                request_serializer=pet_dot_pet__pb2.AddVaccinationRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.VaccinationResponse.FromString,
                 )
         self.GetVaccinations = channel.unary_unary(
                 '/pet.PetService/GetVaccinations',
-                request_serializer=protos_dot_pet_dot_pet__pb2.GetVaccinationsRequest.SerializeToString,
-                response_deserializer=protos_dot_pet_dot_pet__pb2.VaccinationsResponse.FromString,
+                request_serializer=pet_dot_pet__pb2.GetVaccinationsRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.VaccinationsResponse.FromString,
                 )
         self.GetUpcomingVaccinations = channel.unary_unary(
                 '/pet.PetService/GetUpcomingVaccinations',
-                request_serializer=protos_dot_pet_dot_pet__pb2.GetUpcomingVaccinationsRequest.SerializeToString,
-                response_deserializer=protos_dot_pet_dot_pet__pb2.VaccinationsResponse.FromString,
+                request_serializer=pet_dot_pet__pb2.GetUpcomingVaccinationsRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.VaccinationsResponse.FromString,
+                )
+        self.RemoveVaccination = channel.unary_unary(
+                '/pet.PetService/RemoveVaccination',
+                request_serializer=pet_dot_pet__pb2.RemoveVaccinationRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.RemoveVaccinationResponse.FromString,
                 )
         self.AddAllergy = channel.unary_unary(
                 '/pet.PetService/AddAllergy',
-                request_serializer=protos_dot_pet_dot_pet__pb2.AddAllergyRequest.SerializeToString,
-                response_deserializer=protos_dot_pet_dot_pet__pb2.AllergyResponse.FromString,
+                request_serializer=pet_dot_pet__pb2.AddAllergyRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.AllergyResponse.FromString,
                 )
         self.GetAllergies = channel.unary_unary(
                 '/pet.PetService/GetAllergies',
-                request_serializer=protos_dot_pet_dot_pet__pb2.GetAllergiesRequest.SerializeToString,
-                response_deserializer=protos_dot_pet_dot_pet__pb2.AllergiesResponse.FromString,
+                request_serializer=pet_dot_pet__pb2.GetAllergiesRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.AllergiesResponse.FromString,
                 )
         self.RemoveAllergy = channel.unary_unary(
                 '/pet.PetService/RemoveAllergy',
-                request_serializer=protos_dot_pet_dot_pet__pb2.RemoveAllergyRequest.SerializeToString,
-                response_deserializer=protos_dot_pet_dot_pet__pb2.RemoveAllergyResponse.FromString,
+                request_serializer=pet_dot_pet__pb2.RemoveAllergyRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.RemoveAllergyResponse.FromString,
                 )
         self.GenerateAvatarUploadUrl = channel.unary_unary(
                 '/pet.PetService/GenerateAvatarUploadUrl',
-                request_serializer=protos_dot_pet_dot_pet__pb2.GeneratePetAvatarUploadUrlRequest.SerializeToString,
-                response_deserializer=protos_dot_pet_dot_pet__pb2.GeneratePetAvatarUploadUrlResponse.FromString,
+                request_serializer=pet_dot_pet__pb2.GeneratePetAvatarUploadUrlRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.GeneratePetAvatarUploadUrlResponse.FromString,
                 )
         self.GetBreedCatalog = channel.unary_unary(
                 '/pet.PetService/GetBreedCatalog',
-                request_serializer=protos_dot_pet_dot_pet__pb2.GetBreedCatalogRequest.SerializeToString,
-                response_deserializer=protos_dot_pet_dot_pet__pb2.GetBreedCatalogResponse.FromString,
+                request_serializer=pet_dot_pet__pb2.GetBreedCatalogRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.GetBreedCatalogResponse.FromString,
                 )
         self.SearchBreeds = channel.unary_unary(
                 '/pet.PetService/SearchBreeds',
-                request_serializer=protos_dot_pet_dot_pet__pb2.SearchBreedsRequest.SerializeToString,
-                response_deserializer=protos_dot_pet_dot_pet__pb2.SearchBreedsResponse.FromString,
+                request_serializer=pet_dot_pet__pb2.SearchBreedsRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.SearchBreedsResponse.FromString,
                 )
         self.HardDeletePetsByOwner = channel.unary_unary(
                 '/pet.PetService/HardDeletePetsByOwner',
-                request_serializer=protos_dot_pet_dot_pet__pb2.HardDeletePetsByOwnerRequest.SerializeToString,
-                response_deserializer=protos_dot_pet_dot_pet__pb2.HardDeletePetsByOwnerResponse.FromString,
+                request_serializer=pet_dot_pet__pb2.HardDeletePetsByOwnerRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.HardDeletePetsByOwnerResponse.FromString,
                 )
         self.ExtractVaccinationCard = channel.unary_unary(
                 '/pet.PetService/ExtractVaccinationCard',
-                request_serializer=protos_dot_pet_dot_pet__pb2.ExtractVaccinationCardRequest.SerializeToString,
-                response_deserializer=protos_dot_pet_dot_pet__pb2.ExtractVaccinationCardResponse.FromString,
+                request_serializer=pet_dot_pet__pb2.ExtractVaccinationCardRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.ExtractVaccinationCardResponse.FromString,
                 )
 
 
@@ -170,6 +175,13 @@ class PetServiceServicer(object):
 
     def GetUpcomingVaccinations(self, request, context):
         """Get upcoming vaccinations (for reminders/notifications)
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RemoveVaccination(self, request, context):
+        """Remove a vaccination record (admin only — enforced at gateway)
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -246,83 +258,88 @@ def add_PetServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'CreatePet': grpc.unary_unary_rpc_method_handler(
                     servicer.CreatePet,
-                    request_deserializer=protos_dot_pet_dot_pet__pb2.CreatePetRequest.FromString,
-                    response_serializer=protos_dot_pet_dot_pet__pb2.PetResponse.SerializeToString,
+                    request_deserializer=pet_dot_pet__pb2.CreatePetRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.PetResponse.SerializeToString,
             ),
             'GetPet': grpc.unary_unary_rpc_method_handler(
                     servicer.GetPet,
-                    request_deserializer=protos_dot_pet_dot_pet__pb2.GetPetRequest.FromString,
-                    response_serializer=protos_dot_pet_dot_pet__pb2.PetResponse.SerializeToString,
+                    request_deserializer=pet_dot_pet__pb2.GetPetRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.PetResponse.SerializeToString,
             ),
             'GetPetsByOwner': grpc.unary_unary_rpc_method_handler(
                     servicer.GetPetsByOwner,
-                    request_deserializer=protos_dot_pet_dot_pet__pb2.GetPetsByOwnerRequest.FromString,
-                    response_serializer=protos_dot_pet_dot_pet__pb2.PetsResponse.SerializeToString,
+                    request_deserializer=pet_dot_pet__pb2.GetPetsByOwnerRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.PetsResponse.SerializeToString,
             ),
             'UpdatePet': grpc.unary_unary_rpc_method_handler(
                     servicer.UpdatePet,
-                    request_deserializer=protos_dot_pet_dot_pet__pb2.UpdatePetRequest.FromString,
-                    response_serializer=protos_dot_pet_dot_pet__pb2.PetResponse.SerializeToString,
+                    request_deserializer=pet_dot_pet__pb2.UpdatePetRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.PetResponse.SerializeToString,
             ),
             'DeletePet': grpc.unary_unary_rpc_method_handler(
                     servicer.DeletePet,
-                    request_deserializer=protos_dot_pet_dot_pet__pb2.DeletePetRequest.FromString,
-                    response_serializer=protos_dot_pet_dot_pet__pb2.DeletePetResponse.SerializeToString,
+                    request_deserializer=pet_dot_pet__pb2.DeletePetRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.DeletePetResponse.SerializeToString,
             ),
             'AddVaccination': grpc.unary_unary_rpc_method_handler(
                     servicer.AddVaccination,
-                    request_deserializer=protos_dot_pet_dot_pet__pb2.AddVaccinationRequest.FromString,
-                    response_serializer=protos_dot_pet_dot_pet__pb2.VaccinationResponse.SerializeToString,
+                    request_deserializer=pet_dot_pet__pb2.AddVaccinationRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.VaccinationResponse.SerializeToString,
             ),
             'GetVaccinations': grpc.unary_unary_rpc_method_handler(
                     servicer.GetVaccinations,
-                    request_deserializer=protos_dot_pet_dot_pet__pb2.GetVaccinationsRequest.FromString,
-                    response_serializer=protos_dot_pet_dot_pet__pb2.VaccinationsResponse.SerializeToString,
+                    request_deserializer=pet_dot_pet__pb2.GetVaccinationsRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.VaccinationsResponse.SerializeToString,
             ),
             'GetUpcomingVaccinations': grpc.unary_unary_rpc_method_handler(
                     servicer.GetUpcomingVaccinations,
-                    request_deserializer=protos_dot_pet_dot_pet__pb2.GetUpcomingVaccinationsRequest.FromString,
-                    response_serializer=protos_dot_pet_dot_pet__pb2.VaccinationsResponse.SerializeToString,
+                    request_deserializer=pet_dot_pet__pb2.GetUpcomingVaccinationsRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.VaccinationsResponse.SerializeToString,
+            ),
+            'RemoveVaccination': grpc.unary_unary_rpc_method_handler(
+                    servicer.RemoveVaccination,
+                    request_deserializer=pet_dot_pet__pb2.RemoveVaccinationRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.RemoveVaccinationResponse.SerializeToString,
             ),
             'AddAllergy': grpc.unary_unary_rpc_method_handler(
                     servicer.AddAllergy,
-                    request_deserializer=protos_dot_pet_dot_pet__pb2.AddAllergyRequest.FromString,
-                    response_serializer=protos_dot_pet_dot_pet__pb2.AllergyResponse.SerializeToString,
+                    request_deserializer=pet_dot_pet__pb2.AddAllergyRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.AllergyResponse.SerializeToString,
             ),
             'GetAllergies': grpc.unary_unary_rpc_method_handler(
                     servicer.GetAllergies,
-                    request_deserializer=protos_dot_pet_dot_pet__pb2.GetAllergiesRequest.FromString,
-                    response_serializer=protos_dot_pet_dot_pet__pb2.AllergiesResponse.SerializeToString,
+                    request_deserializer=pet_dot_pet__pb2.GetAllergiesRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.AllergiesResponse.SerializeToString,
             ),
             'RemoveAllergy': grpc.unary_unary_rpc_method_handler(
                     servicer.RemoveAllergy,
-                    request_deserializer=protos_dot_pet_dot_pet__pb2.RemoveAllergyRequest.FromString,
-                    response_serializer=protos_dot_pet_dot_pet__pb2.RemoveAllergyResponse.SerializeToString,
+                    request_deserializer=pet_dot_pet__pb2.RemoveAllergyRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.RemoveAllergyResponse.SerializeToString,
             ),
             'GenerateAvatarUploadUrl': grpc.unary_unary_rpc_method_handler(
                     servicer.GenerateAvatarUploadUrl,
-                    request_deserializer=protos_dot_pet_dot_pet__pb2.GeneratePetAvatarUploadUrlRequest.FromString,
-                    response_serializer=protos_dot_pet_dot_pet__pb2.GeneratePetAvatarUploadUrlResponse.SerializeToString,
+                    request_deserializer=pet_dot_pet__pb2.GeneratePetAvatarUploadUrlRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.GeneratePetAvatarUploadUrlResponse.SerializeToString,
             ),
             'GetBreedCatalog': grpc.unary_unary_rpc_method_handler(
                     servicer.GetBreedCatalog,
-                    request_deserializer=protos_dot_pet_dot_pet__pb2.GetBreedCatalogRequest.FromString,
-                    response_serializer=protos_dot_pet_dot_pet__pb2.GetBreedCatalogResponse.SerializeToString,
+                    request_deserializer=pet_dot_pet__pb2.GetBreedCatalogRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.GetBreedCatalogResponse.SerializeToString,
             ),
             'SearchBreeds': grpc.unary_unary_rpc_method_handler(
                     servicer.SearchBreeds,
-                    request_deserializer=protos_dot_pet_dot_pet__pb2.SearchBreedsRequest.FromString,
-                    response_serializer=protos_dot_pet_dot_pet__pb2.SearchBreedsResponse.SerializeToString,
+                    request_deserializer=pet_dot_pet__pb2.SearchBreedsRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.SearchBreedsResponse.SerializeToString,
             ),
             'HardDeletePetsByOwner': grpc.unary_unary_rpc_method_handler(
                     servicer.HardDeletePetsByOwner,
-                    request_deserializer=protos_dot_pet_dot_pet__pb2.HardDeletePetsByOwnerRequest.FromString,
-                    response_serializer=protos_dot_pet_dot_pet__pb2.HardDeletePetsByOwnerResponse.SerializeToString,
+                    request_deserializer=pet_dot_pet__pb2.HardDeletePetsByOwnerRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.HardDeletePetsByOwnerResponse.SerializeToString,
             ),
             'ExtractVaccinationCard': grpc.unary_unary_rpc_method_handler(
                     servicer.ExtractVaccinationCard,
-                    request_deserializer=protos_dot_pet_dot_pet__pb2.ExtractVaccinationCardRequest.FromString,
-                    response_serializer=protos_dot_pet_dot_pet__pb2.ExtractVaccinationCardResponse.SerializeToString,
+                    request_deserializer=pet_dot_pet__pb2.ExtractVaccinationCardRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.ExtractVaccinationCardResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -355,8 +372,8 @@ class PetService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/pet.PetService/CreatePet',
-            protos_dot_pet_dot_pet__pb2.CreatePetRequest.SerializeToString,
-            protos_dot_pet_dot_pet__pb2.PetResponse.FromString,
+            pet_dot_pet__pb2.CreatePetRequest.SerializeToString,
+            pet_dot_pet__pb2.PetResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -372,8 +389,8 @@ class PetService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/pet.PetService/GetPet',
-            protos_dot_pet_dot_pet__pb2.GetPetRequest.SerializeToString,
-            protos_dot_pet_dot_pet__pb2.PetResponse.FromString,
+            pet_dot_pet__pb2.GetPetRequest.SerializeToString,
+            pet_dot_pet__pb2.PetResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -389,8 +406,8 @@ class PetService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/pet.PetService/GetPetsByOwner',
-            protos_dot_pet_dot_pet__pb2.GetPetsByOwnerRequest.SerializeToString,
-            protos_dot_pet_dot_pet__pb2.PetsResponse.FromString,
+            pet_dot_pet__pb2.GetPetsByOwnerRequest.SerializeToString,
+            pet_dot_pet__pb2.PetsResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -406,8 +423,8 @@ class PetService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/pet.PetService/UpdatePet',
-            protos_dot_pet_dot_pet__pb2.UpdatePetRequest.SerializeToString,
-            protos_dot_pet_dot_pet__pb2.PetResponse.FromString,
+            pet_dot_pet__pb2.UpdatePetRequest.SerializeToString,
+            pet_dot_pet__pb2.PetResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -423,8 +440,8 @@ class PetService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/pet.PetService/DeletePet',
-            protos_dot_pet_dot_pet__pb2.DeletePetRequest.SerializeToString,
-            protos_dot_pet_dot_pet__pb2.DeletePetResponse.FromString,
+            pet_dot_pet__pb2.DeletePetRequest.SerializeToString,
+            pet_dot_pet__pb2.DeletePetResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -440,8 +457,8 @@ class PetService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/pet.PetService/AddVaccination',
-            protos_dot_pet_dot_pet__pb2.AddVaccinationRequest.SerializeToString,
-            protos_dot_pet_dot_pet__pb2.VaccinationResponse.FromString,
+            pet_dot_pet__pb2.AddVaccinationRequest.SerializeToString,
+            pet_dot_pet__pb2.VaccinationResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -457,8 +474,8 @@ class PetService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/pet.PetService/GetVaccinations',
-            protos_dot_pet_dot_pet__pb2.GetVaccinationsRequest.SerializeToString,
-            protos_dot_pet_dot_pet__pb2.VaccinationsResponse.FromString,
+            pet_dot_pet__pb2.GetVaccinationsRequest.SerializeToString,
+            pet_dot_pet__pb2.VaccinationsResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -474,8 +491,25 @@ class PetService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/pet.PetService/GetUpcomingVaccinations',
-            protos_dot_pet_dot_pet__pb2.GetUpcomingVaccinationsRequest.SerializeToString,
-            protos_dot_pet_dot_pet__pb2.VaccinationsResponse.FromString,
+            pet_dot_pet__pb2.GetUpcomingVaccinationsRequest.SerializeToString,
+            pet_dot_pet__pb2.VaccinationsResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def RemoveVaccination(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/pet.PetService/RemoveVaccination',
+            pet_dot_pet__pb2.RemoveVaccinationRequest.SerializeToString,
+            pet_dot_pet__pb2.RemoveVaccinationResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -491,8 +525,8 @@ class PetService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/pet.PetService/AddAllergy',
-            protos_dot_pet_dot_pet__pb2.AddAllergyRequest.SerializeToString,
-            protos_dot_pet_dot_pet__pb2.AllergyResponse.FromString,
+            pet_dot_pet__pb2.AddAllergyRequest.SerializeToString,
+            pet_dot_pet__pb2.AllergyResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -508,8 +542,8 @@ class PetService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/pet.PetService/GetAllergies',
-            protos_dot_pet_dot_pet__pb2.GetAllergiesRequest.SerializeToString,
-            protos_dot_pet_dot_pet__pb2.AllergiesResponse.FromString,
+            pet_dot_pet__pb2.GetAllergiesRequest.SerializeToString,
+            pet_dot_pet__pb2.AllergiesResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -525,8 +559,8 @@ class PetService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/pet.PetService/RemoveAllergy',
-            protos_dot_pet_dot_pet__pb2.RemoveAllergyRequest.SerializeToString,
-            protos_dot_pet_dot_pet__pb2.RemoveAllergyResponse.FromString,
+            pet_dot_pet__pb2.RemoveAllergyRequest.SerializeToString,
+            pet_dot_pet__pb2.RemoveAllergyResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -542,8 +576,8 @@ class PetService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/pet.PetService/GenerateAvatarUploadUrl',
-            protos_dot_pet_dot_pet__pb2.GeneratePetAvatarUploadUrlRequest.SerializeToString,
-            protos_dot_pet_dot_pet__pb2.GeneratePetAvatarUploadUrlResponse.FromString,
+            pet_dot_pet__pb2.GeneratePetAvatarUploadUrlRequest.SerializeToString,
+            pet_dot_pet__pb2.GeneratePetAvatarUploadUrlResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -559,8 +593,8 @@ class PetService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/pet.PetService/GetBreedCatalog',
-            protos_dot_pet_dot_pet__pb2.GetBreedCatalogRequest.SerializeToString,
-            protos_dot_pet_dot_pet__pb2.GetBreedCatalogResponse.FromString,
+            pet_dot_pet__pb2.GetBreedCatalogRequest.SerializeToString,
+            pet_dot_pet__pb2.GetBreedCatalogResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -576,8 +610,8 @@ class PetService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/pet.PetService/SearchBreeds',
-            protos_dot_pet_dot_pet__pb2.SearchBreedsRequest.SerializeToString,
-            protos_dot_pet_dot_pet__pb2.SearchBreedsResponse.FromString,
+            pet_dot_pet__pb2.SearchBreedsRequest.SerializeToString,
+            pet_dot_pet__pb2.SearchBreedsResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -593,8 +627,8 @@ class PetService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/pet.PetService/HardDeletePetsByOwner',
-            protos_dot_pet_dot_pet__pb2.HardDeletePetsByOwnerRequest.SerializeToString,
-            protos_dot_pet_dot_pet__pb2.HardDeletePetsByOwnerResponse.FromString,
+            pet_dot_pet__pb2.HardDeletePetsByOwnerRequest.SerializeToString,
+            pet_dot_pet__pb2.HardDeletePetsByOwnerResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -610,7 +644,7 @@ class PetService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/pet.PetService/ExtractVaccinationCard',
-            protos_dot_pet_dot_pet__pb2.ExtractVaccinationCardRequest.SerializeToString,
-            protos_dot_pet_dot_pet__pb2.ExtractVaccinationCardResponse.FromString,
+            pet_dot_pet__pb2.ExtractVaccinationCardRequest.SerializeToString,
+            pet_dot_pet__pb2.ExtractVaccinationCardResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

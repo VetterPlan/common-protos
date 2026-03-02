@@ -41,6 +41,9 @@ service PetService {
   // Get upcoming vaccinations (for reminders/notifications)
   rpc GetUpcomingVaccinations (GetUpcomingVaccinationsRequest) returns (VaccinationsResponse);
 
+  // Remove a vaccination record (admin only — enforced at gateway)
+  rpc RemoveVaccination (RemoveVaccinationRequest) returns (RemoveVaccinationResponse);
+
   // ─── ALLERGIES ───
 
   // Add an allergy record for a pet
@@ -241,6 +244,15 @@ message GetVaccinationsRequest {
 message GetUpcomingVaccinationsRequest {
   string client_profile_id = 1;   // Get for all pets of this owner
   int32 days_ahead = 2;           // How many days ahead to look (default: 30)
+}
+
+message RemoveVaccinationRequest {
+  string vaccination_id = 1;
+}
+
+message RemoveVaccinationResponse {
+  bool success = 1;
+  string message = 2;
 }
 
 // ─── Allergies ───
