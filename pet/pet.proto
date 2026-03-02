@@ -41,7 +41,7 @@ service PetService {
   // Get upcoming vaccinations (for reminders/notifications)
   rpc GetUpcomingVaccinations (GetUpcomingVaccinationsRequest) returns (VaccinationsResponse);
 
-  // Remove a vaccination record (admin only — enforced at gateway)
+  // Remove a vaccination record (admin only — enforced at gateway) remove
   rpc RemoveVaccination (RemoveVaccinationRequest) returns (RemoveVaccinationResponse);
 
   // ─── ALLERGIES ───
