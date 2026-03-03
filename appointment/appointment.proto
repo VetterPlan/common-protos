@@ -296,6 +296,7 @@ message RequestAppointmentRequest {
   string preferred_vet_id = 16;        // Optional: "I want this specific vet"
   string service_metadata = 17;        // JSON string with subtype info
   string payment_method_id = 18;       // Required: ClientPaymentMethod UUID for preauth at acceptance
+  string client_email = 19;            // Optional: client email for transactional emails (S2-12)
 }
 
 message AcceptAppointmentRequest {
