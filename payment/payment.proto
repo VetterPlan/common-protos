@@ -106,6 +106,9 @@ service PaymentService {
   // Get vet earnings summary by period.
   rpc GetVetEarnings (GetVetEarningsRequest) returns (VetEarningsResponse);
 
+  // Get client spending history by period (S2-11).
+  rpc GetClientSpendingHistory (GetClientSpendingHistoryRequest) returns (ClientSpendingHistoryResponse);
+
   // ─── DISPUTES (FASE 3) ───
 
   // Client opens a dispute for a completed appointment.
@@ -613,6 +616,29 @@ message GetVetEarningsRequest {
   string vet_profile_id = 1;
   string period_start = 2;
   string period_end = 3;
+}
+
+message GetClientSpendingHistoryRequest {
+  string client_profile_id = 1;
+  string date_from = 2;   // ISO 8601 date
+  string date_to = 3;     // ISO 8601 date
+}
+
+message ClientSpendingSummary {
+  string appointment_id = 1;
+  string vet_profile_id = 2;
+  double amount = 3;
+  string currency = 4;
+  string captured_at = 5;
+}
+
+message ClientSpendingHistoryResponse {
+  string client_profile_id = 1;
+  string date_from = 2;
+  string date_to = 3;
+  double total_spent = 4;
+  int32 count = 5;
+  repeated ClientSpendingSummary items = 6;  // Optional summary list
 }
 
 // ═══════════════════════════════════════════════════════════════════════════

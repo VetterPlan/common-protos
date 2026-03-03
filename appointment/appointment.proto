@@ -79,6 +79,14 @@ service AppointmentService {
   // Get follow-up recommendations based on recent appointment history
   rpc GetFollowUpRecommendations (GetFollowUpRecommendationsRequest) returns (GetFollowUpRecommendationsResponse);
 
+  // ─── REVIEWS (S2-3) ───
+
+  // Submit a review for a completed appointment. Only client, one per appointment.
+  rpc SubmitReview (SubmitReviewRequest) returns (ReviewResponse);
+
+  // Get vet rating summary (avg, count) for display in slots/catalog.
+  rpc GetVetRatingSummary (GetVetRatingSummaryRequest) returns (VetRatingSummaryResponse);
+
   // ─── ADMIN REPORTS ───
 
   // Appointments count by status in period (for admin analytics).
@@ -218,6 +226,9 @@ message Appointment {
   string time_window_end = 36;         // ISO 8601 datetime
   string preferred_vet_id = 37;
   string service_metadata = 38;        // JSON string
+
+  // Payment method captured at booking time
+  string payment_method_id = 39;       // ClientPaymentMethod UUID from payment-service
 }
 
 message StatusHistoryEntry {
@@ -284,6 +295,7 @@ message RequestAppointmentRequest {
   string time_window_end = 15;         // ISO 8601 UTC (required for FLEX_WINDOW/SCHEDULED)
   string preferred_vet_id = 16;        // Optional: "I want this specific vet"
   string service_metadata = 17;        // JSON string with subtype info
+  string payment_method_id = 18;       // Required: ClientPaymentMethod UUID for preauth at acceptance
 }
 
 message AcceptAppointmentRequest {
@@ -565,4 +577,34 @@ message AppointmentCountByStatus {
 message AdminReportAppointmentsResponse {
   int32 total = 1;
   repeated AppointmentCountByStatus by_status = 2;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// REVIEWS (S2-3)
+// ═══════════════════════════════════════════════════════════════════════════
+
+message SubmitReviewRequest {
+  string appointment_id = 1;       // UUID — must be COMPLETED
+  string reviewer_profile_id = 2;  // Must be client_profile_id of the appointment
+  int32 rating = 3;                // 1-5
+  string comment = 4;               // Optional text
+}
+
+message ReviewResponse {
+  string review_id = 1;
+  string appointment_id = 2;
+  string vet_profile_id = 3;
+  int32 rating = 4;
+  string comment = 5;
+  google.protobuf.Timestamp created_at = 6;
+}
+
+message GetVetRatingSummaryRequest {
+  string vet_profile_id = 1;
+}
+
+message VetRatingSummaryResponse {
+  string vet_profile_id = 1;
+  double average_rating = 2;
+  int32 review_count = 3;
 }

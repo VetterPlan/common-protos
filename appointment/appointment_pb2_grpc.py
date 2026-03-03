@@ -126,6 +126,16 @@ class AppointmentServiceStub(object):
                 request_serializer=appointment_dot_appointment__pb2.GetFollowUpRecommendationsRequest.SerializeToString,
                 response_deserializer=appointment_dot_appointment__pb2.GetFollowUpRecommendationsResponse.FromString,
                 _registered_method=True)
+        self.SubmitReview = channel.unary_unary(
+                '/appointment.AppointmentService/SubmitReview',
+                request_serializer=appointment_dot_appointment__pb2.SubmitReviewRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.ReviewResponse.FromString,
+                _registered_method=True)
+        self.GetVetRatingSummary = channel.unary_unary(
+                '/appointment.AppointmentService/GetVetRatingSummary',
+                request_serializer=appointment_dot_appointment__pb2.GetVetRatingSummaryRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.VetRatingSummaryResponse.FromString,
+                _registered_method=True)
         self.AdminReportAppointments = channel.unary_unary(
                 '/appointment.AppointmentService/AdminReportAppointments',
                 request_serializer=appointment_dot_appointment__pb2.AdminReportAppointmentsRequest.SerializeToString,
@@ -273,6 +283,22 @@ class AppointmentServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SubmitReview(self, request, context):
+        """─── REVIEWS (S2-3) ───
+
+        Submit a review for a completed appointment. Only client, one per appointment.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetVetRatingSummary(self, request, context):
+        """Get vet rating summary (avg, count) for display in slots/catalog.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def AdminReportAppointments(self, request, context):
         """─── ADMIN REPORTS ───
 
@@ -364,6 +390,16 @@ def add_AppointmentServiceServicer_to_server(servicer, server):
                     servicer.GetFollowUpRecommendations,
                     request_deserializer=appointment_dot_appointment__pb2.GetFollowUpRecommendationsRequest.FromString,
                     response_serializer=appointment_dot_appointment__pb2.GetFollowUpRecommendationsResponse.SerializeToString,
+            ),
+            'SubmitReview': grpc.unary_unary_rpc_method_handler(
+                    servicer.SubmitReview,
+                    request_deserializer=appointment_dot_appointment__pb2.SubmitReviewRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.ReviewResponse.SerializeToString,
+            ),
+            'GetVetRatingSummary': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetVetRatingSummary,
+                    request_deserializer=appointment_dot_appointment__pb2.GetVetRatingSummaryRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.VetRatingSummaryResponse.SerializeToString,
             ),
             'AdminReportAppointments': grpc.unary_unary_rpc_method_handler(
                     servicer.AdminReportAppointments,
@@ -815,6 +851,60 @@ class AppointmentService(object):
             '/appointment.AppointmentService/GetFollowUpRecommendations',
             appointment_dot_appointment__pb2.GetFollowUpRecommendationsRequest.SerializeToString,
             appointment_dot_appointment__pb2.GetFollowUpRecommendationsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SubmitReview(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/SubmitReview',
+            appointment_dot_appointment__pb2.SubmitReviewRequest.SerializeToString,
+            appointment_dot_appointment__pb2.ReviewResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetVetRatingSummary(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/GetVetRatingSummary',
+            appointment_dot_appointment__pb2.GetVetRatingSummaryRequest.SerializeToString,
+            appointment_dot_appointment__pb2.VetRatingSummaryResponse.FromString,
             options,
             channel_credentials,
             insecure,

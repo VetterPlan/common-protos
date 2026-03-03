@@ -178,6 +178,11 @@ class PaymentServiceStub(object):
                 request_serializer=payment_dot_payment__pb2.GetVetEarningsRequest.SerializeToString,
                 response_deserializer=payment_dot_payment__pb2.VetEarningsResponse.FromString,
                 _registered_method=True)
+        self.GetClientSpendingHistory = channel.unary_unary(
+                '/payment.PaymentService/GetClientSpendingHistory',
+                request_serializer=payment_dot_payment__pb2.GetClientSpendingHistoryRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.ClientSpendingHistoryResponse.FromString,
+                _registered_method=True)
         self.OpenDispute = channel.unary_unary(
                 '/payment.PaymentService/OpenDispute',
                 request_serializer=payment_dot_payment__pb2.OpenDisputeRequest.SerializeToString,
@@ -437,6 +442,13 @@ class PaymentServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetClientSpendingHistory(self, request, context):
+        """Get client spending history by period (S2-11).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def OpenDispute(self, request, context):
         """─── DISPUTES (FASE 3) ───
 
@@ -645,6 +657,11 @@ def add_PaymentServiceServicer_to_server(servicer, server):
                     servicer.GetVetEarnings,
                     request_deserializer=payment_dot_payment__pb2.GetVetEarningsRequest.FromString,
                     response_serializer=payment_dot_payment__pb2.VetEarningsResponse.SerializeToString,
+            ),
+            'GetClientSpendingHistory': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetClientSpendingHistory,
+                    request_deserializer=payment_dot_payment__pb2.GetClientSpendingHistoryRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.ClientSpendingHistoryResponse.SerializeToString,
             ),
             'OpenDispute': grpc.unary_unary_rpc_method_handler(
                     servicer.OpenDispute,
@@ -1413,6 +1430,33 @@ class PaymentService(object):
             '/payment.PaymentService/GetVetEarnings',
             payment_dot_payment__pb2.GetVetEarningsRequest.SerializeToString,
             payment_dot_payment__pb2.VetEarningsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetClientSpendingHistory(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/GetClientSpendingHistory',
+            payment_dot_payment__pb2.GetClientSpendingHistoryRequest.SerializeToString,
+            payment_dot_payment__pb2.ClientSpendingHistoryResponse.FromString,
             options,
             channel_credentials,
             insecure,

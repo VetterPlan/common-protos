@@ -42,6 +42,9 @@ service VetProfileService {
   // ─── Cancellation Strikes (inter-service, called by Appointment Service) ───
   rpc IncrementCancellationStrike (IncrementCancellationStrikeRequest) returns (IncrementCancellationStrikeResponse);
 
+  // ─── Rating (S2-4) — called by Appointment Service on SubmitReview ───
+  rpc UpdateVetRating (UpdateVetRatingRequest) returns (UpdateVetRatingResponse);
+
   // ─── Admin: list all vet profiles ───
   rpc ListVetProfiles (ListVetProfilesRequest) returns (ListVetProfilesResponse);
 
@@ -110,6 +113,10 @@ message VetProfile {
 
   // Cancellation strikes (no-show / late cancellations)
   int32 cancellation_strikes = 22;
+
+  // Denormalized rating (S2-4) — updated by appointment-service on SubmitReview
+  double rating = 23;           // Rolling average 1-5
+  int32 review_count = 24;
 }
 
 message CreateVetProfileRequest {
@@ -442,6 +449,20 @@ message IncrementCancellationStrikeRequest {
 message IncrementCancellationStrikeResponse {
   int32 strike_count = 1;         // Total strikes active (within 30-day window)
   bool suspended = 2;             // True if vet was suspended (3+ strikes)
+}
+
+// ============================================================================
+// RATING (S2-4 — denormalized from reviews, called by Appointment Service)
+// ============================================================================
+
+message UpdateVetRatingRequest {
+  string vet_profile_id = 1;
+  double new_rating = 2;          // 1-5 from this review; profile computes rolling average
+}
+
+message UpdateVetRatingResponse {
+  double average_rating = 1;
+  int32 review_count = 2;
 }
 
 // ============================================================================

@@ -1,0 +1,170 @@
+syntax = "proto3";
+
+package notification;
+
+// ═══════════════════════════════════════════════════════════════════════════
+// NOTIFICATION SERVICE
+//
+// Delivers push notifications to mobile devices via Firebase Cloud Messaging.
+// Called by appointment-service (and future services) via gRPC to send
+// targeted push messages tied to appointment lifecycle events.
+//
+// Responsibilities:
+//   - Register / unregister FCM device tokens per user
+//   - Send single-user push notifications
+//   - Broadcast to a topic (e.g. admin alerts)
+//
+// All SendPush* calls are fire-and-forget from the caller's perspective —
+// the service handles FCM retries internally.
+// ═══════════════════════════════════════════════════════════════════════════
+
+service NotificationService {
+
+  // Register an FCM device token for a user (call on app launch / token refresh)
+  rpc RegisterDeviceToken (RegisterDeviceTokenRequest) returns (RegisterDeviceTokenResponse);
+
+  // Remove a device token (call on logout or token invalidation)
+  rpc UnregisterDeviceToken (UnregisterDeviceTokenRequest) returns (UnregisterDeviceTokenResponse);
+
+  // Send a push notification to a specific user (all their active devices)
+  rpc SendPushNotification (SendPushNotificationRequest) returns (SendPushNotificationResponse);
+
+  // Broadcast to a named topic (e.g. "admin-alerts")
+  rpc BroadcastToTopic (BroadcastToTopicRequest) returns (BroadcastToTopicResponse);
+
+  // Send transactional email via SendGrid/SES (S2-12). Async, non-blocking.
+  rpc SendEmail (SendEmailRequest) returns (SendEmailResponse);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ENUMS
+// ═══════════════════════════════════════════════════════════════════════════
+
+enum NotificationPlatform {
+  NOTIFICATION_PLATFORM_UNSPECIFIED = 0;
+  NOTIFICATION_PLATFORM_IOS         = 1;
+  NOTIFICATION_PLATFORM_ANDROID     = 2;
+  NOTIFICATION_PLATFORM_WEB         = 3;
+}
+
+// Semantic event types — used by the service to build localised copy
+// and choose the correct notification channel/priority.
+enum NotificationEvent {
+  NOTIFICATION_EVENT_UNSPECIFIED        = 0;
+
+  // Appointment lifecycle (client perspective)
+  NOTIFICATION_EVENT_APPOINTMENT_REQUESTED  = 1;  // booking confirmed
+  NOTIFICATION_EVENT_APPOINTMENT_ACCEPTED   = 2;  // vet has accepted
+  NOTIFICATION_EVENT_APPOINTMENT_CANCELLED  = 3;
+  NOTIFICATION_EVENT_APPOINTMENT_REJECTED   = 4;
+
+  // Vet on the way (client perspective)
+  NOTIFICATION_EVENT_VET_EN_ROUTE           = 5;
+  NOTIFICATION_EVENT_VET_ARRIVED            = 6;
+
+  // Service underway (both)
+  NOTIFICATION_EVENT_SERVICE_STARTED        = 7;
+  NOTIFICATION_EVENT_SERVICE_COMPLETED      = 8;
+
+  // No-show
+  NOTIFICATION_EVENT_CLIENT_NO_SHOW         = 9;  // sent to vet
+  NOTIFICATION_EVENT_APPOINTMENT_NO_SHOW    = 10; // sent to client
+
+  // Payment
+  NOTIFICATION_EVENT_PAYMENT_AUTHORIZED     = 11;
+  NOTIFICATION_EVENT_PAYMENT_CAPTURED       = 12;
+  NOTIFICATION_EVENT_PAYMENT_FAILED         = 13;
+
+  // Vet-specific
+  NOTIFICATION_EVENT_NEW_APPOINTMENT_NEARBY = 20; // broadcast to area vets
+  NOTIFICATION_EVENT_VET_PAYOUT_SENT        = 21;
+
+  // System / admin
+  NOTIFICATION_EVENT_SYSTEM_ALERT           = 99;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MESSAGES
+// ═══════════════════════════════════════════════════════════════════════════
+
+message RegisterDeviceTokenRequest {
+  string user_id    = 1;  // profile UUID (client or vet)
+  string fcm_token  = 2;  // FCM registration token from the device
+  NotificationPlatform platform = 3;
+  string device_id  = 4;  // stable device identifier (for deduplication)
+}
+
+message RegisterDeviceTokenResponse {
+  bool   success = 1;
+}
+
+message UnregisterDeviceTokenRequest {
+  string fcm_token = 1;
+}
+
+message UnregisterDeviceTokenResponse {
+  bool success = 1;
+}
+
+// Extra key-value pairs merged into the FCM data payload.
+message NotificationDataEntry {
+  string key   = 1;
+  string value = 2;
+}
+
+message SendPushNotificationRequest {
+  // Recipient — at least one of user_id or fcm_tokens must be set.
+  // If user_id is provided, the service looks up all active tokens for that user.
+  string recipient_user_id = 1;
+
+  // Event type — drives copy generation and channel priority inside the service.
+  NotificationEvent event = 2;
+
+  // Optional explicit title/body (overrides auto-generated copy when set).
+  string title = 3;
+  string body  = 4;
+
+  // Structured context passed as FCM data payload (deep-link, IDs, etc.)
+  repeated NotificationDataEntry data = 5;
+
+  // Idempotency key — de-duplicates retries within a 24-hour window.
+  string idempotency_key = 6;
+}
+
+message SendPushNotificationResponse {
+  bool   success           = 1;
+  int32  tokens_sent       = 2;  // number of FCM messages dispatched
+  int32  tokens_failed     = 3;
+  string error_message     = 4;  // non-empty only on hard failure
+}
+
+message BroadcastToTopicRequest {
+  string topic             = 1;  // FCM topic name (no leading slash)
+  string title             = 2;
+  string body              = 3;
+  repeated NotificationDataEntry data = 4;
+}
+
+message BroadcastToTopicResponse {
+  bool   success       = 1;
+  string error_message = 2;
+}
+
+// S2-12: Email templates
+enum EmailTemplate {
+  EMAIL_TEMPLATE_UNSPECIFIED = 0;
+  EMAIL_TEMPLATE_APPOINTMENT_CONFIRMED = 1;
+  EMAIL_TEMPLATE_SERVICE_COMPLETED_RECEIPT = 2;
+}
+
+message SendEmailRequest {
+  string recipient_email = 1;
+  EmailTemplate template = 2;
+  map<string, string> template_data = 3;  // e.g. appointment_id, vet_name, amount
+  string idempotency_key = 4;
+}
+
+message SendEmailResponse {
+  bool success = 1;
+  string error_message = 2;
+}
