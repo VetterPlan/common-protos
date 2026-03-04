@@ -91,6 +91,16 @@ service AppointmentService {
 
   // Appointments count by status in period (for admin analytics).
   rpc AdminReportAppointments (AdminReportAppointmentsRequest) returns (AdminReportAppointmentsResponse);
+
+  // ─── P2: Nequi payment authorization ───
+
+  // Advance appointment from PENDING_PAYMENT_AUTH → ACCEPTED (triggered by payment-service on Nequi authorized).
+  rpc AdvanceFromPendingPaymentAuth (AdvanceFromPendingPaymentAuthRequest) returns (AppointmentResponse);
+
+  // ─── P5: Supply health metrics ───
+
+  // Get supply health metrics for admin dashboard (slot fill rate, median response time, etc.).
+  rpc GetSupplyHealthMetrics (SupplyHealthMetricsRequest) returns (SupplyHealthMetricsResponse);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -109,6 +119,7 @@ enum AppointmentStatus {
   APPOINTMENT_STATUS_NO_SHOW = 8;
   APPOINTMENT_STATUS_REJECTED = 9;
   APPOINTMENT_STATUS_EXPIRED = 10;
+  APPOINTMENT_STATUS_PENDING_PAYMENT_AUTH = 11;  // P2: Nequi — awaiting push-auth
 }
 
 enum ServiceType {
@@ -151,6 +162,9 @@ enum StatusChangeReason {
   STATUS_CHANGE_REASON_SYSTEM_NO_SHOW = 12;
   STATUS_CHANGE_REASON_ADMIN_OVERRIDE = 13;
   STATUS_CHANGE_REASON_OTHER = 14;
+  STATUS_CHANGE_REASON_PAYMENT_PENDING_AUTH = 15;   // P2: Nequi — awaiting push-auth
+  STATUS_CHANGE_REASON_PAYMENT_AUTHORIZED = 16;     // P2: Nequi — auth confirmed
+  STATUS_CHANGE_REASON_SYSTEM_PAYMENT_TIMEOUT = 17; // P2: Nequi — auth timed out
 }
 
 enum UrgencyLevel {
@@ -297,6 +311,7 @@ message RequestAppointmentRequest {
   string service_metadata = 17;        // JSON string with subtype info
   string payment_method_id = 18;       // Required: ClientPaymentMethod UUID for preauth at acceptance
   string client_email = 19;            // Optional: client email for transactional emails (S2-12)
+  double slot_price = 20;              // P1: price seen by client in slot listing (locks price for 90 min, 0 = not provided)
 }
 
 message AcceptAppointmentRequest {
@@ -608,4 +623,32 @@ message VetRatingSummaryResponse {
   string vet_profile_id = 1;
   double average_rating = 2;
   int32 review_count = 3;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// P2 — Nequi PENDING_PAYMENT_AUTH
+// ═══════════════════════════════════════════════════════════════════════════
+
+message AdvanceFromPendingPaymentAuthRequest {
+  string appointment_id = 1;  // Triggered by payment-service when Nequi AUTHORIZED
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// P5 — Supply Health Metrics
+// ═══════════════════════════════════════════════════════════════════════════
+
+message SupplyHealthMetricsRequest {
+  string date_from = 1;   // ISO 8601 date "YYYY-MM-DD"
+  string date_to = 2;     // ISO 8601 date "YYYY-MM-DD"
+}
+
+message SupplyHealthMetricsResponse {
+  double slot_fill_rate = 1;               // completed / total_scheduled
+  double median_response_time_minutes = 2; // median(accepted_at - created_at)
+  double vet_utilization_rate = 3;         // completed / all active vets
+  int32  active_vets = 4;                  // vets with ≥1 completed in period
+  int32  total_appointments = 5;
+  int32  completed_appointments = 6;
+  int32  cancelled_by_vet = 7;
+  int32  expired_no_vet = 8;
 }

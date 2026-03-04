@@ -141,6 +141,16 @@ class AppointmentServiceStub(object):
                 request_serializer=appointment_dot_appointment__pb2.AdminReportAppointmentsRequest.SerializeToString,
                 response_deserializer=appointment_dot_appointment__pb2.AdminReportAppointmentsResponse.FromString,
                 _registered_method=True)
+        self.AdvanceFromPendingPaymentAuth = channel.unary_unary(
+                '/appointment.AppointmentService/AdvanceFromPendingPaymentAuth',
+                request_serializer=appointment_dot_appointment__pb2.AdvanceFromPendingPaymentAuthRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+                _registered_method=True)
+        self.GetSupplyHealthMetrics = channel.unary_unary(
+                '/appointment.AppointmentService/GetSupplyHealthMetrics',
+                request_serializer=appointment_dot_appointment__pb2.SupplyHealthMetricsRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.SupplyHealthMetricsResponse.FromString,
+                _registered_method=True)
 
 
 class AppointmentServiceServicer(object):
@@ -308,6 +318,24 @@ class AppointmentServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def AdvanceFromPendingPaymentAuth(self, request, context):
+        """─── P2: Nequi payment authorization ───
+
+        Advance appointment from PENDING_PAYMENT_AUTH → ACCEPTED (triggered by payment-service on Nequi authorized).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetSupplyHealthMetrics(self, request, context):
+        """─── P5: Supply health metrics ───
+
+        Get supply health metrics for admin dashboard (slot fill rate, median response time, etc.).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AppointmentServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -405,6 +433,16 @@ def add_AppointmentServiceServicer_to_server(servicer, server):
                     servicer.AdminReportAppointments,
                     request_deserializer=appointment_dot_appointment__pb2.AdminReportAppointmentsRequest.FromString,
                     response_serializer=appointment_dot_appointment__pb2.AdminReportAppointmentsResponse.SerializeToString,
+            ),
+            'AdvanceFromPendingPaymentAuth': grpc.unary_unary_rpc_method_handler(
+                    servicer.AdvanceFromPendingPaymentAuth,
+                    request_deserializer=appointment_dot_appointment__pb2.AdvanceFromPendingPaymentAuthRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.AppointmentResponse.SerializeToString,
+            ),
+            'GetSupplyHealthMetrics': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetSupplyHealthMetrics,
+                    request_deserializer=appointment_dot_appointment__pb2.SupplyHealthMetricsRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.SupplyHealthMetricsResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -932,6 +970,60 @@ class AppointmentService(object):
             '/appointment.AppointmentService/AdminReportAppointments',
             appointment_dot_appointment__pb2.AdminReportAppointmentsRequest.SerializeToString,
             appointment_dot_appointment__pb2.AdminReportAppointmentsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def AdvanceFromPendingPaymentAuth(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/AdvanceFromPendingPaymentAuth',
+            appointment_dot_appointment__pb2.AdvanceFromPendingPaymentAuthRequest.SerializeToString,
+            appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetSupplyHealthMetrics(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/GetSupplyHealthMetrics',
+            appointment_dot_appointment__pb2.SupplyHealthMetricsRequest.SerializeToString,
+            appointment_dot_appointment__pb2.SupplyHealthMetricsResponse.FromString,
             options,
             channel_credentials,
             insecure,

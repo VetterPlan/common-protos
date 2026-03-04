@@ -131,6 +131,17 @@ service PaymentService {
   // Get vet commission tier based on completed appointment count.
   rpc GetVetCommissionTier (GetVetCommissionTierRequest) returns (GetVetCommissionTierResponse);
 
+  // ─── RECONCILIATION (P4) ───
+
+  // Get reconciliation report for a specific date.
+  rpc GetReconciliationReport (GetReconciliationReportRequest) returns (ReconciliationReportResponse);
+
+  // List reconciliation reports (paginated).
+  rpc ListReconciliationReports (ListReconciliationReportsRequest) returns (ListReconciliationReportsResponse);
+
+  // Manually trigger reconciliation for a specific date.
+  rpc TriggerReconciliation (TriggerReconciliationRequest) returns (ReconciliationReportResponse);
+
   // ─── ADMIN REPORTS ───
 
   // Income report by period (global, by vet, by service).
@@ -721,6 +732,7 @@ message ChargeVetCancellationFeeRequest {
   string payment_id = 1;       // Payment for the cancelled appointment
   string vet_profile_id = 2;   // Vet whose wallet will be debited
   string idempotency_key = 3;
+  double fee_amount_cop = 4;   // Override fee in COP (0 = use default % from settings)
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -903,4 +915,50 @@ message CommissionByTierEntry {
 
 message AdminCommissionByTierResponse {
   repeated CommissionByTierEntry tiers = 1;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// P4 — RECONCILIATION
+// ═══════════════════════════════════════════════════════════════════════════
+
+message GetReconciliationReportRequest {
+  string date = 1;  // ISO 8601 date "YYYY-MM-DD"
+}
+
+message TriggerReconciliationRequest {
+  string date = 1;  // ISO 8601 date to reconcile
+}
+
+message ListReconciliationReportsRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+}
+
+message ReconciliationDiscrepancyProto {
+  string type = 1;              // STATUS_MISMATCH | AMOUNT_MISMATCH | MISSING_LOCAL | MISSING_WOMPI
+  string payment_id = 2;
+  string appointment_id = 3;
+  string local_status = 4;
+  string wompi_status = 5;
+  double local_amount = 6;
+  double wompi_amount = 7;
+  string severity = 8;          // LOW | MEDIUM | HIGH | CRITICAL
+  bool auto_resolved = 9;
+  string resolution_action = 10;
+}
+
+message ReconciliationReportResponse {
+  string date = 1;
+  int32 total_checked = 2;
+  int32 total_discrepancies = 3;
+  int32 auto_resolved_count = 4;
+  int32 manual_review_count = 5;
+  double gmv_cop = 6;
+  double platform_revenue_cop = 7;
+  repeated ReconciliationDiscrepancyProto items = 8;
+}
+
+message ListReconciliationReportsResponse {
+  repeated ReconciliationReportResponse reports = 1;
+  int32 total = 2;
 }

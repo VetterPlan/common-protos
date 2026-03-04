@@ -213,6 +213,21 @@ class PaymentServiceStub(object):
                 request_serializer=payment_dot_payment__pb2.GetVetCommissionTierRequest.SerializeToString,
                 response_deserializer=payment_dot_payment__pb2.GetVetCommissionTierResponse.FromString,
                 _registered_method=True)
+        self.GetReconciliationReport = channel.unary_unary(
+                '/payment.PaymentService/GetReconciliationReport',
+                request_serializer=payment_dot_payment__pb2.GetReconciliationReportRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.ReconciliationReportResponse.FromString,
+                _registered_method=True)
+        self.ListReconciliationReports = channel.unary_unary(
+                '/payment.PaymentService/ListReconciliationReports',
+                request_serializer=payment_dot_payment__pb2.ListReconciliationReportsRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.ListReconciliationReportsResponse.FromString,
+                _registered_method=True)
+        self.TriggerReconciliation = channel.unary_unary(
+                '/payment.PaymentService/TriggerReconciliation',
+                request_serializer=payment_dot_payment__pb2.TriggerReconciliationRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.ReconciliationReportResponse.FromString,
+                _registered_method=True)
         self.AdminReportIncome = channel.unary_unary(
                 '/payment.PaymentService/AdminReportIncome',
                 request_serializer=payment_dot_payment__pb2.AdminReportIncomeRequest.SerializeToString,
@@ -495,6 +510,29 @@ class PaymentServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetReconciliationReport(self, request, context):
+        """─── RECONCILIATION (P4) ───
+
+        Get reconciliation report for a specific date.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListReconciliationReports(self, request, context):
+        """List reconciliation reports (paginated).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def TriggerReconciliation(self, request, context):
+        """Manually trigger reconciliation for a specific date.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def AdminReportIncome(self, request, context):
         """─── ADMIN REPORTS ───
 
@@ -692,6 +730,21 @@ def add_PaymentServiceServicer_to_server(servicer, server):
                     servicer.GetVetCommissionTier,
                     request_deserializer=payment_dot_payment__pb2.GetVetCommissionTierRequest.FromString,
                     response_serializer=payment_dot_payment__pb2.GetVetCommissionTierResponse.SerializeToString,
+            ),
+            'GetReconciliationReport': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetReconciliationReport,
+                    request_deserializer=payment_dot_payment__pb2.GetReconciliationReportRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.ReconciliationReportResponse.SerializeToString,
+            ),
+            'ListReconciliationReports': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListReconciliationReports,
+                    request_deserializer=payment_dot_payment__pb2.ListReconciliationReportsRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.ListReconciliationReportsResponse.SerializeToString,
+            ),
+            'TriggerReconciliation': grpc.unary_unary_rpc_method_handler(
+                    servicer.TriggerReconciliation,
+                    request_deserializer=payment_dot_payment__pb2.TriggerReconciliationRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.ReconciliationReportResponse.SerializeToString,
             ),
             'AdminReportIncome': grpc.unary_unary_rpc_method_handler(
                     servicer.AdminReportIncome,
@@ -1619,6 +1672,87 @@ class PaymentService(object):
             '/payment.PaymentService/GetVetCommissionTier',
             payment_dot_payment__pb2.GetVetCommissionTierRequest.SerializeToString,
             payment_dot_payment__pb2.GetVetCommissionTierResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetReconciliationReport(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/GetReconciliationReport',
+            payment_dot_payment__pb2.GetReconciliationReportRequest.SerializeToString,
+            payment_dot_payment__pb2.ReconciliationReportResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListReconciliationReports(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/ListReconciliationReports',
+            payment_dot_payment__pb2.ListReconciliationReportsRequest.SerializeToString,
+            payment_dot_payment__pb2.ListReconciliationReportsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def TriggerReconciliation(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/TriggerReconciliation',
+            payment_dot_payment__pb2.TriggerReconciliationRequest.SerializeToString,
+            payment_dot_payment__pb2.ReconciliationReportResponse.FromString,
             options,
             channel_credentials,
             insecure,
