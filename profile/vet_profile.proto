@@ -117,6 +117,13 @@ message VetProfile {
   // Denormalized rating (S2-4) — updated by appointment-service on SubmitReview
   double rating = 23;           // Rolling average 1-5
   int32 review_count = 24;
+
+  // Location (for on-demand matching, distance ranking, ETA)
+  double latitude = 25;         // 0.0 if not set
+  double longitude = 26;        // 0.0 if not set
+  string address = 27;          // Full address text
+  string city = 28;
+  string country_code = 29;     // ISO 3166-1 alpha-2
 }
 
 message CreateVetProfileRequest {
@@ -154,6 +161,11 @@ message UpdateVetProfileRequest {
   repeated string languages = 13;  // Replaces existing list
   optional string availability_settings = 14;  // JSON string
   optional string locale = 15;
+  optional double latitude = 16;
+  optional double longitude = 17;
+  optional string address = 18;
+  optional string city = 19;
+  optional string country_code = 20;  // ISO 3166-1 alpha-2
 }
 
 message UpdateVetProfileStatusRequest {
@@ -244,8 +256,8 @@ message VetByService {
   double price = 2;
   string notes = 3;
   string display_name = 4;
-  double lat = 5;              // Coordenada geográfica del vet (para Geolocation Service)
-  double lng = 6;              // 0.0 si no está configurada
+  double lat = 5;              // From vet_profile.latitude (0.0 if not set)
+  double lng = 6;              // From vet_profile.longitude (0.0 if not set)
 }
 
 message VetsByServiceResponse {
