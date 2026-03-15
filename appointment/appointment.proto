@@ -270,6 +270,8 @@ message AvailableVet {
   double score = 11;
   string price_notes = 12;
   bool is_preferred = 13;              // true if preferred_vet_id matches
+  double lat = 14;                     // Vet location for map display
+  double lng = 15;
 }
 
 message ServiceCatalogItem {
