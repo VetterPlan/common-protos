@@ -243,6 +243,9 @@ message Appointment {
 
   // Payment method captured at booking time
   string payment_method_id = 39;       // ClientPaymentMethod UUID from payment-service
+
+  // Live ETA (populated when vet marks EN_ROUTE)
+  int32 eta_minutes = 40;             // Estimated travel time in minutes
 }
 
 message StatusHistoryEntry {
