@@ -457,6 +457,9 @@ message GetNextAvailableSlotsResponse {
   repeated DaySlots days = 1;                  // Grouped by day
   int32 total_vets_in_area = 2;
   int32 service_duration_minutes = 3;          // Duration of the service
+  // Fix 12: ISO 8601 UTC timestamp of when ETAs were calculated.
+  // UI should refresh if (now - slot_calculated_at) > 5 min to avoid stale ETAs.
+  string slot_calculated_at = 4;
 }
 
 message DaySlots {
@@ -508,6 +511,12 @@ message PetAppointmentSummary {
   string status = 5;
   string completed_at = 6;
   string service_metadata = 7;         // JSON string
+
+  // Fix 11: incomplete attempt tracking
+  // True when a CANCELLED appointment had cancellation_reason = VET_UNAVAILABLE.
+  // The service was NOT delivered — recommendations engine should still flag it as pending.
+  bool incomplete_attempt = 8;
+  string cancellation_reason = 9;      // populated when incomplete_attempt is true
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
