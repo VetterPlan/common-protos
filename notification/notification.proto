@@ -79,6 +79,12 @@ enum NotificationEvent {
   NOTIFICATION_EVENT_NEW_APPOINTMENT_NEARBY = 20; // broadcast to area vets
   NOTIFICATION_EVENT_VET_PAYOUT_SENT        = 21;
 
+  // No-show warnings (client perspective — before auto NO_SHOW fires)
+  NOTIFICATION_EVENT_NO_SHOW_WARNING        = 22; // sent at 10 min and 20 min after ARRIVED
+
+  // Review reminder (client perspective)
+  NOTIFICATION_EVENT_REVIEW_REMINDER        = 23; // sent 2h after COMPLETED if no review yet
+
   // System / admin
   NOTIFICATION_EVENT_SYSTEM_ALERT           = 99;
 }

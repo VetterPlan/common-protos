@@ -101,6 +101,13 @@ service AppointmentService {
 
   // Get supply health metrics for admin dashboard (slot fill rate, median response time, etc.).
   rpc GetSupplyHealthMetrics (SupplyHealthMetricsRequest) returns (SupplyHealthMetricsResponse);
+
+  // ─── RESCHEDULE ───
+
+  // Client reschedules an appointment (REQUESTED or ACCEPTED state).
+  // Preserves appointment_id and pet history. If ACCEPTED, voids preauth and
+  // returns to REQUESTED so the vet can re-accept at the new time.
+  rpc RescheduleAppointment (RescheduleAppointmentRequest) returns (AppointmentResponse);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -165,6 +172,7 @@ enum StatusChangeReason {
   STATUS_CHANGE_REASON_PAYMENT_PENDING_AUTH = 15;   // P2: Nequi — awaiting push-auth
   STATUS_CHANGE_REASON_PAYMENT_AUTHORIZED = 16;     // P2: Nequi — auth confirmed
   STATUS_CHANGE_REASON_SYSTEM_PAYMENT_TIMEOUT = 17; // P2: Nequi — auth timed out
+  STATUS_CHANGE_REASON_CLIENT_RESCHEDULED = 18;     // Client changed appointment time
 }
 
 enum UrgencyLevel {
@@ -636,6 +644,18 @@ message VetRatingSummaryResponse {
 
 message AdvanceFromPendingPaymentAuthRequest {
   string appointment_id = 1;  // Triggered by payment-service when Nequi AUTHORIZED
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// RESCHEDULE
+// ═══════════════════════════════════════════════════════════════════════════
+
+message RescheduleAppointmentRequest {
+  string appointment_id      = 1;  // UUID of the appointment to reschedule
+  string changed_by          = 2;  // UUID of the client requesting the reschedule
+  string new_time_window_start = 3; // ISO 8601 datetime
+  string new_time_window_end   = 4; // ISO 8601 datetime
+  string reason_details      = 5;  // Optional free-text reason
 }
 
 // ═══════════════════════════════════════════════════════════════════════════

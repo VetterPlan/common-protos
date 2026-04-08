@@ -151,6 +151,11 @@ class AppointmentServiceStub(object):
                 request_serializer=appointment_dot_appointment__pb2.SupplyHealthMetricsRequest.SerializeToString,
                 response_deserializer=appointment_dot_appointment__pb2.SupplyHealthMetricsResponse.FromString,
                 _registered_method=True)
+        self.RescheduleAppointment = channel.unary_unary(
+                '/appointment.AppointmentService/RescheduleAppointment',
+                request_serializer=appointment_dot_appointment__pb2.RescheduleAppointmentRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+                _registered_method=True)
 
 
 class AppointmentServiceServicer(object):
@@ -336,6 +341,17 @@ class AppointmentServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def RescheduleAppointment(self, request, context):
+        """─── RESCHEDULE ───
+
+        Client reschedules an appointment (REQUESTED or ACCEPTED state).
+        Preserves appointment_id and pet history. If ACCEPTED, voids preauth and
+        returns to REQUESTED so the vet can re-accept at the new time.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AppointmentServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -443,6 +459,11 @@ def add_AppointmentServiceServicer_to_server(servicer, server):
                     servicer.GetSupplyHealthMetrics,
                     request_deserializer=appointment_dot_appointment__pb2.SupplyHealthMetricsRequest.FromString,
                     response_serializer=appointment_dot_appointment__pb2.SupplyHealthMetricsResponse.SerializeToString,
+            ),
+            'RescheduleAppointment': grpc.unary_unary_rpc_method_handler(
+                    servicer.RescheduleAppointment,
+                    request_deserializer=appointment_dot_appointment__pb2.RescheduleAppointmentRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.AppointmentResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -1024,6 +1045,33 @@ class AppointmentService(object):
             '/appointment.AppointmentService/GetSupplyHealthMetrics',
             appointment_dot_appointment__pb2.SupplyHealthMetricsRequest.SerializeToString,
             appointment_dot_appointment__pb2.SupplyHealthMetricsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RescheduleAppointment(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/RescheduleAppointment',
+            appointment_dot_appointment__pb2.RescheduleAppointmentRequest.SerializeToString,
+            appointment_dot_appointment__pb2.AppointmentResponse.FromString,
             options,
             channel_credentials,
             insecure,
