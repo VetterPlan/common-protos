@@ -474,6 +474,9 @@ message AuthorizePaymentRequest {
 message CapturePaymentRequest {
   string payment_id = 1;
   string idempotency_key = 2;
+  // Vet-confirmed final price to capture (COP). 0 = capture the full
+  // pre-authorized amount. Capped server-side at the authorized total.
+  double amount = 3;
 }
 
 message VoidPaymentRequest {
