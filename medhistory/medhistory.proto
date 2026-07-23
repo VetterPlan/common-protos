@@ -91,6 +91,17 @@ service MedHistoryService {
   // Devuelve una URL GET prefirmada de corta vida para leer un adjunto, solo
   // tras pasar el control de acceso (mismo engagement que el registro).
   rpc GetAttachmentUrl (GetAttachmentUrlRequest) returns (GetAttachmentUrlResponse);
+
+  // ─── CAPTURA CON IA (Fase 2) ───
+
+  // Encola la estructuración de un segmento: transcribe el audio (o usa el
+  // transcript on-device que envía la app) y estructura lo acumulado en campos
+  // ai_suggested con confianza y cita. Async: la app escucha el pubsub o
+  // consulta GetStructuringStatus. El vet debe tener la cita activa.
+  rpc RequestStructuring (RequestStructuringRequest) returns (RequestStructuringResponse);
+
+  // Estado del último job de estructuración de un registro.
+  rpc GetStructuringStatus (GetStructuringStatusRequest) returns (GetStructuringStatusResponse);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -291,6 +302,9 @@ message FieldMeta {
   bool reviewed_by_vet = 3;        // Requisito para finalizar un campo AI_SUGGESTED
   google.protobuf.Timestamp updated_at = 4;
   string updated_by_profile_id = 5;
+  // Fase 2: qué frase del vet justifica este campo (source = AI_SUGGESTED).
+  // Es el diferenciador: la revisión es instantánea porque el vet ve la cita.
+  string citation = 6;
 }
 
 // Datos de un bloque flexible. `data` y `field_meta` comparten las mismas claves.
@@ -427,6 +441,7 @@ message FieldPatch {
   FieldSource source = 3;
   double confidence = 4;
   bool reviewed_by_vet = 5;
+  string citation = 6;             // Fase 2: frase que justifica el valor
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -671,4 +686,59 @@ message GetAttachmentUrlRequest {
 message GetAttachmentUrlResponse {
   string download_url = 1;         // GET prefirmado, corta vida
   int32 expires_in = 2;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CAPTURA CON IA (Fase 2)
+// ═══════════════════════════════════════════════════════════════════════════
+
+enum StructuringStatus {
+  STRUCTURING_STATUS_UNSPECIFIED = 0;
+  STRUCTURING_STATUS_PENDING = 1;       // encolado
+  STRUCTURING_STATUS_TRANSCRIBING = 2;
+  STRUCTURING_STATUS_STRUCTURING = 3;
+  STRUCTURING_STATUS_DONE = 4;
+  STRUCTURING_STATUS_FAILED = 5;
+}
+
+message RequestStructuringRequest {
+  string record_id = 1;
+  // Fuente del segmento — al menos una:
+  //  - audio_object_key: la clave del audio subido (transcribe server-side, autoritativo).
+  //  - transcript_text: el transcript on-device (salta la transcripción, ahorra costo).
+  string audio_object_key = 2;
+  string transcript_text = 3;
+  AccessContext access = 4;
+}
+
+message RequestStructuringResponse {
+  string job_id = 1;
+  StructuringStatus status = 2;
+}
+
+message GetStructuringStatusRequest {
+  string record_id = 1;
+  string job_id = 2;              // opcional; vacío = último job del registro
+  AccessContext access = 3;
+}
+
+// Un campo que la IA sugirió, con su justificación — para la UI de revisión.
+message StructuredSuggestion {
+  string path = 1;
+  double confidence = 2;
+  string citation = 3;           // qué frase del vet lo justifica
+}
+
+message GetStructuringStatusResponse {
+  string job_id = 1;
+  StructuringStatus status = 2;
+  string error = 3;
+  // Transcript acumulado hasta ahora (autoritativo, del servidor).
+  string transcript = 4;
+  // Campos sugeridos en este job (para resaltar en la UI).
+  repeated StructuredSuggestion suggestions = 5;
+  // Lo que el vet dijo pero no cayó en ningún campo de la receta.
+  repeated string unmapped = 6;
+  // Revisión del registro tras aplicar las sugerencias.
+  int64 record_revision = 7;
 }

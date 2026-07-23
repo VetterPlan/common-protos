@@ -125,6 +125,16 @@ class MedHistoryServiceStub(object):
                 request_serializer=medhistory_dot_medhistory__pb2.GetAttachmentUrlRequest.SerializeToString,
                 response_deserializer=medhistory_dot_medhistory__pb2.GetAttachmentUrlResponse.FromString,
                 _registered_method=True)
+        self.RequestStructuring = channel.unary_unary(
+                '/medhistory.MedHistoryService/RequestStructuring',
+                request_serializer=medhistory_dot_medhistory__pb2.RequestStructuringRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.RequestStructuringResponse.FromString,
+                _registered_method=True)
+        self.GetStructuringStatus = channel.unary_unary(
+                '/medhistory.MedHistoryService/GetStructuringStatus',
+                request_serializer=medhistory_dot_medhistory__pb2.GetStructuringStatusRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.GetStructuringStatusResponse.FromString,
+                _registered_method=True)
 
 
 class MedHistoryServiceServicer(object):
@@ -271,6 +281,25 @@ class MedHistoryServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def RequestStructuring(self, request, context):
+        """─── CAPTURA CON IA (Fase 2) ───
+
+        Encola la estructuración de un segmento: transcribe el audio (o usa el
+        transcript on-device que envía la app) y estructura lo acumulado en campos
+        ai_suggested con confianza y cita. Async: la app escucha el pubsub o
+        consulta GetStructuringStatus. El vet debe tener la cita activa.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetStructuringStatus(self, request, context):
+        """Estado del último job de estructuración de un registro.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_MedHistoryServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -343,6 +372,16 @@ def add_MedHistoryServiceServicer_to_server(servicer, server):
                     servicer.GetAttachmentUrl,
                     request_deserializer=medhistory_dot_medhistory__pb2.GetAttachmentUrlRequest.FromString,
                     response_serializer=medhistory_dot_medhistory__pb2.GetAttachmentUrlResponse.SerializeToString,
+            ),
+            'RequestStructuring': grpc.unary_unary_rpc_method_handler(
+                    servicer.RequestStructuring,
+                    request_deserializer=medhistory_dot_medhistory__pb2.RequestStructuringRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.RequestStructuringResponse.SerializeToString,
+            ),
+            'GetStructuringStatus': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetStructuringStatus,
+                    request_deserializer=medhistory_dot_medhistory__pb2.GetStructuringStatusRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.GetStructuringStatusResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -744,6 +783,60 @@ class MedHistoryService(object):
             '/medhistory.MedHistoryService/GetAttachmentUrl',
             medhistory_dot_medhistory__pb2.GetAttachmentUrlRequest.SerializeToString,
             medhistory_dot_medhistory__pb2.GetAttachmentUrlResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RequestStructuring(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/RequestStructuring',
+            medhistory_dot_medhistory__pb2.RequestStructuringRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.RequestStructuringResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetStructuringStatus(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/GetStructuringStatus',
+            medhistory_dot_medhistory__pb2.GetStructuringStatusRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.GetStructuringStatusResponse.FromString,
             options,
             channel_credentials,
             insecure,
