@@ -33,6 +33,11 @@ service MedHistoryService {
   // alimentar a la IA de Fase 2 como definición de herramienta.
   rpc GetConsultationTemplate (GetConsultationTemplateRequest) returns (ConsultationTemplateResponse);
 
+  // Devuelve el contenido de una tabla de referencia (catálogo de vacunas,
+  // rangos de vitales, hallazgos por sistema, etc.). Es lo que llena los
+  // desplegables que el template declara en `reference_table`.
+  rpc GetReferenceData (GetReferenceDataRequest) returns (GetReferenceDataResponse);
+
   // ─── CICLO DE VIDA DEL REGISTRO ───
 
   // Abre el borrador al entrar a IN_PROGRESS (llamado por appointment-service).
@@ -419,6 +424,35 @@ message GetConsultationTemplateRequest {
 
 message ConsultationTemplateResponse {
   ConsultationTemplate template = 1;
+}
+
+message GetReferenceDataRequest {
+  // vaccine_catalog · dewormer_catalog · vital_reference_ranges ·
+  // body_condition_scales · system_findings · home_hazards
+  string table = 1;
+  Species species = 2;
+  // Filtra por banda de edad donde aplique (desparasitantes, vacunas).
+  int32 pet_age_months = 3;
+  // Solo para system_findings. Vacío = todos los sistemas.
+  string system_key = 4;
+}
+
+// Fila genérica: `attributes` lleva los campos propios de cada tabla
+// (default_interval_days, min_value/max_value, parasite_target, …).
+message ReferenceItem {
+  string code = 1;
+  string label = 2;
+  // Falso mientras un médico veterinario no haya revisado la fila.
+  // La UI debe poder advertirlo.
+  bool is_validated_by_vet = 3;
+  google.protobuf.Struct attributes = 4;
+}
+
+message GetReferenceDataResponse {
+  string table = 1;
+  repeated ReferenceItem items = 2;
+  // True solo si TODAS las filas devueltas están validadas.
+  bool fully_validated = 3;
 }
 
 message StartConsultationRecordRequest {

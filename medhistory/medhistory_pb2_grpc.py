@@ -60,6 +60,11 @@ class MedHistoryServiceStub(object):
                 request_serializer=medhistory_dot_medhistory__pb2.GetConsultationTemplateRequest.SerializeToString,
                 response_deserializer=medhistory_dot_medhistory__pb2.ConsultationTemplateResponse.FromString,
                 _registered_method=True)
+        self.GetReferenceData = channel.unary_unary(
+                '/medhistory.MedHistoryService/GetReferenceData',
+                request_serializer=medhistory_dot_medhistory__pb2.GetReferenceDataRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.GetReferenceDataResponse.FromString,
+                _registered_method=True)
         self.StartConsultationRecord = channel.unary_unary(
                 '/medhistory.MedHistoryService/StartConsultationRecord',
                 request_serializer=medhistory_dot_medhistory__pb2.StartConsultationRecordRequest.SerializeToString,
@@ -130,6 +135,15 @@ class MedHistoryServiceServicer(object):
         """Devuelve el esquema de bloques (receta) para un ServiceType + especie.
         La app arma el formulario con esto. Exportable como JSON Schema para
         alimentar a la IA de Fase 2 como definición de herramienta.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetReferenceData(self, request, context):
+        """Devuelve el contenido de una tabla de referencia (catálogo de vacunas,
+        rangos de vitales, hallazgos por sistema, etc.). Es lo que llena los
+        desplegables que el template declara en `reference_table`.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -209,6 +223,11 @@ def add_MedHistoryServiceServicer_to_server(servicer, server):
                     servicer.GetConsultationTemplate,
                     request_deserializer=medhistory_dot_medhistory__pb2.GetConsultationTemplateRequest.FromString,
                     response_serializer=medhistory_dot_medhistory__pb2.ConsultationTemplateResponse.SerializeToString,
+            ),
+            'GetReferenceData': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetReferenceData,
+                    request_deserializer=medhistory_dot_medhistory__pb2.GetReferenceDataRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.GetReferenceDataResponse.SerializeToString,
             ),
             'StartConsultationRecord': grpc.unary_unary_rpc_method_handler(
                     servicer.StartConsultationRecord,
@@ -299,6 +318,33 @@ class MedHistoryService(object):
             '/medhistory.MedHistoryService/GetConsultationTemplate',
             medhistory_dot_medhistory__pb2.GetConsultationTemplateRequest.SerializeToString,
             medhistory_dot_medhistory__pb2.ConsultationTemplateResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetReferenceData(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/GetReferenceData',
+            medhistory_dot_medhistory__pb2.GetReferenceDataRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.GetReferenceDataResponse.FromString,
             options,
             channel_credentials,
             insecure,
