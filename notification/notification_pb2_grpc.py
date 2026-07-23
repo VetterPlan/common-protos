@@ -75,6 +75,16 @@ class NotificationServiceStub(object):
                 request_serializer=notification_dot_notification__pb2.SendEmailRequest.SerializeToString,
                 response_deserializer=notification_dot_notification__pb2.SendEmailResponse.FromString,
                 _registered_method=True)
+        self.ScheduleReminder = channel.unary_unary(
+                '/notification.NotificationService/ScheduleReminder',
+                request_serializer=notification_dot_notification__pb2.ScheduleReminderRequest.SerializeToString,
+                response_deserializer=notification_dot_notification__pb2.ScheduleReminderResponse.FromString,
+                _registered_method=True)
+        self.CancelReminder = channel.unary_unary(
+                '/notification.NotificationService/CancelReminder',
+                request_serializer=notification_dot_notification__pb2.CancelReminderRequest.SerializeToString,
+                response_deserializer=notification_dot_notification__pb2.CancelReminderResponse.FromString,
+                _registered_method=True)
 
 
 class NotificationServiceServicer(object):
@@ -131,6 +141,25 @@ class NotificationServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ScheduleReminder(self, request, context):
+        """─── SCHEDULED REMINDERS ───
+        Programa un push para enviarse en `due_at` (no ahora). El motor de
+        recordatorios de notification-service lo persiste y lo dispara cuando vence.
+        Idempotente por idempotency_key: reprogramar el mismo recordatorio no
+        duplica. Lo llaman pets-service (vacunas/desparasitación próximas) y
+        medhistory-service (follow-up agendado por el vet).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CancelReminder(self, request, context):
+        """Cancela un recordatorio aún no enviado (p.ej. si se re-agenda la dosis).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_NotificationServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -158,6 +187,16 @@ def add_NotificationServiceServicer_to_server(servicer, server):
                     servicer.SendEmail,
                     request_deserializer=notification_dot_notification__pb2.SendEmailRequest.FromString,
                     response_serializer=notification_dot_notification__pb2.SendEmailResponse.SerializeToString,
+            ),
+            'ScheduleReminder': grpc.unary_unary_rpc_method_handler(
+                    servicer.ScheduleReminder,
+                    request_deserializer=notification_dot_notification__pb2.ScheduleReminderRequest.FromString,
+                    response_serializer=notification_dot_notification__pb2.ScheduleReminderResponse.SerializeToString,
+            ),
+            'CancelReminder': grpc.unary_unary_rpc_method_handler(
+                    servicer.CancelReminder,
+                    request_deserializer=notification_dot_notification__pb2.CancelReminderRequest.FromString,
+                    response_serializer=notification_dot_notification__pb2.CancelReminderResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -311,6 +350,60 @@ class NotificationService(object):
             '/notification.NotificationService/SendEmail',
             notification_dot_notification__pb2.SendEmailRequest.SerializeToString,
             notification_dot_notification__pb2.SendEmailResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ScheduleReminder(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/notification.NotificationService/ScheduleReminder',
+            notification_dot_notification__pb2.ScheduleReminderRequest.SerializeToString,
+            notification_dot_notification__pb2.ScheduleReminderResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CancelReminder(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/notification.NotificationService/CancelReminder',
+            notification_dot_notification__pb2.CancelReminderRequest.SerializeToString,
+            notification_dot_notification__pb2.CancelReminderResponse.FromString,
             options,
             channel_credentials,
             insecure,

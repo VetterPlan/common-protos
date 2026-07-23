@@ -22,9 +22,10 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
+from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1fnotification/notification.proto\x12\x0cnotification\"\x89\x01\n\x1aRegisterDeviceTokenRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x11\n\tfcm_token\x18\x02 \x01(\t\x12\x34\n\x08platform\x18\x03 \x01(\x0e\x32\".notification.NotificationPlatform\x12\x11\n\tdevice_id\x18\x04 \x01(\t\".\n\x1bRegisterDeviceTokenResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\"1\n\x1cUnregisterDeviceTokenRequest\x12\x11\n\tfcm_token\x18\x01 \x01(\t\"0\n\x1dUnregisterDeviceTokenResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\"3\n\x15NotificationDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t\"\xd1\x01\n\x1bSendPushNotificationRequest\x12\x19\n\x11recipient_user_id\x18\x01 \x01(\t\x12.\n\x05\x65vent\x18\x02 \x01(\x0e\x32\x1f.notification.NotificationEvent\x12\r\n\x05title\x18\x03 \x01(\t\x12\x0c\n\x04\x62ody\x18\x04 \x01(\t\x12\x31\n\x04\x64\x61ta\x18\x05 \x03(\x0b\x32#.notification.NotificationDataEntry\x12\x17\n\x0fidempotency_key\x18\x06 \x01(\t\"r\n\x1cSendPushNotificationResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x13\n\x0btokens_sent\x18\x02 \x01(\x05\x12\x15\n\rtokens_failed\x18\x03 \x01(\x05\x12\x15\n\rerror_message\x18\x04 \x01(\t\"x\n\x17\x42roadcastToTopicRequest\x12\r\n\x05topic\x18\x01 \x01(\t\x12\r\n\x05title\x18\x02 \x01(\t\x12\x0c\n\x04\x62ody\x18\x03 \x01(\t\x12\x31\n\x04\x64\x61ta\x18\x04 \x03(\x0b\x32#.notification.NotificationDataEntry\"B\n\x18\x42roadcastToTopicResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x15\n\rerror_message\x18\x02 \x01(\t\"\xf1\x01\n\x10SendEmailRequest\x12\x17\n\x0frecipient_email\x18\x01 \x01(\t\x12-\n\x08template\x18\x02 \x01(\x0e\x32\x1b.notification.EmailTemplate\x12G\n\rtemplate_data\x18\x03 \x03(\x0b\x32\x30.notification.SendEmailRequest.TemplateDataEntry\x12\x17\n\x0fidempotency_key\x18\x04 \x01(\t\x1a\x33\n\x11TemplateDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\";\n\x11SendEmailResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x15\n\rerror_message\x18\x02 \x01(\t*\x9e\x01\n\x14NotificationPlatform\x12%\n!NOTIFICATION_PLATFORM_UNSPECIFIED\x10\x00\x12\x1d\n\x19NOTIFICATION_PLATFORM_IOS\x10\x01\x12!\n\x1dNOTIFICATION_PLATFORM_ANDROID\x10\x02\x12\x1d\n\x19NOTIFICATION_PLATFORM_WEB\x10\x03*\xcf\x06\n\x11NotificationEvent\x12\"\n\x1eNOTIFICATION_EVENT_UNSPECIFIED\x10\x00\x12,\n(NOTIFICATION_EVENT_APPOINTMENT_REQUESTED\x10\x01\x12+\n\'NOTIFICATION_EVENT_APPOINTMENT_ACCEPTED\x10\x02\x12,\n(NOTIFICATION_EVENT_APPOINTMENT_CANCELLED\x10\x03\x12+\n\'NOTIFICATION_EVENT_APPOINTMENT_REJECTED\x10\x04\x12#\n\x1fNOTIFICATION_EVENT_VET_EN_ROUTE\x10\x05\x12\"\n\x1eNOTIFICATION_EVENT_VET_ARRIVED\x10\x06\x12&\n\"NOTIFICATION_EVENT_SERVICE_STARTED\x10\x07\x12(\n$NOTIFICATION_EVENT_SERVICE_COMPLETED\x10\x08\x12%\n!NOTIFICATION_EVENT_CLIENT_NO_SHOW\x10\t\x12*\n&NOTIFICATION_EVENT_APPOINTMENT_NO_SHOW\x10\n\x12)\n%NOTIFICATION_EVENT_PAYMENT_AUTHORIZED\x10\x0b\x12\'\n#NOTIFICATION_EVENT_PAYMENT_CAPTURED\x10\x0c\x12%\n!NOTIFICATION_EVENT_PAYMENT_FAILED\x10\r\x12-\n)NOTIFICATION_EVENT_NEW_APPOINTMENT_NEARBY\x10\x14\x12&\n\"NOTIFICATION_EVENT_VET_PAYOUT_SENT\x10\x15\x12&\n\"NOTIFICATION_EVENT_NO_SHOW_WARNING\x10\x16\x12&\n\"NOTIFICATION_EVENT_REVIEW_REMINDER\x10\x17\x12+\n\'NOTIFICATION_EVENT_MEDICAL_RECORD_READY\x10\x18\x12#\n\x1fNOTIFICATION_EVENT_SYSTEM_ALERT\x10\x63*\x87\x01\n\rEmailTemplate\x12\x1e\n\x1a\x45MAIL_TEMPLATE_UNSPECIFIED\x10\x00\x12(\n$EMAIL_TEMPLATE_APPOINTMENT_CONFIRMED\x10\x01\x12,\n(EMAIL_TEMPLATE_SERVICE_COMPLETED_RECEIPT\x10\x02\x32\x93\x04\n\x13NotificationService\x12j\n\x13RegisterDeviceToken\x12(.notification.RegisterDeviceTokenRequest\x1a).notification.RegisterDeviceTokenResponse\x12p\n\x15UnregisterDeviceToken\x12*.notification.UnregisterDeviceTokenRequest\x1a+.notification.UnregisterDeviceTokenResponse\x12m\n\x14SendPushNotification\x12).notification.SendPushNotificationRequest\x1a*.notification.SendPushNotificationResponse\x12\x61\n\x10\x42roadcastToTopic\x12%.notification.BroadcastToTopicRequest\x1a&.notification.BroadcastToTopicResponse\x12L\n\tSendEmail\x12\x1e.notification.SendEmailRequest\x1a\x1f.notification.SendEmailResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1fnotification/notification.proto\x12\x0cnotification\x1a\x1fgoogle/protobuf/timestamp.proto\"\x89\x01\n\x1aRegisterDeviceTokenRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x11\n\tfcm_token\x18\x02 \x01(\t\x12\x34\n\x08platform\x18\x03 \x01(\x0e\x32\".notification.NotificationPlatform\x12\x11\n\tdevice_id\x18\x04 \x01(\t\".\n\x1bRegisterDeviceTokenResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\"1\n\x1cUnregisterDeviceTokenRequest\x12\x11\n\tfcm_token\x18\x01 \x01(\t\"0\n\x1dUnregisterDeviceTokenResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\"3\n\x15NotificationDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t\"\xd1\x01\n\x1bSendPushNotificationRequest\x12\x19\n\x11recipient_user_id\x18\x01 \x01(\t\x12.\n\x05\x65vent\x18\x02 \x01(\x0e\x32\x1f.notification.NotificationEvent\x12\r\n\x05title\x18\x03 \x01(\t\x12\x0c\n\x04\x62ody\x18\x04 \x01(\t\x12\x31\n\x04\x64\x61ta\x18\x05 \x03(\x0b\x32#.notification.NotificationDataEntry\x12\x17\n\x0fidempotency_key\x18\x06 \x01(\t\"r\n\x1cSendPushNotificationResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x13\n\x0btokens_sent\x18\x02 \x01(\x05\x12\x15\n\rtokens_failed\x18\x03 \x01(\x05\x12\x15\n\rerror_message\x18\x04 \x01(\t\"x\n\x17\x42roadcastToTopicRequest\x12\r\n\x05topic\x18\x01 \x01(\t\x12\r\n\x05title\x18\x02 \x01(\t\x12\x0c\n\x04\x62ody\x18\x03 \x01(\t\x12\x31\n\x04\x64\x61ta\x18\x04 \x03(\x0b\x32#.notification.NotificationDataEntry\"B\n\x18\x42roadcastToTopicResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x15\n\rerror_message\x18\x02 \x01(\t\"\xf1\x01\n\x10SendEmailRequest\x12\x17\n\x0frecipient_email\x18\x01 \x01(\t\x12-\n\x08template\x18\x02 \x01(\x0e\x32\x1b.notification.EmailTemplate\x12G\n\rtemplate_data\x18\x03 \x03(\x0b\x32\x30.notification.SendEmailRequest.TemplateDataEntry\x12\x17\n\x0fidempotency_key\x18\x04 \x01(\t\x1a\x33\n\x11TemplateDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\";\n\x11SendEmailResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x15\n\rerror_message\x18\x02 \x01(\t\"\x89\x02\n\x17ScheduleReminderRequest\x12\x19\n\x11recipient_user_id\x18\x01 \x01(\t\x12.\n\x05\x65vent\x18\x02 \x01(\x0e\x32\x1f.notification.NotificationEvent\x12\r\n\x05title\x18\x03 \x01(\t\x12\x0c\n\x04\x62ody\x18\x04 \x01(\t\x12\x31\n\x04\x64\x61ta\x18\x05 \x03(\x0b\x32#.notification.NotificationDataEntry\x12*\n\x06\x64ue_at\x18\x06 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12\x17\n\x0fidempotency_key\x18\x07 \x01(\t\x12\x0e\n\x06source\x18\x08 \x01(\t\"B\n\x18ScheduleReminderResponse\x12\x11\n\tscheduled\x18\x01 \x01(\x08\x12\x13\n\x0breminder_id\x18\x02 \x01(\t\"E\n\x15\x43\x61ncelReminderRequest\x12\x13\n\x0breminder_id\x18\x01 \x01(\t\x12\x17\n\x0fidempotency_key\x18\x02 \x01(\t\"+\n\x16\x43\x61ncelReminderResponse\x12\x11\n\tcancelled\x18\x01 \x01(\x08*\x9e\x01\n\x14NotificationPlatform\x12%\n!NOTIFICATION_PLATFORM_UNSPECIFIED\x10\x00\x12\x1d\n\x19NOTIFICATION_PLATFORM_IOS\x10\x01\x12!\n\x1dNOTIFICATION_PLATFORM_ANDROID\x10\x02\x12\x1d\n\x19NOTIFICATION_PLATFORM_WEB\x10\x03*\xbf\x07\n\x11NotificationEvent\x12\"\n\x1eNOTIFICATION_EVENT_UNSPECIFIED\x10\x00\x12,\n(NOTIFICATION_EVENT_APPOINTMENT_REQUESTED\x10\x01\x12+\n\'NOTIFICATION_EVENT_APPOINTMENT_ACCEPTED\x10\x02\x12,\n(NOTIFICATION_EVENT_APPOINTMENT_CANCELLED\x10\x03\x12+\n\'NOTIFICATION_EVENT_APPOINTMENT_REJECTED\x10\x04\x12#\n\x1fNOTIFICATION_EVENT_VET_EN_ROUTE\x10\x05\x12\"\n\x1eNOTIFICATION_EVENT_VET_ARRIVED\x10\x06\x12&\n\"NOTIFICATION_EVENT_SERVICE_STARTED\x10\x07\x12(\n$NOTIFICATION_EVENT_SERVICE_COMPLETED\x10\x08\x12%\n!NOTIFICATION_EVENT_CLIENT_NO_SHOW\x10\t\x12*\n&NOTIFICATION_EVENT_APPOINTMENT_NO_SHOW\x10\n\x12)\n%NOTIFICATION_EVENT_PAYMENT_AUTHORIZED\x10\x0b\x12\'\n#NOTIFICATION_EVENT_PAYMENT_CAPTURED\x10\x0c\x12%\n!NOTIFICATION_EVENT_PAYMENT_FAILED\x10\r\x12-\n)NOTIFICATION_EVENT_NEW_APPOINTMENT_NEARBY\x10\x14\x12&\n\"NOTIFICATION_EVENT_VET_PAYOUT_SENT\x10\x15\x12&\n\"NOTIFICATION_EVENT_NO_SHOW_WARNING\x10\x16\x12&\n\"NOTIFICATION_EVENT_REVIEW_REMINDER\x10\x17\x12+\n\'NOTIFICATION_EVENT_MEDICAL_RECORD_READY\x10\x18\x12\"\n\x1eNOTIFICATION_EVENT_VACCINE_DUE\x10\x19\x12$\n NOTIFICATION_EVENT_DEWORMING_DUE\x10\x1a\x12$\n NOTIFICATION_EVENT_FOLLOW_UP_DUE\x10\x1b\x12#\n\x1fNOTIFICATION_EVENT_SYSTEM_ALERT\x10\x63*\x87\x01\n\rEmailTemplate\x12\x1e\n\x1a\x45MAIL_TEMPLATE_UNSPECIFIED\x10\x00\x12(\n$EMAIL_TEMPLATE_APPOINTMENT_CONFIRMED\x10\x01\x12,\n(EMAIL_TEMPLATE_SERVICE_COMPLETED_RECEIPT\x10\x02\x32\xd3\x05\n\x13NotificationService\x12j\n\x13RegisterDeviceToken\x12(.notification.RegisterDeviceTokenRequest\x1a).notification.RegisterDeviceTokenResponse\x12p\n\x15UnregisterDeviceToken\x12*.notification.UnregisterDeviceTokenRequest\x1a+.notification.UnregisterDeviceTokenResponse\x12m\n\x14SendPushNotification\x12).notification.SendPushNotificationRequest\x1a*.notification.SendPushNotificationResponse\x12\x61\n\x10\x42roadcastToTopic\x12%.notification.BroadcastToTopicRequest\x1a&.notification.BroadcastToTopicResponse\x12L\n\tSendEmail\x12\x1e.notification.SendEmailRequest\x1a\x1f.notification.SendEmailResponse\x12\x61\n\x10ScheduleReminder\x12%.notification.ScheduleReminderRequest\x1a&.notification.ScheduleReminderResponse\x12[\n\x0e\x43\x61ncelReminder\x12#.notification.CancelReminderRequest\x1a$.notification.CancelReminderResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -33,36 +34,44 @@ if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
   _globals['_SENDEMAILREQUEST_TEMPLATEDATAENTRY']._loaded_options = None
   _globals['_SENDEMAILREQUEST_TEMPLATEDATAENTRY']._serialized_options = b'8\001'
-  _globals['_NOTIFICATIONPLATFORM']._serialized_start=1215
-  _globals['_NOTIFICATIONPLATFORM']._serialized_end=1373
-  _globals['_NOTIFICATIONEVENT']._serialized_start=1376
-  _globals['_NOTIFICATIONEVENT']._serialized_end=2223
-  _globals['_EMAILTEMPLATE']._serialized_start=2226
-  _globals['_EMAILTEMPLATE']._serialized_end=2361
-  _globals['_REGISTERDEVICETOKENREQUEST']._serialized_start=50
-  _globals['_REGISTERDEVICETOKENREQUEST']._serialized_end=187
-  _globals['_REGISTERDEVICETOKENRESPONSE']._serialized_start=189
-  _globals['_REGISTERDEVICETOKENRESPONSE']._serialized_end=235
-  _globals['_UNREGISTERDEVICETOKENREQUEST']._serialized_start=237
-  _globals['_UNREGISTERDEVICETOKENREQUEST']._serialized_end=286
-  _globals['_UNREGISTERDEVICETOKENRESPONSE']._serialized_start=288
-  _globals['_UNREGISTERDEVICETOKENRESPONSE']._serialized_end=336
-  _globals['_NOTIFICATIONDATAENTRY']._serialized_start=338
-  _globals['_NOTIFICATIONDATAENTRY']._serialized_end=389
-  _globals['_SENDPUSHNOTIFICATIONREQUEST']._serialized_start=392
-  _globals['_SENDPUSHNOTIFICATIONREQUEST']._serialized_end=601
-  _globals['_SENDPUSHNOTIFICATIONRESPONSE']._serialized_start=603
-  _globals['_SENDPUSHNOTIFICATIONRESPONSE']._serialized_end=717
-  _globals['_BROADCASTTOTOPICREQUEST']._serialized_start=719
-  _globals['_BROADCASTTOTOPICREQUEST']._serialized_end=839
-  _globals['_BROADCASTTOTOPICRESPONSE']._serialized_start=841
-  _globals['_BROADCASTTOTOPICRESPONSE']._serialized_end=907
-  _globals['_SENDEMAILREQUEST']._serialized_start=910
-  _globals['_SENDEMAILREQUEST']._serialized_end=1151
-  _globals['_SENDEMAILREQUEST_TEMPLATEDATAENTRY']._serialized_start=1100
-  _globals['_SENDEMAILREQUEST_TEMPLATEDATAENTRY']._serialized_end=1151
-  _globals['_SENDEMAILRESPONSE']._serialized_start=1153
-  _globals['_SENDEMAILRESPONSE']._serialized_end=1212
-  _globals['_NOTIFICATIONSERVICE']._serialized_start=2364
-  _globals['_NOTIFICATIONSERVICE']._serialized_end=2895
+  _globals['_NOTIFICATIONPLATFORM']._serialized_start=1700
+  _globals['_NOTIFICATIONPLATFORM']._serialized_end=1858
+  _globals['_NOTIFICATIONEVENT']._serialized_start=1861
+  _globals['_NOTIFICATIONEVENT']._serialized_end=2820
+  _globals['_EMAILTEMPLATE']._serialized_start=2823
+  _globals['_EMAILTEMPLATE']._serialized_end=2958
+  _globals['_REGISTERDEVICETOKENREQUEST']._serialized_start=83
+  _globals['_REGISTERDEVICETOKENREQUEST']._serialized_end=220
+  _globals['_REGISTERDEVICETOKENRESPONSE']._serialized_start=222
+  _globals['_REGISTERDEVICETOKENRESPONSE']._serialized_end=268
+  _globals['_UNREGISTERDEVICETOKENREQUEST']._serialized_start=270
+  _globals['_UNREGISTERDEVICETOKENREQUEST']._serialized_end=319
+  _globals['_UNREGISTERDEVICETOKENRESPONSE']._serialized_start=321
+  _globals['_UNREGISTERDEVICETOKENRESPONSE']._serialized_end=369
+  _globals['_NOTIFICATIONDATAENTRY']._serialized_start=371
+  _globals['_NOTIFICATIONDATAENTRY']._serialized_end=422
+  _globals['_SENDPUSHNOTIFICATIONREQUEST']._serialized_start=425
+  _globals['_SENDPUSHNOTIFICATIONREQUEST']._serialized_end=634
+  _globals['_SENDPUSHNOTIFICATIONRESPONSE']._serialized_start=636
+  _globals['_SENDPUSHNOTIFICATIONRESPONSE']._serialized_end=750
+  _globals['_BROADCASTTOTOPICREQUEST']._serialized_start=752
+  _globals['_BROADCASTTOTOPICREQUEST']._serialized_end=872
+  _globals['_BROADCASTTOTOPICRESPONSE']._serialized_start=874
+  _globals['_BROADCASTTOTOPICRESPONSE']._serialized_end=940
+  _globals['_SENDEMAILREQUEST']._serialized_start=943
+  _globals['_SENDEMAILREQUEST']._serialized_end=1184
+  _globals['_SENDEMAILREQUEST_TEMPLATEDATAENTRY']._serialized_start=1133
+  _globals['_SENDEMAILREQUEST_TEMPLATEDATAENTRY']._serialized_end=1184
+  _globals['_SENDEMAILRESPONSE']._serialized_start=1186
+  _globals['_SENDEMAILRESPONSE']._serialized_end=1245
+  _globals['_SCHEDULEREMINDERREQUEST']._serialized_start=1248
+  _globals['_SCHEDULEREMINDERREQUEST']._serialized_end=1513
+  _globals['_SCHEDULEREMINDERRESPONSE']._serialized_start=1515
+  _globals['_SCHEDULEREMINDERRESPONSE']._serialized_end=1581
+  _globals['_CANCELREMINDERREQUEST']._serialized_start=1583
+  _globals['_CANCELREMINDERREQUEST']._serialized_end=1652
+  _globals['_CANCELREMINDERRESPONSE']._serialized_start=1654
+  _globals['_CANCELREMINDERRESPONSE']._serialized_end=1697
+  _globals['_NOTIFICATIONSERVICE']._serialized_start=2961
+  _globals['_NOTIFICATIONSERVICE']._serialized_end=3684
 # @@protoc_insertion_point(module_scope)

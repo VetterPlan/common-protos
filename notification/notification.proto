@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package notification;
 
+import "google/protobuf/timestamp.proto";
+
 // ═══════════════════════════════════════════════════════════════════════════
 // NOTIFICATION SERVICE
 //
@@ -34,6 +36,17 @@ service NotificationService {
 
   // Send transactional email via SendGrid/SES (S2-12). Async, non-blocking.
   rpc SendEmail (SendEmailRequest) returns (SendEmailResponse);
+
+  // ─── SCHEDULED REMINDERS ───
+  // Programa un push para enviarse en `due_at` (no ahora). El motor de
+  // recordatorios de notification-service lo persiste y lo dispara cuando vence.
+  // Idempotente por idempotency_key: reprogramar el mismo recordatorio no
+  // duplica. Lo llaman pets-service (vacunas/desparasitación próximas) y
+  // medhistory-service (follow-up agendado por el vet).
+  rpc ScheduleReminder (ScheduleReminderRequest) returns (ScheduleReminderResponse);
+
+  // Cancela un recordatorio aún no enviado (p.ej. si se re-agenda la dosis).
+  rpc CancelReminder (CancelReminderRequest) returns (CancelReminderResponse);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -87,6 +100,11 @@ enum NotificationEvent {
 
   // Medical record (client perspective)
   NOTIFICATION_EVENT_MEDICAL_RECORD_READY   = 24; // vet finalizó el registro clínico
+
+  // Recordatorios de cuidado preventivo (client perspective) — motor de recurrencia
+  NOTIFICATION_EVENT_VACCINE_DUE            = 25; // próxima dosis de vacuna
+  NOTIFICATION_EVENT_DEWORMING_DUE          = 26; // próxima desparasitación
+  NOTIFICATION_EVENT_FOLLOW_UP_DUE          = 27; // seguimiento agendado por el vet
 
   // System / admin
   NOTIFICATION_EVENT_SYSTEM_ALERT           = 99;
@@ -176,4 +194,50 @@ message SendEmailRequest {
 message SendEmailResponse {
   bool success = 1;
   string error_message = 2;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SCHEDULED REMINDERS
+// ═══════════════════════════════════════════════════════════════════════════
+
+message ScheduleReminderRequest {
+  // A quién se le envía. El llamador resuelve el user_id.
+  string recipient_user_id = 1;
+
+  // Tipo de evento — maneja el copy y la prioridad del canal.
+  NotificationEvent event = 2;
+
+  string title = 3;
+  string body  = 4;
+
+  // Payload estructurado (deep-link, IDs) que llega como data de FCM.
+  repeated NotificationDataEntry data = 5;
+
+  // Cuándo enviarlo. El llamador ya restó el tiempo de anticipación
+  // (p.ej. avisar 7 días antes del vencimiento).
+  google.protobuf.Timestamp due_at = 6;
+
+  // Deduplica: reprogramar la misma dosis no crea otro recordatorio.
+  // Ej. "vaccine_due:{vaccination_id}:{next_due_date}".
+  string idempotency_key = 7;
+
+  // Servicio y motivo que lo agendó, para auditoría y para la vista de admin.
+  // Ej. "pets_preventive", "medhistory_followup".
+  string source = 8;
+}
+
+message ScheduleReminderResponse {
+  // false si ya existía uno con el mismo idempotency_key (no se duplicó).
+  bool scheduled = 1;
+  string reminder_id = 2;
+}
+
+message CancelReminderRequest {
+  // Uno de los dos.
+  string reminder_id = 1;
+  string idempotency_key = 2;
+}
+
+message CancelReminderResponse {
+  bool cancelled = 1;
 }
