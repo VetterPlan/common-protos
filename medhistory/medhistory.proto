@@ -1,0 +1,553 @@
+syntax = "proto3";
+
+package medhistory;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MEDHISTORY SERVICE — Registro Clínico Estructurado (Fase 1)
+//
+// Fuente de verdad del encuentro clínico a domicilio. pets-service mantiene el
+// "carné actual" (peso, alergias, próxima vacuna) como PROYECCIÓN que este
+// servicio actualiza al finalizar el registro.
+//
+// Diseño: medhistory-service/DESIGN_FASE1_REGISTRO_CLINICO.md
+// Depends on: Appointment (appointment_id), Pet (pet_id), Profile (vet/client),
+//             VetCertification (ValidateCanPractice), Files (adjuntos)
+//
+// Contratos a prueba de Fases 2-3 (§13 del diseño) — NO removerlos:
+//   1. Clave estable `bloque.campo` + template exportable como JSON Schema
+//   2. Procedencia y confianza por campo (FieldMeta)
+//   3. Update con semántica de patch por ruta + revisión (concurrencia optimista)
+//   4. Evento por patch a pubsub `consultation:{id}`
+//   5. Flag client_visible por bloque/campo
+//   6. Anexo de captura cruda (audio + transcripción)
+// ═══════════════════════════════════════════════════════════════════════════
+
+service MedHistoryService {
+  // ─── TEMPLATE ───
+
+  // Devuelve el esquema de bloques (receta) para un ServiceType + especie.
+  // La app arma el formulario con esto. Exportable como JSON Schema para
+  // alimentar a la IA de Fase 2 como definición de herramienta.
+  rpc GetConsultationTemplate (GetConsultationTemplateRequest) returns (ConsultationTemplateResponse);
+
+  // ─── CICLO DE VIDA DEL REGISTRO ───
+
+  // Abre el borrador al entrar a IN_PROGRESS (llamado por appointment-service).
+  // Idempotente: si ya existe un registro para el appointment, lo devuelve.
+  rpc StartConsultationRecord (StartConsultationRecordRequest) returns (ConsultationRecordResponse);
+
+  // Autosave parcial mientras el registro es borrador. Semántica de PATCH por
+  // ruta de campo — nunca reemplaza el registro completo (contrato §13.3).
+  rpc UpdateConsultationRecord (UpdateConsultationRecordRequest) returns (UpdateConsultationRecordResponse);
+
+  // Llamado por appointment-service cuando la cita pasa a COMPLETED.
+  // Mueve el registro a PENDING_FINALIZATION y arranca la ventana de 24-48h.
+  // Exige solo el mínimo (registro iniciado) para no trabar el cobro.
+  rpc MarkPendingFinalization (MarkPendingFinalizationRequest) returns (ConsultationRecordResponse);
+
+  // Valida los bloques requeridos de la receta, dispara los side-effects vía
+  // outbox transaccional y bloquea el registro.
+  rpc FinalizeConsultationRecord (FinalizeConsultationRecordRequest) returns (FinalizeConsultationRecordResponse);
+
+  // Corrección post-cierre. Append-only con justificación y traza (legal).
+  rpc AmendConsultationRecord (AmendConsultationRecordRequest) returns (ConsultationRecordResponse);
+
+  // ─── LECTURA (control de acceso por engagement) ───
+
+  // Lectura por id o por appointment_id. Auditada.
+  rpc GetConsultationRecord (GetConsultationRecordRequest) returns (ConsultationRecordResponse);
+
+  // Timeline longitudinal del pet + tendencia de vitales. Un pet a la vez,
+  // nunca listado buscable (guardrail anti-fuga §8).
+  rpc GetPetMedicalHistory (GetPetMedicalHistoryRequest) returns (GetPetMedicalHistoryResponse);
+
+  // Vista/PDF SOAP generada desde los datos estructurados.
+  // SOAP es SOLO exportación, nunca UI de captura.
+  rpc ExportConsultationSOAP (ExportConsultationSOAPRequest) returns (ExportConsultationSOAPResponse);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ENUMS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Ciclo de vida del registro (§7). COMPLETED de la cita NO finaliza el registro.
+enum ConsultationStatus {
+  CONSULTATION_STATUS_UNSPECIFIED = 0;
+  CONSULTATION_STATUS_DRAFT = 1;                  // Abierto, autosave activo
+  CONSULTATION_STATUS_PENDING_FINALIZATION = 2;   // Cita COMPLETED, ventana 24-48h
+  CONSULTATION_STATUS_FINALIZED = 3;              // Bloqueado, side-effects disparados
+  CONSULTATION_STATUS_AMENDED = 4;                // Finalizado + al menos una enmienda
+}
+
+// Espejo de appointment.ServiceType — los protos son autocontenidos (sin imports
+// cruzados). Mantener sincronizado con protos/appointment/appointment.proto.
+enum ServiceType {
+  SERVICE_TYPE_UNSPECIFIED = 0;
+  SERVICE_TYPE_CONSULTATION = 1;
+  SERVICE_TYPE_VACCINATION = 2;
+  SERVICE_TYPE_DEWORMING = 3;
+  SERVICE_TYPE_FOLLOW_UP = 4;
+  SERVICE_TYPE_MEDICAL_CERTIFICATE = 5;
+  SERVICE_TYPE_ULTRASOUND = 6;
+  SERVICE_TYPE_ELECTROCARDIOGRAM = 7;
+}
+
+// Espejo de pet.Species. Mantener sincronizado con protos/pet/pet.proto.
+enum Species {
+  SPECIES_UNSPECIFIED = 0;
+  SPECIES_DOG = 1;
+  SPECIES_CAT = 2;
+  SPECIES_BIRD = 3;
+  SPECIES_RABBIT = 4;
+  SPECIES_HAMSTER = 5;
+  SPECIES_FISH = 6;
+  SPECIES_REPTILE = 7;
+  SPECIES_OTHER = 8;
+}
+
+// Perfil de especie que resuelve la receta (§12.3). MVP: DOG y CAT completos,
+// el resto cae a GENERIC (campos universales + texto libre, sin rangos).
+enum SpeciesProfile {
+  SPECIES_PROFILE_UNSPECIFIED = 0;
+  SPECIES_PROFILE_DOG = 1;
+  SPECIES_PROFILE_CAT = 2;
+  SPECIES_PROFILE_GENERIC = 3;
+}
+
+// Procedencia del dato — CRÍTICO MÉDICO-LEGAL (contrato §13.2).
+// Un registro firmado debe distinguir lo que escribió el vet de lo que
+// sugirió la IA y él aprobó.
+enum FieldSource {
+  FIELD_SOURCE_UNSPECIFIED = 0;
+  FIELD_SOURCE_VET_MANUAL = 1;      // Digitado por el veterinario
+  FIELD_SOURCE_AI_SUGGESTED = 2;    // Sugerido por IA (Fase 2) — requiere revisión
+  FIELD_SOURCE_PREFILLED = 3;       // Pre-llenado desde el carné o cálculo
+  FIELD_SOURCE_CLIENT_REPORTED = 4; // Reportado por el dueño
+}
+
+enum DiagnosisType {
+  DIAGNOSIS_TYPE_UNSPECIFIED = 0;
+  DIAGNOSIS_TYPE_PROBLEM = 1;       // Lista de problemas
+  DIAGNOSIS_TYPE_DIFFERENTIAL = 2;  // Diferencial
+  DIAGNOSIS_TYPE_PRESUMPTIVE = 3;   // Presuntivo
+  DIAGNOSIS_TYPE_DEFINITIVE = 4;    // Definitivo
+}
+
+// Estado de un sistema en el examen por sistemas (§16.6).
+// Default NO_EVALUADO — registrar como normal algo no examinado es riesgo legal.
+enum SystemExamState {
+  SYSTEM_EXAM_STATE_UNSPECIFIED = 0;
+  SYSTEM_EXAM_STATE_NOT_EVALUATED = 1;
+  SYSTEM_EXAM_STATE_NORMAL = 2;
+  SYSTEM_EXAM_STATE_ABNORMAL = 3;
+}
+
+enum AttachmentType {
+  ATTACHMENT_TYPE_UNSPECIFIED = 0;
+  ATTACHMENT_TYPE_INFORMED_CONSENT = 1;  // Anexo obligatorio legal
+  ATTACHMENT_TYPE_LAB_RESULT = 2;
+  ATTACHMENT_TYPE_IMAGE = 3;
+  ATTACHMENT_TYPE_REFERRAL = 4;
+  ATTACHMENT_TYPE_VACCINE_LABEL = 5;     // Foto de etiqueta del frasco (§16.2)
+  ATTACHMENT_TYPE_AUDIO_CAPTURE = 6;     // Captura cruda Fase 2 (contrato §13.6)
+  ATTACHMENT_TYPE_TRANSCRIPT = 7;        // Transcripción cruda Fase 2
+  ATTACHMENT_TYPE_OTHER = 8;
+}
+
+// Requerimiento de un bloque dentro de una receta (matriz §16.8).
+enum BlockRequirement {
+  BLOCK_REQUIREMENT_UNSPECIFIED = 0;
+  BLOCK_REQUIREMENT_REQUIRED = 1;
+  BLOCK_REQUIREMENT_OPTIONAL = 2;
+  BLOCK_REQUIREMENT_NOT_APPLICABLE = 3;
+}
+
+// Tipo de campo del template — la app renderiza el control con esto y el
+// servicio valida el patch contra esto.
+enum FieldType {
+  FIELD_TYPE_UNSPECIFIED = 0;
+  FIELD_TYPE_STRING = 1;
+  FIELD_TYPE_TEXT = 2;
+  FIELD_TYPE_DATE = 3;
+  FIELD_TYPE_DECIMAL = 4;
+  FIELD_TYPE_INT = 5;
+  FIELD_TYPE_BOOL = 6;
+  FIELD_TYPE_ENUM = 7;
+  FIELD_TYPE_MULTI_SELECT = 8;
+  FIELD_TYPE_ATTACHMENT = 9;
+  FIELD_TYPE_OBJECT_LIST = 10;  // Bloque repetible (ej. examenes_complementarios)
+}
+
+// Rol del solicitante para el control de acceso por engagement (§8).
+enum RequesterRole {
+  REQUESTER_ROLE_UNSPECIFIED = 0;
+  REQUESTER_ROLE_CLIENT = 1;  // Dueño: lee siempre, no edita clínico
+  REQUESTER_ROLE_VET = 2;     // Lee/escribe solo con cita activa
+  REQUESTER_ROLE_ADMIN = 3;   // Break-glass, siempre auditado
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MESSAGES - Contexto de acceso
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Acompaña TODA lectura y escritura. El servicio audita cada acceso
+// (quién / cuándo / qué cita) — guardrail anti-fuga §8.
+message AccessContext {
+  string requester_user_id = 1;
+  string requester_profile_id = 2;
+  RequesterRole role = 3;
+  // Cita que habilita el acceso del vet. Obligatorio para role = VET.
+  string appointment_id = 4;
+  // Justificación — obligatoria para acceso break-glass de ADMIN.
+  string break_glass_reason = 5;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MESSAGES - Template (receta de bloques)
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Predicado de aplicabilidad de un campo (§12.1). Ausente = aplica siempre.
+// La especie NO es eje de recetas: entra como predicado a nivel de campo.
+message AppliesTo {
+  repeated Species species = 1;
+  int32 min_age_months = 2;
+  int32 max_age_months = 3;
+}
+
+message TemplateField {
+  string key = 1;                  // Clave estable dentro del bloque (contrato §13.1)
+  string label = 2;                // Etiqueta en español
+  FieldType type = 3;
+  bool required = 4;               // Requerido para finalizar si el bloque aplica
+  bool client_visible = 5;         // Contrato §13.5 — visible en pantalla compartida (Fase 3)
+  repeated string options = 6;     // Para ENUM / MULTI_SELECT
+  AppliesTo applies_to = 7;
+  string unit = 8;                 // Ej. "kg", "°C", "lpm"
+  string help_text = 9;
+  // Tabla de referencia que alimenta este campo (§12.2 / §16.9).
+  // Ej. "vaccine_catalog", "vital_reference_ranges", "system_findings".
+  string reference_table = 10;
+  bool deprecated = 11;            // Campo obsoleto: se marca, nunca se borra
+  repeated TemplateField children = 12;  // Solo para OBJECT_LIST
+}
+
+message TemplateBlock {
+  string key = 1;                  // Ej. "bloque_vacunacion"
+  string label = 2;
+  BlockRequirement requirement = 3;
+  bool client_visible = 4;
+  bool is_repeated = 5;            // Bloque 0..N (ej. examenes_complementarios)
+  repeated TemplateField fields = 6;
+}
+
+message ConsultationTemplate {
+  ServiceType service_type = 1;
+  SpeciesProfile species_profile = 2;
+  // Versión de la receta. Se guarda en cada registro para que los registros
+  // viejos rendericen como se capturaron (integridad médico-legal §5).
+  string version = 3;
+  repeated TemplateBlock blocks = 4;
+  // El mismo template serializado como JSON Schema — insumo directo de la IA
+  // de Fase 2 como definición de herramienta (contrato §13.1).
+  google.protobuf.Struct json_schema = 5;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MESSAGES - Entidades del registro
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Metadata de procedencia por campo (contrato §13.2). Vive en un JSONB hermano
+// del valor, no envolviéndolo — mantiene los valores legibles y consultables.
+message FieldMeta {
+  FieldSource source = 1;
+  double confidence = 2;           // 0.0–1.0, solo significativo si source = AI_SUGGESTED
+  bool reviewed_by_vet = 3;        // Requisito para finalizar un campo AI_SUGGESTED
+  google.protobuf.Timestamp updated_at = 4;
+  string updated_by_profile_id = 5;
+}
+
+// Datos de un bloque flexible. `data` y `field_meta` comparten las mismas claves.
+message BlockData {
+  string block_key = 1;
+  google.protobuf.Struct data = 2;       // { "next_due_date": "2027-07-23", ... }
+  map<string, FieldMeta> field_meta = 3; // { "next_due_date": {source, ...} }
+}
+
+// Vitales tipados — habilitan tendencias, alertas por rango y comparación
+// longitudinal. Los rangos normales dependen de la especie (§12.2).
+message Vitals {
+  double weight_kg = 1;
+  double temperature_c = 2;
+  int32 heart_rate_bpm = 3;
+  int32 respiratory_rate_bpm = 4;
+  double crt_seg = 5;              // TLLC — tiempo de llenado capilar
+  double skin_tent_seg = 6;        // TRPC — tiempo de retorno del pliegue cutáneo
+  string pulse = 7;
+  string mucous_membrane = 8;
+  double dehydration_pct = 9;
+  int32 body_condition_score = 10; // Escala por especie (1–9 en perro/gato)
+  // Campos fuera del rango normal de la especie, calculado al capturar.
+  repeated string out_of_range_fields = 11;
+}
+
+message Diagnosis {
+  string id = 1;
+  string label = 2;                // Texto libre en español
+  DiagnosisType type = 3;
+  // Hooks de codificación — nullable desde el día 1, se llenan luego con
+  // auto-mapeo a VeNom(ES) vía IA (§decisión 3). NO removerlos.
+  string code = 4;
+  string code_system = 5;          // Ej. "venom"
+  bool is_primary = 6;
+  string notes = 7;
+}
+
+message PrescriptionItem {
+  string id = 1;
+  string medication = 2;
+  string dose = 3;
+  string route = 4;
+  string frequency = 5;
+  string duration = 6;
+  double quantity = 7;
+  string instructions = 8;
+  string product_ref = 9;          // Hook al catálogo → ecommerce (Fase 4)
+}
+
+message FollowUp {
+  bool needed = 1;
+  int32 recommended_interval_days = 2;
+  string reason = 3;
+  string vet_recommendations = 4;  // Campo de upsell / cuidado preventivo
+}
+
+// Data única de estar en la casa (§6). 5 campos núcleo + 2 opcionales.
+message HomeObservation {
+  repeated string hazards = 1;         // Multi-select: plantas tóxicas, químicos, etc.
+  string indoor_outdoor = 2;           // solo_interior · exterior · mixto
+  string sanitation = 3;               // bueno · regular · deficiente
+  int32 litter_box_count = 4;          // Solo gatos (applies_to)
+  string litter_box_hygiene = 5;       // Solo gatos
+  string stress_enrichment = 6;
+  repeated string air_quality = 7;     // humo · humedad/moho · ventilación deficiente
+  string feeding_setup = 8;            // Opcional
+  string surfaces_mobility = 9;        // Opcional
+}
+
+message Attachment {
+  string id = 1;
+  AttachmentType type = 2;
+  string url = 3;                  // files-service
+  string caption = 4;
+  string body_region = 5;
+  google.protobuf.Timestamp created_at = 6;
+}
+
+// Append-only. Requisito legal para cualquier corrección post-cierre.
+message Amendment {
+  string id = 1;
+  string amended_by_profile_id = 2;
+  string justification = 3;
+  google.protobuf.Struct diff = 4;
+  google.protobuf.Timestamp created_at = 5;
+}
+
+message ConsultationRecord {
+  string id = 1;
+  string appointment_id = 2;
+  string pet_id = 3;
+  string client_profile_id = 4;
+  string vet_profile_id = 5;
+
+  Species species = 6;
+  ServiceType service_type = 7;
+  // Receta usada al capturar — permite renderizar el registro tal como se creó.
+  string template_version = 8;
+  SpeciesProfile species_profile = 9;
+
+  ConsultationStatus status = 10;
+  string chief_complaint = 11;
+
+  // Contador de revisión para concurrencia optimista (contrato §13.3).
+  // Autosave, IA y vista en vivo escriben sobre el mismo borrador.
+  int64 revision = 12;
+
+  Vitals vitals = 13;
+  repeated BlockData blocks = 14;
+  repeated Diagnosis diagnoses = 15;
+  repeated PrescriptionItem prescriptions = 16;
+  FollowUp follow_up = 17;
+  HomeObservation home_observation = 18;
+  repeated Attachment attachments = 19;
+  repeated Amendment amendments = 20;
+
+  google.protobuf.Timestamp created_at = 21;
+  google.protobuf.Timestamp updated_at = 22;
+  google.protobuf.Timestamp finalized_at = 23;
+  // Vencimiento de la ventana de finalización (24–48h tras COMPLETED).
+  google.protobuf.Timestamp finalization_deadline = 24;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MESSAGES - Patch (contrato §13.3)
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Un cambio dirigido a una ruta de campo. Ej. path = "bloque_vacunacion.next_due_date".
+// Para bloques repetibles: "examenes_complementarios[2].result_summary".
+message FieldPatch {
+  string path = 1;
+  google.protobuf.Value value = 2;  // null = limpiar el campo
+  FieldSource source = 3;
+  double confidence = 4;
+  bool reviewed_by_vet = 5;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MESSAGES - Requests / Responses
+// ═══════════════════════════════════════════════════════════════════════════
+
+message GetConsultationTemplateRequest {
+  ServiceType service_type = 1;
+  Species species = 2;
+  int32 pet_age_months = 3;        // Resuelve predicados applies_to por edad
+  // Versión específica de la receta. Vacío = versión vigente.
+  string template_version = 4;
+}
+
+message ConsultationTemplateResponse {
+  ConsultationTemplate template = 1;
+}
+
+message StartConsultationRecordRequest {
+  string appointment_id = 1;
+  string pet_id = 2;
+  string client_profile_id = 3;
+  string vet_profile_id = 4;
+  ServiceType service_type = 5;
+  Species species = 6;
+  int32 pet_age_months = 7;
+  // Datos del carné que pre-llenan el registro (peso previo, alergias activas).
+  // Se marcan con source = PREFILLED.
+  google.protobuf.Struct carnet_prefill = 8;
+  AccessContext access = 9;
+}
+
+message ConsultationRecordResponse {
+  ConsultationRecord record = 1;
+  // Devuelto en Start para que la app arme el formulario sin un segundo viaje.
+  ConsultationTemplate template = 2;
+}
+
+message UpdateConsultationRecordRequest {
+  string record_id = 1;
+  repeated FieldPatch patches = 2;
+  // Concurrencia optimista: si no coincide con la revisión actual → ABORTED.
+  // 0 = forzar (último gana), solo para autosave del propio vet.
+  int64 expected_revision = 3;
+  AccessContext access = 4;
+}
+
+message UpdateConsultationRecordResponse {
+  string record_id = 1;
+  int64 revision = 2;
+  repeated string applied_paths = 3;
+  repeated string rejected_paths = 4;  // Rutas inválidas para la receta
+  google.protobuf.Timestamp updated_at = 5;
+}
+
+message MarkPendingFinalizationRequest {
+  // Uno de los dos. appointment_id es el que usa appointment-service.
+  string record_id = 1;
+  string appointment_id = 2;
+}
+
+message FinalizeConsultationRecordRequest {
+  string record_id = 1;
+  AccessContext access = 2;
+}
+
+// Bloque o campo que impide finalizar.
+message ValidationIssue {
+  string block_key = 1;
+  string field_path = 2;
+  string message = 3;
+}
+
+message FinalizeConsultationRecordResponse {
+  ConsultationRecord record = 1;
+  bool success = 2;
+  // Si success = false, qué falta (bloques requeridos de la receta).
+  repeated ValidationIssue issues = 3;
+  // Side-effects encolados en el outbox transaccional (no fire-and-forget).
+  repeated string queued_side_effects = 4;
+}
+
+message AmendConsultationRecordRequest {
+  string record_id = 1;
+  repeated FieldPatch patches = 2;
+  string justification = 3;        // Obligatoria
+  AccessContext access = 4;
+}
+
+message GetConsultationRecordRequest {
+  // Uno de los dos. record_id tiene precedencia si vienen ambos.
+  string record_id = 1;
+  string appointment_id = 2;
+  AccessContext access = 3;
+}
+
+message GetPetMedicalHistoryRequest {
+  string pet_id = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+  // Filtra el timeline por tipo de servicio. Vacío = todos.
+  repeated ServiceType service_types = 4;
+  bool include_vitals_trend = 5;
+  AccessContext access = 6;
+}
+
+// Entrada resumida del timeline — no arrastra el registro completo.
+message MedicalHistoryEntry {
+  string record_id = 1;
+  string appointment_id = 2;
+  ServiceType service_type = 3;
+  ConsultationStatus status = 4;
+  string chief_complaint = 5;
+  string primary_diagnosis = 6;
+  string vet_profile_id = 7;
+  string vet_name = 8;
+  google.protobuf.Timestamp consulted_at = 9;
+}
+
+message VitalsTrendPoint {
+  google.protobuf.Timestamp measured_at = 1;
+  double weight_kg = 2;
+  double temperature_c = 3;
+  int32 heart_rate_bpm = 4;
+  int32 respiratory_rate_bpm = 5;
+  int32 body_condition_score = 6;
+}
+
+message GetPetMedicalHistoryResponse {
+  repeated MedicalHistoryEntry entries = 1;
+  int32 total_count = 2;
+  repeated VitalsTrendPoint vitals_trend = 3;
+}
+
+message ExportConsultationSOAPRequest {
+  string record_id = 1;
+  bool generate_pdf = 2;
+  AccessContext access = 3;
+}
+
+message ExportConsultationSOAPResponse {
+  string subjective = 1;
+  string objective = 2;
+  string assessment = 3;
+  string plan = 4;
+  string pdf_url = 5;              // Vacío si generate_pdf = false
+  google.protobuf.Timestamp generated_at = 6;
+}

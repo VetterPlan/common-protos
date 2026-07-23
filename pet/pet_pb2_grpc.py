@@ -88,6 +88,26 @@ class PetServiceStub(object):
                 request_serializer=pet_dot_pet__pb2.RemoveVaccinationRequest.SerializeToString,
                 response_deserializer=pet_dot_pet__pb2.RemoveVaccinationResponse.FromString,
                 _registered_method=True)
+        self.AddDeworming = channel.unary_unary(
+                '/pet.PetService/AddDeworming',
+                request_serializer=pet_dot_pet__pb2.AddDewormingRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.DewormingResponse.FromString,
+                _registered_method=True)
+        self.GetDewormings = channel.unary_unary(
+                '/pet.PetService/GetDewormings',
+                request_serializer=pet_dot_pet__pb2.GetDewormingsRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.DewormingsResponse.FromString,
+                _registered_method=True)
+        self.GetUpcomingDewormings = channel.unary_unary(
+                '/pet.PetService/GetUpcomingDewormings',
+                request_serializer=pet_dot_pet__pb2.GetUpcomingDewormingsRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.DewormingsResponse.FromString,
+                _registered_method=True)
+        self.RemoveDeworming = channel.unary_unary(
+                '/pet.PetService/RemoveDeworming',
+                request_serializer=pet_dot_pet__pb2.RemoveDewormingRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.RemoveDewormingResponse.FromString,
+                _registered_method=True)
         self.AddAllergy = channel.unary_unary(
                 '/pet.PetService/AddAllergy',
                 request_serializer=pet_dot_pet__pb2.AddAllergyRequest.SerializeToString,
@@ -207,6 +227,38 @@ class PetServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def AddDeworming(self, request, context):
+        """─── DEWORMING ───
+        Espejo estructural de las vacunas: el carné necesita next_due_date para
+        disparar el recordatorio de desparasitación y capturar la recurrencia.
+
+        Register a deworming for a pet
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetDewormings(self, request, context):
+        """Get deworming history for a pet
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetUpcomingDewormings(self, request, context):
+        """Get upcoming dewormings (for reminders/notifications)
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RemoveDeworming(self, request, context):
+        """Remove a deworming record (admin only — enforced at gateway)
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def AddAllergy(self, request, context):
         """─── ALLERGIES ───
 
@@ -320,6 +372,26 @@ def add_PetServiceServicer_to_server(servicer, server):
                     servicer.RemoveVaccination,
                     request_deserializer=pet_dot_pet__pb2.RemoveVaccinationRequest.FromString,
                     response_serializer=pet_dot_pet__pb2.RemoveVaccinationResponse.SerializeToString,
+            ),
+            'AddDeworming': grpc.unary_unary_rpc_method_handler(
+                    servicer.AddDeworming,
+                    request_deserializer=pet_dot_pet__pb2.AddDewormingRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.DewormingResponse.SerializeToString,
+            ),
+            'GetDewormings': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetDewormings,
+                    request_deserializer=pet_dot_pet__pb2.GetDewormingsRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.DewormingsResponse.SerializeToString,
+            ),
+            'GetUpcomingDewormings': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetUpcomingDewormings,
+                    request_deserializer=pet_dot_pet__pb2.GetUpcomingDewormingsRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.DewormingsResponse.SerializeToString,
+            ),
+            'RemoveDeworming': grpc.unary_unary_rpc_method_handler(
+                    servicer.RemoveDeworming,
+                    request_deserializer=pet_dot_pet__pb2.RemoveDewormingRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.RemoveDewormingResponse.SerializeToString,
             ),
             'AddAllergy': grpc.unary_unary_rpc_method_handler(
                     servicer.AddAllergy,
@@ -614,6 +686,114 @@ class PetService(object):
             '/pet.PetService/RemoveVaccination',
             pet_dot_pet__pb2.RemoveVaccinationRequest.SerializeToString,
             pet_dot_pet__pb2.RemoveVaccinationResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def AddDeworming(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/pet.PetService/AddDeworming',
+            pet_dot_pet__pb2.AddDewormingRequest.SerializeToString,
+            pet_dot_pet__pb2.DewormingResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetDewormings(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/pet.PetService/GetDewormings',
+            pet_dot_pet__pb2.GetDewormingsRequest.SerializeToString,
+            pet_dot_pet__pb2.DewormingsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetUpcomingDewormings(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/pet.PetService/GetUpcomingDewormings',
+            pet_dot_pet__pb2.GetUpcomingDewormingsRequest.SerializeToString,
+            pet_dot_pet__pb2.DewormingsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RemoveDeworming(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/pet.PetService/RemoveDeworming',
+            pet_dot_pet__pb2.RemoveDewormingRequest.SerializeToString,
+            pet_dot_pet__pb2.RemoveDewormingResponse.FromString,
             options,
             channel_credentials,
             insecure,

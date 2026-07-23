@@ -44,6 +44,22 @@ service PetService {
   // Remove a vaccination record (admin only — enforced at gateway) remove
   rpc RemoveVaccination (RemoveVaccinationRequest) returns (RemoveVaccinationResponse);
 
+  // ─── DEWORMING ───
+  // Espejo estructural de las vacunas: el carné necesita next_due_date para
+  // disparar el recordatorio de desparasitación y capturar la recurrencia.
+
+  // Register a deworming for a pet
+  rpc AddDeworming (AddDewormingRequest) returns (DewormingResponse);
+
+  // Get deworming history for a pet
+  rpc GetDewormings (GetDewormingsRequest) returns (DewormingsResponse);
+
+  // Get upcoming dewormings (for reminders/notifications)
+  rpc GetUpcomingDewormings (GetUpcomingDewormingsRequest) returns (DewormingsResponse);
+
+  // Remove a deworming record (admin only — enforced at gateway)
+  rpc RemoveDeworming (RemoveDewormingRequest) returns (RemoveDewormingResponse);
+
   // ─── ALLERGIES ───
 
   // Add an allergy record for a pet
@@ -102,6 +118,13 @@ enum Gender {
   GENDER_UNKNOWN = 3;
 }
 
+enum ParasiteTarget {
+  PARASITE_TARGET_UNSPECIFIED = 0;
+  PARASITE_TARGET_INTERNAL = 1;
+  PARASITE_TARGET_EXTERNAL = 2;
+  PARASITE_TARGET_BOTH = 3;
+}
+
 enum AllergySeverity {
   ALLERGY_SEVERITY_UNSPECIFIED = 0;
   ALLERGY_SEVERITY_MILD = 1;
@@ -156,6 +179,26 @@ message Vaccination {
   int32 days_until_due = 10;
   google.protobuf.Timestamp created_at = 11;
   google.protobuf.Timestamp updated_at = 12;
+}
+
+message Deworming {
+  string id = 1;
+  string pet_id = 2;
+  string product_name = 3;
+  ParasiteTarget parasite_target = 4;
+  string date_administered = 5;   // ISO 8601 date
+  string next_due_date = 6;       // ISO 8601 date (for reminders)
+  double dose_amount = 7;
+  string dose_unit = 8;           // mg · ml · tableta · pipeta
+  double weight_used_kg = 9;      // Peso con el que se calculó la dosis
+  string route = 10;              // oral · topica · inyectable
+  string administered_by = 11;
+  string batch_number = 12;
+  string notes = 13;
+  bool is_overdue = 14;
+  int32 days_until_due = 15;
+  google.protobuf.Timestamp created_at = 16;
+  google.protobuf.Timestamp updated_at = 17;
 }
 
 message Allergy {
@@ -255,6 +298,43 @@ message RemoveVaccinationResponse {
   string message = 2;
 }
 
+// ─── Deworming ───
+
+message AddDewormingRequest {
+  string pet_id = 1;
+  string product_name = 2;
+  ParasiteTarget parasite_target = 3;
+  string date_administered = 4;   // ISO 8601
+  string next_due_date = 5;       // ISO 8601
+  double dose_amount = 6;
+  string dose_unit = 7;
+  double weight_used_kg = 8;
+  string route = 9;
+  string administered_by = 10;
+  string batch_number = 11;
+  string notes = 12;
+}
+
+message GetDewormingsRequest {
+  string pet_id = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+}
+
+message GetUpcomingDewormingsRequest {
+  string client_profile_id = 1;
+  int32 days_ahead = 2;
+}
+
+message RemoveDewormingRequest {
+  string deworming_id = 1;
+}
+
+message RemoveDewormingResponse {
+  bool success = 1;
+  string message = 2;
+}
+
 // ─── Allergies ───
 
 message AddAllergyRequest {
@@ -296,6 +376,15 @@ message VaccinationResponse {
 
 message VaccinationsResponse {
   repeated Vaccination vaccinations = 1;
+  int32 total_count = 2;
+}
+
+message DewormingResponse {
+  Deworming deworming = 1;
+}
+
+message DewormingsResponse {
+  repeated Deworming dewormings = 1;
   int32 total_count = 2;
 }
 

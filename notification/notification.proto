@@ -85,6 +85,9 @@ enum NotificationEvent {
   // Review reminder (client perspective)
   NOTIFICATION_EVENT_REVIEW_REMINDER        = 23; // sent 2h after COMPLETED if no review yet
 
+  // Medical record (client perspective)
+  NOTIFICATION_EVENT_MEDICAL_RECORD_READY   = 24; // vet finalizó el registro clínico
+
   // System / admin
   NOTIFICATION_EVENT_SYSTEM_ALERT           = 99;
 }
