@@ -80,6 +80,17 @@ service MedHistoryService {
   // Vista/PDF SOAP generada desde los datos estructurados.
   // SOAP es SOLO exportación, nunca UI de captura.
   rpc ExportConsultationSOAP (ExportConsultationSOAPRequest) returns (ExportConsultationSOAPResponse);
+
+  // ─── ADJUNTOS (R2 privado) ───
+
+  // Devuelve una URL PUT prefirmada para subir un adjunto directo a R2, y la
+  // clave del objeto a guardar en el anexo. El bucket es privado: la clave NO
+  // es una URL pública.
+  rpc GenerateAttachmentUploadUrl (GenerateAttachmentUploadUrlRequest) returns (GenerateAttachmentUploadUrlResponse);
+
+  // Devuelve una URL GET prefirmada de corta vida para leer un adjunto, solo
+  // tras pasar el control de acceso (mismo engagement que el registro).
+  rpc GetAttachmentUrl (GetAttachmentUrlRequest) returns (GetAttachmentUrlResponse);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -629,4 +640,35 @@ message ExportConsultationSOAPResponse {
   string plan = 4;
   string pdf_url = 5;              // Vacío si generate_pdf = false
   google.protobuf.Timestamp generated_at = 6;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ADJUNTOS (R2 privado)
+// ═══════════════════════════════════════════════════════════════════════════
+
+message GenerateAttachmentUploadUrlRequest {
+  string record_id = 1;
+  AttachmentType attachment_type = 2;
+  string file_extension = 3;       // pdf · jpg · png · m4a ...
+  string content_type = 4;         // application/pdf · image/jpeg ...
+  AccessContext access = 5;
+}
+
+message GenerateAttachmentUploadUrlResponse {
+  string upload_url = 1;           // PUT prefirmado, subir directo a R2
+  // Guardar en el anexo (Attachment.url). Es la clave del objeto, no una URL
+  // pública — la lectura se pide con GetAttachmentUrl.
+  string object_key = 2;
+  int32 expires_in = 3;            // segundos de validez del upload_url
+}
+
+message GetAttachmentUrlRequest {
+  string record_id = 1;
+  string object_key = 2;           // la clave guardada en el anexo
+  AccessContext access = 3;
+}
+
+message GetAttachmentUrlResponse {
+  string download_url = 1;         // GET prefirmado, corta vida
+  int32 expires_in = 2;
 }

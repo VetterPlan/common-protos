@@ -115,6 +115,16 @@ class MedHistoryServiceStub(object):
                 request_serializer=medhistory_dot_medhistory__pb2.ExportConsultationSOAPRequest.SerializeToString,
                 response_deserializer=medhistory_dot_medhistory__pb2.ExportConsultationSOAPResponse.FromString,
                 _registered_method=True)
+        self.GenerateAttachmentUploadUrl = channel.unary_unary(
+                '/medhistory.MedHistoryService/GenerateAttachmentUploadUrl',
+                request_serializer=medhistory_dot_medhistory__pb2.GenerateAttachmentUploadUrlRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.GenerateAttachmentUploadUrlResponse.FromString,
+                _registered_method=True)
+        self.GetAttachmentUrl = channel.unary_unary(
+                '/medhistory.MedHistoryService/GetAttachmentUrl',
+                request_serializer=medhistory_dot_medhistory__pb2.GetAttachmentUrlRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.GetAttachmentUrlResponse.FromString,
+                _registered_method=True)
 
 
 class MedHistoryServiceServicer(object):
@@ -242,6 +252,25 @@ class MedHistoryServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GenerateAttachmentUploadUrl(self, request, context):
+        """─── ADJUNTOS (R2 privado) ───
+
+        Devuelve una URL PUT prefirmada para subir un adjunto directo a R2, y la
+        clave del objeto a guardar en el anexo. El bucket es privado: la clave NO
+        es una URL pública.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetAttachmentUrl(self, request, context):
+        """Devuelve una URL GET prefirmada de corta vida para leer un adjunto, solo
+        tras pasar el control de acceso (mismo engagement que el registro).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_MedHistoryServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -304,6 +333,16 @@ def add_MedHistoryServiceServicer_to_server(servicer, server):
                     servicer.ExportConsultationSOAP,
                     request_deserializer=medhistory_dot_medhistory__pb2.ExportConsultationSOAPRequest.FromString,
                     response_serializer=medhistory_dot_medhistory__pb2.ExportConsultationSOAPResponse.SerializeToString,
+            ),
+            'GenerateAttachmentUploadUrl': grpc.unary_unary_rpc_method_handler(
+                    servicer.GenerateAttachmentUploadUrl,
+                    request_deserializer=medhistory_dot_medhistory__pb2.GenerateAttachmentUploadUrlRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.GenerateAttachmentUploadUrlResponse.SerializeToString,
+            ),
+            'GetAttachmentUrl': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetAttachmentUrl,
+                    request_deserializer=medhistory_dot_medhistory__pb2.GetAttachmentUrlRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.GetAttachmentUrlResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -651,6 +690,60 @@ class MedHistoryService(object):
             '/medhistory.MedHistoryService/ExportConsultationSOAP',
             medhistory_dot_medhistory__pb2.ExportConsultationSOAPRequest.SerializeToString,
             medhistory_dot_medhistory__pb2.ExportConsultationSOAPResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GenerateAttachmentUploadUrl(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/GenerateAttachmentUploadUrl',
+            medhistory_dot_medhistory__pb2.GenerateAttachmentUploadUrlRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.GenerateAttachmentUploadUrlResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetAttachmentUrl(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/GetAttachmentUrl',
+            medhistory_dot_medhistory__pb2.GetAttachmentUrlRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.GetAttachmentUrlResponse.FromString,
             options,
             channel_credentials,
             insecure,
