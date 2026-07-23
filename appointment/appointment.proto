@@ -254,6 +254,11 @@ message Appointment {
 
   // Live ETA (populated when vet marks EN_ROUTE)
   int32 eta_minutes = 40;             // Estimated travel time in minutes
+
+  // Grouping: visita de un cliente con varias mascotas = N citas (una por
+  // mascota) con el mismo group_id, agendadas secuencialmente. El grupo es la
+  // unidad de agenda, aceptación y arranque (PIN); NO la de cobro ni cancelación.
+  string group_id = 41;
 }
 
 message StatusHistoryEntry {
@@ -303,8 +308,18 @@ message ServiceCatalogItem {
 
 // ─── Lifecycle ───
 
+// Una mascota dentro de una solicitud. Cada una genera su propia cita, con su
+// propio servicio y duración, encadenadas secuencialmente dentro del grupo.
+message PetRequestItem {
+  string pet_id = 1;
+  ServiceType service_type = 2;
+  string service_metadata = 3;         // JSON string con info del subtipo
+}
+
 message RequestAppointmentRequest {
   string client_profile_id = 1;
+  // DEPRECADO: usar `pets`. Se mantiene para clientes viejos — si `pets` viene
+  // vacío se reconstruye desde pet_ids + service_type (mismo servicio para todas).
   repeated string pet_ids = 2;
   ServiceType service_type = 3;
   UrgencyLevel urgency = 4;
@@ -325,6 +340,14 @@ message RequestAppointmentRequest {
   string payment_method_id = 18;       // Required: ClientPaymentMethod UUID for preauth at acceptance
   string client_email = 19;            // Optional: client email for transactional emails (S2-12)
   double slot_price = 20;              // P1: price seen by client in slot listing (locks price for 90 min, 0 = not provided)
+  // Una entrada por mascota. Reemplaza pet_ids + service_type.
+  repeated PetRequestItem pets = 21;
+}
+
+// Precio confirmado por el vet para una cita concreta del grupo.
+message AppointmentPrice {
+  string appointment_id = 1;
+  double estimated_price = 2;
 }
 
 message AcceptAppointmentRequest {
@@ -333,6 +356,9 @@ message AcceptAppointmentRequest {
   double estimated_price = 3;
   int32 estimated_arrival_minutes = 4;
   string vet_notes = 5;
+  // Aceptación grupal: precio por cada cita del grupo. Si viene vacío se acepta
+  // solo `appointment_id` con `estimated_price` (comportamiento de una cita).
+  repeated AppointmentPrice group_prices = 6;
 }
 
 message UpdateAppointmentStatusRequest {
@@ -407,6 +433,10 @@ message GetAvailableVetsRequest {
 
 message AppointmentResponse {
   Appointment appointment = 1;
+  // Todas las citas del grupo, en orden de agenda. RequestAppointment y la
+  // aceptación grupal la rellenan; `appointment` sigue siendo la primera para
+  // no romper clientes que solo leen ese campo.
+  repeated Appointment group_appointments = 2;
 }
 
 message AppointmentsResponse {

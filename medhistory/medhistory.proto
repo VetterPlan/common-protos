@@ -38,6 +38,14 @@ service MedHistoryService {
   // desplegables que el template declara en `reference_table`.
   rpc GetReferenceData (GetReferenceDataRequest) returns (GetReferenceDataResponse);
 
+  // Crea o edita una fila de vocabulario. Solo admin (se enforza en la gateway).
+  // Editar el contenido clínico REVIERTE is_validated_by_vet a false: si cambió
+  // el dato, la aprobación anterior ya no aplica.
+  rpc UpsertReferenceItem (UpsertReferenceItemRequest) returns (ReferenceItemResponse);
+
+  // Aprueba (o revoca) filas en bloque tras la revisión del veterinario.
+  rpc SetReferenceValidation (SetReferenceValidationRequest) returns (SetReferenceValidationResponse);
+
   // ─── CICLO DE VIDA DEL REGISTRO ───
 
   // Abre el borrador al entrar a IN_PROGRESS (llamado por appointment-service).
@@ -435,6 +443,9 @@ message GetReferenceDataRequest {
   int32 pet_age_months = 3;
   // Solo para system_findings. Vacío = todos los sistemas.
   string system_key = 4;
+  // Modo revisión (panel de admin): devuelve TODAS las filas sin filtrar por
+  // especie, edad ni estado activo, para poder auditarlas y aprobarlas.
+  bool review_mode = 5;
 }
 
 // Fila genérica: `attributes` lleva los campos propios de cada tabla
@@ -446,6 +457,8 @@ message ReferenceItem {
   // La UI debe poder advertirlo.
   bool is_validated_by_vet = 3;
   google.protobuf.Struct attributes = 4;
+  string id = 5;
+  bool is_active = 6;
 }
 
 message GetReferenceDataResponse {
@@ -453,6 +466,38 @@ message GetReferenceDataResponse {
   repeated ReferenceItem items = 2;
   // True solo si TODAS las filas devueltas están validadas.
   bool fully_validated = 3;
+  int32 pending_validation_count = 4;
+}
+
+message UpsertReferenceItemRequest {
+  string table = 1;
+  // Vacío = crear una fila nueva.
+  string id = 2;
+  Species species = 3;
+  string code = 4;
+  string label = 5;
+  // Campos propios de la tabla. Los que no vengan se dejan como están.
+  google.protobuf.Struct attributes = 6;
+  bool is_active = 7;
+  string actor_user_id = 8;
+}
+
+message ReferenceItemResponse {
+  string table = 1;
+  ReferenceItem item = 2;
+}
+
+message SetReferenceValidationRequest {
+  string table = 1;
+  repeated string ids = 2;
+  bool is_validated_by_vet = 3;
+  string actor_user_id = 4;
+}
+
+message SetReferenceValidationResponse {
+  string table = 1;
+  int32 updated_count = 2;
+  repeated string not_found_ids = 3;
 }
 
 message StartConsultationRecordRequest {

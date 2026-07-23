@@ -65,6 +65,16 @@ class MedHistoryServiceStub(object):
                 request_serializer=medhistory_dot_medhistory__pb2.GetReferenceDataRequest.SerializeToString,
                 response_deserializer=medhistory_dot_medhistory__pb2.GetReferenceDataResponse.FromString,
                 _registered_method=True)
+        self.UpsertReferenceItem = channel.unary_unary(
+                '/medhistory.MedHistoryService/UpsertReferenceItem',
+                request_serializer=medhistory_dot_medhistory__pb2.UpsertReferenceItemRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.ReferenceItemResponse.FromString,
+                _registered_method=True)
+        self.SetReferenceValidation = channel.unary_unary(
+                '/medhistory.MedHistoryService/SetReferenceValidation',
+                request_serializer=medhistory_dot_medhistory__pb2.SetReferenceValidationRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.SetReferenceValidationResponse.FromString,
+                _registered_method=True)
         self.StartConsultationRecord = channel.unary_unary(
                 '/medhistory.MedHistoryService/StartConsultationRecord',
                 request_serializer=medhistory_dot_medhistory__pb2.StartConsultationRecordRequest.SerializeToString,
@@ -149,6 +159,22 @@ class MedHistoryServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def UpsertReferenceItem(self, request, context):
+        """Crea o edita una fila de vocabulario. Solo admin (se enforza en la gateway).
+        Editar el contenido clínico REVIERTE is_validated_by_vet a false: si cambió
+        el dato, la aprobación anterior ya no aplica.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetReferenceValidation(self, request, context):
+        """Aprueba (o revoca) filas en bloque tras la revisión del veterinario.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def StartConsultationRecord(self, request, context):
         """─── CICLO DE VIDA DEL REGISTRO ───
 
@@ -228,6 +254,16 @@ def add_MedHistoryServiceServicer_to_server(servicer, server):
                     servicer.GetReferenceData,
                     request_deserializer=medhistory_dot_medhistory__pb2.GetReferenceDataRequest.FromString,
                     response_serializer=medhistory_dot_medhistory__pb2.GetReferenceDataResponse.SerializeToString,
+            ),
+            'UpsertReferenceItem': grpc.unary_unary_rpc_method_handler(
+                    servicer.UpsertReferenceItem,
+                    request_deserializer=medhistory_dot_medhistory__pb2.UpsertReferenceItemRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.ReferenceItemResponse.SerializeToString,
+            ),
+            'SetReferenceValidation': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetReferenceValidation,
+                    request_deserializer=medhistory_dot_medhistory__pb2.SetReferenceValidationRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.SetReferenceValidationResponse.SerializeToString,
             ),
             'StartConsultationRecord': grpc.unary_unary_rpc_method_handler(
                     servicer.StartConsultationRecord,
@@ -345,6 +381,60 @@ class MedHistoryService(object):
             '/medhistory.MedHistoryService/GetReferenceData',
             medhistory_dot_medhistory__pb2.GetReferenceDataRequest.SerializeToString,
             medhistory_dot_medhistory__pb2.GetReferenceDataResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def UpsertReferenceItem(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/UpsertReferenceItem',
+            medhistory_dot_medhistory__pb2.UpsertReferenceItemRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.ReferenceItemResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SetReferenceValidation(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/SetReferenceValidation',
+            medhistory_dot_medhistory__pb2.SetReferenceValidationRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.SetReferenceValidationResponse.FromString,
             options,
             channel_credentials,
             insecure,
