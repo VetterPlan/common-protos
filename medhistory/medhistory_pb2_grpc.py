@@ -135,6 +135,16 @@ class MedHistoryServiceStub(object):
                 request_serializer=medhistory_dot_medhistory__pb2.GetStructuringStatusRequest.SerializeToString,
                 response_deserializer=medhistory_dot_medhistory__pb2.GetStructuringStatusResponse.FromString,
                 _registered_method=True)
+        self.GrantAiConsent = channel.unary_unary(
+                '/medhistory.MedHistoryService/GrantAiConsent',
+                request_serializer=medhistory_dot_medhistory__pb2.GrantAiConsentRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.GrantAiConsentResponse.FromString,
+                _registered_method=True)
+        self.GenerateOwnerSummary = channel.unary_unary(
+                '/medhistory.MedHistoryService/GenerateOwnerSummary',
+                request_serializer=medhistory_dot_medhistory__pb2.GenerateOwnerSummaryRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.GenerateOwnerSummaryResponse.FromString,
+                _registered_method=True)
 
 
 class MedHistoryServiceServicer(object):
@@ -300,6 +310,26 @@ class MedHistoryServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GrantAiConsent(self, request, context):
+        """Otorga o revoca el consentimiento del dueño para el procesamiento con IA de
+        la consulta (Ley 1581). Sin consentimiento otorgado, RequestStructuring
+        queda bloqueado y el vet teclea (Fase 1 intacta).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GenerateOwnerSummary(self, request, context):
+        """─── RESUMEN PARA EL DUEÑO (Fase 2c) ───
+
+        Genera (o devuelve en caché) el resumen amable para el dueño a partir del
+        registro FINALIZADO. Segunda salida de la misma captura: lenguaje claro, sin
+        jerga. Solo el vet (o admin) genera; el dueño lo lee del registro.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_MedHistoryServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -382,6 +412,16 @@ def add_MedHistoryServiceServicer_to_server(servicer, server):
                     servicer.GetStructuringStatus,
                     request_deserializer=medhistory_dot_medhistory__pb2.GetStructuringStatusRequest.FromString,
                     response_serializer=medhistory_dot_medhistory__pb2.GetStructuringStatusResponse.SerializeToString,
+            ),
+            'GrantAiConsent': grpc.unary_unary_rpc_method_handler(
+                    servicer.GrantAiConsent,
+                    request_deserializer=medhistory_dot_medhistory__pb2.GrantAiConsentRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.GrantAiConsentResponse.SerializeToString,
+            ),
+            'GenerateOwnerSummary': grpc.unary_unary_rpc_method_handler(
+                    servicer.GenerateOwnerSummary,
+                    request_deserializer=medhistory_dot_medhistory__pb2.GenerateOwnerSummaryRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.GenerateOwnerSummaryResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -837,6 +877,60 @@ class MedHistoryService(object):
             '/medhistory.MedHistoryService/GetStructuringStatus',
             medhistory_dot_medhistory__pb2.GetStructuringStatusRequest.SerializeToString,
             medhistory_dot_medhistory__pb2.GetStructuringStatusResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GrantAiConsent(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/GrantAiConsent',
+            medhistory_dot_medhistory__pb2.GrantAiConsentRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.GrantAiConsentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GenerateOwnerSummary(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/GenerateOwnerSummary',
+            medhistory_dot_medhistory__pb2.GenerateOwnerSummaryRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.GenerateOwnerSummaryResponse.FromString,
             options,
             channel_credentials,
             insecure,
