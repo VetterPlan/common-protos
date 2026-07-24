@@ -22,6 +22,9 @@ service AuthService {
 
   // Admin: look up a user account by email address
   rpc FindUserByEmail (FindUserByEmailRequest) returns (FindUserByEmailResponse);
+
+  // Admin: paginated list of all accounts (clients + vets + admins), with filters
+  rpc ListUsers (ListUsersRequest) returns (ListUsersResponse);
 }
 
 message LoginRequest {
@@ -172,4 +175,29 @@ message FindUserByEmailResponse {
   string created_at = 5;
   repeated string roles = 6;
   string user_type = 7;
+}
+
+// Admin: paginated listing of ALL accounts.
+message ListUsersRequest {
+  int32 limit = 1;          // default 50, max 200
+  int32 offset = 2;
+  string search = 3;        // optional: case-insensitive email/phone substring
+  string role_slug = 4;     // optional: filter by role ("client" | "vet" | "admin")
+  string active_filter = 5; // optional: "active" | "inactive" | "" (all)
+}
+
+message UserSummary {
+  string user_id = 1;
+  string email = 2;
+  string phone = 3;
+  bool is_active = 4;
+  bool is_email_verified = 5;
+  repeated string roles = 6;
+  string user_type = 7;     // computed: "client" | "vet" | "both" | "admin" | ""
+  string created_at = 8;
+}
+
+message ListUsersResponse {
+  repeated UserSummary users = 1;
+  int32 total_count = 2;
 }
