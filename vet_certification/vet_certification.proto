@@ -42,6 +42,24 @@ service VetCertificationService {
 
   // Review a certification (admin: approve, reject, suspend, revoke)
   rpc ReviewCertification (ReviewCertificationRequest) returns (CertificationResponse);
+
+  // ─── SUPPORTING DOCUMENTS (private R2) ───
+
+  // Vet: get a short-lived presigned PUT URL to upload a supporting document.
+  rpc GenerateCertificationDocumentUploadUrl (GenerateCertificationDocumentUploadUrlRequest) returns (GenerateCertificationDocumentUploadUrlResponse);
+
+  // Vet: register an uploaded document (persists the R2 object key).
+  rpc AddCertificationDocument (AddCertificationDocumentRequest) returns (CertificationDocumentResponse);
+
+  // Admin or owning vet: list a certification's documents, each with a fresh
+  // short-lived presigned GET URL for viewing.
+  rpc GetCertificationDocuments (GetCertificationDocumentsRequest) returns (CertificationDocumentsResponse);
+
+  // Admin: mark a single document as verified / not verified, with notes.
+  rpc VerifyCertificationDocument (VerifyCertificationDocumentRequest) returns (CertificationDocumentResponse);
+
+  // Owning vet: remove a document (before approval). Deletes row + R2 object.
+  rpc RemoveCertificationDocument (RemoveCertificationDocumentRequest) returns (RemoveCertificationDocumentResponse);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -253,4 +271,101 @@ message ReviewCertificationRequest {
   CertificationStatus new_status = 3; // Required: target status
   string reason = 4;                // Required: StatusChangeReason value
   string notes = 5;                 // Optional: human-readable notes / rejection reason
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SUPPORTING DOCUMENTS (private R2)
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Mirrors app.domain.enums.DocumentType (values match the DB enum).
+enum DocumentType {
+  DOCUMENT_TYPE_UNSPECIFIED = 0;
+  DOCUMENT_TYPE_LICENSE_SCAN = 1;    // Scanned professional license
+  DOCUMENT_TYPE_DIPLOMA = 2;         // University diploma
+  DOCUMENT_TYPE_ID_CARD = 3;         // Government ID
+  DOCUMENT_TYPE_PHOTO = 4;           // Professional photo
+  DOCUMENT_TYPE_CERTIFICATE = 5;     // Additional certificates
+  DOCUMENT_TYPE_TRANSCRIPT = 6;      // Academic transcript
+  DOCUMENT_TYPE_INSURANCE = 7;       // Professional liability insurance
+  DOCUMENT_TYPE_BACKGROUND_CHECK = 8;// Background check results
+  DOCUMENT_TYPE_OTHER = 9;           // Other
+}
+
+message CertificationDocument {
+  string id = 1;
+  string certification_id = 2;
+  DocumentType document_type = 3;
+  string original_filename = 4;
+  string mime_type = 5;
+  int64 file_size_bytes = 6;
+
+  // Verification (per document)
+  bool is_verified = 7;
+  google.protobuf.Timestamp verified_at = 8;
+  string verified_by = 9;
+  string verification_notes = 10;
+
+  string expires_at = 11;                // ISO8601 date (YYYY-MM-DD), optional
+  google.protobuf.Timestamp uploaded_at = 12;
+
+  // Short-lived presigned GET URL for viewing. Only populated on read RPCs,
+  // never stored. Empty if the caller is not authorized to view.
+  string view_url = 13;
+}
+
+message GenerateCertificationDocumentUploadUrlRequest {
+  string certification_id = 1;      // Required
+  string vet_profile_id = 2;        // Required: owner (ownership check)
+  DocumentType document_type = 3;   // Required
+  string file_extension = 4;        // Required: pdf, jpg, png, webp
+  string content_type = 5;          // Required: MIME type
+}
+
+message GenerateCertificationDocumentUploadUrlResponse {
+  string upload_url = 1;            // Presigned PUT URL (short TTL)
+  string object_key = 2;           // R2 key to send back in AddCertificationDocument
+}
+
+message AddCertificationDocumentRequest {
+  string certification_id = 1;      // Required
+  string vet_profile_id = 2;        // Required: owner (ownership check)
+  DocumentType document_type = 3;   // Required
+  string object_key = 4;            // Required: from the upload-url response
+  string original_filename = 5;     // Optional
+  string mime_type = 6;             // Optional
+  int64 file_size_bytes = 7;        // Optional
+  string expires_at = 8;            // Optional: ISO8601 date
+}
+
+message CertificationDocumentResponse {
+  CertificationDocument document = 1;
+}
+
+message GetCertificationDocumentsRequest {
+  string certification_id = 1;      // Required
+  // Ownership/authorization is enforced at the gateway (admin) or by passing
+  // the requesting vet_profile_id (owner). Empty vet_profile_id + admin context.
+  string requester_vet_profile_id = 2; // Optional: set when the caller is the vet
+  bool is_admin = 3;                    // Set by the gateway for admin callers
+}
+
+message CertificationDocumentsResponse {
+  repeated CertificationDocument documents = 1;
+  int32 total_count = 2;
+}
+
+message VerifyCertificationDocumentRequest {
+  string document_id = 1;           // Required
+  string verified_by = 2;           // Required: admin UUID
+  bool is_verified = 3;             // true = verify, false = un-verify
+  string verification_notes = 4;    // Optional
+}
+
+message RemoveCertificationDocumentRequest {
+  string document_id = 1;           // Required
+  string vet_profile_id = 2;        // Required: owner (ownership check)
+}
+
+message RemoveCertificationDocumentResponse {
+  bool success = 1;
 }

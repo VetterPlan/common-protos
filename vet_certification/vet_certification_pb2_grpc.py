@@ -78,6 +78,31 @@ class VetCertificationServiceStub(object):
                 request_serializer=vet__certification_dot_vet__certification__pb2.ReviewCertificationRequest.SerializeToString,
                 response_deserializer=vet__certification_dot_vet__certification__pb2.CertificationResponse.FromString,
                 _registered_method=True)
+        self.GenerateCertificationDocumentUploadUrl = channel.unary_unary(
+                '/vet_certification.VetCertificationService/GenerateCertificationDocumentUploadUrl',
+                request_serializer=vet__certification_dot_vet__certification__pb2.GenerateCertificationDocumentUploadUrlRequest.SerializeToString,
+                response_deserializer=vet__certification_dot_vet__certification__pb2.GenerateCertificationDocumentUploadUrlResponse.FromString,
+                _registered_method=True)
+        self.AddCertificationDocument = channel.unary_unary(
+                '/vet_certification.VetCertificationService/AddCertificationDocument',
+                request_serializer=vet__certification_dot_vet__certification__pb2.AddCertificationDocumentRequest.SerializeToString,
+                response_deserializer=vet__certification_dot_vet__certification__pb2.CertificationDocumentResponse.FromString,
+                _registered_method=True)
+        self.GetCertificationDocuments = channel.unary_unary(
+                '/vet_certification.VetCertificationService/GetCertificationDocuments',
+                request_serializer=vet__certification_dot_vet__certification__pb2.GetCertificationDocumentsRequest.SerializeToString,
+                response_deserializer=vet__certification_dot_vet__certification__pb2.CertificationDocumentsResponse.FromString,
+                _registered_method=True)
+        self.VerifyCertificationDocument = channel.unary_unary(
+                '/vet_certification.VetCertificationService/VerifyCertificationDocument',
+                request_serializer=vet__certification_dot_vet__certification__pb2.VerifyCertificationDocumentRequest.SerializeToString,
+                response_deserializer=vet__certification_dot_vet__certification__pb2.CertificationDocumentResponse.FromString,
+                _registered_method=True)
+        self.RemoveCertificationDocument = channel.unary_unary(
+                '/vet_certification.VetCertificationService/RemoveCertificationDocument',
+                request_serializer=vet__certification_dot_vet__certification__pb2.RemoveCertificationDocumentRequest.SerializeToString,
+                response_deserializer=vet__certification_dot_vet__certification__pb2.RemoveCertificationDocumentResponse.FromString,
+                _registered_method=True)
 
 
 class VetCertificationServiceServicer(object):
@@ -148,6 +173,44 @@ class VetCertificationServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GenerateCertificationDocumentUploadUrl(self, request, context):
+        """─── SUPPORTING DOCUMENTS (private R2) ───
+
+        Vet: get a short-lived presigned PUT URL to upload a supporting document.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def AddCertificationDocument(self, request, context):
+        """Vet: register an uploaded document (persists the R2 object key).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetCertificationDocuments(self, request, context):
+        """Admin or owning vet: list a certification's documents, each with a fresh
+        short-lived presigned GET URL for viewing.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def VerifyCertificationDocument(self, request, context):
+        """Admin: mark a single document as verified / not verified, with notes.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RemoveCertificationDocument(self, request, context):
+        """Owning vet: remove a document (before approval). Deletes row + R2 object.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_VetCertificationServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -185,6 +248,31 @@ def add_VetCertificationServiceServicer_to_server(servicer, server):
                     servicer.ReviewCertification,
                     request_deserializer=vet__certification_dot_vet__certification__pb2.ReviewCertificationRequest.FromString,
                     response_serializer=vet__certification_dot_vet__certification__pb2.CertificationResponse.SerializeToString,
+            ),
+            'GenerateCertificationDocumentUploadUrl': grpc.unary_unary_rpc_method_handler(
+                    servicer.GenerateCertificationDocumentUploadUrl,
+                    request_deserializer=vet__certification_dot_vet__certification__pb2.GenerateCertificationDocumentUploadUrlRequest.FromString,
+                    response_serializer=vet__certification_dot_vet__certification__pb2.GenerateCertificationDocumentUploadUrlResponse.SerializeToString,
+            ),
+            'AddCertificationDocument': grpc.unary_unary_rpc_method_handler(
+                    servicer.AddCertificationDocument,
+                    request_deserializer=vet__certification_dot_vet__certification__pb2.AddCertificationDocumentRequest.FromString,
+                    response_serializer=vet__certification_dot_vet__certification__pb2.CertificationDocumentResponse.SerializeToString,
+            ),
+            'GetCertificationDocuments': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetCertificationDocuments,
+                    request_deserializer=vet__certification_dot_vet__certification__pb2.GetCertificationDocumentsRequest.FromString,
+                    response_serializer=vet__certification_dot_vet__certification__pb2.CertificationDocumentsResponse.SerializeToString,
+            ),
+            'VerifyCertificationDocument': grpc.unary_unary_rpc_method_handler(
+                    servicer.VerifyCertificationDocument,
+                    request_deserializer=vet__certification_dot_vet__certification__pb2.VerifyCertificationDocumentRequest.FromString,
+                    response_serializer=vet__certification_dot_vet__certification__pb2.CertificationDocumentResponse.SerializeToString,
+            ),
+            'RemoveCertificationDocument': grpc.unary_unary_rpc_method_handler(
+                    servicer.RemoveCertificationDocument,
+                    request_deserializer=vet__certification_dot_vet__certification__pb2.RemoveCertificationDocumentRequest.FromString,
+                    response_serializer=vet__certification_dot_vet__certification__pb2.RemoveCertificationDocumentResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -385,6 +473,141 @@ class VetCertificationService(object):
             '/vet_certification.VetCertificationService/ReviewCertification',
             vet__certification_dot_vet__certification__pb2.ReviewCertificationRequest.SerializeToString,
             vet__certification_dot_vet__certification__pb2.CertificationResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GenerateCertificationDocumentUploadUrl(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/vet_certification.VetCertificationService/GenerateCertificationDocumentUploadUrl',
+            vet__certification_dot_vet__certification__pb2.GenerateCertificationDocumentUploadUrlRequest.SerializeToString,
+            vet__certification_dot_vet__certification__pb2.GenerateCertificationDocumentUploadUrlResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def AddCertificationDocument(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/vet_certification.VetCertificationService/AddCertificationDocument',
+            vet__certification_dot_vet__certification__pb2.AddCertificationDocumentRequest.SerializeToString,
+            vet__certification_dot_vet__certification__pb2.CertificationDocumentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetCertificationDocuments(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/vet_certification.VetCertificationService/GetCertificationDocuments',
+            vet__certification_dot_vet__certification__pb2.GetCertificationDocumentsRequest.SerializeToString,
+            vet__certification_dot_vet__certification__pb2.CertificationDocumentsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def VerifyCertificationDocument(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/vet_certification.VetCertificationService/VerifyCertificationDocument',
+            vet__certification_dot_vet__certification__pb2.VerifyCertificationDocumentRequest.SerializeToString,
+            vet__certification_dot_vet__certification__pb2.CertificationDocumentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RemoveCertificationDocument(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/vet_certification.VetCertificationService/RemoveCertificationDocument',
+            vet__certification_dot_vet__certification__pb2.RemoveCertificationDocumentRequest.SerializeToString,
+            vet__certification_dot_vet__certification__pb2.RemoveCertificationDocumentResponse.FromString,
             options,
             channel_credentials,
             insecure,
