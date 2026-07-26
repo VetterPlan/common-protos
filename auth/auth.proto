@@ -11,7 +11,8 @@ service AuthService {
   rpc VerifyEmail (VerifyEmailRequest) returns (VerifyEmailResponse);
   rpc SendOtp(SendOtpRequest) returns (SendOtpResponse);
   rpc VerifyOtp(VerifyOtpRequest) returns (VerifyOtpResponse);
-  
+  rpc Logout (LogoutRequest) returns (LogoutResponse);
+
   // Role Management (NEW - Sprint 3)
   rpc AssignRole (AssignRoleRequest) returns (AssignRoleResponse);
   rpc GetUserRoles (GetUserRolesRequest) returns (GetUserRolesResponse);
@@ -87,6 +88,7 @@ message SendOtpResponse {
   bool success = 1;
   string message = 2;
   string expiresAt = 3;
+  int32 retryAfterSeconds = 4;
 }
 
 message VerifyOtpRequest {
@@ -95,6 +97,19 @@ message VerifyOtpRequest {
 }
 
 message VerifyOtpResponse {
+  bool success = 1;
+  string message = 2;
+  string accessToken = 3;
+  string refreshToken = 4;
+  bool isNewUser = 5;
+  int32 attemptsRemaining = 6;
+}
+
+message LogoutRequest {
+  string refreshToken = 1;
+}
+
+message LogoutResponse {
   bool success = 1;
   string message = 2;
 }
