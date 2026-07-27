@@ -284,6 +284,10 @@ message TemplateField {
   string reference_table = 10;
   bool deprecated = 11;            // Campo obsoleto: se marca, nunca se borra
   repeated TemplateField children = 12;  // Solo para OBJECT_LIST
+  // Campo de REDACCIÓN: la IA lo escribe en prosa a partir del dictado, en vez
+  // de extraer un valor puntual (ej. anamnesis_visita.relato). La app lo
+  // renderiza como texto largo revisable, no como control de dato.
+  bool synthesize = 13;
 }
 
 message TemplateBlock {
