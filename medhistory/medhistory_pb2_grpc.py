@@ -125,6 +125,11 @@ class MedHistoryServiceStub(object):
                 request_serializer=medhistory_dot_medhistory__pb2.GetAttachmentUrlRequest.SerializeToString,
                 response_deserializer=medhistory_dot_medhistory__pb2.GetAttachmentUrlResponse.FromString,
                 _registered_method=True)
+        self.RemoveConsultationAttachment = channel.unary_unary(
+                '/medhistory.MedHistoryService/RemoveConsultationAttachment',
+                request_serializer=medhistory_dot_medhistory__pb2.RemoveConsultationAttachmentRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.RemoveConsultationAttachmentResponse.FromString,
+                _registered_method=True)
         self.RequestStructuring = channel.unary_unary(
                 '/medhistory.MedHistoryService/RequestStructuring',
                 request_serializer=medhistory_dot_medhistory__pb2.RequestStructuringRequest.SerializeToString,
@@ -291,6 +296,15 @@ class MedHistoryServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def RemoveConsultationAttachment(self, request, context):
+        """Borra un anexo del registro y su objeto en R2. Solo con el registro
+        abierto: el anexo de un registro cerrado es prueba legal y ahí se corrige
+        por enmienda, no borrando.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def RequestStructuring(self, request, context):
         """─── CAPTURA CON IA (Fase 2) ───
 
@@ -402,6 +416,11 @@ def add_MedHistoryServiceServicer_to_server(servicer, server):
                     servicer.GetAttachmentUrl,
                     request_deserializer=medhistory_dot_medhistory__pb2.GetAttachmentUrlRequest.FromString,
                     response_serializer=medhistory_dot_medhistory__pb2.GetAttachmentUrlResponse.SerializeToString,
+            ),
+            'RemoveConsultationAttachment': grpc.unary_unary_rpc_method_handler(
+                    servicer.RemoveConsultationAttachment,
+                    request_deserializer=medhistory_dot_medhistory__pb2.RemoveConsultationAttachmentRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.RemoveConsultationAttachmentResponse.SerializeToString,
             ),
             'RequestStructuring': grpc.unary_unary_rpc_method_handler(
                     servicer.RequestStructuring,
@@ -823,6 +842,33 @@ class MedHistoryService(object):
             '/medhistory.MedHistoryService/GetAttachmentUrl',
             medhistory_dot_medhistory__pb2.GetAttachmentUrlRequest.SerializeToString,
             medhistory_dot_medhistory__pb2.GetAttachmentUrlResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RemoveConsultationAttachment(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/RemoveConsultationAttachment',
+            medhistory_dot_medhistory__pb2.RemoveConsultationAttachmentRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.RemoveConsultationAttachmentResponse.FromString,
             options,
             channel_credentials,
             insecure,

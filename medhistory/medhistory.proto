@@ -92,6 +92,11 @@ service MedHistoryService {
   // tras pasar el control de acceso (mismo engagement que el registro).
   rpc GetAttachmentUrl (GetAttachmentUrlRequest) returns (GetAttachmentUrlResponse);
 
+  // Borra un anexo del registro y su objeto en R2. Solo con el registro
+  // abierto: el anexo de un registro cerrado es prueba legal y ahí se corrige
+  // por enmienda, no borrando.
+  rpc RemoveConsultationAttachment (RemoveConsultationAttachmentRequest) returns (RemoveConsultationAttachmentResponse);
+
   // ─── CAPTURA CON IA (Fase 2) ───
 
   // Encola la estructuración de un segmento: transcribe el audio (o usa el
@@ -714,6 +719,20 @@ message GetAttachmentUrlRequest {
 message GetAttachmentUrlResponse {
   string download_url = 1;         // GET prefirmado, corta vida
   int32 expires_in = 2;
+}
+
+message RemoveConsultationAttachmentRequest {
+  string record_id = 1;
+  string attachment_id = 2;        // id del anexo, no la clave del objeto
+  AccessContext access = 3;
+}
+
+message RemoveConsultationAttachmentResponse {
+  string record_id = 1;
+  int64 revision = 2;
+  // false si el objeto ya no estaba en R2: la fila igual se borra, el anexo
+  // huérfano en el registro es peor que un objeto huérfano en el bucket.
+  bool object_deleted = 3;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
