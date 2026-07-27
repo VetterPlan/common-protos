@@ -737,6 +737,8 @@ message RequestStructuringRequest {
   string audio_object_key = 2;
   string transcript_text = 3;
   AccessContext access = 4;
+  // Secciones del template que cubre el segmento. Vacío = todo el template.
+  repeated string block_keys = 5;
 }
 
 message RequestStructuringResponse {
