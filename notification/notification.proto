@@ -106,6 +106,9 @@ enum NotificationEvent {
   NOTIFICATION_EVENT_DEWORMING_DUE          = 26; // próxima desparasitación
   NOTIFICATION_EVENT_FOLLOW_UP_DUE          = 27; // seguimiento agendado por el vet
 
+  // Consentimiento informado (client perspective)
+  NOTIFICATION_EVENT_CONSENT_SIGNATURE_REQUESTED = 28; // el vet emitió el documento a firmar
+
   // System / admin
   NOTIFICATION_EVENT_SYSTEM_ALERT           = 99;
 }

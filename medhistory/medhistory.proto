@@ -111,6 +111,8 @@ service MedHistoryService {
   // interpolado que el cliente va a leer y firmar.
   rpc RequestConsentSignature (RequestConsentSignatureRequest) returns (RequestConsentSignatureResponse);
 
+  rpc GetPendingConsent (GetPendingConsentRequest) returns (GetPendingConsentResponse);
+
   // Registra la firma del dueño. Idempotente por client_signature_id: la app
   // reintenta la sincronización sin miedo a duplicar.
   rpc SubmitConsentSignature (SubmitConsentSignatureRequest) returns (ConsentSignatureResponse);
@@ -926,6 +928,8 @@ message RequestConsentSignatureRequest {
   ServiceType service_type = 8;  // resuelve la categoría de la plantilla
   string locale = 9;
   AccessContext access = 10;
+  string client_profile_id = 11;
+  string client_user_id = 12;
 }
 
 message RequestConsentSignatureResponse {
@@ -935,6 +939,36 @@ message RequestConsentSignatureResponse {
   string rendered_hash = 3;
   repeated string record_ids = 4;      // registros que cubre (grupo de mascotas)
   string appointment_group_id = 5;
+  string request_id = 6;
+  bool client_notified = 7;
+}
+
+message PendingConsent {
+  string id = 1;
+  string appointment_id = 2;
+  string appointment_group_id = 3;
+  ConsentTemplate template = 4;
+  string rendered_text = 5;
+  string rendered_hash = 6;
+  google.protobuf.Struct act_details = 7;
+  repeated string pet_names = 8;
+  string vet_name = 9;
+  string vet_profile_id = 10;
+  string client_profile_id = 11;
+  google.protobuf.Timestamp requested_at = 12;
+}
+
+message GetPendingConsentRequest {
+  string appointment_id = 1;
+  string appointment_group_id = 2;
+  AccessContext access = 3;
+}
+
+message GetPendingConsentResponse {
+  bool has_pending = 1;
+  PendingConsent consent = 2;
+  bool signed = 3;
+  ConsentSignature signature = 4;
 }
 
 message ConsentSignature {
@@ -1019,6 +1053,7 @@ message GetConsentStatusResponse {
   bool valid = 3;               // ambas y sin revocar → puede arrancar la cita
   ConsentSignature signature = 4;
   string blocking_reason = 5;   // qué falta, para mostrarlo en la app del vet
+  bool requested = 6;           // el vet ya emitió y el titular lo tiene pendiente
 }
 
 message RevokeConsentRequest {

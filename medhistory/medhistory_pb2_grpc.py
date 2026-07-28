@@ -140,6 +140,11 @@ class MedHistoryServiceStub(object):
                 request_serializer=medhistory_dot_medhistory__pb2.RequestConsentSignatureRequest.SerializeToString,
                 response_deserializer=medhistory_dot_medhistory__pb2.RequestConsentSignatureResponse.FromString,
                 _registered_method=True)
+        self.GetPendingConsent = channel.unary_unary(
+                '/medhistory.MedHistoryService/GetPendingConsent',
+                request_serializer=medhistory_dot_medhistory__pb2.GetPendingConsentRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.GetPendingConsentResponse.FromString,
+                _registered_method=True)
         self.SubmitConsentSignature = channel.unary_unary(
                 '/medhistory.MedHistoryService/SubmitConsentSignature',
                 request_serializer=medhistory_dot_medhistory__pb2.SubmitConsentSignatureRequest.SerializeToString,
@@ -367,6 +372,12 @@ class MedHistoryServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetPendingConsent(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def SubmitConsentSignature(self, request, context):
         """Registra la firma del dueño. Idempotente por client_signature_id: la app
         reintenta la sincronización sin miedo a duplicar.
@@ -537,6 +548,11 @@ def add_MedHistoryServiceServicer_to_server(servicer, server):
                     servicer.RequestConsentSignature,
                     request_deserializer=medhistory_dot_medhistory__pb2.RequestConsentSignatureRequest.FromString,
                     response_serializer=medhistory_dot_medhistory__pb2.RequestConsentSignatureResponse.SerializeToString,
+            ),
+            'GetPendingConsent': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetPendingConsent,
+                    request_deserializer=medhistory_dot_medhistory__pb2.GetPendingConsentRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.GetPendingConsentResponse.SerializeToString,
             ),
             'SubmitConsentSignature': grpc.unary_unary_rpc_method_handler(
                     servicer.SubmitConsentSignature,
@@ -1069,6 +1085,33 @@ class MedHistoryService(object):
             '/medhistory.MedHistoryService/RequestConsentSignature',
             medhistory_dot_medhistory__pb2.RequestConsentSignatureRequest.SerializeToString,
             medhistory_dot_medhistory__pb2.RequestConsentSignatureResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetPendingConsent(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/GetPendingConsent',
+            medhistory_dot_medhistory__pb2.GetPendingConsentRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.GetPendingConsentResponse.FromString,
             options,
             channel_credentials,
             insecure,
