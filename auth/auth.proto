@@ -26,6 +26,27 @@ service AuthService {
 
   // Admin: paginated list of all accounts (clients + vets + admins), with filters
   rpc ListUsers (ListUsersRequest) returns (ListUsersResponse);
+
+  // ─── DOCUMENTOS LEGALES (T&C, privacidad) ───
+  //
+  // Append-only: publicar crea una versión y la anterior queda inactiva. La
+  // aceptación guarda versión + hash del texto que se mostró, porque sin eso no
+  // hay forma de probar QUÉ aceptó cada usuario.
+
+  // Texto vigente de un documento. Público (se lee antes de tener cuenta).
+  rpc GetLegalDocument (GetLegalDocumentRequest) returns (LegalDocumentResponse);
+
+  // Registra la aceptación de un usuario. Idempotente por (usuario, tipo, versión).
+  rpc AcceptLegalDocument (AcceptLegalDocumentRequest) returns (AcceptLegalDocumentResponse);
+
+  // Qué documentos le faltan por aceptar a un usuario (se consulta en login).
+  rpc GetPendingLegalAcceptances (GetPendingLegalAcceptancesRequest) returns (GetPendingLegalAcceptancesResponse);
+
+  // Admin: publica una versión nueva. NUNCA edita la vigente.
+  rpc PublishLegalDocument (PublishLegalDocumentRequest) returns (LegalDocumentResponse);
+
+  // Admin: histórico de versiones de un tipo de documento.
+  rpc ListLegalDocuments (ListLegalDocumentsRequest) returns (ListLegalDocumentsResponse);
 }
 
 message LoginRequest {
@@ -215,4 +236,87 @@ message UserSummary {
 message ListUsersResponse {
   repeated UserSummary users = 1;
   int32 total_count = 2;
+}
+// ═══════════════════════════════════════════════════════════════════════════
+// DOCUMENTOS LEGALES
+// ═══════════════════════════════════════════════════════════════════════════
+
+message LegalDocument {
+  string id = 1;
+  string doc_type = 2;          // 'terms' | 'privacy'
+  int32 version = 3;
+  string locale = 4;
+  string title = 5;
+  string body_md = 6;
+  string body_hash = 7;         // sha256 hex; se guarda en la aceptación
+  bool requires_reaccept = 8;
+  bool is_active = 9;
+  string published_at = 10;     // ISO-8601
+  string published_by_user_id = 11;
+  string notes = 12;
+}
+
+message GetLegalDocumentRequest {
+  string doc_type = 1;
+  string locale = 2;            // vacío = es-CO
+  // Opcional: una versión concreta. Vacío = la vigente. Sirve para releer lo
+  // que alguien aceptó en su momento.
+  int32 version = 3;
+}
+
+message LegalDocumentResponse {
+  LegalDocument document = 1;
+}
+
+message AcceptLegalDocumentRequest {
+  string user_id = 1;
+  string doc_type = 2;
+  int32 version = 3;
+  string body_hash = 4;         // el hash de lo que REALMENTE se mostró
+  string locale = 5;
+  // Contexto de la aceptación (evidencia)
+  string ip = 6;
+  string user_agent = 7;
+  string app_version = 8;
+  string device_id = 9;
+}
+
+message AcceptLegalDocumentResponse {
+  bool accepted = 1;
+  string accepted_at = 2;
+}
+
+message PendingLegalAcceptance {
+  string doc_type = 1;
+  int32 version = 2;
+  string title = 3;
+  string locale = 4;
+}
+
+message GetPendingLegalAcceptancesRequest {
+  string user_id = 1;
+  string locale = 2;
+}
+
+message GetPendingLegalAcceptancesResponse {
+  repeated PendingLegalAcceptance pending = 1;
+}
+
+message PublishLegalDocumentRequest {
+  string doc_type = 1;
+  string locale = 2;
+  string title = 3;
+  string body_md = 4;
+  bool requires_reaccept = 5;
+  string published_by_user_id = 6;
+  string notes = 7;
+}
+
+message ListLegalDocumentsRequest {
+  string doc_type = 1;
+  string locale = 2;
+}
+
+message ListLegalDocumentsResponse {
+  repeated LegalDocument documents = 1;
 }

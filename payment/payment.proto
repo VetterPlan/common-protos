@@ -38,6 +38,12 @@ service PaymentService {
   // Charge no-show fee (30% capture + 70% void + partial refund).
   rpc ChargeNoShowFee (ChargeNoShowFeeRequest) returns (PaymentResponse);
 
+  // Tarifa por VIAJE PERDIDO. Mismo cálculo que el no-show con otro motivo:
+  // el desplazamiento cuesta lo mismo se niegue el cliente a firmar el
+  // consentimiento o no abra la puerta. Reemplaza a ChargeNoShowFee, que queda
+  // como alias.
+  rpc ChargeCancellationFee (ChargeCancellationFeeRequest) returns (PaymentResponse);
+
   // Charge 10% cancellation fee to vet wallet when vet cancels from ACCEPTED/EN_ROUTE.
   rpc ChargeVetCancellationFee (ChargeVetCancellationFeeRequest) returns (PaymentResponse);
 
@@ -498,6 +504,13 @@ message RefundPaymentRequest {
 message ChargeNoShowFeeRequest {
   string payment_id = 1;
   string idempotency_key = 2;
+}
+
+message ChargeCancellationFeeRequest {
+  string payment_id = 1;
+  string idempotency_key = 2;
+  // 'no_show' | 'consent_refused'. Vacío = no_show.
+  string reason = 3;
 }
 
 message AddTipRequest {

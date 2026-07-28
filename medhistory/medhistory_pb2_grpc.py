@@ -130,6 +130,46 @@ class MedHistoryServiceStub(object):
                 request_serializer=medhistory_dot_medhistory__pb2.RemoveConsultationAttachmentRequest.SerializeToString,
                 response_deserializer=medhistory_dot_medhistory__pb2.RemoveConsultationAttachmentResponse.FromString,
                 _registered_method=True)
+        self.GetConsentTemplate = channel.unary_unary(
+                '/medhistory.MedHistoryService/GetConsentTemplate',
+                request_serializer=medhistory_dot_medhistory__pb2.GetConsentTemplateRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.ConsentTemplateResponse.FromString,
+                _registered_method=True)
+        self.RequestConsentSignature = channel.unary_unary(
+                '/medhistory.MedHistoryService/RequestConsentSignature',
+                request_serializer=medhistory_dot_medhistory__pb2.RequestConsentSignatureRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.RequestConsentSignatureResponse.FromString,
+                _registered_method=True)
+        self.SubmitConsentSignature = channel.unary_unary(
+                '/medhistory.MedHistoryService/SubmitConsentSignature',
+                request_serializer=medhistory_dot_medhistory__pb2.SubmitConsentSignatureRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.ConsentSignatureResponse.FromString,
+                _registered_method=True)
+        self.AttestConsent = channel.unary_unary(
+                '/medhistory.MedHistoryService/AttestConsent',
+                request_serializer=medhistory_dot_medhistory__pb2.AttestConsentRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.ConsentSignatureResponse.FromString,
+                _registered_method=True)
+        self.GetConsentStatus = channel.unary_unary(
+                '/medhistory.MedHistoryService/GetConsentStatus',
+                request_serializer=medhistory_dot_medhistory__pb2.GetConsentStatusRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.GetConsentStatusResponse.FromString,
+                _registered_method=True)
+        self.RevokeConsent = channel.unary_unary(
+                '/medhistory.MedHistoryService/RevokeConsent',
+                request_serializer=medhistory_dot_medhistory__pb2.RevokeConsentRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.ConsentSignatureResponse.FromString,
+                _registered_method=True)
+        self.PublishConsentTemplate = channel.unary_unary(
+                '/medhistory.MedHistoryService/PublishConsentTemplate',
+                request_serializer=medhistory_dot_medhistory__pb2.PublishConsentTemplateRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.ConsentTemplateResponse.FromString,
+                _registered_method=True)
+        self.ListConsentTemplates = channel.unary_unary(
+                '/medhistory.MedHistoryService/ListConsentTemplates',
+                request_serializer=medhistory_dot_medhistory__pb2.ListConsentTemplatesRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.ListConsentTemplatesResponse.FromString,
+                _registered_method=True)
         self.RequestStructuring = channel.unary_unary(
                 '/medhistory.MedHistoryService/RequestStructuring',
                 request_serializer=medhistory_dot_medhistory__pb2.RequestStructuringRequest.SerializeToString,
@@ -305,6 +345,72 @@ class MedHistoryServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetConsentTemplate(self, request, context):
+        """─── CONSENTIMIENTO DIGITAL ───
+
+        Diseño: docs/DESIGN_CONSENTIMIENTO_DIGITAL.md
+        La plantilla es SIEMPRE de la plataforma; el veterinario aporta los datos
+        del acto concreto y deja constancia de que explicó.
+
+        Plantilla vigente para una cita. La app la precarga al ACEPTAR la cita,
+        para poder firmar sin señal.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RequestConsentSignature(self, request, context):
+        """El vet emite la solicitud con los datos del acto; devuelve el texto YA
+        interpolado que el cliente va a leer y firmar.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SubmitConsentSignature(self, request, context):
+        """Registra la firma del dueño. Idempotente por client_signature_id: la app
+        reintenta la sincronización sin miedo a duplicar.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def AttestConsent(self, request, context):
+        """Constancia del veterinario: certifica que explicó el procedimiento.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetConsentStatus(self, request, context):
+        """Estado del consentimiento de una cita. Lo consulta appointment-service
+        antes de dejar pasar a IN_PROGRESS.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RevokeConsent(self, request, context):
+        """Revocación. No es retroactiva sobre lo ya ejecutado.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def PublishConsentTemplate(self, request, context):
+        """Admin: publica una versión nueva de una plantilla. NUNCA edita la vigente.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListConsentTemplates(self, request, context):
+        """Admin: histórico de versiones.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def RequestStructuring(self, request, context):
         """─── CAPTURA CON IA (Fase 2) ───
 
@@ -421,6 +527,46 @@ def add_MedHistoryServiceServicer_to_server(servicer, server):
                     servicer.RemoveConsultationAttachment,
                     request_deserializer=medhistory_dot_medhistory__pb2.RemoveConsultationAttachmentRequest.FromString,
                     response_serializer=medhistory_dot_medhistory__pb2.RemoveConsultationAttachmentResponse.SerializeToString,
+            ),
+            'GetConsentTemplate': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetConsentTemplate,
+                    request_deserializer=medhistory_dot_medhistory__pb2.GetConsentTemplateRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.ConsentTemplateResponse.SerializeToString,
+            ),
+            'RequestConsentSignature': grpc.unary_unary_rpc_method_handler(
+                    servicer.RequestConsentSignature,
+                    request_deserializer=medhistory_dot_medhistory__pb2.RequestConsentSignatureRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.RequestConsentSignatureResponse.SerializeToString,
+            ),
+            'SubmitConsentSignature': grpc.unary_unary_rpc_method_handler(
+                    servicer.SubmitConsentSignature,
+                    request_deserializer=medhistory_dot_medhistory__pb2.SubmitConsentSignatureRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.ConsentSignatureResponse.SerializeToString,
+            ),
+            'AttestConsent': grpc.unary_unary_rpc_method_handler(
+                    servicer.AttestConsent,
+                    request_deserializer=medhistory_dot_medhistory__pb2.AttestConsentRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.ConsentSignatureResponse.SerializeToString,
+            ),
+            'GetConsentStatus': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetConsentStatus,
+                    request_deserializer=medhistory_dot_medhistory__pb2.GetConsentStatusRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.GetConsentStatusResponse.SerializeToString,
+            ),
+            'RevokeConsent': grpc.unary_unary_rpc_method_handler(
+                    servicer.RevokeConsent,
+                    request_deserializer=medhistory_dot_medhistory__pb2.RevokeConsentRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.ConsentSignatureResponse.SerializeToString,
+            ),
+            'PublishConsentTemplate': grpc.unary_unary_rpc_method_handler(
+                    servicer.PublishConsentTemplate,
+                    request_deserializer=medhistory_dot_medhistory__pb2.PublishConsentTemplateRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.ConsentTemplateResponse.SerializeToString,
+            ),
+            'ListConsentTemplates': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListConsentTemplates,
+                    request_deserializer=medhistory_dot_medhistory__pb2.ListConsentTemplatesRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.ListConsentTemplatesResponse.SerializeToString,
             ),
             'RequestStructuring': grpc.unary_unary_rpc_method_handler(
                     servicer.RequestStructuring,
@@ -869,6 +1015,222 @@ class MedHistoryService(object):
             '/medhistory.MedHistoryService/RemoveConsultationAttachment',
             medhistory_dot_medhistory__pb2.RemoveConsultationAttachmentRequest.SerializeToString,
             medhistory_dot_medhistory__pb2.RemoveConsultationAttachmentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetConsentTemplate(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/GetConsentTemplate',
+            medhistory_dot_medhistory__pb2.GetConsentTemplateRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.ConsentTemplateResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RequestConsentSignature(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/RequestConsentSignature',
+            medhistory_dot_medhistory__pb2.RequestConsentSignatureRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.RequestConsentSignatureResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SubmitConsentSignature(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/SubmitConsentSignature',
+            medhistory_dot_medhistory__pb2.SubmitConsentSignatureRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.ConsentSignatureResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def AttestConsent(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/AttestConsent',
+            medhistory_dot_medhistory__pb2.AttestConsentRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.ConsentSignatureResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetConsentStatus(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/GetConsentStatus',
+            medhistory_dot_medhistory__pb2.GetConsentStatusRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.GetConsentStatusResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RevokeConsent(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/RevokeConsent',
+            medhistory_dot_medhistory__pb2.RevokeConsentRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.ConsentSignatureResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PublishConsentTemplate(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/PublishConsentTemplate',
+            medhistory_dot_medhistory__pb2.PublishConsentTemplateRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.ConsentTemplateResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListConsentTemplates(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/ListConsentTemplates',
+            medhistory_dot_medhistory__pb2.ListConsentTemplatesRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.ListConsentTemplatesResponse.FromString,
             options,
             channel_credentials,
             insecure,

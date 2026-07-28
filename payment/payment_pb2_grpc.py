@@ -78,6 +78,11 @@ class PaymentServiceStub(object):
                 request_serializer=payment_dot_payment__pb2.ChargeNoShowFeeRequest.SerializeToString,
                 response_deserializer=payment_dot_payment__pb2.PaymentResponse.FromString,
                 _registered_method=True)
+        self.ChargeCancellationFee = channel.unary_unary(
+                '/payment.PaymentService/ChargeCancellationFee',
+                request_serializer=payment_dot_payment__pb2.ChargeCancellationFeeRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.PaymentResponse.FromString,
+                _registered_method=True)
         self.ChargeVetCancellationFee = channel.unary_unary(
                 '/payment.PaymentService/ChargeVetCancellationFee',
                 request_serializer=payment_dot_payment__pb2.ChargeVetCancellationFeeRequest.SerializeToString,
@@ -304,6 +309,16 @@ class PaymentServiceServicer(object):
 
     def ChargeNoShowFee(self, request, context):
         """Charge no-show fee (30% capture + 70% void + partial refund).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ChargeCancellationFee(self, request, context):
+        """Tarifa por VIAJE PERDIDO. Mismo cálculo que el no-show con otro motivo:
+        el desplazamiento cuesta lo mismo se niegue el cliente a firmar el
+        consentimiento o no abra la puerta. Reemplaza a ChargeNoShowFee, que queda
+        como alias.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -594,6 +609,11 @@ def add_PaymentServiceServicer_to_server(servicer, server):
             'ChargeNoShowFee': grpc.unary_unary_rpc_method_handler(
                     servicer.ChargeNoShowFee,
                     request_deserializer=payment_dot_payment__pb2.ChargeNoShowFeeRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.PaymentResponse.SerializeToString,
+            ),
+            'ChargeCancellationFee': grpc.unary_unary_rpc_method_handler(
+                    servicer.ChargeCancellationFee,
+                    request_deserializer=payment_dot_payment__pb2.ChargeCancellationFeeRequest.FromString,
                     response_serializer=payment_dot_payment__pb2.PaymentResponse.SerializeToString,
             ),
             'ChargeVetCancellationFee': grpc.unary_unary_rpc_method_handler(
@@ -942,6 +962,33 @@ class PaymentService(object):
             target,
             '/payment.PaymentService/ChargeNoShowFee',
             payment_dot_payment__pb2.ChargeNoShowFeeRequest.SerializeToString,
+            payment_dot_payment__pb2.PaymentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ChargeCancellationFee(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/ChargeCancellationFee',
+            payment_dot_payment__pb2.ChargeCancellationFeeRequest.SerializeToString,
             payment_dot_payment__pb2.PaymentResponse.FromString,
             options,
             channel_credentials,

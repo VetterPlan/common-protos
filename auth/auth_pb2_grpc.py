@@ -104,6 +104,31 @@ class AuthServiceStub(object):
                 request_serializer=auth_dot_auth__pb2.ListUsersRequest.SerializeToString,
                 response_deserializer=auth_dot_auth__pb2.ListUsersResponse.FromString,
                 _registered_method=True)
+        self.GetLegalDocument = channel.unary_unary(
+                '/auth.AuthService/GetLegalDocument',
+                request_serializer=auth_dot_auth__pb2.GetLegalDocumentRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.LegalDocumentResponse.FromString,
+                _registered_method=True)
+        self.AcceptLegalDocument = channel.unary_unary(
+                '/auth.AuthService/AcceptLegalDocument',
+                request_serializer=auth_dot_auth__pb2.AcceptLegalDocumentRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.AcceptLegalDocumentResponse.FromString,
+                _registered_method=True)
+        self.GetPendingLegalAcceptances = channel.unary_unary(
+                '/auth.AuthService/GetPendingLegalAcceptances',
+                request_serializer=auth_dot_auth__pb2.GetPendingLegalAcceptancesRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.GetPendingLegalAcceptancesResponse.FromString,
+                _registered_method=True)
+        self.PublishLegalDocument = channel.unary_unary(
+                '/auth.AuthService/PublishLegalDocument',
+                request_serializer=auth_dot_auth__pb2.PublishLegalDocumentRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.LegalDocumentResponse.FromString,
+                _registered_method=True)
+        self.ListLegalDocuments = channel.unary_unary(
+                '/auth.AuthService/ListLegalDocuments',
+                request_serializer=auth_dot_auth__pb2.ListLegalDocumentsRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.ListLegalDocumentsResponse.FromString,
+                _registered_method=True)
 
 
 class AuthServiceServicer(object):
@@ -198,6 +223,47 @@ class AuthServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetLegalDocument(self, request, context):
+        """─── DOCUMENTOS LEGALES (T&C, privacidad) ───
+
+        Append-only: publicar crea una versión y la anterior queda inactiva. La
+        aceptación guarda versión + hash del texto que se mostró, porque sin eso no
+        hay forma de probar QUÉ aceptó cada usuario.
+
+        Texto vigente de un documento. Público (se lee antes de tener cuenta).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def AcceptLegalDocument(self, request, context):
+        """Registra la aceptación de un usuario. Idempotente por (usuario, tipo, versión).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetPendingLegalAcceptances(self, request, context):
+        """Qué documentos le faltan por aceptar a un usuario (se consulta en login).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def PublishLegalDocument(self, request, context):
+        """Admin: publica una versión nueva. NUNCA edita la vigente.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListLegalDocuments(self, request, context):
+        """Admin: histórico de versiones de un tipo de documento.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AuthServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -270,6 +336,31 @@ def add_AuthServiceServicer_to_server(servicer, server):
                     servicer.ListUsers,
                     request_deserializer=auth_dot_auth__pb2.ListUsersRequest.FromString,
                     response_serializer=auth_dot_auth__pb2.ListUsersResponse.SerializeToString,
+            ),
+            'GetLegalDocument': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetLegalDocument,
+                    request_deserializer=auth_dot_auth__pb2.GetLegalDocumentRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.LegalDocumentResponse.SerializeToString,
+            ),
+            'AcceptLegalDocument': grpc.unary_unary_rpc_method_handler(
+                    servicer.AcceptLegalDocument,
+                    request_deserializer=auth_dot_auth__pb2.AcceptLegalDocumentRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.AcceptLegalDocumentResponse.SerializeToString,
+            ),
+            'GetPendingLegalAcceptances': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetPendingLegalAcceptances,
+                    request_deserializer=auth_dot_auth__pb2.GetPendingLegalAcceptancesRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.GetPendingLegalAcceptancesResponse.SerializeToString,
+            ),
+            'PublishLegalDocument': grpc.unary_unary_rpc_method_handler(
+                    servicer.PublishLegalDocument,
+                    request_deserializer=auth_dot_auth__pb2.PublishLegalDocumentRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.LegalDocumentResponse.SerializeToString,
+            ),
+            'ListLegalDocuments': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListLegalDocuments,
+                    request_deserializer=auth_dot_auth__pb2.ListLegalDocumentsRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.ListLegalDocumentsResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -650,6 +741,141 @@ class AuthService(object):
             '/auth.AuthService/ListUsers',
             auth_dot_auth__pb2.ListUsersRequest.SerializeToString,
             auth_dot_auth__pb2.ListUsersResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetLegalDocument(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/GetLegalDocument',
+            auth_dot_auth__pb2.GetLegalDocumentRequest.SerializeToString,
+            auth_dot_auth__pb2.LegalDocumentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def AcceptLegalDocument(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/AcceptLegalDocument',
+            auth_dot_auth__pb2.AcceptLegalDocumentRequest.SerializeToString,
+            auth_dot_auth__pb2.AcceptLegalDocumentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetPendingLegalAcceptances(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/GetPendingLegalAcceptances',
+            auth_dot_auth__pb2.GetPendingLegalAcceptancesRequest.SerializeToString,
+            auth_dot_auth__pb2.GetPendingLegalAcceptancesResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PublishLegalDocument(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/PublishLegalDocument',
+            auth_dot_auth__pb2.PublishLegalDocumentRequest.SerializeToString,
+            auth_dot_auth__pb2.LegalDocumentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListLegalDocuments(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/ListLegalDocuments',
+            auth_dot_auth__pb2.ListLegalDocumentsRequest.SerializeToString,
+            auth_dot_auth__pb2.ListLegalDocumentsResponse.FromString,
             options,
             channel_credentials,
             insecure,

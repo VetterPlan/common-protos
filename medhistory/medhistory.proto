@@ -97,6 +97,40 @@ service MedHistoryService {
   // por enmienda, no borrando.
   rpc RemoveConsultationAttachment (RemoveConsultationAttachmentRequest) returns (RemoveConsultationAttachmentResponse);
 
+  // ─── CONSENTIMIENTO DIGITAL ───
+  //
+  // Diseño: docs/DESIGN_CONSENTIMIENTO_DIGITAL.md
+  // La plantilla es SIEMPRE de la plataforma; el veterinario aporta los datos
+  // del acto concreto y deja constancia de que explicó.
+
+  // Plantilla vigente para una cita. La app la precarga al ACEPTAR la cita,
+  // para poder firmar sin señal.
+  rpc GetConsentTemplate (GetConsentTemplateRequest) returns (ConsentTemplateResponse);
+
+  // El vet emite la solicitud con los datos del acto; devuelve el texto YA
+  // interpolado que el cliente va a leer y firmar.
+  rpc RequestConsentSignature (RequestConsentSignatureRequest) returns (RequestConsentSignatureResponse);
+
+  // Registra la firma del dueño. Idempotente por client_signature_id: la app
+  // reintenta la sincronización sin miedo a duplicar.
+  rpc SubmitConsentSignature (SubmitConsentSignatureRequest) returns (ConsentSignatureResponse);
+
+  // Constancia del veterinario: certifica que explicó el procedimiento.
+  rpc AttestConsent (AttestConsentRequest) returns (ConsentSignatureResponse);
+
+  // Estado del consentimiento de una cita. Lo consulta appointment-service
+  // antes de dejar pasar a IN_PROGRESS.
+  rpc GetConsentStatus (GetConsentStatusRequest) returns (GetConsentStatusResponse);
+
+  // Revocación. No es retroactiva sobre lo ya ejecutado.
+  rpc RevokeConsent (RevokeConsentRequest) returns (ConsentSignatureResponse);
+
+  // Admin: publica una versión nueva de una plantilla. NUNCA edita la vigente.
+  rpc PublishConsentTemplate (PublishConsentTemplateRequest) returns (ConsentTemplateResponse);
+
+  // Admin: histórico de versiones.
+  rpc ListConsentTemplates (ListConsentTemplatesRequest) returns (ListConsentTemplatesResponse);
+
   // ─── CAPTURA CON IA (Fase 2) ───
 
   // Encola la estructuración de un segmento: transcribe el audio (o usa el
@@ -565,6 +599,9 @@ message SetReferenceValidationResponse {
 
 message StartConsultationRecordRequest {
   string appointment_id = 1;
+  // Grupo de la visita. El consentimiento se firma antes de que exista el
+  // registro, así que cuelga del grupo; esto es lo que después los enlaza.
+  string appointment_group_id = 10;
   string pet_id = 2;
   string client_profile_id = 3;
   string vet_profile_id = 4;
@@ -816,4 +853,196 @@ message GenerateOwnerSummaryRequest {
 message GenerateOwnerSummaryResponse {
   string summary = 1;
   google.protobuf.Timestamp generated_at = 2;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CONSENTIMIENTO DIGITAL
+// ═══════════════════════════════════════════════════════════════════════════
+
+enum ConsentKind {
+  CONSENT_KIND_UNSPECIFIED = 0;
+  CONSENT_KIND_CLINICAL = 1;         // lo firma el dueño con el dedo
+  CONSENT_KIND_AI_CAPTURE = 2;       // toggle de la Fase 2
+  CONSENT_KIND_VET_ATTESTATION = 3;  // la declaración del veterinario
+}
+
+// Categoría de RIESGO, no de servicio: una por ServiceType serían ocho
+// documentos diciendo lo mismo.
+enum ConsentCategory {
+  CONSENT_CATEGORY_UNSPECIFIED = 0;
+  CONSENT_CATEGORY_GENERAL = 1;      // consulta, vacunación, desparasitación
+  CONSENT_CATEGORY_PROCEDURE = 2;    // ecografía, ECG, radiografía
+}
+
+enum ConsentTemplateStatus {
+  CONSENT_TEMPLATE_STATUS_UNSPECIFIED = 0;
+  CONSENT_TEMPLATE_STATUS_DRAFT = 1;
+  CONSENT_TEMPLATE_STATUS_PUBLISHED = 2;
+  CONSENT_TEMPLATE_STATUS_RETIRED = 3;
+}
+
+message ConsentTemplate {
+  string id = 1;
+  ConsentKind kind = 2;
+  ConsentCategory category = 3;
+  int32 version = 4;
+  string locale = 5;
+  string title = 6;
+  string body_md = 7;              // markdown con {{variables}}
+  string body_hash = 8;            // sha256; el cliente lo devuelve al firmar
+  repeated string variables = 9;   // las que el texto realmente usa
+  ConsentTemplateStatus status = 10;
+  google.protobuf.Timestamp published_at = 11;
+  string published_by_user_id = 12;
+  string notes = 13;
+}
+
+message GetConsentTemplateRequest {
+  // Por cita (resuelve la categoría desde el tipo de servicio) o explícito.
+  string appointment_id = 1;
+  ConsentKind kind = 2;
+  ConsentCategory category = 3;
+  string locale = 4;
+  int32 version = 5;               // 0 = la vigente
+  AccessContext access = 6;
+}
+
+message ConsentTemplateResponse {
+  ConsentTemplate template = 1;
+}
+
+message RequestConsentSignatureRequest {
+  string appointment_id = 1;
+  string appointment_group_id = 2;
+  // Datos del acto que solo el vet conoce. procedure_detail es OBLIGATORIO:
+  // es lo que convierte un formato en un consentimiento informado real.
+  google.protobuf.Struct act_details = 3;
+  // Contexto que arma la GATEWAY desde appointment/profile: medhistory no
+  // llama a appointment (esa dependencia va en el otro sentido).
+  repeated string pet_names = 4;
+  string vet_name = 5;
+  string vet_license = 6;        // tarjeta profesional, de su certificación
+  string client_name = 7;
+  ServiceType service_type = 8;  // resuelve la categoría de la plantilla
+  string locale = 9;
+  AccessContext access = 10;
+}
+
+message RequestConsentSignatureResponse {
+  ConsentTemplate template = 1;
+  // El texto YA interpolado que el cliente debe leer y firmar.
+  string rendered_text = 2;
+  string rendered_hash = 3;
+  repeated string record_ids = 4;      // registros que cubre (grupo de mascotas)
+  string appointment_group_id = 5;
+}
+
+message ConsentSignature {
+  string id = 1;
+  string client_signature_id = 2;
+  string appointment_group_id = 3;
+  string template_id = 4;
+  int32 template_version = 5;
+  string rendered_text = 6;
+  string rendered_hash = 7;
+  google.protobuf.Struct act_details = 8;
+  string signer_user_id = 9;
+  string signer_profile_id = 10;
+  google.protobuf.Timestamp read_confirmed_at = 11;
+  google.protobuf.Timestamp accepted_at = 12;
+  google.protobuf.Timestamp signed_at_device = 13;
+  google.protobuf.Timestamp received_at = 14;
+  int32 clock_skew_seconds = 15;
+  string signature_png_key = 16;
+  string pdf_key = 17;
+  string vet_profile_id = 18;
+  google.protobuf.Timestamp vet_attested_at = 19;
+  google.protobuf.Timestamp revoked_at = 20;
+  string revocation_reason = 21;
+  repeated string record_ids = 22;
+}
+
+message SubmitConsentSignatureRequest {
+  // Lo genera el DISPOSITIVO antes de firmar: clave de idempotencia offline.
+  string client_signature_id = 1;
+  string appointment_id = 2;
+  string appointment_group_id = 19;
+  // El vet responsable del acto y el titular que firma; los arma la gateway.
+  string vet_profile_id = 20;
+  string client_profile_id = 21;
+  string template_id = 3;
+  string template_hash = 4;         // el de la plantilla que se mostró
+  google.protobuf.Struct act_details = 5;
+  string rendered_text = 6;         // el texto exacto que se leyó
+
+  // Lectura efectiva e intención, separadas del trazo a propósito.
+  google.protobuf.Timestamp read_confirmed_at = 7;
+  google.protobuf.Timestamp accepted_at = 8;
+  google.protobuf.Timestamp signed_at_device = 9;
+
+  // Trazo compacto: [[x,y,t],...] con enteros escalados 0..10000.
+  google.protobuf.ListValue strokes = 10;
+  string signature_png_key = 11;    // subido a R2 con URL prefirmada
+
+  string device_id = 12;
+  string app_version = 13;
+  string ip = 14;
+  double lat = 15;
+  double lng = 16;
+  int32 location_accuracy_m = 17;
+
+  AccessContext access = 18;
+}
+
+message ConsentSignatureResponse {
+  ConsentSignature signature = 1;
+}
+
+message AttestConsentRequest {
+  string signature_id = 1;
+  string appointment_id = 2;
+  string vet_profile_id = 4;
+  AccessContext access = 3;
+}
+
+message GetConsentStatusRequest {
+  // Uno de los tres. appointment_id es el que usa appointment-service.
+  string appointment_id = 1;
+  string record_id = 2;
+  string appointment_group_id = 3;
+  AccessContext access = 4;
+}
+
+message GetConsentStatusResponse {
+  bool signed = 1;              // el dueño firmó
+  bool attested = 2;            // el vet dejó constancia
+  bool valid = 3;               // ambas y sin revocar → puede arrancar la cita
+  ConsentSignature signature = 4;
+  string blocking_reason = 5;   // qué falta, para mostrarlo en la app del vet
+}
+
+message RevokeConsentRequest {
+  string signature_id = 1;
+  string reason = 2;
+  AccessContext access = 3;
+}
+
+message PublishConsentTemplateRequest {
+  ConsentKind kind = 1;
+  ConsentCategory category = 2;
+  string locale = 3;
+  string title = 4;
+  string body_md = 5;
+  string published_by_user_id = 6;
+  string notes = 7;
+}
+
+message ListConsentTemplatesRequest {
+  ConsentKind kind = 1;
+  ConsentCategory category = 2;
+  string locale = 3;
+}
+
+message ListConsentTemplatesResponse {
+  repeated ConsentTemplate templates = 1;
 }
