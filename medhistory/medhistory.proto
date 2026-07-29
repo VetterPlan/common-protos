@@ -916,8 +916,8 @@ message ConsentTemplateResponse {
 message RequestConsentSignatureRequest {
   string appointment_id = 1;
   string appointment_group_id = 2;
-  // Datos del acto que solo el vet conoce. procedure_detail es OBLIGATORIO:
-  // es lo que convierte un formato en un consentimiento informado real.
+  // Datos del acto que solo el vet conoce. Lo obligatorio lo declara la
+  // plantilla publicada: son sus variables menos las que resuelve el sistema.
   google.protobuf.Struct act_details = 3;
   // Contexto que arma la GATEWAY desde appointment/profile: medhistory no
   // llama a appointment (esa dependencia va en el otro sentido).
@@ -930,6 +930,7 @@ message RequestConsentSignatureRequest {
   AccessContext access = 10;
   string client_profile_id = 11;
   string client_user_id = 12;
+  string client_reason = 13;
 }
 
 message RequestConsentSignatureResponse {
