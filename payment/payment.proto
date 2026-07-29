@@ -67,6 +67,11 @@ service PaymentService {
   // Cobros pendientes de todos los clientes. Operación de cobranza (admin).
   rpc ListFailedCollections (ListFailedCollectionsRequest) returns (ListFailedCollectionsResponse);
 
+  // Da por perdido un cobro incobrable (admin). Sin esto un CAPTURE_FAILED solo
+  // sale con un cobro exitoso: si la pasarela nunca va a aprobarlo, el cliente
+  // queda bloqueado para siempre y nadie puede levantarlo.
+  rpc WriteOffCollection (WriteOffCollectionRequest) returns (PaymentResponse);
+
   // ─── WALLET (7 RPCs) ───
 
   // Create wallet for new user (called by Profile Service on profile creation).
@@ -584,6 +589,12 @@ message ListFailedCollectionsResponse {
   repeated ClientOutstandingSummary clients = 1;
   int32 total_count = 2;
   double total_amount = 3;
+}
+
+message WriteOffCollectionRequest {
+  string payment_id = 1;
+  string admin_user_id = 2;
+  string reason = 3;
 }
 
 // ─── Wallet ───

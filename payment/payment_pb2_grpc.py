@@ -118,6 +118,11 @@ class PaymentServiceStub(object):
                 request_serializer=payment_dot_payment__pb2.ListFailedCollectionsRequest.SerializeToString,
                 response_deserializer=payment_dot_payment__pb2.ListFailedCollectionsResponse.FromString,
                 _registered_method=True)
+        self.WriteOffCollection = channel.unary_unary(
+                '/payment.PaymentService/WriteOffCollection',
+                request_serializer=payment_dot_payment__pb2.WriteOffCollectionRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.PaymentResponse.FromString,
+                _registered_method=True)
         self.CreateWallet = channel.unary_unary(
                 '/payment.PaymentService/CreateWallet',
                 request_serializer=payment_dot_payment__pb2.CreateWalletRequest.SerializeToString,
@@ -380,6 +385,15 @@ class PaymentServiceServicer(object):
 
     def ListFailedCollections(self, request, context):
         """Cobros pendientes de todos los clientes. Operación de cobranza (admin).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def WriteOffCollection(self, request, context):
+        """Da por perdido un cobro incobrable (admin). Sin esto un CAPTURE_FAILED solo
+        sale con un cobro exitoso: si la pasarela nunca va a aprobarlo, el cliente
+        queda bloqueado para siempre y nadie puede levantarlo.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -676,6 +690,11 @@ def add_PaymentServiceServicer_to_server(servicer, server):
                     servicer.ListFailedCollections,
                     request_deserializer=payment_dot_payment__pb2.ListFailedCollectionsRequest.FromString,
                     response_serializer=payment_dot_payment__pb2.ListFailedCollectionsResponse.SerializeToString,
+            ),
+            'WriteOffCollection': grpc.unary_unary_rpc_method_handler(
+                    servicer.WriteOffCollection,
+                    request_deserializer=payment_dot_payment__pb2.WriteOffCollectionRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.PaymentResponse.SerializeToString,
             ),
             'CreateWallet': grpc.unary_unary_rpc_method_handler(
                     servicer.CreateWallet,
@@ -1215,6 +1234,33 @@ class PaymentService(object):
             '/payment.PaymentService/ListFailedCollections',
             payment_dot_payment__pb2.ListFailedCollectionsRequest.SerializeToString,
             payment_dot_payment__pb2.ListFailedCollectionsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def WriteOffCollection(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/WriteOffCollection',
+            payment_dot_payment__pb2.WriteOffCollectionRequest.SerializeToString,
+            payment_dot_payment__pb2.PaymentResponse.FromString,
             options,
             channel_credentials,
             insecure,
