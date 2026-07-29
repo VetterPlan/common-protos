@@ -109,6 +109,9 @@ enum NotificationEvent {
   // Consentimiento informado (client perspective)
   NOTIFICATION_EVENT_CONSENT_SIGNATURE_REQUESTED = 28; // el vet emitió el documento a firmar
 
+  // Consentimiento informado (vet perspective)
+  NOTIFICATION_EVENT_CONSENT_ISSUE_FAILED = 29; // la emisión automática falló: el vet debe emitirlo a mano
+
   // System / admin
   NOTIFICATION_EVENT_SYSTEM_ALERT           = 99;
 }

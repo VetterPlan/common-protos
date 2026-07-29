@@ -1046,6 +1046,14 @@ message GetConsentStatusRequest {
   string record_id = 2;
   string appointment_group_id = 3;
   AccessContext access = 4;
+
+  // Reutilización en controles: si el grupo no tiene firma propia, vale la del
+  // episodio (mismo vet, mismas mascotas) dentro de la ventana. Los manda
+  // appointment-service, que es quien sabe que la cita es un seguimiento y con
+  // qué ventana se agendó. Vacío = no se reutiliza nada.
+  repeated string follow_up_pet_ids = 5;
+  string follow_up_vet_profile_id = 6;
+  uint32 follow_up_window_days = 7;
 }
 
 message GetConsentStatusResponse {
@@ -1055,6 +1063,10 @@ message GetConsentStatusResponse {
   ConsentSignature signature = 4;
   string blocking_reason = 5;   // qué falta, para mostrarlo en la app del vet
   bool requested = 6;           // el vet ya emitió y el titular lo tiene pendiente
+  // La firma que habilita no es de esta cita: es la del episodio, reusada por
+  // ser un control. La app del vet lo dice en pantalla en vez de simular que
+  // el dueño firmó hoy.
+  bool reused_from_episode = 7;
 }
 
 message RevokeConsentRequest {
