@@ -5,7 +5,7 @@ import warnings
 
 from auth import auth_pb2 as auth_dot_auth__pb2
 
-GRPC_GENERATED_VERSION = '1.78.0'
+GRPC_GENERATED_VERSION = '1.81.1'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
@@ -25,7 +25,7 @@ if _version_not_supported:
     )
 
 
-class AuthServiceStub(object):
+class AuthServiceStub:
     """Missing associated documentation comment in .proto file."""
 
     def __init__(self, channel):
@@ -141,7 +141,7 @@ class AuthServiceStub(object):
                 _registered_method=True)
 
 
-class AuthServiceServicer(object):
+class AuthServiceServicer:
     """Missing associated documentation comment in .proto file."""
 
     def Login(self, request, context):
@@ -402,7 +402,7 @@ def add_AuthServiceServicer_to_server(servicer, server):
 
 
  # This class is part of an EXPERIMENTAL API.
-class AuthService(object):
+class AuthService:
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod

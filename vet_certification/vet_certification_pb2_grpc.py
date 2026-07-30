@@ -5,7 +5,7 @@ import warnings
 
 from vet_certification import vet_certification_pb2 as vet__certification_dot_vet__certification__pb2
 
-GRPC_GENERATED_VERSION = '1.78.0'
+GRPC_GENERATED_VERSION = '1.81.1'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
@@ -25,7 +25,7 @@ if _version_not_supported:
     )
 
 
-class VetCertificationServiceStub(object):
+class VetCertificationServiceStub:
     """═══════════════════════════════════════════════════════════════════════════
     VET CERTIFICATION SERVICE
 
@@ -105,7 +105,7 @@ class VetCertificationServiceStub(object):
                 _registered_method=True)
 
 
-class VetCertificationServiceServicer(object):
+class VetCertificationServiceServicer:
     """═══════════════════════════════════════════════════════════════════════════
     VET CERTIFICATION SERVICE
 
@@ -282,7 +282,7 @@ def add_VetCertificationServiceServicer_to_server(servicer, server):
 
 
  # This class is part of an EXPERIMENTAL API.
-class VetCertificationService(object):
+class VetCertificationService:
     """═══════════════════════════════════════════════════════════════════════════
     VET CERTIFICATION SERVICE
 

@@ -5,7 +5,7 @@ import warnings
 
 from appointment import appointment_pb2 as appointment_dot_appointment__pb2
 
-GRPC_GENERATED_VERSION = '1.78.0'
+GRPC_GENERATED_VERSION = '1.81.1'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
@@ -25,7 +25,7 @@ if _version_not_supported:
     )
 
 
-class AppointmentServiceStub(object):
+class AppointmentServiceStub:
     """═══════════════════════════════════════════════════════════════════════════
     APPOINTMENT SERVICE
 
@@ -158,7 +158,7 @@ class AppointmentServiceStub(object):
                 _registered_method=True)
 
 
-class AppointmentServiceServicer(object):
+class AppointmentServiceServicer:
     """═══════════════════════════════════════════════════════════════════════════
     APPOINTMENT SERVICE
 
@@ -473,7 +473,7 @@ def add_AppointmentServiceServicer_to_server(servicer, server):
 
 
  # This class is part of an EXPERIMENTAL API.
-class AppointmentService(object):
+class AppointmentService:
     """═══════════════════════════════════════════════════════════════════════════
     APPOINTMENT SERVICE
 

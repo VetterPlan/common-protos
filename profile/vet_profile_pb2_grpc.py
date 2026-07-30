@@ -5,7 +5,7 @@ import warnings
 
 from profile import vet_profile_pb2 as profile_dot_vet__profile__pb2
 
-GRPC_GENERATED_VERSION = '1.78.0'
+GRPC_GENERATED_VERSION = '1.81.1'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
@@ -25,7 +25,7 @@ if _version_not_supported:
     )
 
 
-class VetProfileServiceStub(object):
+class VetProfileServiceStub:
     """============================================================================
     VET PROFILE SERVICE
     ============================================================================
@@ -165,7 +165,7 @@ class VetProfileServiceStub(object):
                 _registered_method=True)
 
 
-class VetProfileServiceServicer(object):
+class VetProfileServiceServicer:
     """============================================================================
     VET PROFILE SERVICE
     ============================================================================
@@ -467,7 +467,7 @@ def add_VetProfileServiceServicer_to_server(servicer, server):
 
 
  # This class is part of an EXPERIMENTAL API.
-class VetProfileService(object):
+class VetProfileService:
     """============================================================================
     VET PROFILE SERVICE
     ============================================================================

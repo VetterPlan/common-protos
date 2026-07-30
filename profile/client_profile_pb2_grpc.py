@@ -5,7 +5,7 @@ import warnings
 
 from profile import client_profile_pb2 as profile_dot_client__profile__pb2
 
-GRPC_GENERATED_VERSION = '1.78.0'
+GRPC_GENERATED_VERSION = '1.81.1'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
@@ -25,7 +25,7 @@ if _version_not_supported:
     )
 
 
-class ClientProfileServiceStub(object):
+class ClientProfileServiceStub:
     """============================================================================
     CLIENT PROFILE SERVICE
     ============================================================================
@@ -80,7 +80,7 @@ class ClientProfileServiceStub(object):
                 _registered_method=True)
 
 
-class ClientProfileServiceServicer(object):
+class ClientProfileServiceServicer:
     """============================================================================
     CLIENT PROFILE SERVICE
     ============================================================================
@@ -191,7 +191,7 @@ def add_ClientProfileServiceServicer_to_server(servicer, server):
 
 
  # This class is part of an EXPERIMENTAL API.
-class ClientProfileService(object):
+class ClientProfileService:
     """============================================================================
     CLIENT PROFILE SERVICE
     ============================================================================

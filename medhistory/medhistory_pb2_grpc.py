@@ -5,7 +5,7 @@ import warnings
 
 from medhistory import medhistory_pb2 as medhistory_dot_medhistory__pb2
 
-GRPC_GENERATED_VERSION = '1.78.0'
+GRPC_GENERATED_VERSION = '1.81.1'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
@@ -25,7 +25,7 @@ if _version_not_supported:
     )
 
 
-class MedHistoryServiceStub(object):
+class MedHistoryServiceStub:
     """═══════════════════════════════════════════════════════════════════════════
     MEDHISTORY SERVICE — Registro Clínico Estructurado (Fase 1)
 
@@ -197,7 +197,7 @@ class MedHistoryServiceStub(object):
                 _registered_method=True)
 
 
-class MedHistoryServiceServicer(object):
+class MedHistoryServiceServicer:
     """═══════════════════════════════════════════════════════════════════════════
     MEDHISTORY SERVICE — Registro Clínico Estructurado (Fase 1)
 
@@ -612,7 +612,7 @@ def add_MedHistoryServiceServicer_to_server(servicer, server):
 
 
  # This class is part of an EXPERIMENTAL API.
-class MedHistoryService(object):
+class MedHistoryService:
     """═══════════════════════════════════════════════════════════════════════════
     MEDHISTORY SERVICE — Registro Clínico Estructurado (Fase 1)
 
