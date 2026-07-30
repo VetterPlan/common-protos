@@ -12,6 +12,8 @@ service AuthService {
   rpc SendOtp(SendOtpRequest) returns (SendOtpResponse);
   rpc VerifyOtp(VerifyOtpRequest) returns (VerifyOtpResponse);
   rpc Logout (LogoutRequest) returns (LogoutResponse);
+  rpc RequestPasswordReset (RequestPasswordResetRequest) returns (RequestPasswordResetResponse);
+  rpc ResetPassword (ResetPasswordRequest) returns (ResetPasswordResponse);
 
   // Role Management (NEW - Sprint 3)
   rpc AssignRole (AssignRoleRequest) returns (AssignRoleResponse);
@@ -88,6 +90,25 @@ message ValidateTokenResponse {
   repeated string roles = 5;  // CHANGED: from string to repeated string
   string user_type = 6;       // NEW: "client", "vet", "both", or "admin"
   bool is_email_verified = 7; // NEW: renamed from is_verified
+}
+
+message RequestPasswordResetRequest {
+  string email = 1;
+}
+
+message RequestPasswordResetResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message ResetPasswordRequest {
+  string token = 1;
+  string new_password = 2;
+}
+
+message ResetPasswordResponse {
+  bool success = 1;
+  string message = 2;
 }
 
 message VerifyEmailRequest {

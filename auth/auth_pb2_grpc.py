@@ -74,6 +74,16 @@ class AuthServiceStub(object):
                 request_serializer=auth_dot_auth__pb2.LogoutRequest.SerializeToString,
                 response_deserializer=auth_dot_auth__pb2.LogoutResponse.FromString,
                 _registered_method=True)
+        self.RequestPasswordReset = channel.unary_unary(
+                '/auth.AuthService/RequestPasswordReset',
+                request_serializer=auth_dot_auth__pb2.RequestPasswordResetRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.RequestPasswordResetResponse.FromString,
+                _registered_method=True)
+        self.ResetPassword = channel.unary_unary(
+                '/auth.AuthService/ResetPassword',
+                request_serializer=auth_dot_auth__pb2.ResetPasswordRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.ResetPasswordResponse.FromString,
+                _registered_method=True)
         self.AssignRole = channel.unary_unary(
                 '/auth.AuthService/AssignRole',
                 request_serializer=auth_dot_auth__pb2.AssignRoleRequest.SerializeToString,
@@ -178,6 +188,18 @@ class AuthServiceServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def Logout(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RequestPasswordReset(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ResetPassword(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -306,6 +328,16 @@ def add_AuthServiceServicer_to_server(servicer, server):
                     servicer.Logout,
                     request_deserializer=auth_dot_auth__pb2.LogoutRequest.FromString,
                     response_serializer=auth_dot_auth__pb2.LogoutResponse.SerializeToString,
+            ),
+            'RequestPasswordReset': grpc.unary_unary_rpc_method_handler(
+                    servicer.RequestPasswordReset,
+                    request_deserializer=auth_dot_auth__pb2.RequestPasswordResetRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.RequestPasswordResetResponse.SerializeToString,
+            ),
+            'ResetPassword': grpc.unary_unary_rpc_method_handler(
+                    servicer.ResetPassword,
+                    request_deserializer=auth_dot_auth__pb2.ResetPasswordRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.ResetPasswordResponse.SerializeToString,
             ),
             'AssignRole': grpc.unary_unary_rpc_method_handler(
                     servicer.AssignRole,
@@ -579,6 +611,60 @@ class AuthService(object):
             '/auth.AuthService/Logout',
             auth_dot_auth__pb2.LogoutRequest.SerializeToString,
             auth_dot_auth__pb2.LogoutResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RequestPasswordReset(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/RequestPasswordReset',
+            auth_dot_auth__pb2.RequestPasswordResetRequest.SerializeToString,
+            auth_dot_auth__pb2.RequestPasswordResetResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ResetPassword(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/ResetPassword',
+            auth_dot_auth__pb2.ResetPasswordRequest.SerializeToString,
+            auth_dot_auth__pb2.ResetPasswordResponse.FromString,
             options,
             channel_credentials,
             insecure,

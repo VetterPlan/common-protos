@@ -192,9 +192,13 @@ enum EmailTemplate {
 
 message SendEmailRequest {
   string recipient_email = 1;
-  EmailTemplate template = 2;
-  map<string, string> template_data = 3;  // e.g. appointment_id, vet_name, amount
+
+  EmailTemplate template = 2 [deprecated = true];
+  map<string, string> template_data = 3;
   string idempotency_key = 4;
+  string template_key = 5;
+  google.protobuf.Timestamp due_at = 6;
+  string recipient_user_id = 7;
 }
 
 message SendEmailResponse {
