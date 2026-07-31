@@ -223,6 +223,29 @@ message Case {
   google.protobuf.Timestamp  resolved_at    = 18;
   bool                       used_llm       = 19;
   string                     escalation_reason = 20;
+
+  // Solo llega poblado si el incidente está CONFIRMADO. Un incidente en
+  // sospecha existe para ingeniería; mostrarle a alguien "esto le pasa a más
+  // gente, no eres tú" cuando solo le pasa a él es una afirmación falsa.
+  Incident                   incident       = 21;
+}
+
+enum IncidentStatus {
+  INCIDENT_STATUS_UNSPECIFIED = 0;
+  INCIDENT_STATUS_SUSPECTED   = 1;
+  INCIDENT_STATUS_CONFIRMED   = 2;
+  INCIDENT_STATUS_RESOLVED    = 3;
+  INCIDENT_STATUS_DISMISSED   = 4;
+}
+
+message Incident {
+  string                    ref            = 1;   // INC-2026-A1B2C3
+  string                    type           = 2;
+  IncidentStatus            status         = 3;
+  string                    severity       = 4;
+  int32                     affected_cases = 5;
+  google.protobuf.Timestamp first_seen_at  = 6;
+  google.protobuf.Timestamp resolved_at    = 7;
 }
 
 message CaseResponse { Case case = 1; }
