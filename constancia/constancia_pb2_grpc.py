@@ -72,6 +72,16 @@ class ConstanciaServiceStub(object):
                 request_serializer=constancia_dot_constancia__pb2.ListUserCasesRequest.SerializeToString,
                 response_deserializer=constancia_dot_constancia__pb2.ListUserCasesResponse.FromString,
                 _registered_method=True)
+        self.AdminListCases = channel.unary_unary(
+                '/constancia.ConstanciaService/AdminListCases',
+                request_serializer=constancia_dot_constancia__pb2.AdminListCasesRequest.SerializeToString,
+                response_deserializer=constancia_dot_constancia__pb2.AdminListCasesResponse.FromString,
+                _registered_method=True)
+        self.GetTrustMetrics = channel.unary_unary(
+                '/constancia.ConstanciaService/GetTrustMetrics',
+                request_serializer=constancia_dot_constancia__pb2.TrustMetricsRequest.SerializeToString,
+                response_deserializer=constancia_dot_constancia__pb2.TrustMetricsResponse.FromString,
+                _registered_method=True)
         self.SendMessage = channel.unary_unary(
                 '/constancia.ConstanciaService/SendMessage',
                 request_serializer=constancia_dot_constancia__pb2.SendMessageRequest.SerializeToString,
@@ -178,6 +188,23 @@ class ConstanciaServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def AdminListCases(self, request, context):
+        """La cola del equipo. `ListUserCases` es por titular y no sirve para operar:
+        un admin no tiene casos propios que mirar. Solo admin o sistema.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetTrustMetrics(self, request, context):
+        """El marcador del Sistema de Confianza. Se calcula desde las FILAS, no desde
+        los contadores de Prometheus: esos se reinician con el proceso y no se
+        pueden recalcular ni auditar caso por caso.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def SendMessage(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -267,6 +294,16 @@ def add_ConstanciaServiceServicer_to_server(servicer, server):
                     servicer.ListUserCases,
                     request_deserializer=constancia_dot_constancia__pb2.ListUserCasesRequest.FromString,
                     response_serializer=constancia_dot_constancia__pb2.ListUserCasesResponse.SerializeToString,
+            ),
+            'AdminListCases': grpc.unary_unary_rpc_method_handler(
+                    servicer.AdminListCases,
+                    request_deserializer=constancia_dot_constancia__pb2.AdminListCasesRequest.FromString,
+                    response_serializer=constancia_dot_constancia__pb2.AdminListCasesResponse.SerializeToString,
+            ),
+            'GetTrustMetrics': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetTrustMetrics,
+                    request_deserializer=constancia_dot_constancia__pb2.TrustMetricsRequest.FromString,
+                    response_serializer=constancia_dot_constancia__pb2.TrustMetricsResponse.SerializeToString,
             ),
             'SendMessage': grpc.unary_unary_rpc_method_handler(
                     servicer.SendMessage,
@@ -433,6 +470,60 @@ class ConstanciaService(object):
             '/constancia.ConstanciaService/ListUserCases',
             constancia_dot_constancia__pb2.ListUserCasesRequest.SerializeToString,
             constancia_dot_constancia__pb2.ListUserCasesResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def AdminListCases(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/constancia.ConstanciaService/AdminListCases',
+            constancia_dot_constancia__pb2.AdminListCasesRequest.SerializeToString,
+            constancia_dot_constancia__pb2.AdminListCasesResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetTrustMetrics(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/constancia.ConstanciaService/GetTrustMetrics',
+            constancia_dot_constancia__pb2.TrustMetricsRequest.SerializeToString,
+            constancia_dot_constancia__pb2.TrustMetricsResponse.FromString,
             options,
             channel_credentials,
             insecure,

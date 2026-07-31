@@ -103,6 +103,11 @@ class PaymentServiceStub(object):
                 request_serializer=payment_dot_payment__pb2.GetPaymentByAppointmentRequest.SerializeToString,
                 response_deserializer=payment_dot_payment__pb2.PaymentResponse.FromString,
                 _registered_method=True)
+        self.ListPaymentsByAppointment = channel.unary_unary(
+                '/payment.PaymentService/ListPaymentsByAppointment',
+                request_serializer=payment_dot_payment__pb2.ListPaymentsByAppointmentRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.ListPaymentsByAppointmentResponse.FromString,
+                _registered_method=True)
         self.GetRefunds = channel.unary_unary(
                 '/payment.PaymentService/GetRefunds',
                 request_serializer=payment_dot_payment__pb2.GetRefundsRequest.SerializeToString,
@@ -367,6 +372,15 @@ class PaymentServiceServicer(object):
 
     def GetPaymentByAppointment(self, request, context):
         """Get payment by appointment ID.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListPaymentsByAppointment(self, request, context):
+        """Devuelve TODOS los pagos de una cita, no el primero. Sin esto un cobro
+        duplicado es invisible: `GetPaymentByAppointment` devuelve uno solo y quien
+        pregunta "¿le cobramos dos veces?" no tiene cómo saberlo.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -686,6 +700,11 @@ def add_PaymentServiceServicer_to_server(servicer, server):
                     servicer.GetPaymentByAppointment,
                     request_deserializer=payment_dot_payment__pb2.GetPaymentByAppointmentRequest.FromString,
                     response_serializer=payment_dot_payment__pb2.PaymentResponse.SerializeToString,
+            ),
+            'ListPaymentsByAppointment': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListPaymentsByAppointment,
+                    request_deserializer=payment_dot_payment__pb2.ListPaymentsByAppointmentRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.ListPaymentsByAppointmentResponse.SerializeToString,
             ),
             'GetRefunds': grpc.unary_unary_rpc_method_handler(
                     servicer.GetRefunds,
@@ -1169,6 +1188,33 @@ class PaymentService(object):
             '/payment.PaymentService/GetPaymentByAppointment',
             payment_dot_payment__pb2.GetPaymentByAppointmentRequest.SerializeToString,
             payment_dot_payment__pb2.PaymentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListPaymentsByAppointment(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/ListPaymentsByAppointment',
+            payment_dot_payment__pb2.ListPaymentsByAppointmentRequest.SerializeToString,
+            payment_dot_payment__pb2.ListPaymentsByAppointmentResponse.FromString,
             options,
             channel_credentials,
             insecure,

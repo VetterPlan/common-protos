@@ -56,6 +56,11 @@ service PaymentService {
   // Get payment by appointment ID.
   rpc GetPaymentByAppointment (GetPaymentByAppointmentRequest) returns (PaymentResponse);
 
+  // Devuelve TODOS los pagos de una cita, no el primero. Sin esto un cobro
+  // duplicado es invisible: `GetPaymentByAppointment` devuelve uno solo y quien
+  // pregunta "¿le cobramos dos veces?" no tiene cómo saberlo.
+  rpc ListPaymentsByAppointment (ListPaymentsByAppointmentRequest) returns (ListPaymentsByAppointmentResponse);
+
   // Get refunds for a payment.
   rpc GetRefunds (GetRefundsRequest) returns (RefundsResponse);
 
@@ -555,6 +560,14 @@ message GetPaymentRequest {
 
 message GetPaymentByAppointmentRequest {
   string appointment_id = 1;
+}
+
+message ListPaymentsByAppointmentRequest {
+  string appointment_id = 1;
+}
+
+message ListPaymentsByAppointmentResponse {
+  repeated Payment payments = 1;
 }
 
 message GetRefundsRequest {
