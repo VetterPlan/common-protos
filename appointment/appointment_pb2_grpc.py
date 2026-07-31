@@ -5,7 +5,7 @@ import warnings
 
 from appointment import appointment_pb2 as appointment_dot_appointment__pb2
 
-GRPC_GENERATED_VERSION = '1.81.1'
+GRPC_GENERATED_VERSION = '1.78.0'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
@@ -25,7 +25,7 @@ if _version_not_supported:
     )
 
 
-class AppointmentServiceStub:
+class AppointmentServiceStub(object):
     """═══════════════════════════════════════════════════════════════════════════
     APPOINTMENT SERVICE
 
@@ -156,9 +156,24 @@ class AppointmentServiceStub:
                 request_serializer=appointment_dot_appointment__pb2.RescheduleAppointmentRequest.SerializeToString,
                 response_deserializer=appointment_dot_appointment__pb2.AppointmentResponse.FromString,
                 _registered_method=True)
+        self.SuspendBookingBlock = channel.unary_unary(
+                '/appointment.AppointmentService/SuspendBookingBlock',
+                request_serializer=appointment_dot_appointment__pb2.SuspendBookingBlockRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.SuspendBookingBlockResponse.FromString,
+                _registered_method=True)
+        self.RevokeBookingBlockSuspension = channel.unary_unary(
+                '/appointment.AppointmentService/RevokeBookingBlockSuspension',
+                request_serializer=appointment_dot_appointment__pb2.RevokeBookingBlockSuspensionRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.RevokeBookingBlockSuspensionResponse.FromString,
+                _registered_method=True)
+        self.RequestVetReassignment = channel.unary_unary(
+                '/appointment.AppointmentService/RequestVetReassignment',
+                request_serializer=appointment_dot_appointment__pb2.RequestVetReassignmentRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+                _registered_method=True)
 
 
-class AppointmentServiceServicer:
+class AppointmentServiceServicer(object):
     """═══════════════════════════════════════════════════════════════════════════
     APPOINTMENT SERVICE
 
@@ -352,6 +367,41 @@ class AppointmentServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SuspendBookingBlock(self, request, context):
+        """─── PUENTE CON CONSTANCIA ───
+
+        El bloqueo por deuda (OUTSTANDING_PAYMENT) se calcula en vivo desde los
+        cobros fallidos: no hay estado que apagar. Estos dos RPC existen porque
+        constancia-service necesitaba prometerle algo al usuario y no tenía cómo
+        cumplirlo — y un recibo firmado de algo que no ocurrió es peor que no
+        tener la acción.
+
+        Exime temporalmente a un cliente del bloqueo por deuda. SIEMPRE con fecha
+        de fin: una exención indefinida deja agendar sobre deuda que crece, y quien
+        la concedió no se entera. No perdona la deuda — para eso está
+        PaymentService.WriteOffCollection.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RevokeBookingBlockSuspension(self, request, context):
+        """Revoca las exenciones activas de un cliente antes de que venzan.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RequestVetReassignment(self, request, context):
+        """Libera al vet de una cita ACEPTADA y la devuelve a REQUESTED para que otro
+        la tome. Opera sobre el grupo entero, porque la aceptación es del grupo.
+        No aplica desde EN_ROUTE en adelante: ahí el vet ya salió y eso es una
+        cancelación, con sus reglas de cobro, no una reasignación.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AppointmentServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -465,6 +515,21 @@ def add_AppointmentServiceServicer_to_server(servicer, server):
                     request_deserializer=appointment_dot_appointment__pb2.RescheduleAppointmentRequest.FromString,
                     response_serializer=appointment_dot_appointment__pb2.AppointmentResponse.SerializeToString,
             ),
+            'SuspendBookingBlock': grpc.unary_unary_rpc_method_handler(
+                    servicer.SuspendBookingBlock,
+                    request_deserializer=appointment_dot_appointment__pb2.SuspendBookingBlockRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.SuspendBookingBlockResponse.SerializeToString,
+            ),
+            'RevokeBookingBlockSuspension': grpc.unary_unary_rpc_method_handler(
+                    servicer.RevokeBookingBlockSuspension,
+                    request_deserializer=appointment_dot_appointment__pb2.RevokeBookingBlockSuspensionRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.RevokeBookingBlockSuspensionResponse.SerializeToString,
+            ),
+            'RequestVetReassignment': grpc.unary_unary_rpc_method_handler(
+                    servicer.RequestVetReassignment,
+                    request_deserializer=appointment_dot_appointment__pb2.RequestVetReassignmentRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.AppointmentResponse.SerializeToString,
+            ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
             'appointment.AppointmentService', rpc_method_handlers)
@@ -473,7 +538,7 @@ def add_AppointmentServiceServicer_to_server(servicer, server):
 
 
  # This class is part of an EXPERIMENTAL API.
-class AppointmentService:
+class AppointmentService(object):
     """═══════════════════════════════════════════════════════════════════════════
     APPOINTMENT SERVICE
 
@@ -1071,6 +1136,87 @@ class AppointmentService:
             target,
             '/appointment.AppointmentService/RescheduleAppointment',
             appointment_dot_appointment__pb2.RescheduleAppointmentRequest.SerializeToString,
+            appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SuspendBookingBlock(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/SuspendBookingBlock',
+            appointment_dot_appointment__pb2.SuspendBookingBlockRequest.SerializeToString,
+            appointment_dot_appointment__pb2.SuspendBookingBlockResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RevokeBookingBlockSuspension(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/RevokeBookingBlockSuspension',
+            appointment_dot_appointment__pb2.RevokeBookingBlockSuspensionRequest.SerializeToString,
+            appointment_dot_appointment__pb2.RevokeBookingBlockSuspensionResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RequestVetReassignment(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/RequestVetReassignment',
+            appointment_dot_appointment__pb2.RequestVetReassignmentRequest.SerializeToString,
             appointment_dot_appointment__pb2.AppointmentResponse.FromString,
             options,
             channel_credentials,

@@ -85,6 +85,7 @@ service PaymentService {
 
   // Credit wallet (refund, promo, referral, compensation). Internal/Admin.
   rpc CreditWallet (CreditWalletRequest) returns (WalletResponse);
+  rpc DebitWallet  (DebitWalletRequest)  returns (WalletResponse);
 
   // Get balance only (lightweight for UI header).
   rpc GetBalance (GetBalanceRequest) returns (BalanceResponse);
@@ -231,6 +232,7 @@ enum WalletTransactionReason {
   WALLET_TRANSACTION_REASON_VET_CANCELLATION_FEE = 14;
   WALLET_TRANSACTION_REASON_CHARGEBACK_REVERSAL = 15;
   WALLET_TRANSACTION_REASON_PAYOUT_REVERSAL = 16;
+  WALLET_TRANSACTION_REASON_COMPENSATION_REVERSAL = 17;
 }
 
 enum WalletReferenceType {
@@ -628,6 +630,9 @@ message GetWalletTransactionsRequest {
   int32 offset = 5;
 }
 
+// `idempotency_key` es opcional por compatibilidad, pero sin ella el llamador no
+// puede distinguir un timeout de un abono perdido: reintentar abona dos veces.
+// Con ella, repetir la llamada devuelve el mismo saldo sin mover un peso.
 message CreditWalletRequest {
   string owner_id = 1;
   WalletOwnerType owner_type = 2;
@@ -636,6 +641,21 @@ message CreditWalletRequest {
   WalletReferenceType reference_type = 5;
   string reference_id = 6;
   string description = 7;
+  string idempotency_key = 8;
+}
+
+// Existe para que un abono se pueda REVERTIR. Sin esto, todo crédito es
+// irreversible y quien lo emite no puede compensarse a sí mismo si se equivoca.
+// Nunca deja el saldo en negativo: si no alcanza, falla en voz alta.
+message DebitWalletRequest {
+  string owner_id = 1;
+  WalletOwnerType owner_type = 2;
+  double amount = 3;
+  WalletTransactionReason reason = 4;
+  WalletReferenceType reference_type = 5;
+  string reference_id = 6;
+  string description = 7;
+  string idempotency_key = 8;
 }
 
 message GetBalanceRequest {

@@ -143,6 +143,11 @@ class PaymentServiceStub(object):
                 request_serializer=payment_dot_payment__pb2.CreditWalletRequest.SerializeToString,
                 response_deserializer=payment_dot_payment__pb2.WalletResponse.FromString,
                 _registered_method=True)
+        self.DebitWallet = channel.unary_unary(
+                '/payment.PaymentService/DebitWallet',
+                request_serializer=payment_dot_payment__pb2.DebitWalletRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.WalletResponse.FromString,
+                _registered_method=True)
         self.GetBalance = channel.unary_unary(
                 '/payment.PaymentService/GetBalance',
                 request_serializer=payment_dot_payment__pb2.GetBalanceRequest.SerializeToString,
@@ -425,6 +430,12 @@ class PaymentServiceServicer(object):
     def CreditWallet(self, request, context):
         """Credit wallet (refund, promo, referral, compensation). Internal/Admin.
         """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DebitWallet(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -714,6 +725,11 @@ def add_PaymentServiceServicer_to_server(servicer, server):
             'CreditWallet': grpc.unary_unary_rpc_method_handler(
                     servicer.CreditWallet,
                     request_deserializer=payment_dot_payment__pb2.CreditWalletRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.WalletResponse.SerializeToString,
+            ),
+            'DebitWallet': grpc.unary_unary_rpc_method_handler(
+                    servicer.DebitWallet,
+                    request_deserializer=payment_dot_payment__pb2.DebitWalletRequest.FromString,
                     response_serializer=payment_dot_payment__pb2.WalletResponse.SerializeToString,
             ),
             'GetBalance': grpc.unary_unary_rpc_method_handler(
@@ -1368,6 +1384,33 @@ class PaymentService(object):
             target,
             '/payment.PaymentService/CreditWallet',
             payment_dot_payment__pb2.CreditWalletRequest.SerializeToString,
+            payment_dot_payment__pb2.WalletResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DebitWallet(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/DebitWallet',
+            payment_dot_payment__pb2.DebitWalletRequest.SerializeToString,
             payment_dot_payment__pb2.WalletResponse.FromString,
             options,
             channel_credentials,

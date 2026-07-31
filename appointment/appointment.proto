@@ -108,6 +108,29 @@ service AppointmentService {
   // Preserves appointment_id and pet history. If ACCEPTED, voids preauth and
   // returns to REQUESTED so the vet can re-accept at the new time.
   rpc RescheduleAppointment (RescheduleAppointmentRequest) returns (AppointmentResponse);
+
+  // ─── PUENTE CON CONSTANCIA ───
+  //
+  // El bloqueo por deuda (OUTSTANDING_PAYMENT) se calcula en vivo desde los
+  // cobros fallidos: no hay estado que apagar. Estos dos RPC existen porque
+  // constancia-service necesitaba prometerle algo al usuario y no tenía cómo
+  // cumplirlo — y un recibo firmado de algo que no ocurrió es peor que no
+  // tener la acción.
+
+  // Exime temporalmente a un cliente del bloqueo por deuda. SIEMPRE con fecha
+  // de fin: una exención indefinida deja agendar sobre deuda que crece, y quien
+  // la concedió no se entera. No perdona la deuda — para eso está
+  // PaymentService.WriteOffCollection.
+  rpc SuspendBookingBlock (SuspendBookingBlockRequest) returns (SuspendBookingBlockResponse);
+
+  // Revoca las exenciones activas de un cliente antes de que venzan.
+  rpc RevokeBookingBlockSuspension (RevokeBookingBlockSuspensionRequest) returns (RevokeBookingBlockSuspensionResponse);
+
+  // Libera al vet de una cita ACEPTADA y la devuelve a REQUESTED para que otro
+  // la tome. Opera sobre el grupo entero, porque la aceptación es del grupo.
+  // No aplica desde EN_ROUTE en adelante: ahí el vet ya salió y eso es una
+  // cancelación, con sus reglas de cobro, no una reasignación.
+  rpc RequestVetReassignment (RequestVetReassignmentRequest) returns (AppointmentResponse);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -174,6 +197,9 @@ enum StatusChangeReason {
   STATUS_CHANGE_REASON_PAYMENT_AUTHORIZED = 16;     // P2: Nequi — auth confirmed
   STATUS_CHANGE_REASON_SYSTEM_PAYMENT_TIMEOUT = 17; // P2: Nequi — auth timed out
   STATUS_CHANGE_REASON_CLIENT_RESCHEDULED = 18;     // Client changed appointment time
+  STATUS_CHANGE_REASON_CONSENT_REFUSED = 19;
+  STATUS_CHANGE_REASON_PAYMENT_DECLINED = 20;
+  STATUS_CHANGE_REASON_VET_REASSIGNMENT = 21;       // Se libera al vet; la cita sigue viva
 }
 
 enum UrgencyLevel {
@@ -696,6 +722,42 @@ message RescheduleAppointmentRequest {
   string new_time_window_start = 3; // ISO 8601 datetime
   string new_time_window_end   = 4; // ISO 8601 datetime
   string reason_details      = 5;  // Optional free-text reason
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Puente con Constancia
+// ═══════════════════════════════════════════════════════════════════════════
+
+message SuspendBookingBlockRequest {
+  string client_profile_id = 1;
+  string reason            = 2;  // por qué; queda en el registro de la exención
+  int32  duration_hours    = 3;  // 0 = el default del servicio
+  string granted_by        = 4;  // quién la concede (servicio o admin)
+  string external_ref      = 5;  // caso/expediente que la respalda
+}
+
+message SuspendBookingBlockResponse {
+  bool                      suspended    = 1;
+  string                    exemption_id = 2;
+  google.protobuf.Timestamp expires_at   = 3;
+}
+
+message RevokeBookingBlockSuspensionRequest {
+  string client_profile_id = 1;
+  string reason            = 2;
+  string revoked_by        = 3;
+}
+
+message RevokeBookingBlockSuspensionResponse {
+  bool  revoked       = 1;
+  int32 revoked_count = 2;
+}
+
+message RequestVetReassignmentRequest {
+  string appointment_id = 1;
+  string reason         = 2;
+  string requested_by   = 3;  // UUID de quien la pide (cliente, vet o servicio)
+  string external_ref   = 4;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
