@@ -5,7 +5,7 @@ import warnings
 
 from notification import notification_pb2 as notification_dot_notification__pb2
 
-GRPC_GENERATED_VERSION = '1.81.1'
+GRPC_GENERATED_VERSION = '1.78.0'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
@@ -25,7 +25,7 @@ if _version_not_supported:
     )
 
 
-class NotificationServiceStub:
+class NotificationServiceStub(object):
     """═══════════════════════════════════════════════════════════════════════════
     NOTIFICATION SERVICE
 
@@ -70,6 +70,11 @@ class NotificationServiceStub:
                 request_serializer=notification_dot_notification__pb2.BroadcastToTopicRequest.SerializeToString,
                 response_deserializer=notification_dot_notification__pb2.BroadcastToTopicResponse.FromString,
                 _registered_method=True)
+        self.ListDeliveries = channel.unary_unary(
+                '/notification.NotificationService/ListDeliveries',
+                request_serializer=notification_dot_notification__pb2.ListDeliveriesRequest.SerializeToString,
+                response_deserializer=notification_dot_notification__pb2.ListDeliveriesResponse.FromString,
+                _registered_method=True)
         self.SendEmail = channel.unary_unary(
                 '/notification.NotificationService/SendEmail',
                 request_serializer=notification_dot_notification__pb2.SendEmailRequest.SerializeToString,
@@ -87,7 +92,7 @@ class NotificationServiceStub:
                 _registered_method=True)
 
 
-class NotificationServiceServicer:
+class NotificationServiceServicer(object):
     """═══════════════════════════════════════════════════════════════════════════
     NOTIFICATION SERVICE
 
@@ -129,6 +134,19 @@ class NotificationServiceServicer:
 
     def BroadcastToTopic(self, request, context):
         """Broadcast to a named topic (e.g. "admin-alerts")
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListDeliveries(self, request, context):
+        """Consulta de entregas. Sin esto no se puede saber si un aviso LLEGÓ, y por
+        tanto no se puede detectar el fallo más caro que existe: el silencio.
+
+        Contrato crítico: si el servicio no puede responder, debe devolver error,
+        NUNCA una lista vacía. Vacío significa "no hubo entregas" y quien consulta
+        lo interpreta como "le fallamos al usuario". Confundir "no hay" con "no
+        pude consultar" dispara compensaciones automáticas sobre un hecho falso.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -183,6 +201,11 @@ def add_NotificationServiceServicer_to_server(servicer, server):
                     request_deserializer=notification_dot_notification__pb2.BroadcastToTopicRequest.FromString,
                     response_serializer=notification_dot_notification__pb2.BroadcastToTopicResponse.SerializeToString,
             ),
+            'ListDeliveries': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListDeliveries,
+                    request_deserializer=notification_dot_notification__pb2.ListDeliveriesRequest.FromString,
+                    response_serializer=notification_dot_notification__pb2.ListDeliveriesResponse.SerializeToString,
+            ),
             'SendEmail': grpc.unary_unary_rpc_method_handler(
                     servicer.SendEmail,
                     request_deserializer=notification_dot_notification__pb2.SendEmailRequest.FromString,
@@ -206,7 +229,7 @@ def add_NotificationServiceServicer_to_server(servicer, server):
 
 
  # This class is part of an EXPERIMENTAL API.
-class NotificationService:
+class NotificationService(object):
     """═══════════════════════════════════════════════════════════════════════════
     NOTIFICATION SERVICE
 
@@ -323,6 +346,33 @@ class NotificationService:
             '/notification.NotificationService/BroadcastToTopic',
             notification_dot_notification__pb2.BroadcastToTopicRequest.SerializeToString,
             notification_dot_notification__pb2.BroadcastToTopicResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListDeliveries(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/notification.NotificationService/ListDeliveries',
+            notification_dot_notification__pb2.ListDeliveriesRequest.SerializeToString,
+            notification_dot_notification__pb2.ListDeliveriesResponse.FromString,
             options,
             channel_credentials,
             insecure,

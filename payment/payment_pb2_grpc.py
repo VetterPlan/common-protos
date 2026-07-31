@@ -5,7 +5,7 @@ import warnings
 
 from payment import payment_pb2 as payment_dot_payment__pb2
 
-GRPC_GENERATED_VERSION = '1.81.1'
+GRPC_GENERATED_VERSION = '1.78.0'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
@@ -25,7 +25,7 @@ if _version_not_supported:
     )
 
 
-class PaymentServiceStub:
+class PaymentServiceStub(object):
     """═══════════════════════════════════════════════════════════════════════════
     PAYMENT SERVICE
 
@@ -270,7 +270,7 @@ class PaymentServiceStub:
                 _registered_method=True)
 
 
-class PaymentServiceServicer:
+class PaymentServiceServicer(object):
     """═══════════════════════════════════════════════════════════════════════════
     PAYMENT SERVICE
 
@@ -849,7 +849,7 @@ def add_PaymentServiceServicer_to_server(servicer, server):
 
 
  # This class is part of an EXPERIMENTAL API.
-class PaymentService:
+class PaymentService(object):
     """═══════════════════════════════════════════════════════════════════════════
     PAYMENT SERVICE
 

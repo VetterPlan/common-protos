@@ -376,6 +376,17 @@ message Payment {
   google.protobuf.Timestamp capture_failed_at = 28;
   int32 capture_retry_count = 29;
   google.protobuf.Timestamp capture_next_retry_at = 30;
+
+  // Estado CRUDO devuelto por la pasarela: DECLINED | APPROVED | PENDING |
+  // VOIDED | ERROR. Sin esto no se distingue un rechazo real de un cobro en
+  // curso, y tratar PENDING como fallo cobra dos veces y crea deuda falsa.
+  // Nuestro `status` es una interpretación; esto es el dato de origen.
+  string gateway_status = 31;
+  string gateway_status_detail = 32;
+
+  // Últimos 4 de la tarjeta usada. Sin PAN ni BIN: solo lo que le sirve al
+  // usuario para reconocer cuál de sus tarjetas fue.
+  string card_last4 = 33;
 }
 
 message Wallet {

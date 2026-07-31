@@ -1,0 +1,350 @@
+syntax = "proto3";
+
+package constancia;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CONSTANCIA SERVICE — Sistema Operativo de Confianza
+//
+// No es un chatbot. Es el registro probatorio de la relación con cada usuario:
+// investiga con evidencia trazable, emite recibos firmados y compromisos
+// exigibles que se cumplen solos o se compensan solos.
+//
+// Diseño: docs/DESIGN_CONSTANCIA_TRUST_OS.md (producto)
+//         docs/DESIGN_CONSTANCIA_ARQUITECTURA.md (ingeniería)
+//
+// Contratos que NO se pueden romper:
+//   1. Todo hecho que llega al usuario viaja como FactCard con procedencia.
+//      El motor de razonamiento nunca redacta cifras, fechas ni estados.
+//   2. Toda acción produce un Receipt firmado con `verify_hint`: cómo
+//      comprobarlo SIN nosotros.
+//   3. Todo compromiso lleva un verificador computable y una fecha. Si se
+//      incumple, la remediación se ejecuta sin que el usuario pregunte.
+//   4. AdjustPlan existe a propósito: la aversión al algoritmo desaparece
+//      cuando la persona puede MODIFICAR el resultado, no solo aceptarlo.
+//   5. RequestHuman nunca tiene fricción. La disposición a ser saltada es en
+//      sí la señal que gana la confianza.
+// ═══════════════════════════════════════════════════════════════════════════
+
+service ConstanciaService {
+  rpc OpenCase        (OpenCaseRequest)        returns (CaseResponse);
+  rpc GetCase         (GetCaseRequest)         returns (CaseResponse);
+  rpc ListUserCases   (ListUserCasesRequest)   returns (ListUserCasesResponse);
+  rpc SendMessage     (SendMessageRequest)     returns (CaseResponse);
+
+  rpc ConfirmPlan     (ConfirmPlanRequest)     returns (CaseResponse);
+  rpc AdjustPlan      (AdjustPlanRequest)      returns (CaseResponse);
+
+  rpc RequestHuman    (RequestHumanRequest)    returns (HandoffResponse);
+  rpc GetHandoffBrief (GetHandoffBriefRequest) returns (HandoffBrief);
+
+  rpc GetOpeningState (GetOpeningStateRequest) returns (OpeningState);
+  rpc GetCommitments  (GetCommitmentsRequest)  returns (CommitmentList);
+  rpc GetReceipt      (GetReceiptRequest)      returns (Receipt);
+  rpc VerifyReceipt   (VerifyReceiptRequest)   returns (VerifyReceiptResponse);
+
+  rpc GetMemory       (GetMemoryRequest)       returns (MemoryList);
+  rpc ForgetMemory    (ForgetMemoryRequest)    returns (ForgetProof);
+
+  rpc IngestSignal    (IngestSignalRequest)    returns (IngestSignalResponse);
+}
+
+// ─── Contexto de acceso ────────────────────────────────────────────────────
+// Lo arma la gateway desde el JWT. NUNCA lo manda el cliente.
+
+enum RequesterRole {
+  REQUESTER_ROLE_UNSPECIFIED = 0;
+  REQUESTER_ROLE_CLIENT      = 1;
+  REQUESTER_ROLE_VET         = 2;
+  REQUESTER_ROLE_ADMIN       = 3;
+  REQUESTER_ROLE_SYSTEM      = 4;
+}
+
+message AccessContext {
+  string        requester_user_id = 1;
+  RequesterRole role              = 2;
+  string        break_glass_reason = 3;
+}
+
+// ─── Estados ───────────────────────────────────────────────────────────────
+
+enum CaseState {
+  CASE_STATE_UNSPECIFIED           = 0;
+  CASE_STATE_OPENED                = 1;
+  CASE_STATE_INVESTIGATING         = 2;
+  CASE_STATE_DIAGNOSED             = 3;
+  CASE_STATE_PLANNED               = 4;
+  CASE_STATE_AWAITING_CONFIRMATION = 5;
+  CASE_STATE_EXECUTING             = 6;
+  CASE_STATE_MONITORING            = 7;
+  CASE_STATE_RESOLVED              = 8;
+  CASE_STATE_ESCALATED             = 9;
+  CASE_STATE_FAILED                = 10;
+  CASE_STATE_CLOSED                = 11;
+}
+
+enum Confidence {
+  CONFIDENCE_UNSPECIFIED  = 0;
+  CONFIDENCE_VERIFIED     = 1;
+  CONFIDENCE_INFERRED     = 2;
+  CONFIDENCE_THIRD_PARTY  = 3;
+  CONFIDENCE_UNKNOWN      = 4;
+}
+
+enum Blame {
+  BLAME_UNSPECIFIED  = 0;
+  BLAME_VETTERPLAN   = 1;
+  BLAME_USER         = 2;
+  BLAME_VET          = 3;
+  BLAME_THIRD_PARTY  = 4;
+  BLAME_NONE         = 5;
+  BLAME_UNDETERMINED = 6;
+}
+
+// ─── Evidencia ─────────────────────────────────────────────────────────────
+
+message Provenance {
+  string                    service     = 1;
+  string                    query       = 2;
+  google.protobuf.Timestamp observed_at = 3;
+  string                    event_id    = 4;
+}
+
+// El texto ya viene renderizado por el servicio: el cliente NO compone hechos.
+// `values` viaja para que el frontend pueda destacar campos, no para rearmar
+// la frase.
+message FactCard {
+  string                 id           = 1;
+  string                 type         = 2;
+  string                 rendered     = 3;
+  google.protobuf.Struct values       = 4;
+  Provenance             provenance   = 5;
+  Confidence             confidence   = 6;
+  int32                  freshness_s  = 7;
+}
+
+// Una verificación que NO se pudo hacer. Mostrarla es lo que hace creíbles las
+// que sí salieron: se dice explícitamente si afecta o no la conclusión.
+message UnverifiedCheck {
+  string tool             = 1;
+  string reason           = 2;
+  bool   affects_outcome  = 3;
+}
+
+// ─── Acciones y constancias ────────────────────────────────────────────────
+
+message PlannedAction {
+  string                 intent            = 1;
+  string                 describes         = 2;
+  google.protobuf.Struct params            = 3;
+  bool                   reversible        = 4;
+  string                 money_delta_cop   = 5;
+}
+
+message ActionPlan {
+  string                 id                     = 1;
+  repeated PlannedAction actions                = 2;
+  google.protobuf.Struct resulting_state        = 3;
+  string                 total_money_cop        = 4;
+  bool                   requires_confirmation  = 5;
+  int32                  risk_level             = 6;
+}
+
+message Receipt {
+  string                    id           = 1;
+  string                    case_id      = 2;
+  string                    intent       = 3;
+  google.protobuf.Struct    what         = 4;
+  string                    external_ref = 5;
+  string                    verify_hint  = 6;
+  string                    signature    = 7;
+  google.protobuf.Timestamp created_at   = 8;
+}
+
+message VerifyReceiptRequest  { string receipt_id = 1; }
+message VerifyReceiptResponse { bool valid = 1; string detail = 2; }
+message GetReceiptRequest     { string receipt_id = 1; AccessContext access = 2; }
+
+// ─── Compromisos ───────────────────────────────────────────────────────────
+
+enum CommitmentStatus {
+  COMMITMENT_STATUS_UNSPECIFIED = 0;
+  COMMITMENT_STATUS_PENDING     = 1;
+  COMMITMENT_STATUS_KEPT        = 2;
+  COMMITMENT_STATUS_BROKEN      = 3;
+  COMMITMENT_STATUS_CANCELLED   = 4;
+}
+
+message Commitment {
+  string                    id          = 1;
+  string                    case_id     = 2;
+  string                    text        = 3;
+  google.protobuf.Timestamp due_at      = 4;
+  CommitmentStatus          status      = 5;
+  string                    remediation = 6;
+}
+
+message GetCommitmentsRequest { string user_id = 1; AccessContext access = 2; }
+message CommitmentList {
+  repeated Commitment commitments = 1;
+  int32 kept_total   = 2;
+  int32 broken_total = 3;
+}
+
+// ─── Caso ──────────────────────────────────────────────────────────────────
+
+message CaseTimelineEntry {
+  google.protobuf.Timestamp at      = 1;
+  string                    type    = 2;
+  string                    actor   = 3;
+  google.protobuf.Struct    payload = 4;
+}
+
+message Case {
+  string                     id             = 1;
+  string                     user_id        = 2;
+  string                     subject_type   = 3;
+  string                     subject_id     = 4;
+  CaseState                  state          = 5;
+  string                     shape          = 6;
+  string                     diagnosis      = 7;
+  Blame                      blame          = 8;
+  double                     confidence     = 9;
+  repeated FactCard          facts          = 10;
+  repeated UnverifiedCheck   unverified     = 11;
+  ActionPlan                 plan           = 12;
+  repeated Receipt           receipts       = 13;
+  repeated Commitment        commitments    = 14;
+  repeated CaseTimelineEntry timeline       = 15;
+  string                     message        = 16;
+  google.protobuf.Timestamp  opened_at      = 17;
+  google.protobuf.Timestamp  resolved_at    = 18;
+  bool                       used_llm       = 19;
+  string                     escalation_reason = 20;
+}
+
+message CaseResponse { Case case = 1; }
+
+message OpenCaseRequest {
+  string                 user_id      = 1;
+  string                 subject_type = 2;
+  string                 subject_id   = 3;
+  string                 trigger      = 4;
+  string                 user_text    = 5;
+  google.protobuf.Struct payload      = 6;
+  AccessContext          access       = 7;
+}
+
+message GetCaseRequest       { string case_id = 1; AccessContext access = 2; }
+message ListUserCasesRequest { string user_id = 1; bool only_open = 2; AccessContext access = 3; }
+message ListUserCasesResponse { repeated Case cases = 1; }
+
+message SendMessageRequest {
+  string        case_id = 1;
+  string        text    = 2;
+  AccessContext access  = 3;
+}
+
+message ConfirmPlanRequest {
+  string        case_id = 1;
+  string        plan_id = 2;
+  AccessContext access  = 3;
+}
+
+// El usuario no solo acepta o rechaza: AJUSTA. Es el antídoto medible contra la
+// aversión al algoritmo, y por eso es un RPC propio y no un flag de ConfirmPlan.
+message AdjustPlanRequest {
+  string                 case_id    = 1;
+  string                 plan_id    = 2;
+  google.protobuf.Struct adjustments = 3;
+  AccessContext          access     = 4;
+}
+
+// ─── Puente al humano ──────────────────────────────────────────────────────
+
+message RequestHumanRequest {
+  string        case_id = 1;
+  string        reason  = 2;
+  AccessContext access  = 3;
+}
+
+message HandoffResponse {
+  string  case_id           = 1;
+  int32   estimated_wait_s  = 2;
+  bool    accepted          = 3;
+}
+
+message GetHandoffBriefRequest { string case_id = 1; AccessContext access = 2; }
+
+// Lo que ve el AGENTE HUMANO, no el usuario. Su primera frase no puede ser
+// "¿en qué le ayudo?": abre confirmando lo que ya está establecido.
+message HandoffBrief {
+  string          case_id           = 1;
+  string          one_line          = 2;
+  repeated string established       = 3;
+  repeated string unknown           = 4;
+  repeated string promised          = 5;
+  repeated string receipts          = 6;
+  string          suggested_opening = 7;
+  int32           cases_before      = 8;
+  int32           commitments_kept  = 9;
+  int32           times_we_failed   = 10;
+  double          waited_seconds    = 11;
+}
+
+// ─── Apertura proactiva ────────────────────────────────────────────────────
+// Lo que se pinta ANTES de que el usuario escriba nada. Constancia nunca abre
+// con una pregunta: abre con lo que ya sabe.
+
+message OpeningItem {
+  string severity = 1;
+  string headline = 2;
+  string detail   = 3;
+  string case_id  = 4;
+  string action   = 5;
+}
+
+message GetOpeningStateRequest { string user_id = 1; AccessContext access = 2; }
+message OpeningState {
+  repeated OpeningItem items          = 1;
+  repeated Commitment  open_promises  = 2;
+  int32   human_wait_seconds          = 3;
+}
+
+// ─── Memoria de dos vías ───────────────────────────────────────────────────
+// Visible y editable por el usuario. Solo se guarda una inferencia que estemos
+// dispuestos a defender: por eso `evidence` viaja siempre.
+
+message MemoryItem {
+  string                    id         = 1;
+  string                    kind       = 2;
+  string                    content    = 3;
+  string                    source     = 4;
+  string                    evidence   = 5;
+  google.protobuf.Timestamp learned_at = 6;
+}
+
+message GetMemoryRequest    { string user_id = 1; AccessContext access = 2; }
+message MemoryList          { repeated MemoryItem items = 1; }
+message ForgetMemoryRequest { string user_id = 1; string memory_id = 2; bool all = 3; AccessContext access = 4; }
+message ForgetProof {
+  repeated string           memory_ids   = 1;
+  google.protobuf.Timestamp forgotten_at = 2;
+  string                    digest       = 3;
+}
+
+// ─── Señales del bus ───────────────────────────────────────────────────────
+
+message IngestSignalRequest {
+  string                 trigger = 1;
+  string                 user_id = 2;
+  google.protobuf.Struct payload = 3;
+}
+
+message IngestSignalResponse {
+  bool   accepted = 1;
+  string case_id  = 2;
+  string reason   = 3;
+}

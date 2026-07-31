@@ -34,6 +34,15 @@ service NotificationService {
   // Broadcast to a named topic (e.g. "admin-alerts")
   rpc BroadcastToTopic (BroadcastToTopicRequest) returns (BroadcastToTopicResponse);
 
+  // Consulta de entregas. Sin esto no se puede saber si un aviso LLEGÓ, y por
+  // tanto no se puede detectar el fallo más caro que existe: el silencio.
+  //
+  // Contrato crítico: si el servicio no puede responder, debe devolver error,
+  // NUNCA una lista vacía. Vacío significa "no hubo entregas" y quien consulta
+  // lo interpreta como "le fallamos al usuario". Confundir "no hay" con "no
+  // pude consultar" dispara compensaciones automáticas sobre un hecho falso.
+  rpc ListDeliveries (ListDeliveriesRequest) returns (ListDeliveriesResponse);
+
   // Send transactional email via SendGrid/SES (S2-12). Async, non-blocking.
   rpc SendEmail (SendEmailRequest) returns (SendEmailResponse);
 
@@ -250,4 +259,56 @@ message CancelReminderRequest {
 
 message CancelReminderResponse {
   bool cancelled = 1;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// REGISTRO DE ENTREGAS
+//
+// El envío FCM era fire-and-forget: no quedaba rastro de si el push llegó. Sin
+// ese rastro, un bug de configuración puede dejar a todos los usuarios sin
+// avisos durante días sin que nada lo note (pasó el 2026-07-30 con
+// NOTIFICATION_GRPC_URL apuntando a localhost).
+// ═══════════════════════════════════════════════════════════════════════════
+
+enum DeliveryChannel {
+  DELIVERY_CHANNEL_UNSPECIFIED = 0;
+  DELIVERY_CHANNEL_PUSH        = 1;
+  DELIVERY_CHANNEL_EMAIL       = 2;
+}
+
+message Delivery {
+  string                    id                = 1;
+  string                    recipient_user_id = 2;
+  NotificationEvent         event             = 3;
+  DeliveryChannel           channel           = 4;
+
+  // true solo si el proveedor confirmó la entrega. Un envío aceptado por la
+  // API pero no entregado al dispositivo NO cuenta como entregado.
+  bool                      delivered         = 5;
+  string                    failure_reason    = 6;
+
+  int32                     tokens_sent       = 7;
+  int32                     tokens_failed     = 8;
+  string                    idempotency_key   = 9;
+  google.protobuf.Timestamp attempted_at      = 10;
+  google.protobuf.Timestamp delivered_at      = 11;
+}
+
+message ListDeliveriesRequest {
+  string                    user_id = 1;
+  google.protobuf.Timestamp since   = 2;
+
+  // Filtro opcional. Sin él devuelve todos los eventos de la ventana.
+  NotificationEvent         event   = 3;
+  DeliveryChannel           channel = 4;
+  int32                     limit   = 5;
+}
+
+message ListDeliveriesResponse {
+  repeated Delivery deliveries = 1;
+
+  // Ventana efectivamente cubierta por el registro. Si el servicio solo
+  // conserva 30 días y se pregunta por 90, quien consulta tiene que saber que
+  // la ausencia de entregas fuera de esa ventana no significa nada.
+  google.protobuf.Timestamp retained_since = 2;
 }
