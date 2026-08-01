@@ -1,0 +1,187 @@
+syntax = "proto3";
+
+package profile;
+
+import "google/protobuf/timestamp.proto";
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ADDRESS SERVICE
+//
+// Libreta de direcciones para clientes y veterinarios.
+//
+// Modelo: la verdad geométrica es el pin confirmado por el usuario en el mapa
+// (latitude/longitude). El texto es para humanos y se autocompleta por reverse
+// geocoding, nunca al revés: en Colombia geocodificar texto libre devuelve el
+// centroide del barrio y el vet queda a cientos de metros.
+//
+// El cliente tiene N direcciones ("¿a dónde va el vet?"). El vet tiene su base
+// operativa ("¿desde dónde sale?"), insumo de matching, ETA y cobertura.
+//
+// PRIVACIDAD (Ley 1581): una dirección es dato personal y de seguridad física.
+// GetAddress/ListAddresses aplican la regla: un solicitante identificado que NO
+// es el dueño jamás recibe ADDRESS_VIEW_FULL — se degrada a COARSE (barrio,
+// ciudad y coordenada redondeada a ~1 km). Omitir requester_profile_id es una
+// llamada servicio-a-servicio en la que el llamante ya validó el engagement
+// (p. ej. appointment-service resolviendo el snapshot de una cita aceptada).
+// ═══════════════════════════════════════════════════════════════════════════
+
+service AddressService {
+  rpc CreateAddress (CreateAddressRequest) returns (AddressResponse);
+  rpc GetAddress (GetAddressRequest) returns (AddressResponse);
+  rpc ListAddresses (ListAddressesRequest) returns (ListAddressesResponse);
+  rpc UpdateAddress (UpdateAddressRequest) returns (AddressResponse);
+  rpc SetDefaultAddress (SetDefaultAddressRequest) returns (AddressResponse);
+  rpc DeactivateAddress (DeactivateAddressRequest) returns (DeactivateAddressResponse);
+}
+
+// ─── Enums ───
+
+enum AddressOwnerType {
+  ADDRESS_OWNER_TYPE_UNSPECIFIED = 0;
+  ADDRESS_OWNER_TYPE_CLIENT = 1;
+  ADDRESS_OWNER_TYPE_VET = 2;
+}
+
+// Procedencia de la coordenada. Se guarda para saber después qué tan confiable
+// es cada fila: es evidencia cuando alguien reclama que el vet nunca llegó.
+enum GeoSource {
+  GEO_SOURCE_UNSPECIFIED = 0;
+  GEO_SOURCE_GPS = 1;         // Lectura directa del dispositivo
+  GEO_SOURCE_MAP_PIN = 2;     // El usuario movió y confirmó el pin — la más confiable
+  GEO_SOURCE_GEOCODED = 3;    // Derivada de texto por el geocodificador
+  GEO_SOURCE_MANUAL = 4;      // Coordenada tecleada (soporte, backoffice)
+  GEO_SOURCE_LEGACY = 5;      // Migrada de vet_profiles.latitude: procedencia desconocida
+}
+
+enum AddressView {
+  ADDRESS_VIEW_FULL = 0;      // Todo, incluido unit y delivery_notes
+  ADDRESS_VIEW_COARSE = 1;    // Barrio, ciudad y coordenada redondeada
+}
+
+// ─── Address ───
+
+message Address {
+  string id = 1;
+  AddressOwnerType owner_type = 2;
+  string owner_profile_id = 3;
+
+  string label = 4;                  // "Casa", "Consultorio"
+
+  double latitude = 5;
+  double longitude = 6;
+  GeoSource geo_source = 7;
+  int32 geo_accuracy_m = 8;          // Radio de error reportado por el dispositivo
+
+  string street_line = 9;            // "Calle 45 #12-34"
+  string unit = 10;                  // "Torre 3 Apto 502" — ningún geocodificador lo sabe
+  string neighborhood = 11;          // Barrio: así se orienta la gente en Colombia
+  string city = 12;
+  string state = 13;                 // Departamento
+  string postal_code = 14;
+  string country_code = 15;          // ISO 3166-1 alpha-2
+  string formatted_address = 16;     // Render de una línea, para UI y notificaciones
+
+  string delivery_notes = 17;        // "portería pide cédula, el timbre no sirve"
+  string contact_phone = 18;         // A veces no es el del titular
+
+  bool is_default = 19;
+  bool is_public = 20;               // Vet: separa clínica publicable de base privada
+  bool is_active = 21;
+
+  AddressView view = 22;             // Con qué vista se sirvió esta respuesta
+
+  google.protobuf.Timestamp created_at = 23;
+  google.protobuf.Timestamp updated_at = 24;
+}
+
+// ─── Requests ───
+
+message CreateAddressRequest {
+  AddressOwnerType owner_type = 1;
+  string owner_profile_id = 2;
+
+  double latitude = 3;               // Requerido
+  double longitude = 4;              // Requerido
+  GeoSource geo_source = 5;
+  optional int32 geo_accuracy_m = 6;
+
+  optional string label = 7;
+  optional string street_line = 8;
+  optional string unit = 9;
+  optional string neighborhood = 10;
+  optional string city = 11;
+  optional string state = 12;
+  optional string postal_code = 13;
+  optional string country_code = 14;
+  optional string delivery_notes = 15;
+  optional string contact_phone = 16;
+
+  optional bool is_default = 17;     // La primera dirección de un dueño lo es siempre
+  optional bool is_public = 18;
+}
+
+message GetAddressRequest {
+  string address_id = 1;
+
+  // Identidad del solicitante. Si viene y no es el dueño, la respuesta se
+  // degrada a COARSE. Omitirlo = llamada de servicio ya autorizada aguas arriba.
+  optional string requester_profile_id = 2;
+
+  optional AddressView view = 3;     // Default FULL (sujeto a la degradación)
+}
+
+message ListAddressesRequest {
+  AddressOwnerType owner_type = 1;
+  string owner_profile_id = 2;
+  optional bool include_inactive = 3;
+  optional string requester_profile_id = 4;
+  optional AddressView view = 5;
+}
+
+message UpdateAddressRequest {
+  string address_id = 1;
+  string owner_profile_id = 2;       // Requerido: autoriza la escritura
+
+  optional double latitude = 3;      // lat y lng se actualizan juntas o ninguna
+  optional double longitude = 4;
+  optional GeoSource geo_source = 5;
+  optional int32 geo_accuracy_m = 6;
+
+  optional string label = 7;
+  optional string street_line = 8;
+  optional string unit = 9;
+  optional string neighborhood = 10;
+  optional string city = 11;
+  optional string state = 12;
+  optional string postal_code = 13;
+  optional string country_code = 14;
+  optional string delivery_notes = 15;
+  optional string contact_phone = 16;
+  optional bool is_public = 17;
+}
+
+message SetDefaultAddressRequest {
+  string address_id = 1;
+  string owner_profile_id = 2;
+}
+
+message DeactivateAddressRequest {
+  string address_id = 1;
+  string owner_profile_id = 2;
+}
+
+// ─── Responses ───
+
+message AddressResponse {
+  Address address = 1;
+}
+
+message ListAddressesResponse {
+  repeated Address addresses = 1;
+  int32 total_count = 2;
+}
+
+message DeactivateAddressResponse {
+  bool success = 1;
+  string message = 2;
+}
