@@ -70,6 +70,11 @@ class GeolocationServiceStub:
                 request_serializer=geolocation_dot_geolocation__pb2.LiveETARequest.SerializeToString,
                 response_deserializer=geolocation_dot_geolocation__pb2.LiveETAResponse.FromString,
                 _registered_method=True)
+        self.ReverseGeocode = channel.unary_unary(
+                '/geolocation.GeolocationService/ReverseGeocode',
+                request_serializer=geolocation_dot_geolocation__pb2.ReverseGeocodeRequest.SerializeToString,
+                response_deserializer=geolocation_dot_geolocation__pb2.ReverseGeocodeResponse.FromString,
+                _registered_method=True)
 
 
 class GeolocationServiceServicer:
@@ -124,6 +129,16 @@ class GeolocationServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ReverseGeocode(self, request, context):
+        """Texto humano a partir de un pin confirmado en el mapa. Alimenta la captura
+        de direcciones: el usuario pone el pin, esto rellena calle/barrio/ciudad y
+        el usuario corrige. Nunca al revés — geocodificar texto libre en Colombia
+        devuelve el centroide del barrio.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_GeolocationServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -151,6 +166,11 @@ def add_GeolocationServiceServicer_to_server(servicer, server):
                     servicer.GetLiveETA,
                     request_deserializer=geolocation_dot_geolocation__pb2.LiveETARequest.FromString,
                     response_serializer=geolocation_dot_geolocation__pb2.LiveETAResponse.SerializeToString,
+            ),
+            'ReverseGeocode': grpc.unary_unary_rpc_method_handler(
+                    servicer.ReverseGeocode,
+                    request_deserializer=geolocation_dot_geolocation__pb2.ReverseGeocodeRequest.FromString,
+                    response_serializer=geolocation_dot_geolocation__pb2.ReverseGeocodeResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -299,6 +319,33 @@ class GeolocationService:
             '/geolocation.GeolocationService/GetLiveETA',
             geolocation_dot_geolocation__pb2.LiveETARequest.SerializeToString,
             geolocation_dot_geolocation__pb2.LiveETAResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ReverseGeocode(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/geolocation.GeolocationService/ReverseGeocode',
+            geolocation_dot_geolocation__pb2.ReverseGeocodeRequest.SerializeToString,
+            geolocation_dot_geolocation__pb2.ReverseGeocodeResponse.FromString,
             options,
             channel_credentials,
             insecure,

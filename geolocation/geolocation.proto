@@ -31,6 +31,12 @@ service GeolocationService {
   // ETA en tiempo real para el vet en camino (EN_ROUTE).
   // Solo se llama al marcar EN_ROUTE. Respeta USE_GOOGLE_MAPS_FOR_LIVE_ETA.
   rpc GetLiveETA (LiveETARequest) returns (LiveETAResponse);
+
+  // Texto humano a partir de un pin confirmado en el mapa. Alimenta la captura
+  // de direcciones: el usuario pone el pin, esto rellena calle/barrio/ciudad y
+  // el usuario corrige. Nunca al revés — geocodificar texto libre en Colombia
+  // devuelve el centroide del barrio.
+  rpc ReverseGeocode (ReverseGeocodeRequest) returns (ReverseGeocodeResponse);
 }
 
 // ─── GetTravelEstimate ───
@@ -123,4 +129,33 @@ message LiveETAResponse {
   double distance_km = 2;
   string method = 3;                       // "GOOGLE_MAPS" | "HAVERSINE_FALLBACK"
   int32 eta_minutes_no_traffic = 4;        // Referencia sin tráfico
+}
+
+// ─── ReverseGeocode ───
+
+// OK y NO_RESULT son hechos sobre el mundo; UNAVAILABLE es un hecho sobre
+// nosotros. Colapsarlos haría que un fallo nuestro se lea como "esa coordenada
+// no tiene dirección" y el usuario borraría un pin que estaba bien puesto.
+enum ReverseGeocodeStatus {
+  REVERSE_GEOCODE_STATUS_UNSPECIFIED = 0;
+  REVERSE_GEOCODE_STATUS_OK = 1;           // Google devolvió una dirección
+  REVERSE_GEOCODE_STATUS_NO_RESULT = 2;    // Google respondió: ahí no hay dirección
+  REVERSE_GEOCODE_STATUS_UNAVAILABLE = 3;  // No pudimos preguntarle a Google
+}
+
+message ReverseGeocodeRequest {
+  double latitude = 1;
+  double longitude = 2;
+  string language = 3;                     // BCP-47, default "es"
+}
+
+message ReverseGeocodeResponse {
+  ReverseGeocodeStatus status = 1;
+  string street_line = 2;                  // "Calle 45 #12-34"
+  string neighborhood = 3;                 // Barrio
+  string city = 4;
+  string state = 5;                        // Departamento
+  string postal_code = 6;
+  string country_code = 7;                 // ISO 3166-1 alpha-2
+  string formatted_address = 8;            // El de Google, como referencia
 }
