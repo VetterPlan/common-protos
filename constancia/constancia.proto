@@ -237,6 +237,16 @@ message Case {
   // sospecha existe para ingeniería; mostrarle a alguien "esto le pasa a más
   // gente, no eres tú" cuando solo le pasa a él es una afirmación falsa.
   Incident                   incident       = 21;
+  CaseParty                  party          = 22;
+}
+
+// Con quién habla este expediente. El vet también es cliente de VetterPlan y
+// tiene sus propios casos; un operador que abre un traspaso sin saber de qué
+// parte es va a empezar la conversación equivocada.
+enum CaseParty {
+  CASE_PARTY_UNSPECIFIED = 0;
+  CASE_PARTY_CLIENT      = 1;
+  CASE_PARTY_VET         = 2;
 }
 
 enum IncidentStatus {
