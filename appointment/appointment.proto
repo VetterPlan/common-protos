@@ -421,6 +421,7 @@ message CancelAppointmentRequest {
 message GetAppointmentRequest {
   string appointment_id = 1;
   bool include_status_history = 2;
+  repeated string requester_profile_ids = 3;
 }
 
 message GetClientAppointmentsRequest {
