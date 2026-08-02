@@ -66,6 +66,8 @@ service AppointmentService {
   // Stores position in Redis with TTL=90s for client ETA polling.
   rpc UpdateVetLocation (UpdateVetLocationRequest) returns (UpdateVetLocationResponse);
 
+  rpc GetAppointmentTracking (GetAppointmentTrackingRequest) returns (GetAppointmentTrackingResponse);
+
   // ─── AUDIT ───
 
   // Get status change history for an appointment (audit log)
@@ -653,6 +655,25 @@ message UpdateVetLocationRequest {
 
 message UpdateVetLocationResponse {
   bool success = 1;
+}
+
+message GetAppointmentTrackingRequest {
+  string appointment_id = 1;
+  repeated string requester_profile_ids = 2;
+}
+
+message GetAppointmentTrackingResponse {
+  AppointmentStatus status = 1;
+  bool has_location = 2;
+  double vet_lat = 3;
+  double vet_lng = 4;
+  int32 location_age_seconds = 5;
+  bool location_is_stale = 6;
+  int32 eta_minutes = 7;
+  string eta_method = 8;
+  string eta_updated_at = 9;
+  double client_lat = 10;
+  double client_lng = 11;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════

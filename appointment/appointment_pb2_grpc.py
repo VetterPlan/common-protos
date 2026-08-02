@@ -111,6 +111,11 @@ class AppointmentServiceStub(object):
                 request_serializer=appointment_dot_appointment__pb2.UpdateVetLocationRequest.SerializeToString,
                 response_deserializer=appointment_dot_appointment__pb2.UpdateVetLocationResponse.FromString,
                 _registered_method=True)
+        self.GetAppointmentTracking = channel.unary_unary(
+                '/appointment.AppointmentService/GetAppointmentTracking',
+                request_serializer=appointment_dot_appointment__pb2.GetAppointmentTrackingRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.GetAppointmentTrackingResponse.FromString,
+                _registered_method=True)
         self.GetAppointmentHistory = channel.unary_unary(
                 '/appointment.AppointmentService/GetAppointmentHistory',
                 request_serializer=appointment_dot_appointment__pb2.GetAppointmentHistoryRequest.SerializeToString,
@@ -284,6 +289,12 @@ class AppointmentServiceServicer(object):
         Vet pushes current GPS position (called ~every 10s while EN_ROUTE).
         Stores position in Redis with TTL=90s for client ETA polling.
         """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetAppointmentTracking(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -469,6 +480,11 @@ def add_AppointmentServiceServicer_to_server(servicer, server):
                     servicer.UpdateVetLocation,
                     request_deserializer=appointment_dot_appointment__pb2.UpdateVetLocationRequest.FromString,
                     response_serializer=appointment_dot_appointment__pb2.UpdateVetLocationResponse.SerializeToString,
+            ),
+            'GetAppointmentTracking': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetAppointmentTracking,
+                    request_deserializer=appointment_dot_appointment__pb2.GetAppointmentTrackingRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.GetAppointmentTrackingResponse.SerializeToString,
             ),
             'GetAppointmentHistory': grpc.unary_unary_rpc_method_handler(
                     servicer.GetAppointmentHistory,
@@ -894,6 +910,33 @@ class AppointmentService(object):
             '/appointment.AppointmentService/UpdateVetLocation',
             appointment_dot_appointment__pb2.UpdateVetLocationRequest.SerializeToString,
             appointment_dot_appointment__pb2.UpdateVetLocationResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetAppointmentTracking(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/GetAppointmentTracking',
+            appointment_dot_appointment__pb2.GetAppointmentTrackingRequest.SerializeToString,
+            appointment_dot_appointment__pb2.GetAppointmentTrackingResponse.FromString,
             options,
             channel_credentials,
             insecure,
