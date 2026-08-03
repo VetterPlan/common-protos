@@ -1,0 +1,398 @@
+syntax = "proto3";
+
+package rating;
+
+import "google/protobuf/timestamp.proto";
+
+// ═══════════════════════════════════════════════════════════════════════════
+// RATING SERVICE — Reputación Verificada (Fase 1)
+//
+// Fuente de verdad de la reputación de un veterinario. Guarda un ledger
+// append-only de hechos con procedencia y calcula puntajes por dimensión y
+// por segmento del caso.
+//
+// Reglas del contrato que no son negociables:
+//   - Un número sobre una persona que no se puede auditar no se devuelve.
+//   - No hay UN puntaje: hay tres dimensiones que no se promedian entre sí.
+//   - Todo puntaje viaja con el nivel de segmento que alcanzó. Un vet
+//     evaluado en L3 y otro en L0 no son comparables sin decirlo.
+//   - Ausencia de medición no es un valor: es la ausencia del campo.
+// ═══════════════════════════════════════════════════════════════════════════
+
+service RatingService {
+  // ─── DESENLACE (el núcleo) ───
+  rpc SubmitOutcomeCheckIn (SubmitOutcomeCheckInRequest) returns (OutcomeCheckInResponse);
+  rpc GetOutcomeCheckIn (GetOutcomeCheckInRequest) returns (OutcomeCheckInResponse);
+
+  // ─── RESEÑAS ───
+  rpc SubmitReview (SubmitReviewRequest) returns (ReviewResponse);
+  rpc ListVetReviews (ListVetReviewsRequest) returns (ListVetReviewsResponse);
+  rpc ReplyToReview (ReplyToReviewRequest) returns (ReviewResponse);
+
+  // ─── LECTURA ───
+  rpc GetVetScoreCard (GetVetScoreCardRequest) returns (VetScoreCardResponse);
+  rpc RankVetsForCase (RankVetsForCaseRequest) returns (RankVetsForCaseResponse);
+  rpc GetVetQualityTier (GetVetQualityTierRequest) returns (GetVetQualityTierResponse);
+
+  // ─── SEÑALES MEDIDAS (interno: appointment) ───
+  rpc RecordMeasuredSignal (RecordMeasuredSignalRequest) returns (RecordMeasuredSignalResponse);
+
+  // ─── INTEGRIDAD ───
+  rpc ContestRatingEvent (ContestRatingEventRequest) returns (ContestResponse);
+  rpc ResolveContest (ResolveContestRequest) returns (ContestResponse);
+
+  // ─── MIGRACIÓN (interno, se retira tras el backfill) ───
+  rpc BackfillReview (BackfillReviewRequest) returns (ReviewResponse);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// ENUMS
+// ═══════════════════════════════════════════════════════════════════════════
+
+enum RatingSource {
+  RATING_SOURCE_UNSPECIFIED = 0;
+  RATING_SOURCE_MEASURED    = 1;  // lo midió la plataforma
+  RATING_SOURCE_CREDENTIAL  = 2;  // lo verificó un humano contra un documento
+  RATING_SOURCE_REVIEW      = 3;  // lo reportó un dueño
+  RATING_SOURCE_OUTCOME     = 4;  // el desenlace a 72 h
+}
+
+// Las tres dimensiones NO se promedian entre sí. Ver §5.1 del diseño.
+enum RatingDimension {
+  RATING_DIMENSION_UNSPECIFIED = 0;
+  RATING_DIMENSION_OUTCOME     = 1;  // ¿mi animal se va a mejorar?
+  RATING_DIMENSION_RELIABILITY = 2;  // ¿va a llegar, y a tiempo?
+  RATING_DIMENSION_MANNER      = 3;  // ¿cómo fue el rato?
+}
+
+enum RatingEventStatus {
+  RATING_EVENT_STATUS_UNSPECIFIED = 0;
+  RATING_EVENT_STATUS_ACTIVE      = 1;
+  RATING_EVENT_STATUS_CONTESTED   = 2;  // impugnado; SIGUE contando
+  RATING_EVENT_STATUS_UPHELD      = 3;
+  RATING_EVENT_STATUS_VOIDED      = 4;  // deja de contar; no se borra
+}
+
+// "Volví a consultar" NO está acá: es un hecho aparte que viaja en su propio
+// campo, porque puede ser un seguimiento correcto o un fracaso terapéutico y
+// aplastarlo contra "peor" los vuelve indistinguibles.
+enum OutcomeAnswer {
+  OUTCOME_ANSWER_UNSPECIFIED = 0;
+  OUTCOME_ANSWER_BETTER      = 1;
+  OUTCOME_ANSWER_SAME        = 2;
+  OUTCOME_ANSWER_WORSE       = 3;
+  OUTCOME_ANSWER_DONT_KNOW   = 4;  // aplaza 72 h una sola vez
+}
+
+enum CheckInStatus {
+  CHECK_IN_STATUS_UNSPECIFIED = 0;
+  CHECK_IN_STATUS_SCHEDULED   = 1;
+  CHECK_IN_STATUS_SENT        = 2;
+  CHECK_IN_STATUS_ANSWERED    = 3;
+  CHECK_IN_STATUS_DEFERRED    = 4;
+  CHECK_IN_STATUS_EXPIRED     = 5;  // venció sin respuesta — cuenta al denominador
+  CHECK_IN_STATUS_CANCELLED   = 6;  // la cita se anuló después
+}
+
+enum MeasuredKind {
+  MEASURED_KIND_UNSPECIFIED     = 0;
+  MEASURED_KIND_PUNCTUALITY     = 1;
+  MEASURED_KIND_CANCELLATION    = 2;
+  MEASURED_KIND_NO_SHOW         = 3;
+  MEASURED_KIND_FAULT_ATTRIBUTED = 4;  // culpa verificada por Constancia
+}
+
+enum ContestResolution {
+  CONTEST_RESOLUTION_UNSPECIFIED = 0;
+  CONTEST_RESOLUTION_UPHELD      = 1;
+  CONTEST_RESOLUTION_VOIDED      = 2;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SEGMENTO — la escalera de retroceso
+// ═══════════════════════════════════════════════════════════════════════════
+
+// El segmento del caso. Si un componente va vacío, el nivel alcanzado baja.
+message CaseSegment {
+  string species      = 1;  // "cat", "dog", ...
+  string age_band     = 2;  // "puppy", "adult", "senior"
+  string service_type = 3;  // "consultation", "vaccination", ...
+  bool   urgent       = 4;
+}
+
+// Qué tan específico pudo ser el puntaje. 0 = segmento exacto, 4 = global.
+// Viaja SIEMPRE con el puntaje: una afirmación de nivel 2 no puede
+// presentarse como si fuera de nivel 0.
+message SegmentResolution {
+  int32  level = 1;
+  string key   = 2;    // la clave efectiva usada
+  string label = 3;    // "consultas con gatos" — lo que la tarjeta puede decir
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// PUNTAJES
+// ═══════════════════════════════════════════════════════════════════════════
+
+message DimensionScore {
+  RatingDimension   dimension  = 1;
+  double            score      = 2;   // 0..1 encogido
+  int32             sample_size = 3;
+  SegmentResolution segment    = 4;
+  google.protobuf.Timestamp computed_at = 5;
+}
+
+// La afirmación con procedencia. Si no hay evidencia, no se emite la línea.
+message ProvenanceLine {
+  string kind        = 1;   // "punctuality", "outcome", "credential", "review"
+  string claim       = 2;   // "Puntual en 47 de 50 visitas"
+  RatingSource source = 3;
+  int32  numerator   = 4;
+  int32  denominator = 5;
+  SegmentResolution segment = 6;
+}
+
+message StarRating {
+  // La estrella ENCOGIDA — la que se muestra como agregado.
+  double average      = 1;
+  int32  review_count = 2;
+  bool   has_reviews  = 3;   // false ⇒ "aún sin reseñas", nunca 0.0
+}
+
+message VetScoreCard {
+  string vet_profile_id = 1;
+  repeated DimensionScore dimensions = 2;
+  StarRating star = 3;
+  double outcome_response_rate = 4;   // el denominador, publicado junto al puntaje
+  double reconsult_rate = 5;          // tasa aparte, comparada contra su segmento
+  int32  completed_appointments = 6;
+  repeated ProvenanceLine lines = 7;
+  google.protobuf.Timestamp computed_at = 8;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CHECK-IN DE DESENLACE
+// ═══════════════════════════════════════════════════════════════════════════
+
+message SubmitOutcomeCheckInRequest {
+  string appointment_id = 1;
+  string client_profile_id = 2;      // debe ser el cliente de esa cita
+  OutcomeAnswer answer = 3;
+  bool reconsulted = 4;              // hecho aparte; puede venir con cualquier answer
+  string note = 5;                   // opcional, nunca obligatorio
+}
+
+message GetOutcomeCheckInRequest {
+  string appointment_id = 1;
+  string client_profile_id = 2;
+}
+
+message OutcomeCheckIn {
+  string id = 1;
+  string appointment_id = 2;
+  string vet_profile_id = 3;
+  CheckInStatus status = 4;
+  OutcomeAnswer answer = 5;
+  bool reconsulted = 6;
+  bool deferred_once = 7;
+  google.protobuf.Timestamp due_at = 8;
+  google.protobuf.Timestamp answered_at = 9;
+}
+
+message OutcomeCheckInResponse {
+  OutcomeCheckIn check_in = 1;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// RESEÑAS
+// ═══════════════════════════════════════════════════════════════════════════
+
+message ReviewDimension {
+  string subject_key = 1;   // "manner", "clarity", "punctuality"
+  int32  stars       = 2;   // 1..5
+}
+
+message SubmitReviewRequest {
+  string appointment_id = 1;
+  string reviewer_profile_id = 2;
+  int32  overall_stars = 3;              // 1..5
+  repeated ReviewDimension dimensions = 4;
+  string comment = 5;
+}
+
+// El contexto de exhibición se congela al escribir la reseña. Sin esto,
+// listar 20 reseñas cuesta ~60 llamadas a appointment, pets y profile.
+message ReviewDisplayContext {
+  string service_type   = 1;
+  string species        = 2;
+  string year_month     = 3;   // "2026-03"
+  string client_display = 4;   // "María G."
+}
+
+message ReviewReply {
+  string body = 1;
+  google.protobuf.Timestamp created_at = 2;
+}
+
+message Review {
+  string id = 1;
+  string appointment_id = 2;
+  string vet_profile_id = 3;
+  // La estrella de una reseña individual es la CRUDA. El encogimiento corrige
+  // agregados, no testimonios.
+  int32  overall_stars = 4;
+  repeated ReviewDimension dimensions = 5;
+  string comment = 6;
+  ReviewDisplayContext display = 7;
+  ReviewReply reply = 8;
+  RatingEventStatus status = 9;
+  google.protobuf.Timestamp occurred_at = 10;
+}
+
+message ReviewResponse {
+  Review review = 1;
+}
+
+message ListVetReviewsRequest {
+  string vet_profile_id = 1;
+  int32  page = 2;
+  int32  page_size = 3;
+  int32  filter_stars = 4;   // 0 = sin filtro. El cliente filtra; nadie ordena.
+}
+
+message ListVetReviewsResponse {
+  repeated Review reviews = 1;
+  int32 total_count = 2;
+  // El encabezado muestra el agregado encogido y la lista las estrellas crudas.
+  // Sin esta nota la diferencia se lee como manipulación.
+  StarRating star = 3;
+  string aggregate_note = 4;
+}
+
+message ReplyToReviewRequest {
+  string review_id = 1;
+  string vet_profile_id = 2;
+  string body = 3;
+}
+
+message BackfillReviewRequest {
+  string appointment_id = 1;
+  string vet_profile_id = 2;
+  string client_profile_id = 3;
+  int32  overall_stars = 4;
+  string comment = 5;
+  google.protobuf.Timestamp occurred_at = 6;   // el original, no el de hoy
+  ReviewDisplayContext display = 7;
+  CaseSegment segment = 8;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TARJETA Y RANKING
+// ═══════════════════════════════════════════════════════════════════════════
+
+message GetVetScoreCardRequest {
+  string vet_profile_id = 1;
+  CaseSegment segment = 2;   // opcional: si viene, la tarjeta se resuelve para ese caso
+}
+
+message VetScoreCardResponse {
+  VetScoreCard scorecard = 1;
+}
+
+message RankVetsForCaseRequest {
+  repeated string vet_profile_ids = 1;   // los que appointment ya filtró
+  CaseSegment segment = 2;
+  string client_profile_id = 3;          // para el bucket del experimento
+}
+
+message RankedVet {
+  string vet_profile_id = 1;
+  double affinity = 2;
+  // Un ranking sin razones es una caja negra, y una caja negra sobre personas
+  // es lo que este servicio existe para no ser.
+  repeated ProvenanceLine reasons = 3;
+  SegmentResolution segment = 4;
+  bool randomized = 5;   // true ⇒ este orden viene del 10 % aleatorizado
+}
+
+message RankVetsForCaseResponse {
+  repeated RankedVet vets = 1;
+  bool randomized_bucket = 2;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TIER DE CALIDAD
+// ═══════════════════════════════════════════════════════════════════════════
+
+message GetVetQualityTierRequest {
+  string vet_profile_id = 1;
+  int32  completed_appointments = 2;   // el piso de elegibilidad lo cuenta payment
+}
+
+message GetVetQualityTierResponse {
+  string tier = 1;                     // bronze | silver | gold | platinum
+  double platform_fee_percent = 2;
+  double outcome_score = 3;
+  double reliability_score = 4;
+  bool   reliability_gate_passed = 5;
+  int32  sample_size = 6;
+  // false ⇒ no hay datos suficientes; quien llama debe usar su piso de volumen
+  // y NO tratar esto como "calidad baja".
+  bool   has_quality_data = 7;
+  string grace_period_note = 8;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SEÑALES MEDIDAS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// La puntualidad llega ya resuelta desde appointment: es quien tiene la ventana
+// pactada, el pin del destino y el flujo de posiciones. Si no se pudo medir,
+// appointment NO llama — la ausencia de medición no es un evento negativo.
+message RecordMeasuredSignalRequest {
+  string vet_profile_id = 1;
+  string appointment_id = 2;      // la cita ancla del grupo
+  string group_id = 3;            // una llegada por viaje, no por mascota
+  MeasuredKind kind = 4;
+  double value = 5;               // 0..1 normalizado
+  CaseSegment segment = 6;
+  google.protobuf.Timestamp occurred_at = 7;
+  map<string, string> provenance = 8;   // delay_minutes, radius_m, geo_source...
+}
+
+message RecordMeasuredSignalResponse {
+  string event_id = 1;
+  bool created = 2;    // false ⇒ ya existía (idempotente), no es error
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// IMPUGNACIÓN
+// ═══════════════════════════════════════════════════════════════════════════
+
+message ContestRatingEventRequest {
+  string rating_event_id = 1;
+  string vet_profile_id = 2;
+  string reason = 3;
+  repeated string evidence_urls = 4;
+}
+
+message ResolveContestRequest {
+  string contest_id = 1;
+  ContestResolution resolution = 2;
+  string case_id = 3;          // el expediente de Constancia que lo resolvió
+  string resolved_by = 4;
+}
+
+message Contest {
+  string id = 1;
+  string rating_event_id = 2;
+  string vet_profile_id = 3;
+  string reason = 4;
+  ContestResolution resolution = 5;
+  string case_id = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp resolved_at = 8;
+}
+
+message ContestResponse {
+  Contest contest = 1;
+}
