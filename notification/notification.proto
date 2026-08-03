@@ -121,6 +121,9 @@ enum NotificationEvent {
   // Consentimiento informado (vet perspective)
   NOTIFICATION_EVENT_CONSENT_ISSUE_FAILED = 29; // la emisión automática falló: el vet debe emitirlo a mano
 
+  // Reputación (client perspective)
+  NOTIFICATION_EVENT_OUTCOME_CHECKIN = 30; // 72 h después de la visita: ¿cómo sigue el animal?
+
   // System / admin
   NOTIFICATION_EVENT_SYSTEM_ALERT           = 99;
 }
