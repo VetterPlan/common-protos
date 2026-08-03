@@ -124,6 +124,10 @@ enum NotificationEvent {
   // Reputación (client perspective)
   NOTIFICATION_EVENT_OUTCOME_CHECKIN = 30; // 72 h después de la visita: ¿cómo sigue el animal?
 
+  NOTIFICATION_EVENT_CONSTANCIA_DECISION_NEEDED  = 31;
+  NOTIFICATION_EVENT_CONSTANCIA_HUMAN_TOOK_OVER  = 32;
+  NOTIFICATION_EVENT_CONSTANCIA_RESOLVED         = 33;
+
   // System / admin
   NOTIFICATION_EVENT_SYSTEM_ALERT           = 99;
 }

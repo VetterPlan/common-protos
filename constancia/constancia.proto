@@ -150,6 +150,7 @@ message PlannedAction {
   google.protobuf.Struct params            = 3;
   bool                   reversible        = 4;
   string                 money_delta_cop   = 5;
+  repeated string        adjustable_params = 6;
 }
 
 message ActionPlan {
@@ -280,7 +281,12 @@ message OpenCaseRequest {
 }
 
 message GetCaseRequest       { string case_id = 1; AccessContext access = 2; }
-message ListUserCasesRequest { string user_id = 1; bool only_open = 2; AccessContext access = 3; }
+message ListUserCasesRequest {
+  string        user_id   = 1;
+  bool          only_open = 2;
+  AccessContext access    = 3;
+  int32         limit     = 4;
+}
 message ListUserCasesResponse { repeated Case cases = 1; }
 
 message AdminListCasesRequest {
