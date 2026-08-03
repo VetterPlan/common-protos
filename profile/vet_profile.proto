@@ -260,6 +260,10 @@ message VetByService {
   string display_name = 4;
   double lat = 5;              // From vet_profile.latitude (0.0 if not set)
   double lng = 6;              // From vet_profile.longitude (0.0 if not set)
+  string avatar_url = 7;       // From vet_profile.avatar_url ("" if not set)
+  double rating = 8;           // Average star rating (0.0 if never rated)
+  int32 review_count = 9;      // How many reviews back that average
+  repeated string specialties = 10;  // From vet_profile.declared_specialties
 }
 
 message VetsByServiceResponse {

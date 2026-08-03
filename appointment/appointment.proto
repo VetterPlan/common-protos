@@ -573,11 +573,12 @@ message CalculatedSlot {
 message SlotVetPreview {
   string vet_profile_id = 1;
   string name = 2;
-  string avatar_initials = 3;
+  string avatar_initials = 3;      // Fallback when avatar_url is empty
   double rating = 4;
   int32 review_count = 5;
   double price = 6;
   int32 eta_minutes = 7;
+  string avatar_url = 8;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
