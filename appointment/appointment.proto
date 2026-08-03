@@ -133,6 +133,34 @@ service AppointmentService {
   // No aplica desde EN_ROUTE en adelante: ahí el vet ya salió y eso es una
   // cancelación, con sus reglas de cobro, no una reasignación.
   rpc RequestVetReassignment (RequestVetReassignmentRequest) returns (AppointmentResponse);
+
+  // Interno (rating-service): el bus de Redis es pubsub y no reenvía, así que
+  // un suscriptor caído pierde el desenlace y con él el denominador de la tasa
+  // de respuesta. Esto es el camino de reconciliación.
+  rpc ListCompletedAppointments (ListCompletedAppointmentsRequest) returns (ListCompletedAppointmentsResponse);
+}
+
+message ListCompletedAppointmentsRequest {
+  google.protobuf.Timestamp since = 1;
+  google.protobuf.Timestamp until = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+message CompletedAppointmentSummary {
+  string appointment_id = 1;
+  string group_id = 2;
+  string vet_profile_id = 3;
+  string client_profile_id = 4;
+  string pet_id = 5;
+  string service_type = 6;
+  bool   urgent = 7;
+  google.protobuf.Timestamp completed_at = 8;
+}
+
+message ListCompletedAppointmentsResponse {
+  repeated CompletedAppointmentSummary appointments = 1;
+  int32 total_count = 2;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -652,6 +680,7 @@ message UpdateVetLocationRequest {
   string vet_profile_id = 2;           // For ownership validation
   double lat = 3;
   double lng = 4;
+  int32  accuracy_m = 5;               // Precisión reportada por el GPS; 0 = desconocida
 }
 
 message UpdateVetLocationResponse {
