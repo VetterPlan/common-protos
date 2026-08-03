@@ -483,6 +483,8 @@ message GetAvailableVetsRequest {
   string time_window_start = 11;       // ISO 8601 UTC
   string time_window_end = 12;         // ISO 8601 UTC
   string preferred_vet_id = 13;        // Optional: boost in ranking
+  string client_profile_id = 14;       // Bucket determinista del experimento de exposición
+  string pet_age_band = 15;            // puppy | adult | senior — segmento del caso
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
