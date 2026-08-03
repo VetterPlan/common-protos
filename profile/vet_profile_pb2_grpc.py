@@ -153,6 +153,11 @@ class VetProfileServiceStub:
                 request_serializer=profile_dot_vet__profile__pb2.UpdateVetRatingRequest.SerializeToString,
                 response_deserializer=profile_dot_vet__profile__pb2.UpdateVetRatingResponse.FromString,
                 _registered_method=True)
+        self.SetVetRating = channel.unary_unary(
+                '/profile.VetProfileService/SetVetRating',
+                request_serializer=profile_dot_vet__profile__pb2.SetVetRatingRequest.SerializeToString,
+                response_deserializer=profile_dot_vet__profile__pb2.UpdateVetRatingResponse.FromString,
+                _registered_method=True)
         self.ListVetProfiles = channel.unary_unary(
                 '/profile.VetProfileService/ListVetProfiles',
                 request_serializer=profile_dot_vet__profile__pb2.ListVetProfilesRequest.SerializeToString,
@@ -316,6 +321,12 @@ class VetProfileServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SetVetRating(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def ListVetProfiles(self, request, context):
         """─── Admin: list all vet profiles ───
         """
@@ -447,6 +458,11 @@ def add_VetProfileServiceServicer_to_server(servicer, server):
             'UpdateVetRating': grpc.unary_unary_rpc_method_handler(
                     servicer.UpdateVetRating,
                     request_deserializer=profile_dot_vet__profile__pb2.UpdateVetRatingRequest.FromString,
+                    response_serializer=profile_dot_vet__profile__pb2.UpdateVetRatingResponse.SerializeToString,
+            ),
+            'SetVetRating': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetVetRating,
+                    request_deserializer=profile_dot_vet__profile__pb2.SetVetRatingRequest.FromString,
                     response_serializer=profile_dot_vet__profile__pb2.UpdateVetRatingResponse.SerializeToString,
             ),
             'ListVetProfiles': grpc.unary_unary_rpc_method_handler(
@@ -1084,6 +1100,33 @@ class VetProfileService:
             target,
             '/profile.VetProfileService/UpdateVetRating',
             profile_dot_vet__profile__pb2.UpdateVetRatingRequest.SerializeToString,
+            profile_dot_vet__profile__pb2.UpdateVetRatingResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SetVetRating(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/profile.VetProfileService/SetVetRating',
+            profile_dot_vet__profile__pb2.SetVetRatingRequest.SerializeToString,
             profile_dot_vet__profile__pb2.UpdateVetRatingResponse.FromString,
             options,
             channel_credentials,

@@ -45,6 +45,8 @@ service VetProfileService {
   // ─── Rating (S2-4) — called by Appointment Service on SubmitReview ───
   rpc UpdateVetRating (UpdateVetRatingRequest) returns (UpdateVetRatingResponse);
 
+  rpc SetVetRating (SetVetRatingRequest) returns (UpdateVetRatingResponse);
+
   // ─── Admin: list all vet profiles ───
   rpc ListVetProfiles (ListVetProfilesRequest) returns (ListVetProfilesResponse);
 
@@ -470,6 +472,12 @@ message IncrementCancellationStrikeResponse {
 message UpdateVetRatingRequest {
   string vet_profile_id = 1;
   double new_rating = 2;          // 1-5 from this review; profile computes rolling average
+}
+
+message SetVetRatingRequest {
+  string vet_profile_id = 1;
+  double average_rating = 2;
+  int32 review_count = 3;
 }
 
 message UpdateVetRatingResponse {
