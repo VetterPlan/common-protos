@@ -5,7 +5,7 @@ import warnings
 
 from appointment import appointment_pb2 as appointment_dot_appointment__pb2
 
-GRPC_GENERATED_VERSION = '1.78.0'
+GRPC_GENERATED_VERSION = '1.81.1'
 GRPC_VERSION = grpc.__version__
 _version_not_supported = False
 
@@ -25,7 +25,7 @@ if _version_not_supported:
     )
 
 
-class AppointmentServiceStub(object):
+class AppointmentServiceStub:
     """═══════════════════════════════════════════════════════════════════════════
     APPOINTMENT SERVICE
 
@@ -176,9 +176,14 @@ class AppointmentServiceStub(object):
                 request_serializer=appointment_dot_appointment__pb2.RequestVetReassignmentRequest.SerializeToString,
                 response_deserializer=appointment_dot_appointment__pb2.AppointmentResponse.FromString,
                 _registered_method=True)
+        self.ListCompletedAppointments = channel.unary_unary(
+                '/appointment.AppointmentService/ListCompletedAppointments',
+                request_serializer=appointment_dot_appointment__pb2.ListCompletedAppointmentsRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.ListCompletedAppointmentsResponse.FromString,
+                _registered_method=True)
 
 
-class AppointmentServiceServicer(object):
+class AppointmentServiceServicer:
     """═══════════════════════════════════════════════════════════════════════════
     APPOINTMENT SERVICE
 
@@ -413,6 +418,15 @@ class AppointmentServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ListCompletedAppointments(self, request, context):
+        """Interno (rating-service): el bus de Redis es pubsub y no reenvía, así que
+        un suscriptor caído pierde el desenlace y con él el denominador de la tasa
+        de respuesta. Esto es el camino de reconciliación.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AppointmentServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -546,6 +560,11 @@ def add_AppointmentServiceServicer_to_server(servicer, server):
                     request_deserializer=appointment_dot_appointment__pb2.RequestVetReassignmentRequest.FromString,
                     response_serializer=appointment_dot_appointment__pb2.AppointmentResponse.SerializeToString,
             ),
+            'ListCompletedAppointments': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListCompletedAppointments,
+                    request_deserializer=appointment_dot_appointment__pb2.ListCompletedAppointmentsRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.ListCompletedAppointmentsResponse.SerializeToString,
+            ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
             'appointment.AppointmentService', rpc_method_handlers)
@@ -554,7 +573,7 @@ def add_AppointmentServiceServicer_to_server(servicer, server):
 
 
  # This class is part of an EXPERIMENTAL API.
-class AppointmentService(object):
+class AppointmentService:
     """═══════════════════════════════════════════════════════════════════════════
     APPOINTMENT SERVICE
 
@@ -1261,6 +1280,33 @@ class AppointmentService(object):
             '/appointment.AppointmentService/RequestVetReassignment',
             appointment_dot_appointment__pb2.RequestVetReassignmentRequest.SerializeToString,
             appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListCompletedAppointments(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/ListCompletedAppointments',
+            appointment_dot_appointment__pb2.ListCompletedAppointmentsRequest.SerializeToString,
+            appointment_dot_appointment__pb2.ListCompletedAppointmentsResponse.FromString,
             options,
             channel_credentials,
             insecure,
