@@ -103,6 +103,31 @@ class VetCertificationServiceStub:
                 request_serializer=vet__certification_dot_vet__certification__pb2.RemoveCertificationDocumentRequest.SerializeToString,
                 response_deserializer=vet__certification_dot_vet__certification__pb2.RemoveCertificationDocumentResponse.FromString,
                 _registered_method=True)
+        self.SubmitAcademicCredential = channel.unary_unary(
+                '/vet_certification.VetCertificationService/SubmitAcademicCredential',
+                request_serializer=vet__certification_dot_vet__certification__pb2.SubmitAcademicCredentialRequest.SerializeToString,
+                response_deserializer=vet__certification_dot_vet__certification__pb2.AcademicCredentialResponse.FromString,
+                _registered_method=True)
+        self.GenerateAcademicDocumentUploadUrl = channel.unary_unary(
+                '/vet_certification.VetCertificationService/GenerateAcademicDocumentUploadUrl',
+                request_serializer=vet__certification_dot_vet__certification__pb2.GenerateAcademicDocumentUploadUrlRequest.SerializeToString,
+                response_deserializer=vet__certification_dot_vet__certification__pb2.GenerateAcademicDocumentUploadUrlResponse.FromString,
+                _registered_method=True)
+        self.GetAcademicCredentials = channel.unary_unary(
+                '/vet_certification.VetCertificationService/GetAcademicCredentials',
+                request_serializer=vet__certification_dot_vet__certification__pb2.GetAcademicCredentialsRequest.SerializeToString,
+                response_deserializer=vet__certification_dot_vet__certification__pb2.AcademicCredentialsResponse.FromString,
+                _registered_method=True)
+        self.ReviewAcademicCredential = channel.unary_unary(
+                '/vet_certification.VetCertificationService/ReviewAcademicCredential',
+                request_serializer=vet__certification_dot_vet__certification__pb2.ReviewAcademicCredentialRequest.SerializeToString,
+                response_deserializer=vet__certification_dot_vet__certification__pb2.AcademicCredentialResponse.FromString,
+                _registered_method=True)
+        self.GetVetPublicCredentials = channel.unary_unary(
+                '/vet_certification.VetCertificationService/GetVetPublicCredentials',
+                request_serializer=vet__certification_dot_vet__certification__pb2.GetVetPublicCredentialsRequest.SerializeToString,
+                response_deserializer=vet__certification_dot_vet__certification__pb2.GetVetPublicCredentialsResponse.FromString,
+                _registered_method=True)
 
 
 class VetCertificationServiceServicer:
@@ -211,6 +236,40 @@ class VetCertificationServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SubmitAcademicCredential(self, request, context):
+        """─── ACADEMIC CREDENTIALS ───
+
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GenerateAcademicDocumentUploadUrl(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetAcademicCredentials(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ReviewAcademicCredential(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetVetPublicCredentials(self, request, context):
+        """Proyección pública. GetCertificationsByVetProfile emite rejection_reason,
+        reviewed_by e historial de estados: nada de eso puede llegar a un cliente.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_VetCertificationServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -273,6 +332,31 @@ def add_VetCertificationServiceServicer_to_server(servicer, server):
                     servicer.RemoveCertificationDocument,
                     request_deserializer=vet__certification_dot_vet__certification__pb2.RemoveCertificationDocumentRequest.FromString,
                     response_serializer=vet__certification_dot_vet__certification__pb2.RemoveCertificationDocumentResponse.SerializeToString,
+            ),
+            'SubmitAcademicCredential': grpc.unary_unary_rpc_method_handler(
+                    servicer.SubmitAcademicCredential,
+                    request_deserializer=vet__certification_dot_vet__certification__pb2.SubmitAcademicCredentialRequest.FromString,
+                    response_serializer=vet__certification_dot_vet__certification__pb2.AcademicCredentialResponse.SerializeToString,
+            ),
+            'GenerateAcademicDocumentUploadUrl': grpc.unary_unary_rpc_method_handler(
+                    servicer.GenerateAcademicDocumentUploadUrl,
+                    request_deserializer=vet__certification_dot_vet__certification__pb2.GenerateAcademicDocumentUploadUrlRequest.FromString,
+                    response_serializer=vet__certification_dot_vet__certification__pb2.GenerateAcademicDocumentUploadUrlResponse.SerializeToString,
+            ),
+            'GetAcademicCredentials': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetAcademicCredentials,
+                    request_deserializer=vet__certification_dot_vet__certification__pb2.GetAcademicCredentialsRequest.FromString,
+                    response_serializer=vet__certification_dot_vet__certification__pb2.AcademicCredentialsResponse.SerializeToString,
+            ),
+            'ReviewAcademicCredential': grpc.unary_unary_rpc_method_handler(
+                    servicer.ReviewAcademicCredential,
+                    request_deserializer=vet__certification_dot_vet__certification__pb2.ReviewAcademicCredentialRequest.FromString,
+                    response_serializer=vet__certification_dot_vet__certification__pb2.AcademicCredentialResponse.SerializeToString,
+            ),
+            'GetVetPublicCredentials': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetVetPublicCredentials,
+                    request_deserializer=vet__certification_dot_vet__certification__pb2.GetVetPublicCredentialsRequest.FromString,
+                    response_serializer=vet__certification_dot_vet__certification__pb2.GetVetPublicCredentialsResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -608,6 +692,141 @@ class VetCertificationService:
             '/vet_certification.VetCertificationService/RemoveCertificationDocument',
             vet__certification_dot_vet__certification__pb2.RemoveCertificationDocumentRequest.SerializeToString,
             vet__certification_dot_vet__certification__pb2.RemoveCertificationDocumentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SubmitAcademicCredential(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/vet_certification.VetCertificationService/SubmitAcademicCredential',
+            vet__certification_dot_vet__certification__pb2.SubmitAcademicCredentialRequest.SerializeToString,
+            vet__certification_dot_vet__certification__pb2.AcademicCredentialResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GenerateAcademicDocumentUploadUrl(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/vet_certification.VetCertificationService/GenerateAcademicDocumentUploadUrl',
+            vet__certification_dot_vet__certification__pb2.GenerateAcademicDocumentUploadUrlRequest.SerializeToString,
+            vet__certification_dot_vet__certification__pb2.GenerateAcademicDocumentUploadUrlResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetAcademicCredentials(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/vet_certification.VetCertificationService/GetAcademicCredentials',
+            vet__certification_dot_vet__certification__pb2.GetAcademicCredentialsRequest.SerializeToString,
+            vet__certification_dot_vet__certification__pb2.AcademicCredentialsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ReviewAcademicCredential(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/vet_certification.VetCertificationService/ReviewAcademicCredential',
+            vet__certification_dot_vet__certification__pb2.ReviewAcademicCredentialRequest.SerializeToString,
+            vet__certification_dot_vet__certification__pb2.AcademicCredentialResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetVetPublicCredentials(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/vet_certification.VetCertificationService/GetVetPublicCredentials',
+            vet__certification_dot_vet__certification__pb2.GetVetPublicCredentialsRequest.SerializeToString,
+            vet__certification_dot_vet__certification__pb2.GetVetPublicCredentialsResponse.FromString,
             options,
             channel_credentials,
             insecure,

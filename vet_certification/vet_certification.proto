@@ -60,6 +60,128 @@ service VetCertificationService {
 
   // Owning vet: remove a document (before approval). Deletes row + R2 object.
   rpc RemoveCertificationDocument (RemoveCertificationDocumentRequest) returns (RemoveCertificationDocumentResponse);
+
+  // ─── ACADEMIC CREDENTIALS ───
+
+  rpc SubmitAcademicCredential (SubmitAcademicCredentialRequest) returns (AcademicCredentialResponse);
+  rpc GenerateAcademicDocumentUploadUrl (GenerateAcademicDocumentUploadUrlRequest) returns (GenerateAcademicDocumentUploadUrlResponse);
+  rpc GetAcademicCredentials (GetAcademicCredentialsRequest) returns (AcademicCredentialsResponse);
+  rpc ReviewAcademicCredential (ReviewAcademicCredentialRequest) returns (AcademicCredentialResponse);
+
+  // Proyección pública. GetCertificationsByVetProfile emite rejection_reason,
+  // reviewed_by e historial de estados: nada de eso puede llegar a un cliente.
+  rpc GetVetPublicCredentials (GetVetPublicCredentialsRequest) returns (GetVetPublicCredentialsResponse);
+}
+
+enum AcademicDegree {
+  ACADEMIC_DEGREE_UNSPECIFIED    = 0;
+  ACADEMIC_DEGREE_PREGRADO       = 1;
+  ACADEMIC_DEGREE_ESPECIALIZACION = 2;
+  ACADEMIC_DEGREE_MAESTRIA       = 3;
+  ACADEMIC_DEGREE_DOCTORADO      = 4;
+  ACADEMIC_DEGREE_DIPLOMADO      = 5;
+}
+
+enum AcademicStatus {
+  ACADEMIC_STATUS_UNSPECIFIED = 0;
+  ACADEMIC_STATUS_PENDING     = 1;
+  ACADEMIC_STATUS_VERIFIED    = 2;
+  ACADEMIC_STATUS_REJECTED    = 3;
+  ACADEMIC_STATUS_REVOKED     = 4;
+}
+
+enum VerificationMethod {
+  VERIFICATION_METHOD_UNSPECIFIED           = 0;
+  VERIFICATION_METHOD_DOCUMENT              = 1;
+  VERIFICATION_METHOD_INSTITUTIONAL_REGISTRY = 2;
+  VERIFICATION_METHOD_CONVALIDATION         = 3;
+}
+
+message AcademicCredential {
+  string id = 1;
+  string vet_profile_id = 2;
+  AcademicDegree degree = 3;
+  string title = 4;
+  string institution = 5;
+  string country = 6;
+  int32 year = 7;
+  AcademicStatus status = 8;
+  VerificationMethod verification_method = 9;
+  string rejection_reason = 10;
+  google.protobuf.Timestamp verified_at = 11;
+  google.protobuf.Timestamp created_at = 12;
+}
+
+message SubmitAcademicCredentialRequest {
+  string vet_profile_id = 1;
+  AcademicDegree degree = 2;
+  string title = 3;
+  string institution = 4;
+  string country = 5;
+  int32 year = 6;
+  string object_key = 7;
+  string original_filename = 8;
+  string mime_type = 9;
+}
+
+message AcademicCredentialResponse {
+  AcademicCredential credential = 1;
+}
+
+message GenerateAcademicDocumentUploadUrlRequest {
+  string vet_profile_id = 1;
+  string file_extension = 2;
+  string content_type = 3;
+}
+
+message GenerateAcademicDocumentUploadUrlResponse {
+  string upload_url = 1;
+  string object_key = 2;
+  int32 expires_in_seconds = 3;
+}
+
+message GetAcademicCredentialsRequest {
+  string vet_profile_id = 1;
+  bool only_pending = 2;
+}
+
+message AcademicCredentialsResponse {
+  repeated AcademicCredential credentials = 1;
+  int32 total_count = 2;
+}
+
+message ReviewAcademicCredentialRequest {
+  string credential_id = 1;
+  AcademicStatus new_status = 2;
+  VerificationMethod verification_method = 3;
+  string reviewed_by = 4;
+  string rejection_reason = 5;
+}
+
+message PublicCredential {
+  AcademicDegree degree = 1;
+  string title = 2;
+  string institution = 3;
+  int32 year = 4;
+}
+
+message PublicLicense {
+  string license_number = 1;
+  string issuing_authority = 2;
+  LicenseType license_type = 3;
+  PracticeScope scope = 4;
+  repeated string species_allowed = 5;
+  string valid_until = 6;
+}
+
+message GetVetPublicCredentialsRequest {
+  string vet_profile_id = 1;
+}
+
+message GetVetPublicCredentialsResponse {
+  PublicLicense license = 1;
+  bool has_active_license = 2;
+  repeated PublicCredential credentials = 3;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
