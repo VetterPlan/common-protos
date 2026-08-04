@@ -261,6 +261,17 @@ message Certification {
   // Computed fields
   bool is_active = 19;
   int32 days_until_expiration = 20;      // -1 if no expiration
+
+  // Identidad del profesional. El número nunca sale completo del servicio.
+  DocumentIdType document_type = 21;
+  string document_number_masked = 22;    // ****9502
+  bool document_verified = 23;           // un admin lo cotejó contra la cédula
+
+  // Cotejo contra el registro profesional externo (ConVezCol)
+  RegistryStatus registry_status = 24;
+  google.protobuf.Timestamp registry_checked_at = 25;
+  string registry_matricula = 26;
+  string registry_detail = 27;
 }
 
 message StatusHistoryEntry {
@@ -300,6 +311,11 @@ message SubmitCertificationRequest {
 
   // Request metadata
   string submitted_by = 11;              // Required: UUID of submitter (usually same as vet_profile owner)
+
+  // Identidad. Sin cédula el cotejo con ConVezCol solo comprueba que la
+  // matrícula exista: no puede cruzar sanciones ni confirmar que sea suya.
+  string document_number = 12;           // Optional en el contrato, necesario para el cotejo
+  DocumentIdType document_type = 13;     // Por defecto CC
 }
 
 message CertificationResponse {
@@ -393,6 +409,12 @@ message ReviewCertificationRequest {
   CertificationStatus new_status = 3; // Required: target status
   string reason = 4;                // Required: StatusChangeReason value
   string notes = 5;                 // Optional: human-readable notes / rejection reason
+
+  // Número que el admin leyó en la cédula escaneada. Al mandarlo, la
+  // certificación queda con el documento VERIFICADO y entra al cruce de
+  // sanciones por cédula, que es el único que bloquea.
+  string verified_document_number = 6;
+  DocumentIdType verified_document_type = 7;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
