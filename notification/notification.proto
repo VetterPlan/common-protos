@@ -393,6 +393,13 @@ message NotificationCopyEntry {
   string channel = 13;
   repeated CopySlot slots         = 14;
   repeated CopySlot default_slots = 15;
+
+  // Nombres para humanos. El panel lo usa gente que no tiene por qué saber
+  // inglés, y `event`/`copy_key` son identificadores, no etiquetas. Viven acá
+  // —donde se declara la clave— para que agregar una obligue a nombrarla.
+  string label       = 16;  // "Último aviso antes de cancelar"
+  string description = 17;  // cuándo se dispara
+  string event_label = 18;  // "Avisos del PIN"
 }
 
 message ListNotificationCopyRequest {
