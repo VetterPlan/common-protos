@@ -351,6 +351,13 @@ message ListDeliveriesResponse {
 // COPY EDITABLE
 // ═══════════════════════════════════════════════════════════════════════════
 
+// Un campo editable de un correo. Push usa title/body; correo tiene varios.
+message CopySlot {
+  string name  = 1;  // subject | eyebrow | title | message | preheader | ...
+  string label = 2;  // etiqueta para el panel
+  string text  = 3;
+}
+
 message NotificationCopyEntry {
   // Clave editable. Más fina que el evento: un mismo NotificationEvent lleva
   // textos distintos según la situación.
@@ -380,12 +387,19 @@ message NotificationCopyEntry {
   int32  version    = 10;
   string updated_by = 11;
   google.protobuf.Timestamp updated_at = 12;
+
+  // push | email. El correo no cabe en título + cuerpo: trae sus slots acá y
+  // deja title/body vacíos.
+  string channel = 13;
+  repeated CopySlot slots         = 14;
+  repeated CopySlot default_slots = 15;
 }
 
 message ListNotificationCopyRequest {
   // Filtros opcionales. Sin ellos devuelve el catálogo entero.
   string event = 1;
   bool   only_overridden = 2;
+  string channel = 3;  // push | email; vacío = ambos
 }
 
 message ListNotificationCopyResponse {
@@ -404,6 +418,10 @@ message UpdateNotificationCopyRequest {
   // Versión sobre la que se editó. Si otro admin guardó en el medio, se
   // rechaza con ABORTED en vez de pisarlo. 0 = no había override.
   int32 expected_version = 5;
+
+  // Para correo: los slots que se cambian. Los que no se manden quedan como
+  // están. title/body se ignoran cuando esto viene lleno.
+  repeated CopySlot slots = 6;
 }
 
 message PreviewNotificationCopyRequest {
@@ -415,11 +433,18 @@ message PreviewNotificationCopyRequest {
 
   // Valores de ejemplo para las variables.
   repeated NotificationDataEntry sample_data = 4;
+
+  // Para correo: slots tentativos. Vacío = previsualiza los vigentes.
+  repeated CopySlot slots = 5;
 }
 
 message PreviewNotificationCopyResponse {
   string rendered_title = 1;
   string rendered_body  = 2;
+
+  // Para correo: el HTML que produce el render de marca. Lo que se ve en el
+  // panel es lo que sale del servidor, no una aproximación del navegador.
+  string rendered_html = 4;
 
   // Variables usadas en el texto que no traen valor de ejemplo: así se ve el
   // hueco antes de publicar, no después de enviar.
