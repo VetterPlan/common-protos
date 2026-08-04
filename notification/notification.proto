@@ -56,6 +56,19 @@ service NotificationService {
 
   // Cancela un recordatorio aún no enviado (p.ej. si se re-agenda la dosis).
   rpc CancelReminder (CancelReminderRequest) returns (CancelReminderResponse);
+
+  // ─── COPY EDITABLE (panel de admin) ───
+  // El texto de cada aviso vivía en el código: cambiar una palabra costaba un
+  // despliegue. Estos RPCs lo mueven a la DB, con el default del código como
+  // respaldo (fila ausente = texto original, así revertir no despliega nada).
+  //
+  // Contrato crítico: `variables` es lo único interpolable. Un texto que use
+  // una variable que ningún servicio envía NO se guarda — si se guardara, no
+  // fallaría acá sino al enviarse, y el aviso no saldría.
+  rpc ListNotificationCopy (ListNotificationCopyRequest) returns (ListNotificationCopyResponse);
+  rpc UpdateNotificationCopy (UpdateNotificationCopyRequest) returns (NotificationCopyEntry);
+  rpc PreviewNotificationCopy (PreviewNotificationCopyRequest) returns (PreviewNotificationCopyResponse);
+  rpc RevertNotificationCopy (RevertNotificationCopyRequest) returns (NotificationCopyEntry);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -178,6 +191,14 @@ message SendPushNotificationRequest {
 
   // Idempotency key — de-duplicates retries within a 24-hour window.
   string idempotency_key = 6;
+
+  // Situación concreta, cuando el evento solo no la determina. Un mismo
+  // NotificationEvent lleva textos distintos —APPOINTMENT_CANCELLED es "Cita
+  // cancelada", "Pago rechazado" y "Visita reasignada"—, así que el llamador
+  // declara CUÁL es y notification-service pone las palabras. Vacío = el texto
+  // por defecto del evento. El catálogo vive en notification-service y es
+  // editable desde el panel de admin sin desplegar.
+  string copy_key = 7;
 }
 
 message SendPushNotificationResponse {
@@ -192,6 +213,7 @@ message BroadcastToTopicRequest {
   string title             = 2;
   string body              = 3;
   repeated NotificationDataEntry data = 4;
+  string copy_key          = 5;  // ver SendPushNotificationRequest.copy_key
 }
 
 message BroadcastToTopicResponse {
@@ -250,6 +272,11 @@ message ScheduleReminderRequest {
   // Servicio y motivo que lo agendó, para auditoría y para la vista de admin.
   // Ej. "pets_preventive", "medhistory_followup".
   string source = 8;
+
+  // Situación concreta (ver SendPushNotificationRequest.copy_key). El texto se
+  // resuelve al ENVIAR, no al programar: un recordatorio agendado a 30 días
+  // saldría con el copy de hace un mes.
+  string copy_key = 9;
 }
 
 message ScheduleReminderResponse {
@@ -318,4 +345,88 @@ message ListDeliveriesResponse {
   // conserva 30 días y se pregunta por 90, quien consulta tiene que saber que
   // la ausencia de entregas fuera de esa ventana no significa nada.
   google.protobuf.Timestamp retained_since = 2;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// COPY EDITABLE
+// ═══════════════════════════════════════════════════════════════════════════
+
+message NotificationCopyEntry {
+  // Clave editable. Más fina que el evento: un mismo NotificationEvent lleva
+  // textos distintos según la situación.
+  string copy_key = 1;
+
+  // Evento y destinatario al que pertenece, para agrupar en el panel.
+  string event    = 2;
+  string audience = 3;  // client | vet | topic
+
+  // Texto vigente (el override si existe, el default del código si no).
+  string title = 4;
+  string body  = 5;
+
+  // Texto original del código, para mostrar el diff y ofrecer "revertir".
+  string default_title = 6;
+  string default_body  = 7;
+
+  // Lo único que se puede interpolar. El panel las ofrece y rechaza cualquier
+  // otra al guardar.
+  repeated string variables = 8;
+
+  // false = nadie lo ha tocado, se está usando el default.
+  bool overridden = 9;
+
+  // Para bloqueo optimista: se manda de vuelta en UpdateNotificationCopy. 0
+  // mientras no haya override.
+  int32  version    = 10;
+  string updated_by = 11;
+  google.protobuf.Timestamp updated_at = 12;
+}
+
+message ListNotificationCopyRequest {
+  // Filtros opcionales. Sin ellos devuelve el catálogo entero.
+  string event = 1;
+  bool   only_overridden = 2;
+}
+
+message ListNotificationCopyResponse {
+  repeated NotificationCopyEntry entries = 1;
+}
+
+message UpdateNotificationCopyRequest {
+  string copy_key = 1;
+  string title    = 2;
+  string body     = 3;
+
+  // Quién lo cambia. Queda en el historial: este texto sale hacia todos los
+  // usuarios y "quién escribió esto" tiene que tener respuesta.
+  string updated_by = 4;
+
+  // Versión sobre la que se editó. Si otro admin guardó en el medio, se
+  // rechaza con ABORTED en vez de pisarlo. 0 = no había override.
+  int32 expected_version = 5;
+}
+
+message PreviewNotificationCopyRequest {
+  string copy_key = 1;
+
+  // Texto tentativo. Vacío = previsualiza el vigente.
+  string title = 2;
+  string body  = 3;
+
+  // Valores de ejemplo para las variables.
+  repeated NotificationDataEntry sample_data = 4;
+}
+
+message PreviewNotificationCopyResponse {
+  string rendered_title = 1;
+  string rendered_body  = 2;
+
+  // Variables usadas en el texto que no traen valor de ejemplo: así se ve el
+  // hueco antes de publicar, no después de enviar.
+  repeated string missing_variables = 3;
+}
+
+message RevertNotificationCopyRequest {
+  string copy_key   = 1;
+  string updated_by = 2;
 }

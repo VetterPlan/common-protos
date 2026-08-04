@@ -90,6 +90,26 @@ class NotificationServiceStub:
                 request_serializer=notification_dot_notification__pb2.CancelReminderRequest.SerializeToString,
                 response_deserializer=notification_dot_notification__pb2.CancelReminderResponse.FromString,
                 _registered_method=True)
+        self.ListNotificationCopy = channel.unary_unary(
+                '/notification.NotificationService/ListNotificationCopy',
+                request_serializer=notification_dot_notification__pb2.ListNotificationCopyRequest.SerializeToString,
+                response_deserializer=notification_dot_notification__pb2.ListNotificationCopyResponse.FromString,
+                _registered_method=True)
+        self.UpdateNotificationCopy = channel.unary_unary(
+                '/notification.NotificationService/UpdateNotificationCopy',
+                request_serializer=notification_dot_notification__pb2.UpdateNotificationCopyRequest.SerializeToString,
+                response_deserializer=notification_dot_notification__pb2.NotificationCopyEntry.FromString,
+                _registered_method=True)
+        self.PreviewNotificationCopy = channel.unary_unary(
+                '/notification.NotificationService/PreviewNotificationCopy',
+                request_serializer=notification_dot_notification__pb2.PreviewNotificationCopyRequest.SerializeToString,
+                response_deserializer=notification_dot_notification__pb2.PreviewNotificationCopyResponse.FromString,
+                _registered_method=True)
+        self.RevertNotificationCopy = channel.unary_unary(
+                '/notification.NotificationService/RevertNotificationCopy',
+                request_serializer=notification_dot_notification__pb2.RevertNotificationCopyRequest.SerializeToString,
+                response_deserializer=notification_dot_notification__pb2.NotificationCopyEntry.FromString,
+                _registered_method=True)
 
 
 class NotificationServiceServicer:
@@ -178,6 +198,38 @@ class NotificationServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ListNotificationCopy(self, request, context):
+        """─── COPY EDITABLE (panel de admin) ───
+        El texto de cada aviso vivía en el código: cambiar una palabra costaba un
+        despliegue. Estos RPCs lo mueven a la DB, con el default del código como
+        respaldo (fila ausente = texto original, así revertir no despliega nada).
+
+        Contrato crítico: `variables` es lo único interpolable. Un texto que use
+        una variable que ningún servicio envía NO se guarda — si se guardara, no
+        fallaría acá sino al enviarse, y el aviso no saldría.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def UpdateNotificationCopy(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def PreviewNotificationCopy(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RevertNotificationCopy(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_NotificationServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -220,6 +272,26 @@ def add_NotificationServiceServicer_to_server(servicer, server):
                     servicer.CancelReminder,
                     request_deserializer=notification_dot_notification__pb2.CancelReminderRequest.FromString,
                     response_serializer=notification_dot_notification__pb2.CancelReminderResponse.SerializeToString,
+            ),
+            'ListNotificationCopy': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListNotificationCopy,
+                    request_deserializer=notification_dot_notification__pb2.ListNotificationCopyRequest.FromString,
+                    response_serializer=notification_dot_notification__pb2.ListNotificationCopyResponse.SerializeToString,
+            ),
+            'UpdateNotificationCopy': grpc.unary_unary_rpc_method_handler(
+                    servicer.UpdateNotificationCopy,
+                    request_deserializer=notification_dot_notification__pb2.UpdateNotificationCopyRequest.FromString,
+                    response_serializer=notification_dot_notification__pb2.NotificationCopyEntry.SerializeToString,
+            ),
+            'PreviewNotificationCopy': grpc.unary_unary_rpc_method_handler(
+                    servicer.PreviewNotificationCopy,
+                    request_deserializer=notification_dot_notification__pb2.PreviewNotificationCopyRequest.FromString,
+                    response_serializer=notification_dot_notification__pb2.PreviewNotificationCopyResponse.SerializeToString,
+            ),
+            'RevertNotificationCopy': grpc.unary_unary_rpc_method_handler(
+                    servicer.RevertNotificationCopy,
+                    request_deserializer=notification_dot_notification__pb2.RevertNotificationCopyRequest.FromString,
+                    response_serializer=notification_dot_notification__pb2.NotificationCopyEntry.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -454,6 +526,114 @@ class NotificationService:
             '/notification.NotificationService/CancelReminder',
             notification_dot_notification__pb2.CancelReminderRequest.SerializeToString,
             notification_dot_notification__pb2.CancelReminderResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListNotificationCopy(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/notification.NotificationService/ListNotificationCopy',
+            notification_dot_notification__pb2.ListNotificationCopyRequest.SerializeToString,
+            notification_dot_notification__pb2.ListNotificationCopyResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def UpdateNotificationCopy(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/notification.NotificationService/UpdateNotificationCopy',
+            notification_dot_notification__pb2.UpdateNotificationCopyRequest.SerializeToString,
+            notification_dot_notification__pb2.NotificationCopyEntry.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PreviewNotificationCopy(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/notification.NotificationService/PreviewNotificationCopy',
+            notification_dot_notification__pb2.PreviewNotificationCopyRequest.SerializeToString,
+            notification_dot_notification__pb2.PreviewNotificationCopyResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RevertNotificationCopy(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/notification.NotificationService/RevertNotificationCopy',
+            notification_dot_notification__pb2.RevertNotificationCopyRequest.SerializeToString,
+            notification_dot_notification__pb2.NotificationCopyEntry.FromString,
             options,
             channel_credentials,
             insecure,
