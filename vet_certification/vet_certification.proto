@@ -222,6 +222,27 @@ enum PracticeScope {
   PRACTICE_SCOPE_REHABILITATION = 12;
 }
 
+// Espeja app.domain.enums.DocumentIdType (los valores coinciden con el enum de DB).
+enum DocumentIdType {
+  DOCUMENT_ID_TYPE_UNSPECIFIED = 0;
+  DOCUMENT_ID_TYPE_CC = 1;
+  DOCUMENT_ID_TYPE_CE = 2;
+  DOCUMENT_ID_TYPE_PASSPORT = 3;
+}
+
+// Espeja app.domain.enums.RegistryStatus. Solo SUSPENDED impide ejercer: el
+// resto son señales para que un humano mire.
+enum RegistryStatus {
+  REGISTRY_STATUS_UNSPECIFIED = 0;
+  REGISTRY_STATUS_UNCHECKED = 1;
+  REGISTRY_STATUS_VERIFIED = 2;
+  REGISTRY_STATUS_NOT_FOUND = 3;
+  REGISTRY_STATUS_SUSPENDED = 4;
+  REGISTRY_STATUS_IDENTITY_MISMATCH = 5;
+  REGISTRY_STATUS_POSSIBLE_SANCTION = 6;
+  REGISTRY_STATUS_ERROR = 7;
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
 // CORE MESSAGES
 // ═══════════════════════════════════════════════════════════════════════════
