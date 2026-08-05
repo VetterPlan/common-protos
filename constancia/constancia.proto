@@ -348,9 +348,9 @@ message RequestHumanRequest {
 }
 
 message HandoffResponse {
-  string  case_id           = 1;
-  int32   estimated_wait_s  = 2;
-  bool    accepted          = 3;
+  string           case_id           = 1;
+  optional int32   estimated_wait_s  = 2;
+  bool             accepted          = 3;
 }
 
 message GetHandoffBriefRequest { string case_id = 1; AccessContext access = 2; }
