@@ -194,18 +194,13 @@ class ConstanciaServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def AdminListCases(self, request, context):
-        """La cola del equipo. `ListUserCases` es por titular y no sirve para operar:
-        un admin no tiene casos propios que mirar. Solo admin o sistema.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetTrustMetrics(self, request, context):
-        """El marcador del Sistema de Confianza. Se calcula desde las FILAS, no desde
-        los contadores de Prometheus: esos se reinician con el proceso y no se
-        pueden recalcular ni auditar caso por caso.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -229,13 +224,7 @@ class ConstanciaServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def CloseCase(self, request, context):
-        """Terminar un caso sin resolverlo. El titular retira lo que abrió por error;
-        el equipo cierra lo que ya no lleva a ninguna parte, con motivo.
-
-        Un caso que YA movió plata no se cierra: se resuelve. Cerrarlo borraría del
-        marcador una reparación que sí ocurrió, y el recibo quedaría colgando de un
-        expediente que dice que nunca pasó nada.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
