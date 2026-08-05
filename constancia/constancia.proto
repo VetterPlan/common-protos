@@ -32,31 +32,20 @@ service ConstanciaService {
   rpc OpenCase        (OpenCaseRequest)        returns (CaseResponse);
   rpc GetCase         (GetCaseRequest)         returns (CaseResponse);
   rpc ListUserCases   (ListUserCasesRequest)   returns (ListUserCasesResponse);
-
-  // La cola del equipo. `ListUserCases` es por titular y no sirve para operar:
-  // un admin no tiene casos propios que mirar. Solo admin o sistema.
   rpc AdminListCases  (AdminListCasesRequest)  returns (AdminListCasesResponse);
-
-  // El marcador del Sistema de Confianza. Se calcula desde las FILAS, no desde
-  // los contadores de Prometheus: esos se reinician con el proceso y no se
-  // pueden recalcular ni auditar caso por caso.
   rpc GetTrustMetrics (TrustMetricsRequest)   returns (TrustMetricsResponse);
   rpc SendMessage     (SendMessageRequest)     returns (CaseResponse);
-
   rpc ConfirmPlan     (ConfirmPlanRequest)     returns (CaseResponse);
   rpc AdjustPlan      (AdjustPlanRequest)      returns (CaseResponse);
-
+  rpc CloseCase       (CloseCaseRequest)       returns (CaseResponse);
   rpc RequestHuman    (RequestHumanRequest)    returns (HandoffResponse);
   rpc GetHandoffBrief (GetHandoffBriefRequest) returns (HandoffBrief);
-
   rpc GetOpeningState (GetOpeningStateRequest) returns (OpeningState);
   rpc GetCommitments  (GetCommitmentsRequest)  returns (CommitmentList);
   rpc GetReceipt      (GetReceiptRequest)      returns (Receipt);
   rpc VerifyReceipt   (VerifyReceiptRequest)   returns (VerifyReceiptResponse);
-
   rpc GetMemory       (GetMemoryRequest)       returns (MemoryList);
   rpc ForgetMemory    (ForgetMemoryRequest)    returns (ForgetProof);
-
   rpc IngestSignal    (IngestSignalRequest)    returns (IngestSignalResponse);
 }
 
@@ -233,17 +222,10 @@ message Case {
   google.protobuf.Timestamp  resolved_at    = 18;
   bool                       used_llm       = 19;
   string                     escalation_reason = 20;
-
-  // Solo llega poblado si el incidente está CONFIRMADO. Un incidente en
-  // sospecha existe para ingeniería; mostrarle a alguien "esto le pasa a más
-  // gente, no eres tú" cuando solo le pasa a él es una afirmación falsa.
   Incident                   incident       = 21;
   CaseParty                  party          = 22;
 }
 
-// Con quién habla este expediente. El vet también es cliente de VetterPlan y
-// tiene sus propios casos; un operador que abre un traspaso sin saber de qué
-// parte es va a empezar la conversación equivocada.
 enum CaseParty {
   CASE_PARTY_UNSPECIFIED = 0;
   CASE_PARTY_CLIENT      = 1;
@@ -303,10 +285,6 @@ message TrustMetricsRequest {
 }
 
 message TrustMetricsResponse {
-  // ── Elección voluntaria: el KPI titular ──
-  // Solo entran los casos en que el titular ABRIÓ el expediente y tuvo la
-  // salida al humano delante. `moot` (escalamos nosotros) queda fuera del
-  // ratio a propósito: el usuario no decidió nada.
   int32  stayed              = 1;
   int32  chose_human         = 2;
   int32  moot                = 3;
@@ -331,16 +309,18 @@ message TrustMetricsResponse {
 message AdminListCasesResponse {
   repeated Case cases       = 1;
   int32         total_count = 2;
-
-  // Cuántos esperan a una persona ahora mismo. Es el número que decide si el
-  // equipo tiene que entrar, y se calcula sobre TODO el conjunto, no sobre la
-  // página que se devuelve.
   int32         escalated_count = 3;
 }
 
 message SendMessageRequest {
   string        case_id = 1;
   string        text    = 2;
+  AccessContext access  = 3;
+}
+
+message CloseCaseRequest {
+  string        case_id = 1;
+  string        reason  = 2;
   AccessContext access  = 3;
 }
 

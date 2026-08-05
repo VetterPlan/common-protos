@@ -97,6 +97,11 @@ class ConstanciaServiceStub:
                 request_serializer=constancia_dot_constancia__pb2.AdjustPlanRequest.SerializeToString,
                 response_deserializer=constancia_dot_constancia__pb2.CaseResponse.FromString,
                 _registered_method=True)
+        self.CloseCase = channel.unary_unary(
+                '/constancia.ConstanciaService/CloseCase',
+                request_serializer=constancia_dot_constancia__pb2.CloseCaseRequest.SerializeToString,
+                response_deserializer=constancia_dot_constancia__pb2.CaseResponse.FromString,
+                _registered_method=True)
         self.RequestHuman = channel.unary_unary(
                 '/constancia.ConstanciaService/RequestHuman',
                 request_serializer=constancia_dot_constancia__pb2.RequestHumanRequest.SerializeToString,
@@ -223,6 +228,18 @@ class ConstanciaServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def CloseCase(self, request, context):
+        """Terminar un caso sin resolverlo. El titular retira lo que abrió por error;
+        el equipo cierra lo que ya no lleva a ninguna parte, con motivo.
+
+        Un caso que YA movió plata no se cierra: se resuelve. Cerrarlo borraría del
+        marcador una reparación que sí ocurrió, y el recibo quedaría colgando de un
+        expediente que dice que nunca pasó nada.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def RequestHuman(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -318,6 +335,11 @@ def add_ConstanciaServiceServicer_to_server(servicer, server):
             'AdjustPlan': grpc.unary_unary_rpc_method_handler(
                     servicer.AdjustPlan,
                     request_deserializer=constancia_dot_constancia__pb2.AdjustPlanRequest.FromString,
+                    response_serializer=constancia_dot_constancia__pb2.CaseResponse.SerializeToString,
+            ),
+            'CloseCase': grpc.unary_unary_rpc_method_handler(
+                    servicer.CloseCase,
+                    request_deserializer=constancia_dot_constancia__pb2.CloseCaseRequest.FromString,
                     response_serializer=constancia_dot_constancia__pb2.CaseResponse.SerializeToString,
             ),
             'RequestHuman': grpc.unary_unary_rpc_method_handler(
@@ -604,6 +626,33 @@ class ConstanciaService:
             target,
             '/constancia.ConstanciaService/AdjustPlan',
             constancia_dot_constancia__pb2.AdjustPlanRequest.SerializeToString,
+            constancia_dot_constancia__pb2.CaseResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CloseCase(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/constancia.ConstanciaService/CloseCase',
+            constancia_dot_constancia__pb2.CloseCaseRequest.SerializeToString,
             constancia_dot_constancia__pb2.CaseResponse.FromString,
             options,
             channel_credentials,
