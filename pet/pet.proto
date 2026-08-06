@@ -68,6 +68,11 @@ service PetService {
   // Get allergies for a pet
   rpc GetAllergies (GetAllergiesRequest) returns (AllergiesResponse);
 
+  // El camino de vuelta: `Allergy` ya expone `pet_id`, pero sin esto solo se
+  // podía preguntar por mascota. Con un `allergy_id` en la mano no había forma
+  // de saber de quién es, y `RemoveAllergy` borraba por id sin comprobar dueño.
+  rpc GetAllergy (GetAllergyRequest) returns (AllergyResponse);
+
   // Remove an allergy record
   rpc RemoveAllergy (RemoveAllergyRequest) returns (RemoveAllergyResponse);
 
@@ -346,6 +351,10 @@ message AddAllergyRequest {
 
 message GetAllergiesRequest {
   string pet_id = 1;
+}
+
+message GetAllergyRequest {
+  string allergy_id = 1;
 }
 
 message RemoveAllergyRequest {

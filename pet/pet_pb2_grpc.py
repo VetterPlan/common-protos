@@ -118,6 +118,11 @@ class PetServiceStub:
                 request_serializer=pet_dot_pet__pb2.GetAllergiesRequest.SerializeToString,
                 response_deserializer=pet_dot_pet__pb2.AllergiesResponse.FromString,
                 _registered_method=True)
+        self.GetAllergy = channel.unary_unary(
+                '/pet.PetService/GetAllergy',
+                request_serializer=pet_dot_pet__pb2.GetAllergyRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.AllergyResponse.FromString,
+                _registered_method=True)
         self.RemoveAllergy = channel.unary_unary(
                 '/pet.PetService/RemoveAllergy',
                 request_serializer=pet_dot_pet__pb2.RemoveAllergyRequest.SerializeToString,
@@ -275,6 +280,15 @@ class PetServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetAllergy(self, request, context):
+        """El camino de vuelta: `Allergy` ya expone `pet_id`, pero sin esto solo se
+        podía preguntar por mascota. Con un `allergy_id` en la mano no había forma
+        de saber de quién es, y `RemoveAllergy` borraba por id sin comprobar dueño.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def RemoveAllergy(self, request, context):
         """Remove an allergy record
         """
@@ -402,6 +416,11 @@ def add_PetServiceServicer_to_server(servicer, server):
                     servicer.GetAllergies,
                     request_deserializer=pet_dot_pet__pb2.GetAllergiesRequest.FromString,
                     response_serializer=pet_dot_pet__pb2.AllergiesResponse.SerializeToString,
+            ),
+            'GetAllergy': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetAllergy,
+                    request_deserializer=pet_dot_pet__pb2.GetAllergyRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.AllergyResponse.SerializeToString,
             ),
             'RemoveAllergy': grpc.unary_unary_rpc_method_handler(
                     servicer.RemoveAllergy,
@@ -848,6 +867,33 @@ class PetService:
             '/pet.PetService/GetAllergies',
             pet_dot_pet__pb2.GetAllergiesRequest.SerializeToString,
             pet_dot_pet__pb2.AllergiesResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetAllergy(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/pet.PetService/GetAllergy',
+            pet_dot_pet__pb2.GetAllergyRequest.SerializeToString,
+            pet_dot_pet__pb2.AllergyResponse.FromString,
             options,
             channel_credentials,
             insecure,
