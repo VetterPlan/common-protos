@@ -181,6 +181,11 @@ class AppointmentServiceStub:
                 request_serializer=appointment_dot_appointment__pb2.ListCompletedAppointmentsRequest.SerializeToString,
                 response_deserializer=appointment_dot_appointment__pb2.ListCompletedAppointmentsResponse.FromString,
                 _registered_method=True)
+        self.ListVetCancellations = channel.unary_unary(
+                '/appointment.AppointmentService/ListVetCancellations',
+                request_serializer=appointment_dot_appointment__pb2.ListVetCancellationsRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.ListVetCancellationsResponse.FromString,
+                _registered_method=True)
 
 
 class AppointmentServiceServicer:
@@ -427,6 +432,17 @@ class AppointmentServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ListVetCancellations(self, request, context):
+        """Interno (rating-service): el equivalente del anterior para las
+        cancelaciones del vet. Sin esto, una señal perdida deja la cancelación
+        fuera del ledger para siempre y la reputación se calcula sobre hechos
+        incompletos — la autoridad conoce el hecho y el contrato no dejaba
+        preguntarlo.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AppointmentServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -564,6 +580,11 @@ def add_AppointmentServiceServicer_to_server(servicer, server):
                     servicer.ListCompletedAppointments,
                     request_deserializer=appointment_dot_appointment__pb2.ListCompletedAppointmentsRequest.FromString,
                     response_serializer=appointment_dot_appointment__pb2.ListCompletedAppointmentsResponse.SerializeToString,
+            ),
+            'ListVetCancellations': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListVetCancellations,
+                    request_deserializer=appointment_dot_appointment__pb2.ListVetCancellationsRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.ListVetCancellationsResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -1307,6 +1328,33 @@ class AppointmentService:
             '/appointment.AppointmentService/ListCompletedAppointments',
             appointment_dot_appointment__pb2.ListCompletedAppointmentsRequest.SerializeToString,
             appointment_dot_appointment__pb2.ListCompletedAppointmentsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListVetCancellations(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/ListVetCancellations',
+            appointment_dot_appointment__pb2.ListVetCancellationsRequest.SerializeToString,
+            appointment_dot_appointment__pb2.ListVetCancellationsResponse.FromString,
             options,
             channel_credentials,
             insecure,

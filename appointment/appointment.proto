@@ -138,6 +138,13 @@ service AppointmentService {
   // un suscriptor caído pierde el desenlace y con él el denominador de la tasa
   // de respuesta. Esto es el camino de reconciliación.
   rpc ListCompletedAppointments (ListCompletedAppointmentsRequest) returns (ListCompletedAppointmentsResponse);
+
+  // Interno (rating-service): el equivalente del anterior para las
+  // cancelaciones del vet. Sin esto, una señal perdida deja la cancelación
+  // fuera del ledger para siempre y la reputación se calcula sobre hechos
+  // incompletos — la autoridad conoce el hecho y el contrato no dejaba
+  // preguntarlo.
+  rpc ListVetCancellations (ListVetCancellationsRequest) returns (ListVetCancellationsResponse);
 }
 
 message ListCompletedAppointmentsRequest {
@@ -160,6 +167,33 @@ message CompletedAppointmentSummary {
 
 message ListCompletedAppointmentsResponse {
   repeated CompletedAppointmentSummary appointments = 1;
+  int32 total_count = 2;
+}
+
+message ListVetCancellationsRequest {
+  google.protobuf.Timestamp since = 1;
+  google.protobuf.Timestamp until = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+  // Vacío = todos los vets. Con valor responde "¿qué canceló ESTE vet?".
+  string vet_profile_id = 5;
+}
+
+message VetCancellationSummary {
+  string appointment_id = 1;
+  string group_id = 2;
+  string vet_profile_id = 3;
+  string service_type = 4;
+  bool   urgent = 5;
+  string cancellation_reason = 6;
+  // Estado desde el que se canceló. Es lo que distingue plantar al cliente en
+  // la puerta de cancelar el día antes, y viaja en la señal.
+  string from_status = 7;
+  google.protobuf.Timestamp cancelled_at = 8;
+}
+
+message ListVetCancellationsResponse {
+  repeated VetCancellationSummary cancellations = 1;
   int32 total_count = 2;
 }
 

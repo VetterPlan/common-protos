@@ -633,6 +633,7 @@ message CreateWalletRequest {
 message GetWalletRequest {
   string owner_id = 1;
   WalletOwnerType owner_type = 2;
+  string wallet_id = 3;
 }
 
 message GetWalletTransactionsRequest {
