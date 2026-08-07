@@ -90,6 +90,9 @@ message ValidateTokenResponse {
   repeated string roles = 5;  // CHANGED: from string to repeated string
   string user_type = 6;       // NEW: "client", "vet", "both", or "admin"
   bool is_email_verified = 7; // NEW: renamed from is_verified
+  // E1-A3: identificador del access token. Es la clave con la que la gateway
+  // consulta la lista de revocación; sin él ese camino de validación es ciego.
+  string jti = 8;
 }
 
 message RequestPasswordResetRequest {
