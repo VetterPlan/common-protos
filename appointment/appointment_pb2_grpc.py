@@ -111,6 +111,11 @@ class AppointmentServiceStub:
                 request_serializer=appointment_dot_appointment__pb2.GetActivePetEngagementsRequest.SerializeToString,
                 response_deserializer=appointment_dot_appointment__pb2.GetActivePetEngagementsResponse.FromString,
                 _registered_method=True)
+        self.GetActiveClientEngagements = channel.unary_unary(
+                '/appointment.AppointmentService/GetActiveClientEngagements',
+                request_serializer=appointment_dot_appointment__pb2.GetActiveClientEngagementsRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.GetActiveClientEngagementsResponse.FromString,
+                _registered_method=True)
         self.UpdateVetLocation = channel.unary_unary(
                 '/appointment.AppointmentService/UpdateVetLocation',
                 request_serializer=appointment_dot_appointment__pb2.UpdateVetLocationRequest.SerializeToString,
@@ -307,6 +312,19 @@ class AppointmentServiceServicer:
         "Activo" = el conjunto declarado por AppointmentStatus.is_active. La
         unificacion de las demas listas de estados activos queda fuera de A1.2
         (ver docs/PLAN_E1_A1_EJECUCION.md).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetActiveClientEngagements(self, request, context):
+        """A1.3-ClientProfile — hechos de engagement activo por CLIENTE. Hermano del de
+        mascotas y NO derivable de el: aquel responde "que citas activas tocan estas
+        mascotas"; este, "tiene este vet cita activa con este cliente". En la agenda,
+        `client` se resuelve por clientProfileId sin mencionar mascota alguna.
+
+        Responde HECHOS. No es un `can_read_client()`: quien puede ver que lo decide
+        la gateway.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -529,6 +547,11 @@ def add_AppointmentServiceServicer_to_server(servicer, server):
                     servicer.GetActivePetEngagements,
                     request_deserializer=appointment_dot_appointment__pb2.GetActivePetEngagementsRequest.FromString,
                     response_serializer=appointment_dot_appointment__pb2.GetActivePetEngagementsResponse.SerializeToString,
+            ),
+            'GetActiveClientEngagements': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetActiveClientEngagements,
+                    request_deserializer=appointment_dot_appointment__pb2.GetActiveClientEngagementsRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.GetActiveClientEngagementsResponse.SerializeToString,
             ),
             'UpdateVetLocation': grpc.unary_unary_rpc_method_handler(
                     servicer.UpdateVetLocation,
@@ -974,6 +997,33 @@ class AppointmentService:
             '/appointment.AppointmentService/GetActivePetEngagements',
             appointment_dot_appointment__pb2.GetActivePetEngagementsRequest.SerializeToString,
             appointment_dot_appointment__pb2.GetActivePetEngagementsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetActiveClientEngagements(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/GetActiveClientEngagements',
+            appointment_dot_appointment__pb2.GetActiveClientEngagementsRequest.SerializeToString,
+            appointment_dot_appointment__pb2.GetActiveClientEngagementsResponse.FromString,
             options,
             channel_credentials,
             insecure,

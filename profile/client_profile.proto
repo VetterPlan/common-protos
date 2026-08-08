@@ -18,6 +18,9 @@ service ClientProfileService {
   rpc GetUserProfiles (GetUserProfilesRequest) returns (GetUserProfilesResponse);
 
   // ─── Admin: list all client profiles ───
+  // A1.3 — lote con autorizacion POR ELEMENTO y proyeccion POR NIVEL.
+  rpc GetClientProfilesByIds (GetClientProfilesByIdsRequest) returns (GetClientProfilesByIdsResponse);
+
   rpc ListClientProfiles (ListClientProfilesRequest) returns (ListClientProfilesResponse);
 
   // ─── Avatar Upload ───
@@ -165,6 +168,17 @@ message GenerateAvatarUploadUrlResponse {
 // ============================================================================
 // ADMIN LIST
 // ============================================================================
+
+message GetClientProfilesByIdsRequest {
+  repeated string client_profile_ids = 1;   // techo de 100
+}
+
+message GetClientProfilesByIdsResponse {
+  // SOLO los autorizados, cada uno con la proyeccion de SU nivel. La ausencia no
+  // distingue inexistente de prohibido: un mapa de estado por id seria un
+  // oraculo de enumeracion.
+  repeated ClientProfile profiles = 1;
+}
 
 message ListClientProfilesRequest {
   optional int32 limit = 1;    // default 50, max 200

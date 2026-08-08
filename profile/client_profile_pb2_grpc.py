@@ -63,6 +63,11 @@ class ClientProfileServiceStub:
                 request_serializer=profile_dot_client__profile__pb2.GetUserProfilesRequest.SerializeToString,
                 response_deserializer=profile_dot_client__profile__pb2.GetUserProfilesResponse.FromString,
                 _registered_method=True)
+        self.GetClientProfilesByIds = channel.unary_unary(
+                '/profile.ClientProfileService/GetClientProfilesByIds',
+                request_serializer=profile_dot_client__profile__pb2.GetClientProfilesByIdsRequest.SerializeToString,
+                response_deserializer=profile_dot_client__profile__pb2.GetClientProfilesByIdsResponse.FromString,
+                _registered_method=True)
         self.ListClientProfiles = channel.unary_unary(
                 '/profile.ClientProfileService/ListClientProfiles',
                 request_serializer=profile_dot_client__profile__pb2.ListClientProfilesRequest.SerializeToString,
@@ -118,9 +123,16 @@ class ClientProfileServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def ListClientProfiles(self, request, context):
+    def GetClientProfilesByIds(self, request, context):
         """─── Admin: list all client profiles ───
+        A1.3 — lote con autorizacion POR ELEMENTO y proyeccion POR NIVEL.
         """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListClientProfiles(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -167,6 +179,11 @@ def add_ClientProfileServiceServicer_to_server(servicer, server):
                     servicer.GetUserProfiles,
                     request_deserializer=profile_dot_client__profile__pb2.GetUserProfilesRequest.FromString,
                     response_serializer=profile_dot_client__profile__pb2.GetUserProfilesResponse.SerializeToString,
+            ),
+            'GetClientProfilesByIds': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetClientProfilesByIds,
+                    request_deserializer=profile_dot_client__profile__pb2.GetClientProfilesByIdsRequest.FromString,
+                    response_serializer=profile_dot_client__profile__pb2.GetClientProfilesByIdsResponse.SerializeToString,
             ),
             'ListClientProfiles': grpc.unary_unary_rpc_method_handler(
                     servicer.ListClientProfiles,
@@ -323,6 +340,33 @@ class ClientProfileService:
             '/profile.ClientProfileService/GetUserProfiles',
             profile_dot_client__profile__pb2.GetUserProfilesRequest.SerializeToString,
             profile_dot_client__profile__pb2.GetUserProfilesResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetClientProfilesByIds(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/profile.ClientProfileService/GetClientProfilesByIds',
+            profile_dot_client__profile__pb2.GetClientProfilesByIdsRequest.SerializeToString,
+            profile_dot_client__profile__pb2.GetClientProfilesByIdsResponse.FromString,
             options,
             channel_credentials,
             insecure,

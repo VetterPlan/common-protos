@@ -70,6 +70,15 @@ service AppointmentService {
   // (ver docs/PLAN_E1_A1_EJECUCION.md).
   rpc GetActivePetEngagements (GetActivePetEngagementsRequest) returns (GetActivePetEngagementsResponse);
 
+  // A1.3-ClientProfile — hechos de engagement activo por CLIENTE. Hermano del de
+  // mascotas y NO derivable de el: aquel responde "que citas activas tocan estas
+  // mascotas"; este, "tiene este vet cita activa con este cliente". En la agenda,
+  // `client` se resuelve por clientProfileId sin mencionar mascota alguna.
+  //
+  // Responde HECHOS. No es un `can_read_client()`: quien puede ver que lo decide
+  // la gateway.
+  rpc GetActiveClientEngagements (GetActiveClientEngagementsRequest) returns (GetActiveClientEngagementsResponse);
+
   // ─── REAL-TIME LOCATION ───
 
   // Vet pushes current GPS position (called ~every 10s while EN_ROUTE).
@@ -635,6 +644,21 @@ message GetPetAppointmentHistoryRequest {
 }
 
 // ─── A1.2 · Engagement activo por mascota ───
+
+message GetActiveClientEngagementsRequest {
+  repeated string client_profile_ids = 1;   // techo de 100
+}
+
+message GetActiveClientEngagementsResponse {
+  repeated ClientEngagement engagements = 1;
+}
+
+message ClientEngagement {
+  string client_profile_id = 1;
+  string appointment_id = 2;
+  string vet_profile_id = 3;   // "" => REQUESTED abierta; engagement ABIERTO, no autorizacion
+  string status = 4;           // siempre uno de AppointmentStatus.is_active
+}
 
 message GetActivePetEngagementsRequest {
   repeated string pet_ids = 1;        // techo de 100; INVALID_ARGUMENT si se excede
