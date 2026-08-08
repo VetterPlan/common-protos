@@ -60,6 +60,16 @@ service AppointmentService {
   // Get pet's appointment history (for follow-up recommendations)
   rpc GetPetAppointmentHistory (GetPetAppointmentHistoryRequest) returns (GetPetAppointmentHistoryResponse);
 
+  // A1.2 — Hechos de engagement activo por mascota. NO decide autorizacion: la
+  // gateway lee estos hechos y aplica la politica. Batch obligatorio: la agenda
+  // del vet resuelve ~90 mascotas por pantalla y un RPC unario recrearia el N+1
+  // que E1-A1 existe para eliminar, esta vez en la ruta de autorizacion.
+  //
+  // "Activo" = el conjunto declarado por AppointmentStatus.is_active. La
+  // unificacion de las demas listas de estados activos queda fuera de A1.2
+  // (ver docs/PLAN_E1_A1_EJECUCION.md).
+  rpc GetActivePetEngagements (GetActivePetEngagementsRequest) returns (GetActivePetEngagementsResponse);
+
   // ─── REAL-TIME LOCATION ───
 
   // Vet pushes current GPS position (called ~every 10s while EN_ROUTE).
@@ -622,6 +632,34 @@ message SlotVetPreview {
 message GetPetAppointmentHistoryRequest {
   string pet_id = 1;
   int32 days_back = 2;                // default 90
+}
+
+// ─── A1.2 · Engagement activo por mascota ───
+
+message GetActivePetEngagementsRequest {
+  repeated string pet_ids = 1;        // techo de 100; INVALID_ARGUMENT si se excede
+}
+
+message GetActivePetEngagementsResponse {
+  repeated PetEngagement engagements = 1;   // solo los que tienen engagement activo
+}
+
+message PetEngagement {
+  string pet_id = 1;
+  string appointment_id = 2;
+
+  // Vacio  => la cita esta REQUESTED y abierta a CUALQUIER vet (broadcast).
+  // Es inequivoco: los cuatro caminos que anulan vet_profile_id terminan en
+  // REQUESTED, y PENDING_PAYMENT_AUTH solo se alcanza desde ACCEPTED. Hay un
+  // test que lo impone (test_invariantes_de_engagement.py); por eso no existe
+  // un campo `open_for_any_vet`.
+  string vet_profile_id = 3;
+
+  string status = 4;                  // siempre uno de AppointmentStatus.is_active
+
+  // Una mascota puede tener VARIOS engagements activos, con vets distintos: el
+  // unico control de solape mira la agenda del vet, no la de la mascota. Cada
+  // engagement autoriza de forma independiente.
 }
 
 message GetPetAppointmentHistoryResponse {

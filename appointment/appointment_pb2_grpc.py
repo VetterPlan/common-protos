@@ -106,6 +106,11 @@ class AppointmentServiceStub:
                 request_serializer=appointment_dot_appointment__pb2.GetPetAppointmentHistoryRequest.SerializeToString,
                 response_deserializer=appointment_dot_appointment__pb2.GetPetAppointmentHistoryResponse.FromString,
                 _registered_method=True)
+        self.GetActivePetEngagements = channel.unary_unary(
+                '/appointment.AppointmentService/GetActivePetEngagements',
+                request_serializer=appointment_dot_appointment__pb2.GetActivePetEngagementsRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.GetActivePetEngagementsResponse.FromString,
+                _registered_method=True)
         self.UpdateVetLocation = channel.unary_unary(
                 '/appointment.AppointmentService/UpdateVetLocation',
                 request_serializer=appointment_dot_appointment__pb2.UpdateVetLocationRequest.SerializeToString,
@@ -288,6 +293,20 @@ class AppointmentServiceServicer:
 
     def GetPetAppointmentHistory(self, request, context):
         """Get pet's appointment history (for follow-up recommendations)
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetActivePetEngagements(self, request, context):
+        """A1.2 — Hechos de engagement activo por mascota. NO decide autorizacion: la
+        gateway lee estos hechos y aplica la politica. Batch obligatorio: la agenda
+        del vet resuelve ~90 mascotas por pantalla y un RPC unario recrearia el N+1
+        que E1-A1 existe para eliminar, esta vez en la ruta de autorizacion.
+
+        "Activo" = el conjunto declarado por AppointmentStatus.is_active. La
+        unificacion de las demas listas de estados activos queda fuera de A1.2
+        (ver docs/PLAN_E1_A1_EJECUCION.md).
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -505,6 +524,11 @@ def add_AppointmentServiceServicer_to_server(servicer, server):
                     servicer.GetPetAppointmentHistory,
                     request_deserializer=appointment_dot_appointment__pb2.GetPetAppointmentHistoryRequest.FromString,
                     response_serializer=appointment_dot_appointment__pb2.GetPetAppointmentHistoryResponse.SerializeToString,
+            ),
+            'GetActivePetEngagements': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetActivePetEngagements,
+                    request_deserializer=appointment_dot_appointment__pb2.GetActivePetEngagementsRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.GetActivePetEngagementsResponse.SerializeToString,
             ),
             'UpdateVetLocation': grpc.unary_unary_rpc_method_handler(
                     servicer.UpdateVetLocation,
@@ -923,6 +947,33 @@ class AppointmentService:
             '/appointment.AppointmentService/GetPetAppointmentHistory',
             appointment_dot_appointment__pb2.GetPetAppointmentHistoryRequest.SerializeToString,
             appointment_dot_appointment__pb2.GetPetAppointmentHistoryResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetActivePetEngagements(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/GetActivePetEngagements',
+            appointment_dot_appointment__pb2.GetActivePetEngagementsRequest.SerializeToString,
+            appointment_dot_appointment__pb2.GetActivePetEngagementsResponse.FromString,
             options,
             channel_credentials,
             insecure,
