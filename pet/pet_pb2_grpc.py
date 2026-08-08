@@ -58,6 +58,11 @@ class PetServiceStub:
                 request_serializer=pet_dot_pet__pb2.GetPetsByOwnerRequest.SerializeToString,
                 response_deserializer=pet_dot_pet__pb2.PetsResponse.FromString,
                 _registered_method=True)
+        self.GetPetsByIds = channel.unary_unary(
+                '/pet.PetService/GetPetsByIds',
+                request_serializer=pet_dot_pet__pb2.GetPetsByIdsRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.GetPetsByIdsResponse.FromString,
+                _registered_method=True)
         self.UpdatePet = channel.unary_unary(
                 '/pet.PetService/UpdatePet',
                 request_serializer=pet_dot_pet__pb2.UpdatePetRequest.SerializeToString,
@@ -183,6 +188,19 @@ class PetServiceServicer:
 
     def GetPetsByOwner(self, request, context):
         """Get all pets for a client profile
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetPetsByIds(self, request, context):
+        """A1.3 — lectura por lote. Autoriza POR ELEMENTO con la misma politica del
+        unario (`assert_owns_pet`, incluida la rama de engagement de A1.2).
+
+        Los ids no autorizados NO aparecen en la respuesta, y no se distingue si
+        faltan por inexistentes, prohibidos o filtrados: un mapa de estado por id
+        convertiria esto en un oraculo de enumeracion, que es justo lo que un lote
+        de cien vuelve barato.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -356,6 +374,11 @@ def add_PetServiceServicer_to_server(servicer, server):
                     servicer.GetPetsByOwner,
                     request_deserializer=pet_dot_pet__pb2.GetPetsByOwnerRequest.FromString,
                     response_serializer=pet_dot_pet__pb2.PetsResponse.SerializeToString,
+            ),
+            'GetPetsByIds': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetPetsByIds,
+                    request_deserializer=pet_dot_pet__pb2.GetPetsByIdsRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.GetPetsByIdsResponse.SerializeToString,
             ),
             'UpdatePet': grpc.unary_unary_rpc_method_handler(
                     servicer.UpdatePet,
@@ -543,6 +566,33 @@ class PetService:
             '/pet.PetService/GetPetsByOwner',
             pet_dot_pet__pb2.GetPetsByOwnerRequest.SerializeToString,
             pet_dot_pet__pb2.PetsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetPetsByIds(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/pet.PetService/GetPetsByIds',
+            pet_dot_pet__pb2.GetPetsByIdsRequest.SerializeToString,
+            pet_dot_pet__pb2.GetPetsByIdsResponse.FromString,
             options,
             channel_credentials,
             insecure,

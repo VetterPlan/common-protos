@@ -24,6 +24,15 @@ service PetService {
   // Get all pets for a client profile
   rpc GetPetsByOwner (GetPetsByOwnerRequest) returns (PetsResponse);
 
+  // A1.3 — lectura por lote. Autoriza POR ELEMENTO con la misma politica del
+  // unario (`assert_owns_pet`, incluida la rama de engagement de A1.2).
+  //
+  // Los ids no autorizados NO aparecen en la respuesta, y no se distingue si
+  // faltan por inexistentes, prohibidos o filtrados: un mapa de estado por id
+  // convertiria esto en un oraculo de enumeracion, que es justo lo que un lote
+  // de cien vuelve barato.
+  rpc GetPetsByIds (GetPetsByIdsRequest) returns (GetPetsByIdsResponse);
+
   // Update pet data
   rpc UpdatePet (UpdatePetRequest) returns (PetResponse);
 
@@ -236,6 +245,14 @@ message CreatePetRequest {
   string notes = 11;
   string breed_id = 12;          // DOG/CAT: required catalog breed ID (e.g. "DOG_LABRADOR_RETRIEVER")
   string variety_id = 13;        // DOG/CAT: optional catalog variety ID
+}
+
+message GetPetsByIdsRequest {
+  repeated string pet_ids = 1;   // techo de 100; INVALID_ARGUMENT si se excede
+}
+
+message GetPetsByIdsResponse {
+  repeated Pet pets = 1;         // SOLO los autorizados; ausencia indistinguible
 }
 
 message GetPetRequest {
