@@ -48,6 +48,10 @@ service VetProfileService {
   rpc SetVetRating (SetVetRatingRequest) returns (UpdateVetRatingResponse);
 
   // ─── Admin: list all vet profiles ───
+  // A1.3 — lote con autorizacion POR ELEMENTO y proyeccion POR NIVEL. Un mismo
+  // lote puede producir OWNER, ADMIN, PUBLIC y NONE a la vez.
+  rpc GetVetProfilesByIds (GetVetProfilesByIdsRequest) returns (GetVetProfilesByIdsResponse);
+
   rpc ListVetProfiles (ListVetProfilesRequest) returns (ListVetProfilesResponse);
 
   // ─── Avatar Upload ───
@@ -492,6 +496,16 @@ message UpdateVetRatingResponse {
 // ============================================================================
 // ADMIN LIST
 // ============================================================================
+
+message GetVetProfilesByIdsRequest {
+  repeated string vet_profile_ids = 1;   // techo de 100
+}
+
+message GetVetProfilesByIdsResponse {
+  // SOLO los autorizados, cada uno con la proyeccion de SU nivel
+  // (OWNER / ADMIN / PUBLIC). La ausencia no distingue inexistente de prohibido.
+  repeated VetProfile profiles = 1;
+}
 
 message ListVetProfilesRequest {
   optional int32 limit = 1;          // default 50, max 200
