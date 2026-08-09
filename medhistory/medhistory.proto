@@ -632,8 +632,12 @@ message UpdateConsultationRecordRequest {
   string record_id = 1;
   repeated FieldPatch patches = 2;
   // Concurrencia optimista: si no coincide con la revisión actual → ABORTED.
-  // 0 = forzar (último gana), solo para autosave del propio vet.
-  int64 expected_revision = 3;
+  // Omitirlo = forzar (último gana), solo para autosave del propio vet.
+  // `optional` porque un registro recién creado tiene revision=0: sin presencia,
+  // el cliente que devuelve la revisión que leyó pedía forzado sin saberlo, y
+  // justo en la primera edición, que es cuando el autosave y la revisión de lo
+  // sugerido por la IA se pisan.
+  optional int64 expected_revision = 3;
   AccessContext access = 4;
 }
 
