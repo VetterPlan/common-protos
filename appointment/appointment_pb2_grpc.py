@@ -71,6 +71,11 @@ class AppointmentServiceStub:
                 request_serializer=appointment_dot_appointment__pb2.CancelAppointmentRequest.SerializeToString,
                 response_deserializer=appointment_dot_appointment__pb2.AppointmentResponse.FromString,
                 _registered_method=True)
+        self.AbortAppointment = channel.unary_unary(
+                '/appointment.AppointmentService/AbortAppointment',
+                request_serializer=appointment_dot_appointment__pb2.AbortAppointmentRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+                _registered_method=True)
         self.GetAppointment = channel.unary_unary(
                 '/appointment.AppointmentService/GetAppointment',
                 request_serializer=appointment_dot_appointment__pb2.GetAppointmentRequest.SerializeToString,
@@ -243,6 +248,13 @@ class AppointmentServiceServicer:
 
     def CancelAppointment(self, request, context):
         """Cancel an appointment (client, vet, or system)
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def AbortAppointment(self, request, context):
+        """Abort a consultation already under way (IN_PROGRESS -> CANCELLED)
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -506,6 +518,11 @@ def add_AppointmentServiceServicer_to_server(servicer, server):
             'CancelAppointment': grpc.unary_unary_rpc_method_handler(
                     servicer.CancelAppointment,
                     request_deserializer=appointment_dot_appointment__pb2.CancelAppointmentRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.AppointmentResponse.SerializeToString,
+            ),
+            'AbortAppointment': grpc.unary_unary_rpc_method_handler(
+                    servicer.AbortAppointment,
+                    request_deserializer=appointment_dot_appointment__pb2.AbortAppointmentRequest.FromString,
                     response_serializer=appointment_dot_appointment__pb2.AppointmentResponse.SerializeToString,
             ),
             'GetAppointment': grpc.unary_unary_rpc_method_handler(
@@ -780,6 +797,33 @@ class AppointmentService:
             target,
             '/appointment.AppointmentService/CancelAppointment',
             appointment_dot_appointment__pb2.CancelAppointmentRequest.SerializeToString,
+            appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def AbortAppointment(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/AbortAppointment',
+            appointment_dot_appointment__pb2.AbortAppointmentRequest.SerializeToString,
             appointment_dot_appointment__pb2.AppointmentResponse.FromString,
             options,
             channel_credentials,

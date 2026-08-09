@@ -90,6 +90,11 @@ class MedHistoryServiceStub:
                 request_serializer=medhistory_dot_medhistory__pb2.MarkPendingFinalizationRequest.SerializeToString,
                 response_deserializer=medhistory_dot_medhistory__pb2.ConsultationRecordResponse.FromString,
                 _registered_method=True)
+        self.AbandonConsultationRecord = channel.unary_unary(
+                '/medhistory.MedHistoryService/AbandonConsultationRecord',
+                request_serializer=medhistory_dot_medhistory__pb2.AbandonConsultationRecordRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.ConsultationRecordResponse.FromString,
+                _registered_method=True)
         self.FinalizeConsultationRecord = channel.unary_unary(
                 '/medhistory.MedHistoryService/FinalizeConsultationRecord',
                 request_serializer=medhistory_dot_medhistory__pb2.FinalizeConsultationRecordRequest.SerializeToString,
@@ -277,6 +282,15 @@ class MedHistoryServiceServicer:
         """Llamado por appointment-service cuando la cita pasa a COMPLETED.
         Mueve el registro a PENDING_FINALIZATION y arranca la ventana de 24-48h.
         Exige solo el mínimo (registro iniciado) para no trabar el cobro.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def AbandonConsultationRecord(self, request, context):
+        """Llamado por appointment-service cuando la cita se aborta desde IN_PROGRESS.
+        Lleva el registro a ABANDONED, que es terminal: sin él quedaría en DRAFT,
+        vivo en los pendientes de un vet que ya no puede escribirlo.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -497,6 +511,11 @@ def add_MedHistoryServiceServicer_to_server(servicer, server):
             'MarkPendingFinalization': grpc.unary_unary_rpc_method_handler(
                     servicer.MarkPendingFinalization,
                     request_deserializer=medhistory_dot_medhistory__pb2.MarkPendingFinalizationRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.ConsultationRecordResponse.SerializeToString,
+            ),
+            'AbandonConsultationRecord': grpc.unary_unary_rpc_method_handler(
+                    servicer.AbandonConsultationRecord,
+                    request_deserializer=medhistory_dot_medhistory__pb2.AbandonConsultationRecordRequest.FromString,
                     response_serializer=medhistory_dot_medhistory__pb2.ConsultationRecordResponse.SerializeToString,
             ),
             'FinalizeConsultationRecord': grpc.unary_unary_rpc_method_handler(
@@ -814,6 +833,33 @@ class MedHistoryService:
             target,
             '/medhistory.MedHistoryService/MarkPendingFinalization',
             medhistory_dot_medhistory__pb2.MarkPendingFinalizationRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.ConsultationRecordResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def AbandonConsultationRecord(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/AbandonConsultationRecord',
+            medhistory_dot_medhistory__pb2.AbandonConsultationRecordRequest.SerializeToString,
             medhistory_dot_medhistory__pb2.ConsultationRecordResponse.FromString,
             options,
             channel_credentials,

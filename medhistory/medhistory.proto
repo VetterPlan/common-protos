@@ -61,6 +61,11 @@ service MedHistoryService {
   // Exige solo el mínimo (registro iniciado) para no trabar el cobro.
   rpc MarkPendingFinalization (MarkPendingFinalizationRequest) returns (ConsultationRecordResponse);
 
+  // Llamado por appointment-service cuando la cita se aborta desde IN_PROGRESS.
+  // Lleva el registro a ABANDONED, que es terminal: sin él quedaría en DRAFT,
+  // vivo en los pendientes de un vet que ya no puede escribirlo.
+  rpc AbandonConsultationRecord (AbandonConsultationRecordRequest) returns (ConsultationRecordResponse);
+
   // Valida los bloques requeridos de la receta, dispara los side-effects vía
   // outbox transaccional y bloquea el registro.
   rpc FinalizeConsultationRecord (FinalizeConsultationRecordRequest) returns (FinalizeConsultationRecordResponse);
@@ -168,6 +173,7 @@ enum ConsultationStatus {
   CONSULTATION_STATUS_PENDING_FINALIZATION = 2;   // Cita COMPLETED, ventana 24-48h
   CONSULTATION_STATUS_FINALIZED = 3;              // Bloqueado, side-effects disparados
   CONSULTATION_STATUS_AMENDED = 4;                // Finalizado + al menos una enmienda
+  CONSULTATION_STATUS_ABANDONED = 5;              // La cita se abortó: terminal, fuera de pendientes
 }
 
 // Espejo de appointment.ServiceType — los protos son autocontenidos (sin imports
@@ -643,6 +649,12 @@ message MarkPendingFinalizationRequest {
   // Uno de los dos. appointment_id es el que usa appointment-service.
   string record_id = 1;
   string appointment_id = 2;
+}
+
+message AbandonConsultationRecordRequest {
+  string record_id = 1;
+  string appointment_id = 2;
+  string reason_details = 3;
 }
 
 message FinalizeConsultationRecordRequest {

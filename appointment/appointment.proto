@@ -33,6 +33,9 @@ service AppointmentService {
   // Cancel an appointment (client, vet, or system)
   rpc CancelAppointment (CancelAppointmentRequest) returns (AppointmentResponse);
 
+  // Abort a consultation already under way (IN_PROGRESS -> CANCELLED)
+  rpc AbortAppointment (AbortAppointmentRequest) returns (AppointmentResponse);
+
   // ─── QUERIES ───
 
   // Get a single appointment by ID
@@ -283,6 +286,8 @@ enum StatusChangeReason {
   STATUS_CHANGE_REASON_CONSENT_REFUSED = 19;
   STATUS_CHANGE_REASON_PAYMENT_DECLINED = 20;
   STATUS_CHANGE_REASON_VET_REASSIGNMENT = 21;       // Se libera al vet; la cita sigue viva
+  STATUS_CHANGE_REASON_VET_ABORTED = 22;            // El vet interrumpe la consulta empezada
+  STATUS_CHANGE_REASON_CLIENT_ABORTED = 23;         // El cliente interrumpe la consulta empezada
 }
 
 enum UrgencyLevel {
@@ -495,6 +500,15 @@ message CancelAppointmentRequest {
   CancellationReason reason = 2;
   string reason_details = 3;
   string cancelled_by = 4;            // user_id or "SYSTEM"
+}
+
+// Quien aborta sale del JWT, nunca de la peticion: de el cuelga la politica de
+// cobro. `reason_details` es obligatorio — un aborto sin explicacion no es
+// auditable.
+message AbortAppointmentRequest {
+  string appointment_id = 1;
+  CancellationReason reason = 2;
+  string reason_details = 3;
 }
 
 // ─── Queries ───
