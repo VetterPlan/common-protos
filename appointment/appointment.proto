@@ -485,9 +485,12 @@ message UpdateAppointmentStatusRequest {
   // Optional fields for specific transitions
   string vet_notes = 6;
   double final_price = 7;
-  // Vet current location — used for EN_ROUTE ETA calculation via GetLiveETA
-  double vet_lat = 8;
-  double vet_lng = 9;
+  // Vet current location — ETA en EN_ROUTE, geocerca en ARRIVED.
+  // `optional` porque 0.0 es una coordenada valida y el default de proto3 es
+  // 0.0: sin presencia no se puede distinguir "no la mando" de "mando cero", y
+  // la geocerca necesita esa diferencia para no rechazar por lo que no sabe.
+  optional double vet_lat = 8;
+  optional double vet_lng = 9;
 }
 
 message ConfirmArrivalRequest {
