@@ -88,6 +88,11 @@ class PaymentServiceStub:
                 request_serializer=payment_dot_payment__pb2.ChargeVetCancellationFeeRequest.SerializeToString,
                 response_deserializer=payment_dot_payment__pb2.PaymentResponse.FromString,
                 _registered_method=True)
+        self.QuoteCancellationFee = channel.unary_unary(
+                '/payment.PaymentService/QuoteCancellationFee',
+                request_serializer=payment_dot_payment__pb2.QuoteCancellationFeeRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.QuoteCancellationFeeResponse.FromString,
+                _registered_method=True)
         self.AddTip = channel.unary_unary(
                 '/payment.PaymentService/AddTip',
                 request_serializer=payment_dot_payment__pb2.AddTipRequest.SerializeToString,
@@ -351,6 +356,19 @@ class PaymentServiceServicer:
 
     def ChargeVetCancellationFee(self, request, context):
         """Charge 10% cancellation fee to vet wallet when vet cancels from ACCEPTED/EN_ROUTE.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def QuoteCancellationFee(self, request, context):
+        """Cuánto costaría cobrar ese motivo, SIN cobrar nada. Existe para que el
+        cliente pueda ver el coste antes de confirmar una cancelación: la política
+        ya cobraba y no había forma de anunciarlo.
+
+        Los porcentajes viven aquí, junto a la base que los aplica (E1-A8), y por
+        eso la cotización también: duplicarlos en appointment los dejaría derivar.
+        No toca ninguna fila y no necesita idempotency_key.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -685,6 +703,11 @@ def add_PaymentServiceServicer_to_server(servicer, server):
                     servicer.ChargeVetCancellationFee,
                     request_deserializer=payment_dot_payment__pb2.ChargeVetCancellationFeeRequest.FromString,
                     response_serializer=payment_dot_payment__pb2.PaymentResponse.SerializeToString,
+            ),
+            'QuoteCancellationFee': grpc.unary_unary_rpc_method_handler(
+                    servicer.QuoteCancellationFee,
+                    request_deserializer=payment_dot_payment__pb2.QuoteCancellationFeeRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.QuoteCancellationFeeResponse.SerializeToString,
             ),
             'AddTip': grpc.unary_unary_rpc_method_handler(
                     servicer.AddTip,
@@ -1107,6 +1130,33 @@ class PaymentService:
             '/payment.PaymentService/ChargeVetCancellationFee',
             payment_dot_payment__pb2.ChargeVetCancellationFeeRequest.SerializeToString,
             payment_dot_payment__pb2.PaymentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def QuoteCancellationFee(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/QuoteCancellationFee',
+            payment_dot_payment__pb2.QuoteCancellationFeeRequest.SerializeToString,
+            payment_dot_payment__pb2.QuoteCancellationFeeResponse.FromString,
             options,
             channel_credentials,
             insecure,

@@ -76,6 +76,11 @@ class AppointmentServiceStub:
                 request_serializer=appointment_dot_appointment__pb2.AbortAppointmentRequest.SerializeToString,
                 response_deserializer=appointment_dot_appointment__pb2.AppointmentResponse.FromString,
                 _registered_method=True)
+        self.GetCancellationQuote = channel.unary_unary(
+                '/appointment.AppointmentService/GetCancellationQuote',
+                request_serializer=appointment_dot_appointment__pb2.GetCancellationQuoteRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.GetCancellationQuoteResponse.FromString,
+                _registered_method=True)
         self.GetAppointment = channel.unary_unary(
                 '/appointment.AppointmentService/GetAppointment',
                 request_serializer=appointment_dot_appointment__pb2.GetAppointmentRequest.SerializeToString,
@@ -255,6 +260,20 @@ class AppointmentServiceServicer:
 
     def AbortAppointment(self, request, context):
         """Abort a consultation already under way (IN_PROGRESS -> CANCELLED)
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetCancellationQuote(self, request, context):
+        """Cuanto costaria cancelar AHORA, sin cancelar nada. La politica de E1-A8 ya
+        cobraba y no habia forma de anunciar el coste antes de confirmar.
+
+        Devuelve la cotizacion del rol de QUIEN PREGUNTA, deducido de la propia
+        cita: el cliente y el vet pagan cosas distintas —la cita contra el viaje— y
+        ninguno de los dos tiene por que ver la exposicion economica del otro. Por
+        eso el rol NO viaja en la peticion: un parametro que el llamante elige
+        seria una forma de leer la penalidad del vecino.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -524,6 +543,11 @@ def add_AppointmentServiceServicer_to_server(servicer, server):
                     servicer.AbortAppointment,
                     request_deserializer=appointment_dot_appointment__pb2.AbortAppointmentRequest.FromString,
                     response_serializer=appointment_dot_appointment__pb2.AppointmentResponse.SerializeToString,
+            ),
+            'GetCancellationQuote': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetCancellationQuote,
+                    request_deserializer=appointment_dot_appointment__pb2.GetCancellationQuoteRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.GetCancellationQuoteResponse.SerializeToString,
             ),
             'GetAppointment': grpc.unary_unary_rpc_method_handler(
                     servicer.GetAppointment,
@@ -825,6 +849,33 @@ class AppointmentService:
             '/appointment.AppointmentService/AbortAppointment',
             appointment_dot_appointment__pb2.AbortAppointmentRequest.SerializeToString,
             appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetCancellationQuote(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/GetCancellationQuote',
+            appointment_dot_appointment__pb2.GetCancellationQuoteRequest.SerializeToString,
+            appointment_dot_appointment__pb2.GetCancellationQuoteResponse.FromString,
             options,
             channel_credentials,
             insecure,

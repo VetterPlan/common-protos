@@ -47,6 +47,15 @@ service PaymentService {
   // Charge 10% cancellation fee to vet wallet when vet cancels from ACCEPTED/EN_ROUTE.
   rpc ChargeVetCancellationFee (ChargeVetCancellationFeeRequest) returns (PaymentResponse);
 
+  // Cuánto costaría cobrar ese motivo, SIN cobrar nada. Existe para que el
+  // cliente pueda ver el coste antes de confirmar una cancelación: la política
+  // ya cobraba y no había forma de anunciarlo.
+  //
+  // Los porcentajes viven aquí, junto a la base que los aplica (E1-A8), y por
+  // eso la cotización también: duplicarlos en appointment los dejaría derivar.
+  // No toca ninguna fila y no necesita idempotency_key.
+  rpc QuoteCancellationFee (QuoteCancellationFeeRequest) returns (QuoteCancellationFeeResponse);
+
   // Add tip post-appointment. Goes to vet wallet.
   rpc AddTip (AddTipRequest) returns (PaymentResponse);
 
@@ -545,6 +554,24 @@ message ChargeCancellationFeeRequest {
   string idempotency_key = 2;
   // 'no_show' | 'consent_refused'. Vacío = no_show.
   string reason = 3;
+}
+
+message QuoteCancellationFeeRequest {
+  string payment_id = 1;
+  // Mismos valores que ChargeCancellationFeeRequest.reason. Vacío = no_show.
+  string reason = 2;
+}
+
+message QuoteCancellationFeeResponse {
+  // false cuando el motivo no cobra, o cuando el pago no admite cobro todavía.
+  bool chargeable = 1;
+  double fee_percent = 2;
+  double fee_amount_cop = 3;
+  // La base sobre la que se aplicó el porcentaje.
+  double amount_total_cop = 4;
+  // Por qué no se cobra, cuando chargeable es false. Para mostrar "es gratis"
+  // sin que el cliente tenga que deducirlo de un cero.
+  string not_chargeable_reason = 5;
 }
 
 message AddTipRequest {

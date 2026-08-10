@@ -36,6 +36,16 @@ service AppointmentService {
   // Abort a consultation already under way (IN_PROGRESS -> CANCELLED)
   rpc AbortAppointment (AbortAppointmentRequest) returns (AppointmentResponse);
 
+  // Cuanto costaria cancelar AHORA, sin cancelar nada. La politica de E1-A8 ya
+  // cobraba y no habia forma de anunciar el coste antes de confirmar.
+  //
+  // Devuelve la cotizacion del rol de QUIEN PREGUNTA, deducido de la propia
+  // cita: el cliente y el vet pagan cosas distintas —la cita contra el viaje— y
+  // ninguno de los dos tiene por que ver la exposicion economica del otro. Por
+  // eso el rol NO viaja en la peticion: un parametro que el llamante elige
+  // seria una forma de leer la penalidad del vecino.
+  rpc GetCancellationQuote (GetCancellationQuoteRequest) returns (GetCancellationQuoteResponse);
+
   // ─── QUERIES ───
 
   // Get a single appointment by ID
@@ -503,6 +513,44 @@ message CancelAppointmentRequest {
   CancellationReason reason = 2;
   string reason_details = 3;
   string cancelled_by = 4;            // user_id or "SYSTEM"
+}
+
+message GetCancellationQuoteRequest {
+  string appointment_id = 1;
+  // Los perfiles de quien pregunta, sellados por la gateway. De ellos sale el
+  // rol, comparandolos contra la cita. Repetido y no singular por la misma
+  // razon que en GetAppointment: un vet tambien es cliente de VetterPlan, asi
+  // que un usuario puede traer los dos y solo uno casara con esta cita.
+  // Lista vacia = llamada de servicio ya autorizada aguas arriba.
+  repeated string requester_profile_ids = 2;
+}
+
+message GetCancellationQuoteResponse {
+  // "client" | "vet", deducido de la cita. Viaja de vuelta para que el
+  // llamante sepa que cotizacion recibio y no la interprete al reves.
+  string role = 1;
+
+  bool chargeable = 2;
+  double fee_amount_cop = 3;
+  double fee_percent = 4;
+  // La base: el precio de ESA cita para el cliente, el del viaje entero para
+  // el vet. Se nombra en la respuesta porque las dos son legitimas y confundir
+  // una con otra cambia el numero por un factor igual al tamano del grupo.
+  double base_amount_cop = 5;
+  string base_kind = 6;               // "appointment" | "trip"
+
+  // Por que no se cobra, cuando chargeable es false: mostrar "es gratis" no
+  // deberia obligar a deducirlo de un cero.
+  string not_chargeable_reason = 7;
+
+  // Instante a partir del cual deja de ser gratis, cuando hoy lo es por la
+  // ventana de gracia. Ausente si no aplica. Sirve para "gratis hasta las
+  // 14:00", que es lo que evita que el cobro se perciba como sorpresa.
+  google.protobuf.Timestamp free_until = 8;
+
+  // Cuantas citas caerian con esta cancelacion. Para el vet es el viaje
+  // entero; para el cliente es 1.
+  int32 appointments_affected = 9;
 }
 
 // Quien aborta sale del JWT, nunca de la peticion: de el cuelga la politica de
