@@ -40,7 +40,13 @@ service VetProfileService {
   rpc GetVetAvailableSlots (GetVetAvailableSlotsRequest) returns (VetAvailableSlotsResponse);
 
   // ─── Cancellation Strikes (inter-service, called by Appointment Service) ───
-  rpc IncrementCancellationStrike (IncrementCancellationStrikeRequest) returns (IncrementCancellationStrikeResponse);
+  // Deprecado por E1-A8 F-2: un incremento no se puede reintentar sin saber si
+  // se aplicó. Usa SetCancellationStrikes, que escribe un valor absoluto.
+  // No se elimina: protobuf solo admite cambios aditivos.
+  rpc IncrementCancellationStrike (IncrementCancellationStrikeRequest) returns (IncrementCancellationStrikeResponse) {
+    option deprecated = true;
+  }
+  rpc SetCancellationStrikes (SetCancellationStrikesRequest) returns (SetCancellationStrikesResponse);
 
   // ─── Rating (S2-4) — called by Appointment Service on SubmitReview ───
   rpc UpdateVetRating (UpdateVetRatingRequest) returns (UpdateVetRatingResponse);
@@ -471,6 +477,20 @@ message IncrementCancellationStrikeRequest {
 message IncrementCancellationStrikeResponse {
   int32 strike_count = 1;         // Total strikes active (within 30-day window)
   bool suspended = 2;             // True if vet was suspended (3+ strikes)
+}
+
+// El conteo lo hace appointment-service desde appointment_status_history, que
+// es donde el hecho ya está escrito una sola vez por viaje. Profile almacena el
+// resultado: reintentar escribe el mismo número, así que la entrega no necesita
+// saber si la anterior llegó.
+message SetCancellationStrikesRequest {
+  string vet_profile_id = 1;
+  int32 cancellation_strikes = 2;   // valor ABSOLUTO, nunca un delta
+}
+
+message SetCancellationStrikesResponse {
+  int32 strike_count = 1;
+  bool suspended = 2;               // la suspensión es trinquete: bajar no reactiva
 }
 
 // ============================================================================

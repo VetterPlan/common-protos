@@ -148,6 +148,11 @@ class VetProfileServiceStub:
                 request_serializer=profile_dot_vet__profile__pb2.IncrementCancellationStrikeRequest.SerializeToString,
                 response_deserializer=profile_dot_vet__profile__pb2.IncrementCancellationStrikeResponse.FromString,
                 _registered_method=True)
+        self.SetCancellationStrikes = channel.unary_unary(
+                '/profile.VetProfileService/SetCancellationStrikes',
+                request_serializer=profile_dot_vet__profile__pb2.SetCancellationStrikesRequest.SerializeToString,
+                response_deserializer=profile_dot_vet__profile__pb2.SetCancellationStrikesResponse.FromString,
+                _registered_method=True)
         self.UpdateVetRating = channel.unary_unary(
                 '/profile.VetProfileService/UpdateVetRating',
                 request_serializer=profile_dot_vet__profile__pb2.UpdateVetRatingRequest.SerializeToString,
@@ -314,7 +319,16 @@ class VetProfileServiceServicer:
 
     def IncrementCancellationStrike(self, request, context):
         """─── Cancellation Strikes (inter-service, called by Appointment Service) ───
+        Deprecado por E1-A8 F-2: un incremento no se puede reintentar sin saber si
+        se aplicó. Usa SetCancellationStrikes, que escribe un valor absoluto.
+        No se elimina: protobuf solo admite cambios aditivos.
         """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetCancellationStrikes(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -467,6 +481,11 @@ def add_VetProfileServiceServicer_to_server(servicer, server):
                     servicer.IncrementCancellationStrike,
                     request_deserializer=profile_dot_vet__profile__pb2.IncrementCancellationStrikeRequest.FromString,
                     response_serializer=profile_dot_vet__profile__pb2.IncrementCancellationStrikeResponse.SerializeToString,
+            ),
+            'SetCancellationStrikes': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetCancellationStrikes,
+                    request_deserializer=profile_dot_vet__profile__pb2.SetCancellationStrikesRequest.FromString,
+                    response_serializer=profile_dot_vet__profile__pb2.SetCancellationStrikesResponse.SerializeToString,
             ),
             'UpdateVetRating': grpc.unary_unary_rpc_method_handler(
                     servicer.UpdateVetRating,
@@ -1092,6 +1111,33 @@ class VetProfileService:
             '/profile.VetProfileService/IncrementCancellationStrike',
             profile_dot_vet__profile__pb2.IncrementCancellationStrikeRequest.SerializeToString,
             profile_dot_vet__profile__pb2.IncrementCancellationStrikeResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SetCancellationStrikes(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/profile.VetProfileService/SetCancellationStrikes',
+            profile_dot_vet__profile__pb2.SetCancellationStrikesRequest.SerializeToString,
+            profile_dot_vet__profile__pb2.SetCancellationStrikesResponse.FromString,
             options,
             channel_credentials,
             insecure,
