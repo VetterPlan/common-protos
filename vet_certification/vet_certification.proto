@@ -71,6 +71,11 @@ service VetCertificationService {
   // Proyección pública. GetCertificationsByVetProfile emite rejection_reason,
   // reviewed_by e historial de estados: nada de eso puede llegar a un cliente.
   rpc GetVetPublicCredentials (GetVetPublicCredentialsRequest) returns (GetVetPublicCredentialsResponse);
+
+  // Requisitos de certificacion de una jurisdiccion. Configuracion, no datos de
+  // usuario: permite que el formulario del vet se pinte desde el backend y que
+  // abrir un pais nuevo no exija un release movil.
+  rpc GetCertificationRequirements (GetCertificationRequirementsRequest) returns (GetCertificationRequirementsResponse);
 }
 
 enum AcademicDegree {
@@ -172,6 +177,39 @@ message PublicLicense {
   PracticeScope scope = 4;
   repeated string species_allowed = 5;
   string valid_until = 6;
+}
+
+message GetCertificationRequirementsRequest {
+  // Vacio = la jurisdiccion por defecto del despliegue.
+  string country = 1;
+}
+
+message LicenseFormat {
+  string label = 1;        // "Matricula profesional"
+  string pattern = 2;      // regex completo, sin anclas
+  string requirement = 3;  // "3 a 10 digitos"
+  string example = 4;      // "635"
+}
+
+message CertificationRequirements {
+  string country = 1;
+  string country_name = 2;
+  LicenseFormat license = 3;
+  string authority_name = 4;
+  string authority_short = 5;
+  bool license_expires = 6;
+  repeated DocumentType required_documents = 7;
+  repeated DocumentType optional_documents = 8;
+  repeated DocumentIdType id_document_types = 9;
+  repeated AcademicDegree optional_credentials = 10;
+  bool has_registry_check = 11;
+}
+
+message GetCertificationRequirementsResponse {
+  CertificationRequirements requirements = 1;
+  // Todas las jurisdicciones habilitadas en este despliegue.
+  repeated string enabled_countries = 2;
+  string default_country = 3;
 }
 
 message GetVetPublicCredentialsRequest {
@@ -454,6 +492,7 @@ enum DocumentType {
   DOCUMENT_TYPE_INSURANCE = 7;       // Professional liability insurance
   DOCUMENT_TYPE_BACKGROUND_CHECK = 8;// Background check results
   DOCUMENT_TYPE_OTHER = 9;           // Other
+  DOCUMENT_TYPE_DISCIPLINARY_RECORD = 10;// Antecedentes disciplinarios (Procuraduria)
 }
 
 message CertificationDocument {
