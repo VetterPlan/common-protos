@@ -124,11 +124,24 @@ message LiveETARequest {
   double client_lng = 5;
 }
 
+message RouteStep {
+  int32 distance_m = 1;
+  int32 static_duration_s = 2;
+}
+
+message RouteGeometry {
+  string encoded_polyline = 1;
+  int32 total_distance_m = 2;
+  int32 total_duration_s = 3;
+  repeated RouteStep steps = 4;
+}
+
 message LiveETAResponse {
   int32 eta_minutes = 1;                   // Con tráfico real (Google Maps)
   double distance_km = 2;
   string method = 3;                       // "GOOGLE_MAPS" | "HAVERSINE_FALLBACK"
   int32 eta_minutes_no_traffic = 4;        // Referencia sin tráfico
+  RouteGeometry route = 5;
 }
 
 // ─── ReverseGeocode ───

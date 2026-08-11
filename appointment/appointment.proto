@@ -856,6 +856,14 @@ message GetAppointmentTrackingRequest {
   repeated string requester_profile_ids = 2;
 }
 
+message TrackingRoute {
+  string encoded_polyline = 1;
+  double origin_lat = 2;
+  double origin_lng = 3;
+  int32 age_seconds = 4;
+  optional int32 remaining_distance_m = 5;
+}
+
 message GetAppointmentTrackingResponse {
   AppointmentStatus status = 1;
   bool has_location = 2;
@@ -868,6 +876,7 @@ message GetAppointmentTrackingResponse {
   string eta_updated_at = 9;
   double client_lat = 10;
   double client_lng = 11;
+  TrackingRoute route = 12;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
