@@ -216,10 +216,17 @@ message GetVetPublicCredentialsRequest {
   string vet_profile_id = 1;
 }
 
+message PublicVerificationClaim {
+  string type = 1;
+  string source = 2;
+  google.protobuf.Timestamp verified_at = 3;
+}
+
 message GetVetPublicCredentialsResponse {
   PublicLicense license = 1;
   bool has_active_license = 2;
   repeated PublicCredential credentials = 3;
+  repeated PublicVerificationClaim verifications = 4;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
