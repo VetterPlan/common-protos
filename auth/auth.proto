@@ -14,6 +14,8 @@ service AuthService {
   rpc Logout (LogoutRequest) returns (LogoutResponse);
   rpc RequestPasswordReset (RequestPasswordResetRequest) returns (RequestPasswordResetResponse);
   rpc ResetPassword (ResetPasswordRequest) returns (ResetPasswordResponse);
+  rpc ChangePassword (ChangePasswordRequest) returns (ChangePasswordResponse);
+  rpc ResendVerificationEmail (ResendVerificationEmailRequest) returns (ResendVerificationEmailResponse);
 
   // Role Management (NEW - Sprint 3)
   rpc AssignRole (AssignRoleRequest) returns (AssignRoleResponse);
@@ -111,6 +113,31 @@ message ResetPasswordRequest {
 
 message ResetPasswordResponse {
   bool success = 1;
+  string message = 2;
+}
+
+// `user_id` lo pone la gateway desde el JWT, nunca el cliente: sin el, esto
+// seria "cambiale la contrasena a quien quieras". No lleva `confirm_password`
+// --comparar dos campos es del formulario, no del contrato--.
+message ChangePasswordRequest {
+  string user_id = 1;
+  string current_password = 2;
+  string new_password = 3;
+}
+
+message ChangePasswordResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// Existe porque el envio del registro es best effort: sin esta operacion, un
+// encolado fallido deja al usuario esperando un correo que no va a llegar.
+message ResendVerificationEmailRequest {
+  string user_id = 1;
+}
+
+message ResendVerificationEmailResponse {
+  bool sent = 1;
   string message = 2;
 }
 

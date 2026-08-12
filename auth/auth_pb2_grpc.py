@@ -84,6 +84,16 @@ class AuthServiceStub:
                 request_serializer=auth_dot_auth__pb2.ResetPasswordRequest.SerializeToString,
                 response_deserializer=auth_dot_auth__pb2.ResetPasswordResponse.FromString,
                 _registered_method=True)
+        self.ChangePassword = channel.unary_unary(
+                '/auth.AuthService/ChangePassword',
+                request_serializer=auth_dot_auth__pb2.ChangePasswordRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.ChangePasswordResponse.FromString,
+                _registered_method=True)
+        self.ResendVerificationEmail = channel.unary_unary(
+                '/auth.AuthService/ResendVerificationEmail',
+                request_serializer=auth_dot_auth__pb2.ResendVerificationEmailRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.ResendVerificationEmailResponse.FromString,
+                _registered_method=True)
         self.AssignRole = channel.unary_unary(
                 '/auth.AuthService/AssignRole',
                 request_serializer=auth_dot_auth__pb2.AssignRoleRequest.SerializeToString,
@@ -200,6 +210,18 @@ class AuthServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def ResetPassword(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ChangePassword(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ResendVerificationEmail(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -338,6 +360,16 @@ def add_AuthServiceServicer_to_server(servicer, server):
                     servicer.ResetPassword,
                     request_deserializer=auth_dot_auth__pb2.ResetPasswordRequest.FromString,
                     response_serializer=auth_dot_auth__pb2.ResetPasswordResponse.SerializeToString,
+            ),
+            'ChangePassword': grpc.unary_unary_rpc_method_handler(
+                    servicer.ChangePassword,
+                    request_deserializer=auth_dot_auth__pb2.ChangePasswordRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.ChangePasswordResponse.SerializeToString,
+            ),
+            'ResendVerificationEmail': grpc.unary_unary_rpc_method_handler(
+                    servicer.ResendVerificationEmail,
+                    request_deserializer=auth_dot_auth__pb2.ResendVerificationEmailRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.ResendVerificationEmailResponse.SerializeToString,
             ),
             'AssignRole': grpc.unary_unary_rpc_method_handler(
                     servicer.AssignRole,
@@ -665,6 +697,60 @@ class AuthService:
             '/auth.AuthService/ResetPassword',
             auth_dot_auth__pb2.ResetPasswordRequest.SerializeToString,
             auth_dot_auth__pb2.ResetPasswordResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ChangePassword(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/ChangePassword',
+            auth_dot_auth__pb2.ChangePasswordRequest.SerializeToString,
+            auth_dot_auth__pb2.ChangePasswordResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ResendVerificationEmail(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/ResendVerificationEmail',
+            auth_dot_auth__pb2.ResendVerificationEmailRequest.SerializeToString,
+            auth_dot_auth__pb2.ResendVerificationEmailResponse.FromString,
             options,
             channel_credentials,
             insecure,
