@@ -516,6 +516,11 @@ message CreatePaymentRequest {
   // rebajado y el veterinario financie la campana sin saberlo.
   string promo_id = 7;
   double discount_amount = 8;
+  // F1-R2. `amount_subtotal` es la BASE del servicio, sin IVA. El IVA viaja
+  // aparte porque no entra en la base de comision: comisionar sobre impuestos
+  // encarece el servicio artificialmente. Es del veterinario, no de VetterPlan,
+  // y se le transfiere con su pago.
+  double iva_amount = 9;
 }
 
 message AuthorizePaymentRequest {
@@ -883,6 +888,11 @@ message VetEarningsResponse {
   double pending_payout = 8;
   double wallet_balance = 9;
   int32 total_appointments = 10;
+  // F1-R2. El IVA que el vet recaudo a traves de la plataforma y que se le
+  // transfirio con su pago. NO son ganancias suyas: las declara y las paga.
+  // Va aparte para que la suma de los conceptos siga cuadrando con lo que
+  // entro a su wallet.
+  double total_iva_collected = 11;
 }
 
 // ─── Vet Cancellation Fee (P1.8) ───
