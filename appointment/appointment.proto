@@ -467,6 +467,13 @@ message RequestAppointmentRequest {
   double slot_price = 20;              // P1: price seen by client in slot listing (locks price for 90 min, 0 = not provided)
   // Una entrada por mascota. Reemplaza pet_ids + service_type.
   repeated PetRequestItem pets = 21;
+  // El codigo promocional lo elige el cliente al pedir la cita, pero el cobro
+  // ocurre al aceptarla: se guarda en la cita y viaja a CreatePayment despues.
+  // Viaja el ID, no el codigo: la app lo obtiene de ValidatePromoCode, que es
+  // quien sabe si existe. Y viaja solo el ID porque el IMPORTE lo decide
+  // payment-service; mandarlo desde aqui seria decidir un numero del que este
+  // servicio no es autoridad.
+  string promo_id = 22;
 }
 
 // Precio confirmado por el vet para una cita concreta del grupo.
