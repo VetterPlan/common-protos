@@ -510,6 +510,12 @@ message CreatePaymentRequest {
   double amount_subtotal = 4;
   string currency = 5;
   string idempotency_key = 6;
+  // VP-H7. `amount_subtotal` es el precio del servicio SIN descontar; el
+  // descuento viaja aparte para que quede escrito en el pago quien lo pago.
+  // Restarlo antes de llamar hace que la comision se reparta sobre el total ya
+  // rebajado y el veterinario financie la campana sin saberlo.
+  string promo_id = 7;
+  double discount_amount = 8;
 }
 
 message AuthorizePaymentRequest {
