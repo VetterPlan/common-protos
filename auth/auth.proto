@@ -28,6 +28,15 @@ service AuthService {
   // Admin: look up a user account by email address
   rpc FindUserByEmail (FindUserByEmailRequest) returns (FindUserByEmailResponse);
 
+  // Servicio-a-servicio: la direccion de correo de un usuario, para poder
+  // escribirle. NO se expone en la gateway.
+  //
+  // Existe porque `FindUserByEmail` va en la direccion contraria y ningun otro
+  // servicio guarda el correo personal: `VetProfile.clinic_email` es el de la
+  // clinica y es opcional. Sin esto, avisar por correo al dueno de un perfil
+  // obliga a inventarse la direccion o a no avisar.
+  rpc GetUserContact (GetUserContactRequest) returns (GetUserContactResponse);
+
   // Admin: paginated list of all accounts (clients + vets + admins), with filters
   rpc ListUsers (ListUsersRequest) returns (ListUsersResponse);
 
@@ -262,6 +271,21 @@ message FindUserByEmailResponse {
   string created_at = 5;
   repeated string roles = 6;
   string user_type = 7;
+}
+
+message GetUserContactRequest {
+  string user_id = 1;
+}
+
+message GetUserContactResponse {
+  string user_id = 1;
+  string email = 2;
+
+  // Una cuenta desactivada o con el correo sin verificar sigue teniendo
+  // direccion. Quien avisa decide si escribirle; este servicio no lo decide por
+  // el ni devuelve vacio, que se leeria como "no tiene correo".
+  bool is_active = 3;
+  bool is_email_verified = 4;
 }
 
 // Admin: paginated listing of ALL accounts.

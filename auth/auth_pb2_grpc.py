@@ -119,6 +119,11 @@ class AuthServiceStub:
                 request_serializer=auth_dot_auth__pb2.FindUserByEmailRequest.SerializeToString,
                 response_deserializer=auth_dot_auth__pb2.FindUserByEmailResponse.FromString,
                 _registered_method=True)
+        self.GetUserContact = channel.unary_unary(
+                '/auth.AuthService/GetUserContact',
+                request_serializer=auth_dot_auth__pb2.GetUserContactRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.GetUserContactResponse.FromString,
+                _registered_method=True)
         self.ListUsers = channel.unary_unary(
                 '/auth.AuthService/ListUsers',
                 request_serializer=auth_dot_auth__pb2.ListUsersRequest.SerializeToString,
@@ -260,6 +265,19 @@ class AuthServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetUserContact(self, request, context):
+        """Servicio-a-servicio: la direccion de correo de un usuario, para poder
+        escribirle. NO se expone en la gateway.
+
+        Existe porque `FindUserByEmail` va en la direccion contraria y ningun otro
+        servicio guarda el correo personal: `VetProfile.clinic_email` es el de la
+        clinica y es opcional. Sin esto, avisar por correo al dueno de un perfil
+        obliga a inventarse la direccion o a no avisar.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def ListUsers(self, request, context):
         """Admin: paginated list of all accounts (clients + vets + admins), with filters
         """
@@ -395,6 +413,11 @@ def add_AuthServiceServicer_to_server(servicer, server):
                     servicer.FindUserByEmail,
                     request_deserializer=auth_dot_auth__pb2.FindUserByEmailRequest.FromString,
                     response_serializer=auth_dot_auth__pb2.FindUserByEmailResponse.SerializeToString,
+            ),
+            'GetUserContact': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetUserContact,
+                    request_deserializer=auth_dot_auth__pb2.GetUserContactRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.GetUserContactResponse.SerializeToString,
             ),
             'ListUsers': grpc.unary_unary_rpc_method_handler(
                     servicer.ListUsers,
@@ -886,6 +909,33 @@ class AuthService:
             '/auth.AuthService/FindUserByEmail',
             auth_dot_auth__pb2.FindUserByEmailRequest.SerializeToString,
             auth_dot_auth__pb2.FindUserByEmailResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetUserContact(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/GetUserContact',
+            auth_dot_auth__pb2.GetUserContactRequest.SerializeToString,
+            auth_dot_auth__pb2.GetUserContactResponse.FromString,
             options,
             channel_credentials,
             insecure,

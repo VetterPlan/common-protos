@@ -141,6 +141,12 @@ enum NotificationEvent {
   NOTIFICATION_EVENT_CONSTANCIA_HUMAN_TOOK_OVER  = 32;
   NOTIFICATION_EVENT_CONSTANCIA_RESOLVED         = 33;
 
+  // Certificacion profesional del vet. Su licencia decide si puede trabajar, y
+  // hasta ahora se enteraba abriendo la app.
+  NOTIFICATION_EVENT_CERTIFICATION_APPROVED  = 34;
+  NOTIFICATION_EVENT_CERTIFICATION_REJECTED  = 35;
+  NOTIFICATION_EVENT_CERTIFICATION_SUSPENDED = 36;
+
   // System / admin
   NOTIFICATION_EVENT_SYSTEM_ALERT           = 99;
 }
