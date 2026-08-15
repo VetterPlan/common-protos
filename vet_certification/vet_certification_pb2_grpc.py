@@ -83,6 +83,11 @@ class VetCertificationServiceStub:
                 request_serializer=vet__certification_dot_vet__certification__pb2.ListCertificationsForReviewRequest.SerializeToString,
                 response_deserializer=vet__certification_dot_vet__certification__pb2.ListCertificationsForReviewResponse.FromString,
                 _registered_method=True)
+        self.HardDeleteVetCertifications = channel.unary_unary(
+                '/vet_certification.VetCertificationService/HardDeleteVetCertifications',
+                request_serializer=vet__certification_dot_vet__certification__pb2.HardDeleteVetCertificationsRequest.SerializeToString,
+                response_deserializer=vet__certification_dot_vet__certification__pb2.HardDeleteVetCertificationsResponse.FromString,
+                _registered_method=True)
         self.GenerateCertificationDocumentUploadUrl = channel.unary_unary(
                 '/vet_certification.VetCertificationService/GenerateCertificationDocumentUploadUrl',
                 request_serializer=vet__certification_dot_vet__certification__pb2.GenerateCertificationDocumentUploadUrlRequest.SerializeToString,
@@ -202,7 +207,6 @@ class VetCertificationServiceServicer:
     def ReviewCertification(self, request, context):
         """─── ADMIN ACTIONS ───
 
-        Review a certification (admin: approve, reject, suspend, revoke)
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -214,40 +218,40 @@ class VetCertificationServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def HardDeleteVetCertifications(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def GenerateCertificationDocumentUploadUrl(self, request, context):
         """─── SUPPORTING DOCUMENTS (private R2) ───
 
-        Vet: get a short-lived presigned PUT URL to upload a supporting document.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def AddCertificationDocument(self, request, context):
-        """Vet: register an uploaded document (persists the R2 object key).
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetCertificationDocuments(self, request, context):
-        """Admin or owning vet: list a certification's documents, each with a fresh
-        short-lived presigned GET URL for viewing.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def VerifyCertificationDocument(self, request, context):
-        """Admin: mark a single document as verified / not verified, with notes.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def RemoveCertificationDocument(self, request, context):
-        """Owning vet: remove a document (before approval). Deletes row + R2 object.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -279,18 +283,13 @@ class VetCertificationServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def GetVetPublicCredentials(self, request, context):
-        """Proyección pública. GetCertificationsByVetProfile emite rejection_reason,
-        reviewed_by e historial de estados: nada de eso puede llegar a un cliente.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetCertificationRequirements(self, request, context):
-        """Requisitos de certificacion de una jurisdiccion. Configuracion, no datos de
-        usuario: permite que el formulario del vet se pinte desde el backend y que
-        abrir un pais nuevo no exija un release movil.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -337,6 +336,11 @@ def add_VetCertificationServiceServicer_to_server(servicer, server):
                     servicer.ListCertificationsForReview,
                     request_deserializer=vet__certification_dot_vet__certification__pb2.ListCertificationsForReviewRequest.FromString,
                     response_serializer=vet__certification_dot_vet__certification__pb2.ListCertificationsForReviewResponse.SerializeToString,
+            ),
+            'HardDeleteVetCertifications': grpc.unary_unary_rpc_method_handler(
+                    servicer.HardDeleteVetCertifications,
+                    request_deserializer=vet__certification_dot_vet__certification__pb2.HardDeleteVetCertificationsRequest.FromString,
+                    response_serializer=vet__certification_dot_vet__certification__pb2.HardDeleteVetCertificationsResponse.SerializeToString,
             ),
             'GenerateCertificationDocumentUploadUrl': grpc.unary_unary_rpc_method_handler(
                     servicer.GenerateCertificationDocumentUploadUrl,
@@ -619,6 +623,33 @@ class VetCertificationService:
             '/vet_certification.VetCertificationService/ListCertificationsForReview',
             vet__certification_dot_vet__certification__pb2.ListCertificationsForReviewRequest.SerializeToString,
             vet__certification_dot_vet__certification__pb2.ListCertificationsForReviewResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def HardDeleteVetCertifications(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/vet_certification.VetCertificationService/HardDeleteVetCertifications',
+            vet__certification_dot_vet__certification__pb2.HardDeleteVetCertificationsRequest.SerializeToString,
+            vet__certification_dot_vet__certification__pb2.HardDeleteVetCertificationsResponse.FromString,
             options,
             channel_credentials,
             insecure,

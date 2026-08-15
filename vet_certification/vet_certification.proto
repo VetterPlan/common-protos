@@ -15,51 +15,31 @@ import "google/protobuf/timestamp.proto";
 service VetCertificationService {
   // ─── CERTIFICATION LIFECYCLE ───
 
-  // Submit a new certification for review
   rpc SubmitCertification (SubmitCertificationRequest) returns (CertificationResponse);
-
-  // Get a certification by ID
   rpc GetCertification (GetCertificationRequest) returns (CertificationResponse);
-
-  // Get all certifications for a vet profile
   rpc GetCertificationsByVetProfile (GetCertificationsByVetProfileRequest) returns (CertificationsResponse);
 
   // ─── PRACTICE VALIDATION ───
 
-  // Validate if a vet can practice (main validation endpoint)
-  // Designed for high-frequency calls with caching support
   rpc ValidateCanPractice (ValidateCanPracticeRequest) returns (ValidateCanPracticeResponse);
-
-  // Get the active certification for a vet in a specific country
   rpc GetActiveCertification (GetActiveCertificationRequest) returns (CertificationResponse);
 
   // ─── STATUS HISTORY ───
 
-  // Get the status change history for a certification
   rpc GetStatusHistory (GetStatusHistoryRequest) returns (StatusHistoryResponse);
 
   // ─── ADMIN ACTIONS ───
 
-  // Review a certification (admin: approve, reject, suspend, revoke)
   rpc ReviewCertification (ReviewCertificationRequest) returns (CertificationResponse);
   rpc ListCertificationsForReview (ListCertificationsForReviewRequest) returns (ListCertificationsForReviewResponse);
+  rpc HardDeleteVetCertifications (HardDeleteVetCertificationsRequest) returns (HardDeleteVetCertificationsResponse);
 
   // ─── SUPPORTING DOCUMENTS (private R2) ───
 
-  // Vet: get a short-lived presigned PUT URL to upload a supporting document.
   rpc GenerateCertificationDocumentUploadUrl (GenerateCertificationDocumentUploadUrlRequest) returns (GenerateCertificationDocumentUploadUrlResponse);
-
-  // Vet: register an uploaded document (persists the R2 object key).
   rpc AddCertificationDocument (AddCertificationDocumentRequest) returns (CertificationDocumentResponse);
-
-  // Admin or owning vet: list a certification's documents, each with a fresh
-  // short-lived presigned GET URL for viewing.
   rpc GetCertificationDocuments (GetCertificationDocumentsRequest) returns (CertificationDocumentsResponse);
-
-  // Admin: mark a single document as verified / not verified, with notes.
   rpc VerifyCertificationDocument (VerifyCertificationDocumentRequest) returns (CertificationDocumentResponse);
-
-  // Owning vet: remove a document (before approval). Deletes row + R2 object.
   rpc RemoveCertificationDocument (RemoveCertificationDocumentRequest) returns (RemoveCertificationDocumentResponse);
 
   // ─── ACADEMIC CREDENTIALS ───
@@ -68,14 +48,7 @@ service VetCertificationService {
   rpc GenerateAcademicDocumentUploadUrl (GenerateAcademicDocumentUploadUrlRequest) returns (GenerateAcademicDocumentUploadUrlResponse);
   rpc GetAcademicCredentials (GetAcademicCredentialsRequest) returns (AcademicCredentialsResponse);
   rpc ReviewAcademicCredential (ReviewAcademicCredentialRequest) returns (AcademicCredentialResponse);
-
-  // Proyección pública. GetCertificationsByVetProfile emite rejection_reason,
-  // reviewed_by e historial de estados: nada de eso puede llegar a un cliente.
   rpc GetVetPublicCredentials (GetVetPublicCredentialsRequest) returns (GetVetPublicCredentialsResponse);
-
-  // Requisitos de certificacion de una jurisdiccion. Configuracion, no datos de
-  // usuario: permite que el formulario del vet se pinte desde el backend y que
-  // abrir un pais nuevo no exija un release movil.
   rpc GetCertificationRequirements (GetCertificationRequirementsRequest) returns (GetCertificationRequirementsResponse);
 }
 
@@ -208,7 +181,6 @@ message CertificationRequirements {
 
 message GetCertificationRequirementsResponse {
   CertificationRequirements requirements = 1;
-  // Todas las jurisdicciones habilitadas en este despliegue.
   repeated string enabled_countries = 2;
   string default_country = 3;
 }
@@ -268,7 +240,6 @@ enum PracticeScope {
   PRACTICE_SCOPE_REHABILITATION = 12;
 }
 
-// Espeja app.domain.enums.DocumentIdType (los valores coinciden con el enum de DB).
 enum DocumentIdType {
   DOCUMENT_ID_TYPE_UNSPECIFIED = 0;
   DOCUMENT_ID_TYPE_CC = 1;
@@ -276,8 +247,6 @@ enum DocumentIdType {
   DOCUMENT_ID_TYPE_PASSPORT = 3;
 }
 
-// Espeja app.domain.enums.RegistryStatus. Solo SUSPENDED impide ejercer: el
-// resto son señales para que un humano mire.
 enum RegistryStatus {
   REGISTRY_STATUS_UNSPECIFIED = 0;
   REGISTRY_STATUS_UNCHECKED = 1;
@@ -296,45 +265,27 @@ enum RegistryStatus {
 message Certification {
   string id = 1;
   string vet_profile_id = 2;
-
-  // License information
   string license_number = 3;
   LicenseType license_type = 4;
-
-  // Jurisdiction
   string country = 5;                    // ISO 3166-1 alpha-2
   string state_province = 6;             // Optional sub-national
   string issuing_authority = 7;
-
-  // Scope of practice
   PracticeScope scope = 8;
   repeated string species_allowed = 9;
-
-  // Status and validity
   CertificationStatus status = 10;
   string valid_from = 11;                // ISO8601 date (YYYY-MM-DD)
   string valid_until = 12;               // ISO8601 date (YYYY-MM-DD)
-
-  // Audit information
   google.protobuf.Timestamp submitted_at = 13;
   google.protobuf.Timestamp reviewed_at = 14;
   string reviewed_by = 15;
   string rejection_reason = 16;
-
-  // Timestamps
   google.protobuf.Timestamp created_at = 17;
   google.protobuf.Timestamp updated_at = 18;
-
-  // Computed fields
   bool is_active = 19;
   int32 days_until_expiration = 20;      // -1 if no expiration
-
-  // Identidad del profesional. El número nunca sale completo del servicio.
   DocumentIdType document_type = 21;
   string document_number_masked = 22;    // ****9502
   bool document_verified = 23;           // un admin lo cotejó contra la cédula
-
-  // Cotejo contra el registro profesional externo (ConVezCol)
   RegistryStatus registry_status = 24;
   google.protobuf.Timestamp registry_checked_at = 25;
   string registry_matricula = 26;
@@ -358,29 +309,16 @@ message StatusHistoryEntry {
 
 message SubmitCertificationRequest {
   string vet_profile_id = 1;             // Required: UUID of the vet profile
-
-  // License information
   string license_number = 2;             // Required
   LicenseType license_type = 3;          // Optional, defaults to NATIONAL
-
-  // Jurisdiction
   string country = 4;                    // Required: ISO 3166-1 alpha-2
   string state_province = 5;             // Optional
   string issuing_authority = 6;          // Required
-
-  // Scope
   PracticeScope scope = 7;               // Optional, defaults to GENERAL
   repeated string species_allowed = 8;   // Optional, defaults to ["small_animals"]
-
-  // Validity dates
   string valid_from = 9;                 // Optional: ISO8601 date
   string valid_until = 10;               // Optional: ISO8601 date
-
-  // Request metadata
   string submitted_by = 11;              // Required: UUID of submitter (usually same as vet_profile owner)
-
-  // Identidad. Sin cédula el cotejo con ConVezCol solo comprueba que la
-  // matrícula exista: no puede cruzar sanciones ni confirmar que sea suya.
   string document_number = 12;           // Optional en el contrato, necesario para el cotejo
   DocumentIdType document_type = 13;     // Por defecto CC
 }
@@ -425,28 +363,18 @@ message GetActiveCertificationRequest {
 message ValidateCanPracticeRequest {
   string vet_profile_id = 1;             // Required: UUID of the vet profile
   string country = 2;                    // Required: ISO 3166-1 alpha-2
-
-  // Optional filters for more specific validation
   PracticeScope required_scope = 3;      // e.g., SURGERY for surgical procedures
   string required_species = 4;           // e.g., "exotic" for exotic animals
-
-  // For point-in-time validation (useful for future appointments)
   string check_date = 5;                 // ISO8601 date, defaults to today
 }
 
 message ValidateCanPracticeResponse {
   bool can_practice = 1;                 // Main result: can the vet practice?
-
-  // Certification details (if found)
   string certification_id = 2;
   CertificationStatus status = 3;
   string valid_until = 4;                // ISO8601 date
-
-  // If cannot practice, why?
   string reason = 5;
   repeated string missing_requirements = 6;
-
-  // Cache hints
   int32 cache_ttl_seconds = 7;           // Suggested cache TTL
   string cache_key = 8;                  // Suggested cache key for clients
 }
@@ -476,10 +404,6 @@ message ReviewCertificationRequest {
   CertificationStatus new_status = 3; // Required: target status
   string reason = 4;                // Required: StatusChangeReason value
   string notes = 5;                 // Optional: human-readable notes / rejection reason
-
-  // Número que el admin leyó en la cédula escaneada. Al mandarlo, la
-  // certificación queda con el documento VERIFICADO y entra al cruce de
-  // sanciones por cédula, que es el único que bloquea.
   string verified_document_number = 6;
   DocumentIdType verified_document_type = 7;
 }
@@ -512,11 +436,21 @@ message ListCertificationsForReviewResponse {
   int32 total_count = 2;
 }
 
+message HardDeleteVetCertificationsRequest {
+  string vet_profile_id = 1;
+}
+
+message HardDeleteVetCertificationsResponse {
+  bool success = 1;
+  string message = 2;
+  int32 deleted_count = 3;
+  repeated string orphaned_object_keys = 4;
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
 // SUPPORTING DOCUMENTS (private R2)
 // ═══════════════════════════════════════════════════════════════════════════
 
-// Mirrors app.domain.enums.DocumentType (values match the DB enum).
 enum DocumentType {
   DOCUMENT_TYPE_UNSPECIFIED = 0;
   DOCUMENT_TYPE_LICENSE_SCAN = 1;    // Scanned professional license
@@ -538,18 +472,12 @@ message CertificationDocument {
   string original_filename = 4;
   string mime_type = 5;
   int64 file_size_bytes = 6;
-
-  // Verification (per document)
   bool is_verified = 7;
   google.protobuf.Timestamp verified_at = 8;
   string verified_by = 9;
   string verification_notes = 10;
-
   string expires_at = 11;                // ISO8601 date (YYYY-MM-DD), optional
   google.protobuf.Timestamp uploaded_at = 12;
-
-  // Short-lived presigned GET URL for viewing. Only populated on read RPCs,
-  // never stored. Empty if the caller is not authorized to view.
   string view_url = 13;
 }
 
@@ -583,8 +511,6 @@ message CertificationDocumentResponse {
 
 message GetCertificationDocumentsRequest {
   string certification_id = 1;      // Required
-  // Ownership/authorization is enforced at the gateway (admin) or by passing
-  // the requesting vet_profile_id (owner). Empty vet_profile_id + admin context.
   string requester_vet_profile_id = 2; // Optional: set when the caller is the vet
   bool is_admin = 3;                    // Set by the gateway for admin callers
 }
