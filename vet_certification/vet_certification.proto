@@ -42,6 +42,7 @@ service VetCertificationService {
 
   // Review a certification (admin: approve, reject, suspend, revoke)
   rpc ReviewCertification (ReviewCertificationRequest) returns (CertificationResponse);
+  rpc ListCertificationsForReview (ListCertificationsForReviewRequest) returns (ListCertificationsForReviewResponse);
 
   // ─── SUPPORTING DOCUMENTS (private R2) ───
 
@@ -481,6 +482,34 @@ message ReviewCertificationRequest {
   // sanciones por cédula, que es el único que bloquea.
   string verified_document_number = 6;
   DocumentIdType verified_document_type = 7;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// COLA DE REVISION (Admin)
+// ═══════════════════════════════════════════════════════════════════════════
+
+message ListCertificationsForReviewRequest {
+  repeated CertificationStatus statuses = 1;
+  string country = 2;
+  repeated RegistryStatus registry_statuses = 3;
+  int32 limit = 4;                       // default 25, techo 100
+  int32 offset = 5;
+}
+
+message CertificationReviewItem {
+  Certification certification = 1;
+  int32 required_documents_total = 2;
+  int32 required_documents_verified = 3;
+  repeated DocumentType missing_documents = 4;
+  int32 documents_uploaded = 5;
+  int32 pending_academic_credentials = 6;
+  google.protobuf.Timestamp waiting_since = 7;
+  bool ready_to_approve = 8;
+}
+
+message ListCertificationsForReviewResponse {
+  repeated CertificationReviewItem items = 1;
+  int32 total_count = 2;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════

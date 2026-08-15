@@ -78,6 +78,11 @@ class VetCertificationServiceStub:
                 request_serializer=vet__certification_dot_vet__certification__pb2.ReviewCertificationRequest.SerializeToString,
                 response_deserializer=vet__certification_dot_vet__certification__pb2.CertificationResponse.FromString,
                 _registered_method=True)
+        self.ListCertificationsForReview = channel.unary_unary(
+                '/vet_certification.VetCertificationService/ListCertificationsForReview',
+                request_serializer=vet__certification_dot_vet__certification__pb2.ListCertificationsForReviewRequest.SerializeToString,
+                response_deserializer=vet__certification_dot_vet__certification__pb2.ListCertificationsForReviewResponse.FromString,
+                _registered_method=True)
         self.GenerateCertificationDocumentUploadUrl = channel.unary_unary(
                 '/vet_certification.VetCertificationService/GenerateCertificationDocumentUploadUrl',
                 request_serializer=vet__certification_dot_vet__certification__pb2.GenerateCertificationDocumentUploadUrlRequest.SerializeToString,
@@ -203,6 +208,12 @@ class VetCertificationServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ListCertificationsForReview(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def GenerateCertificationDocumentUploadUrl(self, request, context):
         """─── SUPPORTING DOCUMENTS (private R2) ───
 
@@ -321,6 +332,11 @@ def add_VetCertificationServiceServicer_to_server(servicer, server):
                     servicer.ReviewCertification,
                     request_deserializer=vet__certification_dot_vet__certification__pb2.ReviewCertificationRequest.FromString,
                     response_serializer=vet__certification_dot_vet__certification__pb2.CertificationResponse.SerializeToString,
+            ),
+            'ListCertificationsForReview': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListCertificationsForReview,
+                    request_deserializer=vet__certification_dot_vet__certification__pb2.ListCertificationsForReviewRequest.FromString,
+                    response_serializer=vet__certification_dot_vet__certification__pb2.ListCertificationsForReviewResponse.SerializeToString,
             ),
             'GenerateCertificationDocumentUploadUrl': grpc.unary_unary_rpc_method_handler(
                     servicer.GenerateCertificationDocumentUploadUrl,
@@ -576,6 +592,33 @@ class VetCertificationService:
             '/vet_certification.VetCertificationService/ReviewCertification',
             vet__certification_dot_vet__certification__pb2.ReviewCertificationRequest.SerializeToString,
             vet__certification_dot_vet__certification__pb2.CertificationResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListCertificationsForReview(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/vet_certification.VetCertificationService/ListCertificationsForReview',
+            vet__certification_dot_vet__certification__pb2.ListCertificationsForReviewRequest.SerializeToString,
+            vet__certification_dot_vet__certification__pb2.ListCertificationsForReviewResponse.FromString,
             options,
             channel_credentials,
             insecure,
