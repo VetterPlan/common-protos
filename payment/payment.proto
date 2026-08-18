@@ -272,6 +272,11 @@ enum WalletReferenceType {
   WALLET_REFERENCE_TYPE_PAYOUT = 3;
   WALLET_REFERENCE_TYPE_PROMO = 4;
   WALLET_REFERENCE_TYPE_REFUND = 5;
+
+  // Un movimiento cuya causa es un expediente de Constancia. Sin esto, la
+  // devolución de una penalidad al veterinario se guardaba con referencia
+  // vacía y no había forma de atarla a la reparación que la ordenó.
+  WALLET_REFERENCE_TYPE_CASE = 6;
 }
 
 enum PaymentMethodType {
@@ -448,6 +453,15 @@ message WalletTransaction {
   string reference_id = 9;
   string description = 10;
   google.protobuf.Timestamp created_at = 11;
+
+  // La clave con la que se pidió el movimiento. La columna existe desde la
+  // migración 011 y el contrato no la devolvía, así que quien necesitara saber
+  // QUÉ acción causó este crédito no podía preguntarlo: el saldo dice cuánto
+  // hay, no de dónde salió.
+  //
+  // Es la referencia causal, no una segunda idempotencia: la fuente sigue
+  // siendo la clave del outbox de quien pidió el movimiento.
+  string idempotency_key = 12;
 }
 
 message ClientPaymentMethod {
