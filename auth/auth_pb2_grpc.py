@@ -94,6 +94,11 @@ class AuthServiceStub:
                 request_serializer=auth_dot_auth__pb2.ResendVerificationEmailRequest.SerializeToString,
                 response_deserializer=auth_dot_auth__pb2.ResendVerificationEmailResponse.FromString,
                 _registered_method=True)
+        self.GetAccountVerification = channel.unary_unary(
+                '/auth.AuthService/GetAccountVerification',
+                request_serializer=auth_dot_auth__pb2.GetAccountVerificationRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.GetAccountVerificationResponse.FromString,
+                _registered_method=True)
         self.AssignRole = channel.unary_unary(
                 '/auth.AuthService/AssignRole',
                 request_serializer=auth_dot_auth__pb2.AssignRoleRequest.SerializeToString,
@@ -227,6 +232,12 @@ class AuthServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def ResendVerificationEmail(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetAccountVerification(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -388,6 +399,11 @@ def add_AuthServiceServicer_to_server(servicer, server):
                     servicer.ResendVerificationEmail,
                     request_deserializer=auth_dot_auth__pb2.ResendVerificationEmailRequest.FromString,
                     response_serializer=auth_dot_auth__pb2.ResendVerificationEmailResponse.SerializeToString,
+            ),
+            'GetAccountVerification': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetAccountVerification,
+                    request_deserializer=auth_dot_auth__pb2.GetAccountVerificationRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.GetAccountVerificationResponse.SerializeToString,
             ),
             'AssignRole': grpc.unary_unary_rpc_method_handler(
                     servicer.AssignRole,
@@ -774,6 +790,33 @@ class AuthService:
             '/auth.AuthService/ResendVerificationEmail',
             auth_dot_auth__pb2.ResendVerificationEmailRequest.SerializeToString,
             auth_dot_auth__pb2.ResendVerificationEmailResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetAccountVerification(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/GetAccountVerification',
+            auth_dot_auth__pb2.GetAccountVerificationRequest.SerializeToString,
+            auth_dot_auth__pb2.GetAccountVerificationResponse.FromString,
             options,
             channel_credentials,
             insecure,

@@ -16,6 +16,7 @@ service AuthService {
   rpc ResetPassword (ResetPasswordRequest) returns (ResetPasswordResponse);
   rpc ChangePassword (ChangePasswordRequest) returns (ChangePasswordResponse);
   rpc ResendVerificationEmail (ResendVerificationEmailRequest) returns (ResendVerificationEmailResponse);
+  rpc GetAccountVerification (GetAccountVerificationRequest) returns (GetAccountVerificationResponse);
 
   // Role Management (NEW - Sprint 3)
   rpc AssignRole (AssignRoleRequest) returns (AssignRoleResponse);
@@ -148,6 +149,17 @@ message ResendVerificationEmailRequest {
 message ResendVerificationEmailResponse {
   bool sent = 1;
   string message = 2;
+}
+
+message GetAccountVerificationRequest {
+  string user_id = 1;
+}
+
+message GetAccountVerificationResponse {
+  bool is_email_verified = 1;
+  bool is_phone_verified = 2;
+  string email = 3;
+  string phone = 4;
 }
 
 message VerifyEmailRequest {
