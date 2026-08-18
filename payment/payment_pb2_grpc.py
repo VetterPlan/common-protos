@@ -118,6 +118,11 @@ class PaymentServiceStub:
                 request_serializer=payment_dot_payment__pb2.GetRefundsRequest.SerializeToString,
                 response_deserializer=payment_dot_payment__pb2.RefundsResponse.FromString,
                 _registered_method=True)
+        self.GetRefundsByClient = channel.unary_unary(
+                '/payment.PaymentService/GetRefundsByClient',
+                request_serializer=payment_dot_payment__pb2.GetRefundsByClientRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.RefundsResponse.FromString,
+                _registered_method=True)
         self.GetClientCollectionStatus = channel.unary_unary(
                 '/payment.PaymentService/GetClientCollectionStatus',
                 request_serializer=payment_dot_payment__pb2.GetClientCollectionStatusRequest.SerializeToString,
@@ -406,6 +411,16 @@ class PaymentServiceServicer:
 
     def GetRefunds(self, request, context):
         """Get refunds for a payment.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetRefundsByClient(self, request, context):
+        """Los reembolsos de un cliente, acotados por su perfil EN EL ORIGEN. Sin
+        esto, enumerarlos exigía recorrer sus pagos uno a uno, y no había forma de
+        partir del cliente — que es de lo único que dispone quien pregunta por qué
+        no le ha llegado su dinero.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -732,6 +747,11 @@ def add_PaymentServiceServicer_to_server(servicer, server):
             'GetRefunds': grpc.unary_unary_rpc_method_handler(
                     servicer.GetRefunds,
                     request_deserializer=payment_dot_payment__pb2.GetRefundsRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.RefundsResponse.SerializeToString,
+            ),
+            'GetRefundsByClient': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetRefundsByClient,
+                    request_deserializer=payment_dot_payment__pb2.GetRefundsByClientRequest.FromString,
                     response_serializer=payment_dot_payment__pb2.RefundsResponse.SerializeToString,
             ),
             'GetClientCollectionStatus': grpc.unary_unary_rpc_method_handler(
@@ -1291,6 +1311,33 @@ class PaymentService:
             target,
             '/payment.PaymentService/GetRefunds',
             payment_dot_payment__pb2.GetRefundsRequest.SerializeToString,
+            payment_dot_payment__pb2.RefundsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetRefundsByClient(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/GetRefundsByClient',
+            payment_dot_payment__pb2.GetRefundsByClientRequest.SerializeToString,
             payment_dot_payment__pb2.RefundsResponse.FromString,
             options,
             channel_credentials,

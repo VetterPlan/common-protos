@@ -73,6 +73,12 @@ service PaymentService {
   // Get refunds for a payment.
   rpc GetRefunds (GetRefundsRequest) returns (RefundsResponse);
 
+  // Los reembolsos de un cliente, acotados por su perfil EN EL ORIGEN. Sin
+  // esto, enumerarlos exigía recorrer sus pagos uno a uno, y no había forma de
+  // partir del cliente — que es de lo único que dispone quien pregunta por qué
+  // no le ha llegado su dinero.
+  rpc GetRefundsByClient (GetRefundsByClientRequest) returns (RefundsResponse);
+
   // Cobros pendientes de un cliente: servicios ya prestados que la pasarela no
   // pudo cobrar. Lo consulta appointment-service antes de aceptar una cita
   // nueva, y la app para avisarle al dueño que tiene un pago pendiente.
@@ -495,6 +501,15 @@ message Refund {
   string idempotency_key = 12;
   google.protobuf.Timestamp created_at = 13;
   google.protobuf.Timestamp completed_at = 14;
+
+  // De quién es este reembolso. Sale del pago al que pertenece —no hay columna
+  // nueva en `refunds`: duplicar el dueño crearía dos verdades sobre el mismo
+  // hecho, que es lo que §20 del plan de VetterPay rechaza—. Se revela aquí
+  // para que quien autorice no tenga que encadenar servicios para deducirlo.
+  //
+  // NO confundir con `refund_owner` (F3-4), que dice quién ASUME el coste. Este
+  // dice quién lo RECIBE, y es el único que sirve para autorizar una lectura.
+  string client_profile_id = 15;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -610,6 +625,12 @@ message ListPaymentsByAppointmentResponse {
 
 message GetRefundsRequest {
   string payment_id = 1;
+}
+
+message GetRefundsByClientRequest {
+  string client_profile_id = 1;
+  int32  limit  = 2;   // 0 = el default del servicio
+  int32  offset = 3;
 }
 
 message GetClientCollectionStatusRequest {
