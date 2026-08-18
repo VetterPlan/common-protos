@@ -47,6 +47,13 @@ service ConstanciaService {
   rpc GetMemory       (GetMemoryRequest)       returns (MemoryList);
   rpc ForgetMemory    (ForgetMemoryRequest)    returns (ForgetProof);
   rpc IngestSignal    (IngestSignalRequest)    returns (IngestSignalResponse);
+
+  // La conversación del expediente, aparte del caso entero.
+  //
+  // `GetCase` sirve para pintarlo todo una vez; para un chat obliga a traerse
+  // hechos, recibos y compromisos en cada mensaje. Con `after_seq` la app pide
+  // solo lo que no tiene, que es lo que el anuncio en vivo le dice que llegó.
+  rpc ListCaseMessages (ListCaseMessagesRequest) returns (CaseMessageList);
 }
 
 // ─── Contexto de acceso ────────────────────────────────────────────────────
@@ -199,6 +206,38 @@ message CaseTimelineEntry {
   string                    type    = 2;
   string                    actor   = 3;
   google.protobuf.Struct    payload = 4;
+}
+
+// Quién escribió. El rol, no la persona: al titular no se le dice qué agente
+// lleva su caso, y al equipo le basta saber que habla el dueño.
+enum CaseMessageAuthor {
+  CASE_MESSAGE_AUTHOR_UNSPECIFIED = 0;
+  CASE_MESSAGE_AUTHOR_OWNER       = 1;
+  CASE_MESSAGE_AUTHOR_TEAM        = 2;
+}
+
+message CaseMessage {
+  // Orden estable dentro del expediente. Es la clave con la que la app pide lo
+  // nuevo; no se reutiliza ni se reordena.
+  int64                     seq     = 1;
+  CaseMessageAuthor         author  = 2;
+  string                    text    = 3;
+  google.protobuf.Timestamp sent_at = 4;
+}
+
+message ListCaseMessagesRequest {
+  string        case_id   = 1;
+  // 0 trae la conversación desde el principio.
+  int64         after_seq = 2;
+  int32         limit     = 3;
+  AccessContext access    = 4;
+}
+
+message CaseMessageList {
+  repeated CaseMessage messages = 1;
+  // El `seq` del último mensaje devuelto, para la siguiente llamada.
+  int64                last_seq = 2;
+  bool                 has_more = 3;
 }
 
 message Case {

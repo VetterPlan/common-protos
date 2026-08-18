@@ -140,6 +140,10 @@ enum NotificationEvent {
   NOTIFICATION_EVENT_CONSTANCIA_DECISION_NEEDED  = 31;
   NOTIFICATION_EVENT_CONSTANCIA_HUMAN_TOOK_OVER  = 32;
   NOTIFICATION_EVENT_CONSTANCIA_RESOLVED         = 33;
+  // Le escribieron en un expediente suyo. Evento propio y no reutilizado: el
+  // canal de Android sale del evento, y la app abre la conversación, no el
+  // caso.
+  NOTIFICATION_EVENT_CONSTANCIA_NEW_MESSAGE      = 37;
 
   // Certificacion profesional del vet. Su licencia decide si puede trabajar, y
   // hasta ahora se enteraba abriendo la app.

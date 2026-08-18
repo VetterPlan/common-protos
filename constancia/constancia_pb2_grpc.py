@@ -147,6 +147,11 @@ class ConstanciaServiceStub:
                 request_serializer=constancia_dot_constancia__pb2.IngestSignalRequest.SerializeToString,
                 response_deserializer=constancia_dot_constancia__pb2.IngestSignalResponse.FromString,
                 _registered_method=True)
+        self.ListCaseMessages = channel.unary_unary(
+                '/constancia.ConstanciaService/ListCaseMessages',
+                request_serializer=constancia_dot_constancia__pb2.ListCaseMessagesRequest.SerializeToString,
+                response_deserializer=constancia_dot_constancia__pb2.CaseMessageList.FromString,
+                _registered_method=True)
 
 
 class ConstanciaServiceServicer:
@@ -283,6 +288,17 @@ class ConstanciaServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ListCaseMessages(self, request, context):
+        """La conversación del expediente, aparte del caso entero.
+
+        `GetCase` sirve para pintarlo todo una vez; para un chat obliga a traerse
+        hechos, recibos y compromisos en cada mensaje. Con `after_seq` la app pide
+        solo lo que no tiene, que es lo que el anuncio en vivo le dice que llegó.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ConstanciaServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -375,6 +391,11 @@ def add_ConstanciaServiceServicer_to_server(servicer, server):
                     servicer.IngestSignal,
                     request_deserializer=constancia_dot_constancia__pb2.IngestSignalRequest.FromString,
                     response_serializer=constancia_dot_constancia__pb2.IngestSignalResponse.SerializeToString,
+            ),
+            'ListCaseMessages': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListCaseMessages,
+                    request_deserializer=constancia_dot_constancia__pb2.ListCaseMessagesRequest.FromString,
+                    response_serializer=constancia_dot_constancia__pb2.CaseMessageList.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -886,6 +907,33 @@ class ConstanciaService:
             '/constancia.ConstanciaService/IngestSignal',
             constancia_dot_constancia__pb2.IngestSignalRequest.SerializeToString,
             constancia_dot_constancia__pb2.IngestSignalResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListCaseMessages(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/constancia.ConstanciaService/ListCaseMessages',
+            constancia_dot_constancia__pb2.ListCaseMessagesRequest.SerializeToString,
+            constancia_dot_constancia__pb2.CaseMessageList.FromString,
             options,
             channel_credentials,
             insecure,
