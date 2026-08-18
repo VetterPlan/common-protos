@@ -39,6 +39,13 @@ service RatingService {
 
   // ─── INTEGRIDAD ───
   rpc ContestRatingEvent (ContestRatingEventRequest) returns (ContestResponse);
+
+  // Un hecho del ledger por su id, para quien tenga que juzgar una impugnación.
+  // Devuelve `vet_profile_id` porque quien autoriza no puede deducir de quién es
+  // un hecho: sin eso, Constancia abría un expediente sobre algo que no podía
+  // mirar. La respuesta NO lleva el segmento ni el peso — son cómo se calcula la
+  // reputación, no qué se le imputa al veterinario.
+  rpc GetRatingEvent (GetRatingEventRequest) returns (RatingEventResponse);
   rpc ResolveContest (ResolveContestRequest) returns (ContestResponse);
 
   // ─── MIGRACIÓN (interno, se retira tras el backfill) ───
@@ -367,6 +374,26 @@ message RecordMeasuredSignalResponse {
 // ═══════════════════════════════════════════════════════════════════════════
 // IMPUGNACIÓN
 // ═══════════════════════════════════════════════════════════════════════════
+
+message GetRatingEventRequest {
+  string rating_event_id = 1;
+}
+
+message RatingEvent {
+  string id = 1;
+  string vet_profile_id = 2;          // el dueño, revelado: no se deduce
+  string appointment_id = 3;          // vacío si el hecho no nace de una cita
+  string source = 4;                  // "measured", "review", "outcome"…
+  string kind = 5;                    // qué se midió: "punctuality", "reconsult"…
+  string dimension = 6;
+  double value = 7;
+  string status = 8;                  // "active", "contested", "annulled"
+  google.protobuf.Timestamp occurred_at = 9;
+}
+
+message RatingEventResponse {
+  RatingEvent event = 1;
+}
 
 message ContestRatingEventRequest {
   string rating_event_id = 1;

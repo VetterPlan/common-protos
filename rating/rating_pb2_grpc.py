@@ -99,6 +99,11 @@ class RatingServiceStub:
                 request_serializer=rating_dot_rating__pb2.ContestRatingEventRequest.SerializeToString,
                 response_deserializer=rating_dot_rating__pb2.ContestResponse.FromString,
                 _registered_method=True)
+        self.GetRatingEvent = channel.unary_unary(
+                '/rating.RatingService/GetRatingEvent',
+                request_serializer=rating_dot_rating__pb2.GetRatingEventRequest.SerializeToString,
+                response_deserializer=rating_dot_rating__pb2.RatingEventResponse.FromString,
+                _registered_method=True)
         self.ResolveContest = channel.unary_unary(
                 '/rating.RatingService/ResolveContest',
                 request_serializer=rating_dot_rating__pb2.ResolveContestRequest.SerializeToString,
@@ -194,6 +199,17 @@ class RatingServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetRatingEvent(self, request, context):
+        """Un hecho del ledger por su id, para quien tenga que juzgar una impugnación.
+        Devuelve `vet_profile_id` porque quien autoriza no puede deducir de quién es
+        un hecho: sin eso, Constancia abría un expediente sobre algo que no podía
+        mirar. La respuesta NO lleva el segmento ni el peso — son cómo se calcula la
+        reputación, no qué se le imputa al veterinario.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def ResolveContest(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -259,6 +275,11 @@ def add_RatingServiceServicer_to_server(servicer, server):
                     servicer.ContestRatingEvent,
                     request_deserializer=rating_dot_rating__pb2.ContestRatingEventRequest.FromString,
                     response_serializer=rating_dot_rating__pb2.ContestResponse.SerializeToString,
+            ),
+            'GetRatingEvent': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetRatingEvent,
+                    request_deserializer=rating_dot_rating__pb2.GetRatingEventRequest.FromString,
+                    response_serializer=rating_dot_rating__pb2.RatingEventResponse.SerializeToString,
             ),
             'ResolveContest': grpc.unary_unary_rpc_method_handler(
                     servicer.ResolveContest,
@@ -556,6 +577,33 @@ class RatingService:
             '/rating.RatingService/ContestRatingEvent',
             rating_dot_rating__pb2.ContestRatingEventRequest.SerializeToString,
             rating_dot_rating__pb2.ContestResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetRatingEvent(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/rating.RatingService/GetRatingEvent',
+            rating_dot_rating__pb2.GetRatingEventRequest.SerializeToString,
+            rating_dot_rating__pb2.RatingEventResponse.FromString,
             options,
             channel_credentials,
             insecure,
