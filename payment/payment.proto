@@ -146,6 +146,16 @@ service PaymentService {
   // Get vet earnings summary by period.
   rpc GetVetEarnings (GetVetEarningsRequest) returns (VetEarningsResponse);
 
+  // El dinero del veterinario que está RETENIDO, con el pago concreto que lo
+  // retiene. `GetVetEarnings` da el total (`pending_payout`) y con un total no
+  // se puede abrir un expediente: `vet.earnings_blocked` identifica su caso por
+  // `payment_id`, porque el vet cobra EN LA CAPTURA y es esa captura la que
+  // falló.
+  //
+  // No devuelve nada del cliente —ni el total que pagó, ni su medio de pago, ni
+  // el estado de la pasarela—: el expediente es del vet.
+  rpc GetVetBlockedEarnings (GetVetBlockedEarningsRequest) returns (VetBlockedEarningsResponse);
+
   // Get client spending history by period (S2-11).
   rpc GetClientSpendingHistory (GetClientSpendingHistoryRequest) returns (ClientSpendingHistoryResponse);
 
@@ -807,6 +817,27 @@ message GetBankAccountsRequest {
 }
 
 // ─── Vet Earnings ───
+
+message GetVetBlockedEarningsRequest {
+  string vet_profile_id = 1;
+  int32  limit  = 2;   // 0 = el default del servicio
+}
+
+message BlockedEarning {
+  string payment_id = 1;
+  string vet_profile_id = 2;          // el dueño, revelado: no se deduce
+  string appointment_id = 3;
+  double vet_payout_amount = 4;       // lo suyo, no lo que pagó el cliente
+  PaymentStatus payment_status = 5;
+  google.protobuf.Timestamp capture_failed_at = 6;
+  int32  capture_retry_count = 7;
+  google.protobuf.Timestamp capture_next_retry_at = 8;
+}
+
+message VetBlockedEarningsResponse {
+  repeated BlockedEarning earnings = 1;
+  int32 total_count = 2;
+}
 
 message GetVetEarningsRequest {
   string vet_profile_id = 1;

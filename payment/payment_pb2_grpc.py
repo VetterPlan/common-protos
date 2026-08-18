@@ -218,6 +218,11 @@ class PaymentServiceStub:
                 request_serializer=payment_dot_payment__pb2.GetVetEarningsRequest.SerializeToString,
                 response_deserializer=payment_dot_payment__pb2.VetEarningsResponse.FromString,
                 _registered_method=True)
+        self.GetVetBlockedEarnings = channel.unary_unary(
+                '/payment.PaymentService/GetVetBlockedEarnings',
+                request_serializer=payment_dot_payment__pb2.GetVetBlockedEarningsRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.VetBlockedEarningsResponse.FromString,
+                _registered_method=True)
         self.GetClientSpendingHistory = channel.unary_unary(
                 '/payment.PaymentService/GetClientSpendingHistory',
                 request_serializer=payment_dot_payment__pb2.GetClientSpendingHistoryRequest.SerializeToString,
@@ -570,6 +575,20 @@ class PaymentServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetVetBlockedEarnings(self, request, context):
+        """El dinero del veterinario que está RETENIDO, con el pago concreto que lo
+        retiene. `GetVetEarnings` da el total (`pending_payout`) y con un total no
+        se puede abrir un expediente: `vet.earnings_blocked` identifica su caso por
+        `payment_id`, porque el vet cobra EN LA CAPTURA y es esa captura la que
+        falló.
+
+        No devuelve nada del cliente —ni el total que pagó, ni su medio de pago, ni
+        el estado de la pasarela—: el expediente es del vet.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def GetClientSpendingHistory(self, request, context):
         """Get client spending history by period (S2-11).
         """
@@ -848,6 +867,11 @@ def add_PaymentServiceServicer_to_server(servicer, server):
                     servicer.GetVetEarnings,
                     request_deserializer=payment_dot_payment__pb2.GetVetEarningsRequest.FromString,
                     response_serializer=payment_dot_payment__pb2.VetEarningsResponse.SerializeToString,
+            ),
+            'GetVetBlockedEarnings': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetVetBlockedEarnings,
+                    request_deserializer=payment_dot_payment__pb2.GetVetBlockedEarningsRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.VetBlockedEarningsResponse.SerializeToString,
             ),
             'GetClientSpendingHistory': grpc.unary_unary_rpc_method_handler(
                     servicer.GetClientSpendingHistory,
@@ -1852,6 +1876,33 @@ class PaymentService:
             '/payment.PaymentService/GetVetEarnings',
             payment_dot_payment__pb2.GetVetEarningsRequest.SerializeToString,
             payment_dot_payment__pb2.VetEarningsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetVetBlockedEarnings(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/GetVetBlockedEarnings',
+            payment_dot_payment__pb2.GetVetBlockedEarningsRequest.SerializeToString,
+            payment_dot_payment__pb2.VetBlockedEarningsResponse.FromString,
             options,
             channel_credentials,
             insecure,
