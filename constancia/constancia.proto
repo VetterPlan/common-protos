@@ -166,6 +166,23 @@ message PlannedAction {
   repeated string        adjustable_params = 6;
 }
 
+// En qué punto está el plan. `requires_confirmation` dice lo que el guardián
+// PIDIÓ; `status` dice dónde está el plan AHORA, que no es lo mismo: un plan
+// detenido porque nada irreversible se apoya en una inferencia queda esperando
+// a una persona con `requires_confirmation = false`. Deducir el estado de esa
+// bandera es la clase de inferencia que este contrato existe para evitar.
+enum PlanStatus {
+  PLAN_STATUS_UNSPECIFIED           = 0;
+  PLAN_STATUS_DRAFT                 = 1;
+  PLAN_STATUS_APPROVED              = 2;
+  PLAN_STATUS_REJECTED              = 3;
+  PLAN_STATUS_AWAITING_CONFIRMATION = 4;
+  PLAN_STATUS_CONFIRMED             = 5;
+  PLAN_STATUS_EXECUTING             = 6;
+  PLAN_STATUS_EXECUTED              = 7;
+  PLAN_STATUS_FAILED                = 8;
+}
+
 message ActionPlan {
   string                 id                     = 1;
   repeated PlannedAction actions                = 2;
@@ -173,6 +190,7 @@ message ActionPlan {
   string                 total_money_cop        = 4;
   bool                   requires_confirmation  = 5;
   int32                  risk_level             = 6;
+  PlanStatus             status                 = 7;
 }
 
 message Receipt {
