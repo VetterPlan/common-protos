@@ -59,6 +59,18 @@ service ConstanciaService {
   // mensaje aparezca en una pantalla no es haberlo leído, y el frontend no
   // puede decidirlo por su cuenta.
   rpc MarkCaseMessagesRead (MarkCaseMessagesReadRequest) returns (CaseReadState);
+
+  // Una persona del equipo PROPONE una reparación.
+  //
+  // `ConfirmPlan` y `AdjustPlan` solo aprueban o afinan lo que la máquina ya
+  // propuso, y cinco de las trece rutas de escalamiento no llegan a crear
+  // ningún plan. Sin esto, reparar de verdad exigía ir al otro servicio a mano:
+  // el trabajo ocurría y el expediente no se enteraba.
+  //
+  // Pasa por el MISMO guardián que un plan automático. La persona no es una
+  // puerta trasera; es otra fuente de propuestas, y su palabra entra como hecho
+  // no verificado con su nombre encima.
+  rpc ProposeRepair (ProposeRepairRequest) returns (CaseResponse);
 }
 
 // ─── Contexto de acceso ────────────────────────────────────────────────────
@@ -254,6 +266,20 @@ message MarkCaseMessagesReadRequest {
   // conserva el que había.
   int64         up_to_seq = 2;
   AccessContext access    = 3;
+}
+
+message ProposedAction {
+  string                 intent = 1;
+  map<string, string>    params = 2;
+}
+
+message ProposeRepairRequest {
+  string                  case_id       = 1;
+  repeated ProposedAction actions       = 2;
+  // Por qué. Es la única evidencia que aporta una persona, y sin ella el
+  // expediente registra una reparación sin nada que la sostenga.
+  string                  justification = 3;
+  AccessContext           access        = 4;
 }
 
 message CaseReadState {

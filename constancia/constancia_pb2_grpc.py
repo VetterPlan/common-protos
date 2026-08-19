@@ -157,6 +157,11 @@ class ConstanciaServiceStub:
                 request_serializer=constancia_dot_constancia__pb2.MarkCaseMessagesReadRequest.SerializeToString,
                 response_deserializer=constancia_dot_constancia__pb2.CaseReadState.FromString,
                 _registered_method=True)
+        self.ProposeRepair = channel.unary_unary(
+                '/constancia.ConstanciaService/ProposeRepair',
+                request_serializer=constancia_dot_constancia__pb2.ProposeRepairRequest.SerializeToString,
+                response_deserializer=constancia_dot_constancia__pb2.CaseResponse.FromString,
+                _registered_method=True)
 
 
 class ConstanciaServiceServicer:
@@ -313,6 +318,22 @@ class ConstanciaServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ProposeRepair(self, request, context):
+        """Una persona del equipo PROPONE una reparación.
+
+        `ConfirmPlan` y `AdjustPlan` solo aprueban o afinan lo que la máquina ya
+        propuso, y cinco de las trece rutas de escalamiento no llegan a crear
+        ningún plan. Sin esto, reparar de verdad exigía ir al otro servicio a mano:
+        el trabajo ocurría y el expediente no se enteraba.
+
+        Pasa por el MISMO guardián que un plan automático. La persona no es una
+        puerta trasera; es otra fuente de propuestas, y su palabra entra como hecho
+        no verificado con su nombre encima.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ConstanciaServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -415,6 +436,11 @@ def add_ConstanciaServiceServicer_to_server(servicer, server):
                     servicer.MarkCaseMessagesRead,
                     request_deserializer=constancia_dot_constancia__pb2.MarkCaseMessagesReadRequest.FromString,
                     response_serializer=constancia_dot_constancia__pb2.CaseReadState.SerializeToString,
+            ),
+            'ProposeRepair': grpc.unary_unary_rpc_method_handler(
+                    servicer.ProposeRepair,
+                    request_deserializer=constancia_dot_constancia__pb2.ProposeRepairRequest.FromString,
+                    response_serializer=constancia_dot_constancia__pb2.CaseResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -980,6 +1006,33 @@ class ConstanciaService:
             '/constancia.ConstanciaService/MarkCaseMessagesRead',
             constancia_dot_constancia__pb2.MarkCaseMessagesReadRequest.SerializeToString,
             constancia_dot_constancia__pb2.CaseReadState.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ProposeRepair(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/constancia.ConstanciaService/ProposeRepair',
+            constancia_dot_constancia__pb2.ProposeRepairRequest.SerializeToString,
+            constancia_dot_constancia__pb2.CaseResponse.FromString,
             options,
             channel_credentials,
             insecure,
