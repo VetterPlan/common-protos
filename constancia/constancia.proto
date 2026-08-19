@@ -54,6 +54,11 @@ service ConstanciaService {
   // hechos, recibos y compromisos en cada mensaje. Con `after_seq` la app pide
   // solo lo que no tiene, que es lo que el anuncio en vivo le dice que llegó.
   rpc ListCaseMessages (ListCaseMessagesRequest) returns (CaseMessageList);
+
+  // Hasta dónde ha leído quien pregunta. El acuse es del EXPEDIENTE: que un
+  // mensaje aparezca en una pantalla no es haberlo leído, y el frontend no
+  // puede decidirlo por su cuenta.
+  rpc MarkCaseMessagesRead (MarkCaseMessagesReadRequest) returns (CaseReadState);
 }
 
 // ─── Contexto de acceso ────────────────────────────────────────────────────
@@ -238,6 +243,25 @@ message CaseMessageList {
   // El `seq` del último mensaje devuelto, para la siguiente llamada.
   int64                last_seq = 2;
   bool                 has_more = 3;
+  // Hasta dónde ha leído **el otro lado**. Es lo que se pinta como «leído»,
+  // y sale de aquí: nunca de que el mensaje esté en pantalla.
+  int64                other_side_read_up_to_seq = 4;
+}
+
+message MarkCaseMessagesReadRequest {
+  string        case_id   = 1;
+  // Hasta dónde se leyó. El marcador no retrocede: si llega uno menor, se
+  // conserva el que había.
+  int64         up_to_seq = 2;
+  AccessContext access    = 3;
+}
+
+message CaseReadState {
+  string case_id                   = 1;
+  // Lo que quedó registrado, que puede no ser lo pedido: no se puede haber
+  // leído más allá del último mensaje que existe.
+  int64  read_up_to_seq            = 2;
+  int64  other_side_read_up_to_seq = 3;
 }
 
 message Case {

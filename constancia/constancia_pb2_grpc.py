@@ -152,6 +152,11 @@ class ConstanciaServiceStub:
                 request_serializer=constancia_dot_constancia__pb2.ListCaseMessagesRequest.SerializeToString,
                 response_deserializer=constancia_dot_constancia__pb2.CaseMessageList.FromString,
                 _registered_method=True)
+        self.MarkCaseMessagesRead = channel.unary_unary(
+                '/constancia.ConstanciaService/MarkCaseMessagesRead',
+                request_serializer=constancia_dot_constancia__pb2.MarkCaseMessagesReadRequest.SerializeToString,
+                response_deserializer=constancia_dot_constancia__pb2.CaseReadState.FromString,
+                _registered_method=True)
 
 
 class ConstanciaServiceServicer:
@@ -299,6 +304,15 @@ class ConstanciaServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def MarkCaseMessagesRead(self, request, context):
+        """Hasta dónde ha leído quien pregunta. El acuse es del EXPEDIENTE: que un
+        mensaje aparezca en una pantalla no es haberlo leído, y el frontend no
+        puede decidirlo por su cuenta.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ConstanciaServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -396,6 +410,11 @@ def add_ConstanciaServiceServicer_to_server(servicer, server):
                     servicer.ListCaseMessages,
                     request_deserializer=constancia_dot_constancia__pb2.ListCaseMessagesRequest.FromString,
                     response_serializer=constancia_dot_constancia__pb2.CaseMessageList.SerializeToString,
+            ),
+            'MarkCaseMessagesRead': grpc.unary_unary_rpc_method_handler(
+                    servicer.MarkCaseMessagesRead,
+                    request_deserializer=constancia_dot_constancia__pb2.MarkCaseMessagesReadRequest.FromString,
+                    response_serializer=constancia_dot_constancia__pb2.CaseReadState.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -934,6 +953,33 @@ class ConstanciaService:
             '/constancia.ConstanciaService/ListCaseMessages',
             constancia_dot_constancia__pb2.ListCaseMessagesRequest.SerializeToString,
             constancia_dot_constancia__pb2.CaseMessageList.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def MarkCaseMessagesRead(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/constancia.ConstanciaService/MarkCaseMessagesRead',
+            constancia_dot_constancia__pb2.MarkCaseMessagesReadRequest.SerializeToString,
+            constancia_dot_constancia__pb2.CaseReadState.FromString,
             options,
             channel_credentials,
             insecure,
