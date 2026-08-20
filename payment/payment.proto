@@ -1082,9 +1082,17 @@ message GetVetCommissionTierResponse {
 // ADMIN REPORTS
 // ═══════════════════════════════════════════════════════════════════════════
 
+enum ReportGranularity {
+  REPORT_GRANULARITY_UNSPECIFIED = 0;
+  REPORT_GRANULARITY_DAY = 1;
+  REPORT_GRANULARITY_WEEK = 2;
+  REPORT_GRANULARITY_MONTH = 3;
+}
+
 message AdminReportIncomeRequest {
   string period_start = 1;        // ISO 8601 date "YYYY-MM-DD"
   string period_end = 2;         // ISO 8601 date "YYYY-MM-DD"
+  ReportGranularity granularity = 3;
 }
 
 message IncomeGlobalSummary {
@@ -1106,10 +1114,19 @@ message IncomeByService {
   int32 appointment_count = 3;
 }
 
+message IncomeBucket {
+  string bucket_start_date = 1;
+  double total_revenue = 2;
+  double platform_fees = 3;
+  double vet_payouts = 4;
+  int32 payment_count = 5;
+}
+
 message AdminReportIncomeResponse {
   IncomeGlobalSummary global = 1;
   repeated IncomeByVet by_vet = 2;
   repeated IncomeByService by_service = 3;
+  repeated IncomeBucket buckets = 4;
 }
 
 message AdminTopVetsByIncomeRequest {

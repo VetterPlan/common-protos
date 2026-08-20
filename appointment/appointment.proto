@@ -890,9 +890,17 @@ message GetAppointmentTrackingResponse {
 // ADMIN REPORTS
 // ═══════════════════════════════════════════════════════════════════════════
 
+enum ReportGranularity {
+  REPORT_GRANULARITY_UNSPECIFIED = 0;
+  REPORT_GRANULARITY_DAY = 1;
+  REPORT_GRANULARITY_WEEK = 2;
+  REPORT_GRANULARITY_MONTH = 3;
+}
+
 message AdminReportAppointmentsRequest {
   string period_start = 1;       // ISO 8601 date "YYYY-MM-DD"
   string period_end = 2;         // ISO 8601 date "YYYY-MM-DD"
+  ReportGranularity granularity = 3;
 }
 
 message AppointmentCountByStatus {
@@ -900,9 +908,16 @@ message AppointmentCountByStatus {
   int32 count = 2;
 }
 
+message AppointmentBucket {
+  string bucket_start_date = 1;
+  int32 total = 2;
+  repeated AppointmentCountByStatus by_status = 3;
+}
+
 message AdminReportAppointmentsResponse {
   int32 total = 1;
   repeated AppointmentCountByStatus by_status = 2;
+  repeated AppointmentBucket buckets = 3;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
