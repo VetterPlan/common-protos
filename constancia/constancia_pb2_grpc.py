@@ -304,49 +304,25 @@ class ConstanciaServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def ListCaseMessages(self, request, context):
-        """La conversación del expediente, aparte del caso entero.
-
-        `GetCase` sirve para pintarlo todo una vez; para un chat obliga a traerse
-        hechos, recibos y compromisos en cada mensaje. Con `after_seq` la app pide
-        solo lo que no tiene, que es lo que el anuncio en vivo le dice que llegó.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def MarkCaseMessagesRead(self, request, context):
-        """Hasta dónde ha leído quien pregunta. El acuse es del EXPEDIENTE: que un
-        mensaje aparezca en una pantalla no es haberlo leído, y el frontend no
-        puede decidirlo por su cuenta.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ProposeRepair(self, request, context):
-        """Una persona del equipo PROPONE una reparación.
-
-        `ConfirmPlan` y `AdjustPlan` solo aprueban o afinan lo que la máquina ya
-        propuso, y cinco de las trece rutas de escalamiento no llegan a crear
-        ningún plan. Sin esto, reparar de verdad exigía ir al otro servicio a mano:
-        el trabajo ocurría y el expediente no se enteraba.
-
-        Pasa por el MISMO guardián que un plan automático. La persona no es una
-        puerta trasera; es otra fuente de propuestas, y su palabra entra como hecho
-        no verificado con su nombre encima.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetActionCatalog(self, request, context):
-        """Qué puede proponer una persona sobre ESTE expediente, y qué pide cada cosa.
-
-        Va acotado al caso a propósito: la celda de la matriz decide qué se puede
-        ejecutar, así que un catálogo estático ofrecería acciones que el guardián
-        rechazaría por scopes. Sin esto, el operador teclea el `intent` de memoria
-        y descubre los parámetros por rechazo.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')

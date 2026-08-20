@@ -114,9 +114,6 @@ message Provenance {
   string                    event_id    = 4;
 }
 
-// El texto ya viene renderizado por el servicio: el cliente NO compone hechos.
-// `values` viaja para que el frontend pueda destacar campos, no para rearmar
-// la frase.
 message FactCard {
   string                 id           = 1;
   string                 type         = 2;
@@ -127,12 +124,13 @@ message FactCard {
   int32                  freshness_s  = 7;
 }
 
-// Una verificación que NO se pudo hacer. Mostrarla es lo que hace creíbles las
-// que sí salieron: se dice explícitamente si afecta o no la conclusión.
 message UnverifiedCheck {
   string tool             = 1;
   string reason           = 2;
   bool   affects_outcome  = 3;
+  string tool_label       = 4;
+  string reason_text      = 5;
+  string detail           = 6;
 }
 
 // ─── Acciones y constancias ────────────────────────────────────────────────
@@ -146,11 +144,6 @@ message PlannedAction {
   repeated string        adjustable_params = 6;
 }
 
-// En qué punto está el plan. `requires_confirmation` dice lo que el guardián
-// PIDIÓ; `status` dice dónde está el plan AHORA, que no es lo mismo: un plan
-// detenido porque nada irreversible se apoya en una inferencia queda esperando
-// a una persona con `requires_confirmation = false`. Deducir el estado de esa
-// bandera es la clase de inferencia que este contrato existe para evitar.
 enum PlanStatus {
   PLAN_STATUS_UNSPECIFIED           = 0;
   PLAN_STATUS_DRAFT                 = 1;
@@ -267,10 +260,9 @@ message CaseTimelineEntry {
   string                    type    = 2;
   string                    actor   = 3;
   google.protobuf.Struct    payload = 4;
+  string                    label   = 5;
 }
 
-// Quién escribió. El rol, no la persona: al titular no se le dice qué agente
-// lleva su caso, y al equipo le basta saber que habla el dueño.
 enum CaseMessageAuthor {
   CASE_MESSAGE_AUTHOR_UNSPECIFIED = 0;
   CASE_MESSAGE_AUTHOR_OWNER       = 1;
@@ -278,8 +270,6 @@ enum CaseMessageAuthor {
 }
 
 message CaseMessage {
-  // Orden estable dentro del expediente. Es la clave con la que la app pide lo
-  // nuevo; no se reutiliza ni se reordena.
   int64                     seq     = 1;
   CaseMessageAuthor         author  = 2;
   string                    text    = 3;
@@ -288,7 +278,6 @@ message CaseMessage {
 
 message ListCaseMessagesRequest {
   string        case_id   = 1;
-  // 0 trae la conversación desde el principio.
   int64         after_seq = 2;
   int32         limit     = 3;
   AccessContext access    = 4;
@@ -296,18 +285,13 @@ message ListCaseMessagesRequest {
 
 message CaseMessageList {
   repeated CaseMessage messages = 1;
-  // El `seq` del último mensaje devuelto, para la siguiente llamada.
   int64                last_seq = 2;
   bool                 has_more = 3;
-  // Hasta dónde ha leído **el otro lado**. Es lo que se pinta como «leído»,
-  // y sale de aquí: nunca de que el mensaje esté en pantalla.
   int64                other_side_read_up_to_seq = 4;
 }
 
 message MarkCaseMessagesReadRequest {
   string        case_id   = 1;
-  // Hasta dónde se leyó. El marcador no retrocede: si llega uno menor, se
-  // conserva el que había.
   int64         up_to_seq = 2;
   AccessContext access    = 3;
 }
@@ -320,16 +304,12 @@ message ProposedAction {
 message ProposeRepairRequest {
   string                  case_id       = 1;
   repeated ProposedAction actions       = 2;
-  // Por qué. Es la única evidencia que aporta una persona, y sin ella el
-  // expediente registra una reparación sin nada que la sostenga.
   string                  justification = 3;
   AccessContext           access        = 4;
 }
 
 message CaseReadState {
   string case_id                   = 1;
-  // Lo que quedó registrado, que puede no ser lo pedido: no se puede haber
-  // leído más allá del último mensaje que existe.
   int64  read_up_to_seq            = 2;
   int64  other_side_read_up_to_seq = 3;
 }
@@ -355,6 +335,7 @@ message Case {
   google.protobuf.Timestamp  resolved_at    = 18;
   bool                       used_llm       = 19;
   string                     escalation_reason = 20;
+  string                     escalation_text   = 23;
   Incident                   incident       = 21;
   CaseParty                  party          = 22;
 }
@@ -422,18 +403,11 @@ message TrustMetricsResponse {
   int32  chose_human         = 2;
   int32  moot                = 3;
   double voluntary_ratio     = 4;   // stayed / (stayed + chose_human); -1 si no hay datos
-
-  // ── Prenda: compromisos ──
   int32  commitments_kept    = 5;
   int32  commitments_broken  = 6;
   int32  commitments_pending = 7;
-
-  // ── Contra-interés: plata devuelta sin que la pidieran ──
   string unsolicited_value_cop = 8;
-
-  // ── Verificabilidad ──
   int32  receipts_issued     = 9;
-
   int32  cases_total         = 10;
   int32  cases_escalated     = 11;
   int32  window_days         = 12;
@@ -463,8 +437,6 @@ message ConfirmPlanRequest {
   AccessContext access  = 3;
 }
 
-// El usuario no solo acepta o rechaza: AJUSTA. Es el antídoto medible contra la
-// aversión al algoritmo, y por eso es un RPC propio y no un flag de ConfirmPlan.
 message AdjustPlanRequest {
   string                 case_id    = 1;
   string                 plan_id    = 2;
@@ -488,8 +460,6 @@ message HandoffResponse {
 
 message GetHandoffBriefRequest { string case_id = 1; AccessContext access = 2; }
 
-// Lo que ve el AGENTE HUMANO, no el usuario. Su primera frase no puede ser
-// "¿en qué le ayudo?": abre confirmando lo que ya está establecido.
 message HandoffBrief {
   string          case_id           = 1;
   string          one_line          = 2;
