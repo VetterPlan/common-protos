@@ -47,30 +47,10 @@ service ConstanciaService {
   rpc GetMemory       (GetMemoryRequest)       returns (MemoryList);
   rpc ForgetMemory    (ForgetMemoryRequest)    returns (ForgetProof);
   rpc IngestSignal    (IngestSignalRequest)    returns (IngestSignalResponse);
-
-  // La conversación del expediente, aparte del caso entero.
-  //
-  // `GetCase` sirve para pintarlo todo una vez; para un chat obliga a traerse
-  // hechos, recibos y compromisos en cada mensaje. Con `after_seq` la app pide
-  // solo lo que no tiene, que es lo que el anuncio en vivo le dice que llegó.
   rpc ListCaseMessages (ListCaseMessagesRequest) returns (CaseMessageList);
-
-  // Hasta dónde ha leído quien pregunta. El acuse es del EXPEDIENTE: que un
-  // mensaje aparezca en una pantalla no es haberlo leído, y el frontend no
-  // puede decidirlo por su cuenta.
   rpc MarkCaseMessagesRead (MarkCaseMessagesReadRequest) returns (CaseReadState);
-
-  // Una persona del equipo PROPONE una reparación.
-  //
-  // `ConfirmPlan` y `AdjustPlan` solo aprueban o afinan lo que la máquina ya
-  // propuso, y cinco de las trece rutas de escalamiento no llegan a crear
-  // ningún plan. Sin esto, reparar de verdad exigía ir al otro servicio a mano:
-  // el trabajo ocurría y el expediente no se enteraba.
-  //
-  // Pasa por el MISMO guardián que un plan automático. La persona no es una
-  // puerta trasera; es otra fuente de propuestas, y su palabra entra como hecho
-  // no verificado con su nombre encima.
   rpc ProposeRepair (ProposeRepairRequest) returns (CaseResponse);
+  rpc GetActionCatalog (GetActionCatalogRequest) returns (ActionCatalogResponse);
 }
 
 // ─── Contexto de acceso ────────────────────────────────────────────────────
@@ -191,6 +171,52 @@ message ActionPlan {
   bool                   requires_confirmation  = 5;
   int32                  risk_level             = 6;
   PlanStatus             status                 = 7;
+  repeated GuardianObjection objections        = 8;
+}
+
+message GuardianObjection {
+  string kind   = 1;
+  string intent = 2;
+  string detail = 3;
+}
+
+// ─── Catálogo de acciones ──────────────────────────────────────────────────
+
+message ActionParamSpec {
+  string          name     = 1;
+  string          label    = 2;
+  ActionParamKind kind     = 3;
+  bool            required = 4;
+  string          help     = 5;
+  repeated string options  = 6;
+}
+
+enum ActionParamKind {
+  ACTION_PARAM_KIND_UNSPECIFIED = 0;
+  ACTION_PARAM_KIND_AMOUNT_COP  = 1;
+  ACTION_PARAM_KIND_TEXT        = 2;
+  ACTION_PARAM_KIND_DAYS        = 3;
+  ACTION_PARAM_KIND_UUID        = 4;
+  ACTION_PARAM_KIND_CHOICE      = 5;
+}
+
+message ActionCatalogEntry {
+  string                   intent                = 1;
+  string                   label                 = 2;
+  string                   description           = 3;
+  repeated ActionParamSpec params                = 4;
+  bool                     requires_confirmation = 5;
+  int32                    risk_level            = 6;
+  bool                     benefits_user_only    = 7;
+}
+
+message GetActionCatalogRequest {
+  string        case_id = 1;
+  AccessContext access  = 2;
+}
+
+message ActionCatalogResponse {
+  repeated ActionCatalogEntry actions = 1;
 }
 
 message Receipt {
