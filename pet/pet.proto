@@ -101,6 +101,19 @@ service PetService {
   // Hard delete all pets for a client profile (testing utility)
   rpc HardDeletePetsByOwner (HardDeletePetsByOwnerRequest) returns (HardDeletePetsByOwnerResponse);
 
+  // ─── LISTADO GLOBAL (PANEL) ───
+
+  // Listado global de mascotas para el panel de administración. Es la primera
+  // consulta de este servicio que NO va acotada por un dueño: los filtros son
+  // de búsqueda y ninguno se lee como autoridad. La puerta es @Admin en la
+  // gateway; ver authorization-baseline.md §Mascotas.
+  //
+  // Devuelve `PetListItem`, no `Pet`: identidad y estado, nunca expediente. El
+  // historial de vacunación y las alergias son dato personal (Ley 1581) y
+  // siguen detrás de la vista por mascota. La minimización va en el origen —lo
+  // que no se lee no lo puede filtrar después un mapper, un log o una caché.
+  rpc ListPets (ListPetsRequest) returns (ListPetsResponse);
+
   // ─── VACCINATION CARD OCR ───
 
   // Extract vaccination data from a card image (handwritten or printed) using AI vision.
@@ -137,6 +150,17 @@ enum ParasiteTarget {
   PARASITE_TARGET_INTERNAL = 1;
   PARASITE_TARGET_EXTERNAL = 2;
   PARASITE_TARGET_BOTH = 3;
+}
+
+// Estado de vacunación YA CALCULADO por el servicio, para que el listado del
+// panel no tenga que leer el carné para pintarlo. Se deriva de las vacunas de
+// la mascota y de la fecha de la BASE DE DATOS, no del reloj del proceso.
+enum VaccinationStatus {
+  VACCINATION_STATUS_UNSPECIFIED = 0;   // En la petición: todas.
+  VACCINATION_STATUS_NO_RECORD = 1;     // Ninguna vacuna anotada.
+  VACCINATION_STATUS_UP_TO_DATE = 2;    // Con vacunas y nada por vencer pronto.
+  VACCINATION_STATUS_DUE_SOON = 3;      // Alguna vence dentro de 30 días.
+  VACCINATION_STATUS_OVERDUE = 4;       // Alguna venció y sigue sin ponerse.
 }
 
 enum AllergySeverity {
@@ -388,6 +412,56 @@ message PetResponse {
 
 message PetsResponse {
   repeated Pet pets = 1;
+  int32 total_count = 2;
+}
+
+// Identidad y estado, NUNCA expediente. Añadir aquí un campo clínico —una
+// alergia, una vacuna, el microchip— convierte un listado sin dueño en la
+// filtración que `authorization-baseline.md` §Mascotas prohíbe.
+message PetListItem {
+  string id = 1;
+  string client_profile_id = 2;
+  string name = 3;
+  Species species = 4;
+  string breed_name = 5;         // Denormalizado; vacío en especies sin catálogo
+  string breed = 6;              // Texto libre, para esas especies
+  Gender gender = 7;
+  string birthdate = 8;          // ISO 8601 (YYYY-MM-DD)
+  bool is_active = 9;
+  google.protobuf.Timestamp created_at = 10;
+
+  VaccinationStatus vaccination_status = 11;
+
+  // La próxima fecha de vacuna pendiente, si la hay. Es la fecha que sostiene
+  // el estado de arriba, no el carné: una fecha, no un historial.
+  string next_vaccination_due = 12;  // ISO 8601, vacío si no hay ninguna
+}
+
+message ListPetsRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+
+  // SPECIES_UNSPECIFIED = todas.
+  Species species = 3;
+
+  // Filtro de búsqueda, NO de autoridad. Que el llamante mande un perfil no
+  // legitima la llamada: eso sería autorizar con datos del cliente.
+  string client_profile_id = 4;
+
+  // Búsqueda por nombre, sin distinguir mayúsculas ni acentos del teclado.
+  string name_contains = 5;
+
+  // Por defecto solo las activas; el borrado es lógico.
+  bool include_inactive = 6;
+
+  // VACCINATION_STATUS_UNSPECIFIED = todos los estados.
+  VaccinationStatus vaccination_status = 7;
+}
+
+message ListPetsResponse {
+  repeated PetListItem pets = 1;
+
+  // Total que cumple el filtro, no el tamaño de la página.
   int32 total_count = 2;
 }
 

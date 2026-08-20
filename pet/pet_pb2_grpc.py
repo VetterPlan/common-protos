@@ -153,6 +153,11 @@ class PetServiceStub:
                 request_serializer=pet_dot_pet__pb2.HardDeletePetsByOwnerRequest.SerializeToString,
                 response_deserializer=pet_dot_pet__pb2.HardDeletePetsByOwnerResponse.FromString,
                 _registered_method=True)
+        self.ListPets = channel.unary_unary(
+                '/pet.PetService/ListPets',
+                request_serializer=pet_dot_pet__pb2.ListPetsRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.ListPetsResponse.FromString,
+                _registered_method=True)
         self.ExtractVaccinationCard = channel.unary_unary(
                 '/pet.PetService/ExtractVaccinationCard',
                 request_serializer=pet_dot_pet__pb2.ExtractVaccinationCardRequest.SerializeToString,
@@ -346,6 +351,23 @@ class PetServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ListPets(self, request, context):
+        """─── LISTADO GLOBAL (PANEL) ───
+
+        Listado global de mascotas para el panel de administración. Es la primera
+        consulta de este servicio que NO va acotada por un dueño: los filtros son
+        de búsqueda y ninguno se lee como autoridad. La puerta es @Admin en la
+        gateway; ver authorization-baseline.md §Mascotas.
+
+        Devuelve `PetListItem`, no `Pet`: identidad y estado, nunca expediente. El
+        historial de vacunación y las alergias son dato personal (Ley 1581) y
+        siguen detrás de la vista por mascota. La minimización va en el origen —lo
+        que no se lee no lo puede filtrar después un mapper, un log o una caché.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def ExtractVaccinationCard(self, request, context):
         """─── VACCINATION CARD OCR ───
 
@@ -469,6 +491,11 @@ def add_PetServiceServicer_to_server(servicer, server):
                     servicer.HardDeletePetsByOwner,
                     request_deserializer=pet_dot_pet__pb2.HardDeletePetsByOwnerRequest.FromString,
                     response_serializer=pet_dot_pet__pb2.HardDeletePetsByOwnerResponse.SerializeToString,
+            ),
+            'ListPets': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListPets,
+                    request_deserializer=pet_dot_pet__pb2.ListPetsRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.ListPetsResponse.SerializeToString,
             ),
             'ExtractVaccinationCard': grpc.unary_unary_rpc_method_handler(
                     servicer.ExtractVaccinationCard,
@@ -1079,6 +1106,33 @@ class PetService:
             '/pet.PetService/HardDeletePetsByOwner',
             pet_dot_pet__pb2.HardDeletePetsByOwnerRequest.SerializeToString,
             pet_dot_pet__pb2.HardDeletePetsByOwnerResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListPets(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/pet.PetService/ListPets',
+            pet_dot_pet__pb2.ListPetsRequest.SerializeToString,
+            pet_dot_pet__pb2.ListPetsResponse.FromString,
             options,
             channel_credentials,
             insecure,
