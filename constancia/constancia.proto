@@ -322,6 +322,9 @@ message Case {
   CaseState                  state          = 5;
   string                     shape          = 6;
   string                     diagnosis      = 7;
+  // El mismo diagnóstico en palabras. Es el titular de la pantalla: mostrar
+  // `diagnosis` en crudo pone `evidencia_incompleta` como encabezado.
+  string                     diagnosis_text = 24;
   Blame                      blame          = 8;
   double                     confidence     = 9;
   repeated FactCard          facts          = 10;
