@@ -177,6 +177,41 @@ service AppointmentService {
   // incompletos — la autoridad conoce el hecho y el contrato no dejaba
   // preguntarlo.
   rpc ListVetCancellations (ListVetCancellationsRequest) returns (ListVetCancellationsResponse);
+
+  // Listado global de citas para el panel de administración. Es la primera
+  // consulta de este servicio que NO va acotada por un dueño: los filtros son
+  // de búsqueda y ninguno se lee como autoridad. La puerta es @Admin en la
+  // gateway; ver authorization-baseline.md §Citas.
+  rpc ListAppointments (ListAppointmentsRequest) returns (ListAppointmentsResponse);
+}
+
+message ListAppointmentsRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+
+  // Vacío = todos los estados.
+  repeated AppointmentStatus statuses = 3;
+
+  // YYYY-MM-DD sobre `scheduled_date`, que es el día de la visita y no un
+  // instante: la columna ya es la fecha del calendario, así que no hay huso que
+  // convertir. Los dos extremos entran.
+  string date_from = 4;
+  string date_to = 5;
+
+  // Filtros de búsqueda, NO de autoridad. Que el llamante mande un perfil no
+  // legitima la llamada: eso sería autorizar con datos del cliente.
+  string client_profile_id = 6;
+  string vet_profile_id = 7;
+
+  // SERVICE_TYPE_UNSPECIFIED = todos.
+  ServiceType service_type = 8;
+}
+
+message ListAppointmentsResponse {
+  repeated Appointment appointments = 1;
+
+  // Total que cumple el filtro, no el tamaño de la página.
+  int32 total_count = 2;
 }
 
 message ListCompletedAppointmentsRequest {

@@ -206,6 +206,11 @@ class AppointmentServiceStub:
                 request_serializer=appointment_dot_appointment__pb2.ListVetCancellationsRequest.SerializeToString,
                 response_deserializer=appointment_dot_appointment__pb2.ListVetCancellationsResponse.FromString,
                 _registered_method=True)
+        self.ListAppointments = channel.unary_unary(
+                '/appointment.AppointmentService/ListAppointments',
+                request_serializer=appointment_dot_appointment__pb2.ListAppointmentsRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.ListAppointmentsResponse.FromString,
+                _registered_method=True)
 
 
 class AppointmentServiceServicer:
@@ -511,6 +516,16 @@ class AppointmentServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ListAppointments(self, request, context):
+        """Listado global de citas para el panel de administración. Es la primera
+        consulta de este servicio que NO va acotada por un dueño: los filtros son
+        de búsqueda y ninguno se lee como autoridad. La puerta es @Admin en la
+        gateway; ver authorization-baseline.md §Citas.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AppointmentServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -673,6 +688,11 @@ def add_AppointmentServiceServicer_to_server(servicer, server):
                     servicer.ListVetCancellations,
                     request_deserializer=appointment_dot_appointment__pb2.ListVetCancellationsRequest.FromString,
                     response_serializer=appointment_dot_appointment__pb2.ListVetCancellationsResponse.SerializeToString,
+            ),
+            'ListAppointments': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListAppointments,
+                    request_deserializer=appointment_dot_appointment__pb2.ListAppointmentsRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.ListAppointmentsResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -1551,6 +1571,33 @@ class AppointmentService:
             '/appointment.AppointmentService/ListVetCancellations',
             appointment_dot_appointment__pb2.ListVetCancellationsRequest.SerializeToString,
             appointment_dot_appointment__pb2.ListVetCancellationsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListAppointments(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/ListAppointments',
+            appointment_dot_appointment__pb2.ListAppointmentsRequest.SerializeToString,
+            appointment_dot_appointment__pb2.ListAppointmentsResponse.FromString,
             options,
             channel_credentials,
             insecure,
