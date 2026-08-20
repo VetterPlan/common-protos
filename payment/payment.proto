@@ -106,6 +106,11 @@ service PaymentService {
   // Get wallet with balance info.
   rpc GetWallet (GetWalletRequest) returns (WalletResponse);
 
+  // B-4 — saldos por lote, solo lectura. Existe para que la tabla de clientes
+  // del panel se pinte con UNA llamada por página y no con una por fila.
+  // No autoriza: la puerta es la gateway, igual que en `GetWallet`.
+  rpc GetWalletBalancesByOwners (GetWalletBalancesByOwnersRequest) returns (GetWalletBalancesByOwnersResponse);
+
   // Get wallet transaction history with pagination and filters.
   rpc GetWalletTransactions (GetWalletTransactionsRequest) returns (WalletTransactionsResponse);
 
@@ -186,6 +191,17 @@ service PaymentService {
 
   // Get vet commission tier based on completed appointment count.
   rpc GetVetCommissionTier (GetVetCommissionTierRequest) returns (GetVetCommissionTierResponse);
+
+  // B-4 — el tier de comisión por lote, SOLO LECTURA.
+  //
+  // A diferencia de `GetVetCommissionTier`, este NO consulta a rating-service ni
+  // persiste nada: pintar una tabla de cincuenta filas no puede disparar
+  // cincuenta llamadas a otro servicio ni cincuenta escrituras. **Un listado no
+  // tiene efectos.**
+  //
+  // El precio de eso es que puede devolver un tier distinto del que decidiría un
+  // cobro real, y por eso cada fila dice de dónde salió el suyo en `source`.
+  rpc GetCommissionTiersByVets (GetCommissionTiersByVetsRequest) returns (GetCommissionTiersByVetsResponse);
 
   // ─── RECONCILIATION (P4) ───
 
@@ -751,6 +767,28 @@ message GetWalletRequest {
   string wallet_id = 3;
 }
 
+message GetWalletBalancesByOwnersRequest {
+  repeated string owner_ids = 1;   // techo de 100
+}
+
+// Identidad y saldo, no el movimiento: las transacciones siguen detrás de
+// `GetWalletTransactions`, que se pide de una en una y queda registrada.
+message WalletBalance {
+  string owner_id = 1;
+  string wallet_id = 2;
+  double balance = 3;
+  double pending_balance = 4;
+  double available_balance = 5;
+  string currency = 6;
+  bool is_active = 7;
+}
+
+message GetWalletBalancesByOwnersResponse {
+  // Solo los dueños que TIENEN wallet. Ausente = no tiene, que es un estado real
+  // y distinto de tener cero.
+  repeated WalletBalance balances = 1;
+}
+
 message GetWalletTransactionsRequest {
   string wallet_id = 1;
   WalletTransactionType type_filter = 2;
@@ -1108,6 +1146,30 @@ message GetVetCommissionTierResponse {
   int32 platform_fee_percent = 2;
   int32 completed_appointments = 3;
   int32 next_tier_threshold = 4; // 0 if already at top tier
+}
+
+message GetCommissionTiersByVetsRequest {
+  repeated string vet_profile_ids = 1;   // techo de 100
+}
+
+message VetCommissionTierSummary {
+  string vet_profile_id = 1;
+  string tier = 2;
+  int32 platform_fee_percent = 3;
+
+  // Pagos CAPTURADOS, que es lo que de verdad cuenta el escalón de volumen. El
+  // unario lo llama `completed_appointments` y cuenta lo mismo; el nombre de
+  // allá está mal y no se repite acá.
+  int32 captured_payments = 4;
+
+  // De dónde salió el tier de esta fila: "last_known" (la última decisión de
+  // calidad persistida) o "volume" (el escalón por número de pagos). Nunca
+  // "quality": este RPC no consulta a rating.
+  string source = 5;
+}
+
+message GetCommissionTiersByVetsResponse {
+  repeated VetCommissionTierSummary tiers = 1;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════

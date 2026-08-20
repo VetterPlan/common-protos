@@ -183,6 +183,11 @@ service AppointmentService {
   // de búsqueda y ninguno se lee como autoridad. La puerta es @Admin en la
   // gateway; ver authorization-baseline.md §Citas.
   rpc ListAppointments (ListAppointmentsRequest) returns (ListAppointmentsResponse);
+
+  // B-4 — cuántas citas tiene cada perfil, por lote. Existe para que las tablas
+  // de clientes y de veterinarios del panel se pinten con UNA llamada por
+  // página y no con una por fila.
+  rpc CountAppointmentsByProfiles (CountAppointmentsByProfilesRequest) returns (CountAppointmentsByProfilesResponse);
 }
 
 message ListAppointmentsRequest {
@@ -212,6 +217,37 @@ message ListAppointmentsResponse {
 
   // Total que cumple el filtro, no el tamaño de la página.
   int32 total_count = 2;
+}
+
+// De qué lado del negocio son los perfiles que vienen en el lote. Es obligatorio:
+// un mismo UUID puede ser el perfil de cliente de alguien y el de vet de otro, y
+// adivinarlo contaría las citas del que no es.
+enum ProfileRole {
+  PROFILE_ROLE_UNSPECIFIED = 0;
+  PROFILE_ROLE_CLIENT      = 1;
+  PROFILE_ROLE_VET         = 2;
+}
+
+message CountAppointmentsByProfilesRequest {
+  repeated string profile_ids = 1;   // techo de 100
+  ProfileRole role = 2;              // obligatorio
+
+  // YYYY-MM-DD sobre `scheduled_date`, el día de la visita. Los dos extremos
+  // entran. Vacío = sin acotar.
+  string date_from = 3;
+  string date_to = 4;
+
+  // Vacío = todos los estados.
+  repeated AppointmentStatus statuses = 5;
+}
+
+message AppointmentCountByProfile {
+  string profile_id = 1;
+  int32 total = 2;
+}
+
+message CountAppointmentsByProfilesResponse {
+  repeated AppointmentCountByProfile counts = 1;
 }
 
 message ListCompletedAppointmentsRequest {

@@ -153,6 +153,11 @@ class PaymentServiceStub:
                 request_serializer=payment_dot_payment__pb2.GetWalletRequest.SerializeToString,
                 response_deserializer=payment_dot_payment__pb2.WalletResponse.FromString,
                 _registered_method=True)
+        self.GetWalletBalancesByOwners = channel.unary_unary(
+                '/payment.PaymentService/GetWalletBalancesByOwners',
+                request_serializer=payment_dot_payment__pb2.GetWalletBalancesByOwnersRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.GetWalletBalancesByOwnersResponse.FromString,
+                _registered_method=True)
         self.GetWalletTransactions = channel.unary_unary(
                 '/payment.PaymentService/GetWalletTransactions',
                 request_serializer=payment_dot_payment__pb2.GetWalletTransactionsRequest.SerializeToString,
@@ -262,6 +267,11 @@ class PaymentServiceStub:
                 '/payment.PaymentService/GetVetCommissionTier',
                 request_serializer=payment_dot_payment__pb2.GetVetCommissionTierRequest.SerializeToString,
                 response_deserializer=payment_dot_payment__pb2.GetVetCommissionTierResponse.FromString,
+                _registered_method=True)
+        self.GetCommissionTiersByVets = channel.unary_unary(
+                '/payment.PaymentService/GetCommissionTiersByVets',
+                request_serializer=payment_dot_payment__pb2.GetCommissionTiersByVetsRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.GetCommissionTiersByVetsResponse.FromString,
                 _registered_method=True)
         self.GetReconciliationReport = channel.unary_unary(
                 '/payment.PaymentService/GetReconciliationReport',
@@ -487,6 +497,15 @@ class PaymentServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetWalletBalancesByOwners(self, request, context):
+        """B-4 — saldos por lote, solo lectura. Existe para que la tabla de clientes
+        del panel se pinte con UNA llamada por página y no con una por fila.
+        No autoriza: la puerta es la gateway, igual que en `GetWallet`.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def GetWalletTransactions(self, request, context):
         """Get wallet transaction history with pagination and filters.
         """
@@ -657,6 +676,21 @@ class PaymentServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetCommissionTiersByVets(self, request, context):
+        """B-4 — el tier de comisión por lote, SOLO LECTURA.
+
+        A diferencia de `GetVetCommissionTier`, este NO consulta a rating-service ni
+        persiste nada: pintar una tabla de cincuenta filas no puede disparar
+        cincuenta llamadas a otro servicio ni cincuenta escrituras. **Un listado no
+        tiene efectos.**
+
+        El precio de eso es que puede devolver un tier distinto del que decidiría un
+        cobro real, y por eso cada fila dice de dónde salió el suyo en `source`.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def GetReconciliationReport(self, request, context):
         """─── RECONCILIATION (P4) ───
 
@@ -818,6 +852,11 @@ def add_PaymentServiceServicer_to_server(servicer, server):
                     request_deserializer=payment_dot_payment__pb2.GetWalletRequest.FromString,
                     response_serializer=payment_dot_payment__pb2.WalletResponse.SerializeToString,
             ),
+            'GetWalletBalancesByOwners': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetWalletBalancesByOwners,
+                    request_deserializer=payment_dot_payment__pb2.GetWalletBalancesByOwnersRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.GetWalletBalancesByOwnersResponse.SerializeToString,
+            ),
             'GetWalletTransactions': grpc.unary_unary_rpc_method_handler(
                     servicer.GetWalletTransactions,
                     request_deserializer=payment_dot_payment__pb2.GetWalletTransactionsRequest.FromString,
@@ -927,6 +966,11 @@ def add_PaymentServiceServicer_to_server(servicer, server):
                     servicer.GetVetCommissionTier,
                     request_deserializer=payment_dot_payment__pb2.GetVetCommissionTierRequest.FromString,
                     response_serializer=payment_dot_payment__pb2.GetVetCommissionTierResponse.SerializeToString,
+            ),
+            'GetCommissionTiersByVets': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetCommissionTiersByVets,
+                    request_deserializer=payment_dot_payment__pb2.GetCommissionTiersByVetsRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.GetCommissionTiersByVetsResponse.SerializeToString,
             ),
             'GetReconciliationReport': grpc.unary_unary_rpc_method_handler(
                     servicer.GetReconciliationReport,
@@ -1556,6 +1600,33 @@ class PaymentService:
             _registered_method=True)
 
     @staticmethod
+    def GetWalletBalancesByOwners(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/GetWalletBalancesByOwners',
+            payment_dot_payment__pb2.GetWalletBalancesByOwnersRequest.SerializeToString,
+            payment_dot_payment__pb2.GetWalletBalancesByOwnersResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
     def GetWalletTransactions(request,
             target,
             options=(),
@@ -2139,6 +2210,33 @@ class PaymentService:
             '/payment.PaymentService/GetVetCommissionTier',
             payment_dot_payment__pb2.GetVetCommissionTierRequest.SerializeToString,
             payment_dot_payment__pb2.GetVetCommissionTierResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetCommissionTiersByVets(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/GetCommissionTiersByVets',
+            payment_dot_payment__pb2.GetCommissionTiersByVetsRequest.SerializeToString,
+            payment_dot_payment__pb2.GetCommissionTiersByVetsResponse.FromString,
             options,
             channel_credentials,
             insecure,

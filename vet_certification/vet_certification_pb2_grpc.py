@@ -68,6 +68,11 @@ class VetCertificationServiceStub:
                 request_serializer=vet__certification_dot_vet__certification__pb2.GetActiveCertificationRequest.SerializeToString,
                 response_deserializer=vet__certification_dot_vet__certification__pb2.CertificationResponse.FromString,
                 _registered_method=True)
+        self.GetActiveCertificationsByVets = channel.unary_unary(
+                '/vet_certification.VetCertificationService/GetActiveCertificationsByVets',
+                request_serializer=vet__certification_dot_vet__certification__pb2.GetActiveCertificationsByVetsRequest.SerializeToString,
+                response_deserializer=vet__certification_dot_vet__certification__pb2.GetActiveCertificationsByVetsResponse.FromString,
+                _registered_method=True)
         self.GetStatusHistory = channel.unary_unary(
                 '/vet_certification.VetCertificationService/GetStatusHistory',
                 request_serializer=vet__certification_dot_vet__certification__pb2.GetStatusHistoryRequest.SerializeToString,
@@ -158,22 +163,19 @@ class VetCertificationServiceServicer:
     """
 
     def SubmitCertification(self, request, context):
-        """Submit a new certification for review
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetCertification(self, request, context):
-        """Get a certification by ID
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetCertificationsByVetProfile(self, request, context):
-        """Get all certifications for a vet profile
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -181,15 +183,25 @@ class VetCertificationServiceServicer:
     def ValidateCanPractice(self, request, context):
         """─── PRACTICE VALIDATION ───
 
-        Validate if a vet can practice (main validation endpoint)
-        Designed for high-frequency calls with caching support
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetActiveCertification(self, request, context):
-        """Get the active certification for a vet in a specific country
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetActiveCertificationsByVets(self, request, context):
+        """B-4 — la certificación activa de N vets en una sola llamada. Existe para
+        que la tabla de veterinarios del panel pinte la columna «Licencia» con UNA
+        llamada por página y no con una por fila.
+
+        Devuelve un resumen, no la certificación entera: la matrícula, el estado y
+        el vencimiento. El expediente —documentos, cédula enmascarada, historial de
+        revisión— sigue detrás de la vista por veterinario.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -198,7 +210,6 @@ class VetCertificationServiceServicer:
     def GetStatusHistory(self, request, context):
         """─── STATUS HISTORY ───
 
-        Get the status change history for a certification
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -321,6 +332,11 @@ def add_VetCertificationServiceServicer_to_server(servicer, server):
                     servicer.GetActiveCertification,
                     request_deserializer=vet__certification_dot_vet__certification__pb2.GetActiveCertificationRequest.FromString,
                     response_serializer=vet__certification_dot_vet__certification__pb2.CertificationResponse.SerializeToString,
+            ),
+            'GetActiveCertificationsByVets': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetActiveCertificationsByVets,
+                    request_deserializer=vet__certification_dot_vet__certification__pb2.GetActiveCertificationsByVetsRequest.FromString,
+                    response_serializer=vet__certification_dot_vet__certification__pb2.GetActiveCertificationsByVetsResponse.SerializeToString,
             ),
             'GetStatusHistory': grpc.unary_unary_rpc_method_handler(
                     servicer.GetStatusHistory,
@@ -542,6 +558,33 @@ class VetCertificationService:
             '/vet_certification.VetCertificationService/GetActiveCertification',
             vet__certification_dot_vet__certification__pb2.GetActiveCertificationRequest.SerializeToString,
             vet__certification_dot_vet__certification__pb2.CertificationResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetActiveCertificationsByVets(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/vet_certification.VetCertificationService/GetActiveCertificationsByVets',
+            vet__certification_dot_vet__certification__pb2.GetActiveCertificationsByVetsRequest.SerializeToString,
+            vet__certification_dot_vet__certification__pb2.GetActiveCertificationsByVetsResponse.FromString,
             options,
             channel_credentials,
             insecure,

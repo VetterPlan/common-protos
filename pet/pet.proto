@@ -114,6 +114,13 @@ service PetService {
   // que no se lee no lo puede filtrar después un mapper, un log o una caché.
   rpc ListPets (ListPetsRequest) returns (ListPetsResponse);
 
+  // B-4 — cuántas mascotas tiene cada dueño, por lote. Existe para que la tabla
+  // de clientes del panel se pinte con UNA llamada por página y no con una por
+  // fila. Autoriza POR ELEMENTO con la misma política del unario, y los perfiles
+  // no autorizados se OMITEN: un mapa de estado por id sería un oráculo de
+  // enumeración, igual que en `GetPetsByIds`.
+  rpc CountPetsByOwners (CountPetsByOwnersRequest) returns (CountPetsByOwnersResponse);
+
   // ─── VACCINATION CARD OCR ───
 
   // Extract vaccination data from a card image (handwritten or printed) using AI vision.
@@ -463,6 +470,22 @@ message ListPetsResponse {
 
   // Total que cumple el filtro, no el tamaño de la página.
   int32 total_count = 2;
+}
+
+message CountPetsByOwnersRequest {
+  repeated string client_profile_ids = 1;  // techo de 100
+  bool include_inactive = 2;               // por defecto solo las activas
+}
+
+// Una entrada por dueño que el llamante puede ver. Va como `repeated` y no como
+// `map<string,int32>` para poder crecer sin cambiar de mensaje.
+message PetCountByOwner {
+  string client_profile_id = 1;
+  int32 total = 2;
+}
+
+message CountPetsByOwnersResponse {
+  repeated PetCountByOwner counts = 1;
 }
 
 message DeletePetResponse {

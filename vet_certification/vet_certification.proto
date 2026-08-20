@@ -24,6 +24,15 @@ service VetCertificationService {
   rpc ValidateCanPractice (ValidateCanPracticeRequest) returns (ValidateCanPracticeResponse);
   rpc GetActiveCertification (GetActiveCertificationRequest) returns (CertificationResponse);
 
+  // B-4 — la certificación activa de N vets en una sola llamada. Existe para
+  // que la tabla de veterinarios del panel pinte la columna «Licencia» con UNA
+  // llamada por página y no con una por fila.
+  //
+  // Devuelve un resumen, no la certificación entera: la matrícula, el estado y
+  // el vencimiento. El expediente —documentos, cédula enmascarada, historial de
+  // revisión— sigue detrás de la vista por veterinario.
+  rpc GetActiveCertificationsByVets (GetActiveCertificationsByVetsRequest) returns (GetActiveCertificationsByVetsResponse);
+
   // ─── STATUS HISTORY ───
 
   rpc GetStatusHistory (GetStatusHistoryRequest) returns (StatusHistoryResponse);
@@ -343,6 +352,29 @@ message GetCertificationRequest {
 message GetCertificationsByVetProfileRequest {
   string vet_profile_id = 1;
   bool include_inactive = 2;             // Include expired/revoked/etc
+}
+
+message GetActiveCertificationsByVetsRequest {
+  repeated string vet_profile_ids = 1;   // techo de 100
+  string country = 2;                    // vacío = la jurisdicción por defecto
+}
+
+// Identidad de la licencia y su vigencia. Nunca el documento de identidad ni el
+// expediente: lo que no se lee no lo puede filtrar después un mapper.
+message ActiveCertificationSummary {
+  string vet_profile_id = 1;
+  string license_number = 2;
+  string country = 3;
+  string valid_until = 4;             // ISO8601, vacío si no vence
+  int32 days_until_expiration = 5;    // -1 si no vence
+  RegistryStatus registry_status = 6;
+  string registry_matricula = 7;
+}
+
+message GetActiveCertificationsByVetsResponse {
+  // Solo los vets CON certificación activa. Ausente = no la tiene, que es
+  // exactamente lo que la columna necesita decir.
+  repeated ActiveCertificationSummary certifications = 1;
 }
 
 message GetActiveCertificationRequest {

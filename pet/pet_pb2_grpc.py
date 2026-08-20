@@ -158,6 +158,11 @@ class PetServiceStub:
                 request_serializer=pet_dot_pet__pb2.ListPetsRequest.SerializeToString,
                 response_deserializer=pet_dot_pet__pb2.ListPetsResponse.FromString,
                 _registered_method=True)
+        self.CountPetsByOwners = channel.unary_unary(
+                '/pet.PetService/CountPetsByOwners',
+                request_serializer=pet_dot_pet__pb2.CountPetsByOwnersRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.CountPetsByOwnersResponse.FromString,
+                _registered_method=True)
         self.ExtractVaccinationCard = channel.unary_unary(
                 '/pet.PetService/ExtractVaccinationCard',
                 request_serializer=pet_dot_pet__pb2.ExtractVaccinationCardRequest.SerializeToString,
@@ -368,6 +373,17 @@ class PetServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def CountPetsByOwners(self, request, context):
+        """B-4 — cuántas mascotas tiene cada dueño, por lote. Existe para que la tabla
+        de clientes del panel se pinte con UNA llamada por página y no con una por
+        fila. Autoriza POR ELEMENTO con la misma política del unario, y los perfiles
+        no autorizados se OMITEN: un mapa de estado por id sería un oráculo de
+        enumeración, igual que en `GetPetsByIds`.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def ExtractVaccinationCard(self, request, context):
         """─── VACCINATION CARD OCR ───
 
@@ -496,6 +512,11 @@ def add_PetServiceServicer_to_server(servicer, server):
                     servicer.ListPets,
                     request_deserializer=pet_dot_pet__pb2.ListPetsRequest.FromString,
                     response_serializer=pet_dot_pet__pb2.ListPetsResponse.SerializeToString,
+            ),
+            'CountPetsByOwners': grpc.unary_unary_rpc_method_handler(
+                    servicer.CountPetsByOwners,
+                    request_deserializer=pet_dot_pet__pb2.CountPetsByOwnersRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.CountPetsByOwnersResponse.SerializeToString,
             ),
             'ExtractVaccinationCard': grpc.unary_unary_rpc_method_handler(
                     servicer.ExtractVaccinationCard,
@@ -1133,6 +1154,33 @@ class PetService:
             '/pet.PetService/ListPets',
             pet_dot_pet__pb2.ListPetsRequest.SerializeToString,
             pet_dot_pet__pb2.ListPetsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CountPetsByOwners(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/pet.PetService/CountPetsByOwners',
+            pet_dot_pet__pb2.CountPetsByOwnersRequest.SerializeToString,
+            pet_dot_pet__pb2.CountPetsByOwnersResponse.FromString,
             options,
             channel_credentials,
             insecure,
