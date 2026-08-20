@@ -38,6 +38,25 @@ service MedHistoryService {
   // desplegables que el template declara en `reference_table`.
   rpc GetReferenceData (GetReferenceDataRequest) returns (GetReferenceDataResponse);
 
+  // B-7 — el PRIMER agregado de este servicio, y por eso lleva escrito por qué
+  // se le permite existir.
+  //
+  // Todo lo demás aquí se pide por registro o por mascota, y cada lectura pasa
+  // por `consultation_access_logs`: un expediente clínico no se consulta sin
+  // dejar rastro de quién y por qué. Un conteo parecía romper esa regla, y no la
+  // rompe **mientras el resultado no se pueda reducir a una persona**. De ahí la
+  // forma de la petición: acepta un periodo y nada más.
+  //
+  // No admite `pet_id`, ni `client_profile_id`, ni `vet_profile_id`. Un conteo
+  // con sujeto es una consulta clínica disfrazada: con n=1 revela que ese
+  // paciente tiene expediente, que es justo lo que el resto del servicio protege.
+  // Si algún día hace falta desempeño por veterinario, es otro caso de uso, con
+  // su fila en la baseline y su decisión propia — no un filtro más en este.
+  //
+  // Se audita igual que una lectura, con `granted_aggregate`: la bitácora no
+  // deja de anotar solo porque el resultado sea un número.
+  rpc CountFinalizedRecords (CountFinalizedRecordsRequest) returns (CountFinalizedRecordsResponse);
+
   // Crea o edita una fila de vocabulario. Solo admin (se enforza en la gateway).
   // Editar el contenido clínico REVIERTE is_validated_by_vet a false: si cambió
   // el dato, la aprobación anterior ya no aplica.
@@ -615,6 +634,35 @@ message SetReferenceValidationRequest {
   repeated string ids = 2;
   bool is_validated_by_vet = 3;
   string actor_user_id = 4;
+}
+
+message CountFinalizedRecordsRequest {
+  // YYYY-MM-DD en América/Bogotá. El día de cierre entra entero.
+  string period_start = 1;
+  string period_end = 2;
+
+  // Quién pregunta. No autoriza —de eso se encarga la gateway— pero sin esto la
+  // bitácora no sabría a quién anotar, y un acceso sin autor no es auditoría.
+  AccessContext access = 3;
+}
+
+message CountFinalizedRecordsResponse {
+  // Registros CERRADOS dentro del periodo, por `finalized_at`.
+  //
+  // Ojo con leerlo como «citas con historia clínica»: es lo más cerca que el
+  // servicio puede estar de esa frase, pero cuenta registros, y un registro
+  // cuelga de una cita concreta. Si algún día una cita pudiera tener dos, el
+  // número dejaría de coincidir sin que nadie lo notara.
+  int32 finalized = 1;
+
+  // Registros ABIERTOS dentro del periodo, por `created_at`. Da el contexto que
+  // convierte al primero en una tasa: sin él, «120 finalizados» no dice si
+  // sobran o faltan.
+  int32 started = 2;
+
+  // Abiertos en el periodo y todavía sin cerrar hoy. No es `started - finalized`:
+  // un registro abierto en junio pudo cerrarse en julio.
+  int32 still_open = 3;
 }
 
 message SetReferenceValidationResponse {

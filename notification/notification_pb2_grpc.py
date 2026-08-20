@@ -75,6 +75,11 @@ class NotificationServiceStub:
                 request_serializer=notification_dot_notification__pb2.ListDeliveriesRequest.SerializeToString,
                 response_deserializer=notification_dot_notification__pb2.ListDeliveriesResponse.FromString,
                 _registered_method=True)
+        self.GetDeliveryStats = channel.unary_unary(
+                '/notification.NotificationService/GetDeliveryStats',
+                request_serializer=notification_dot_notification__pb2.GetDeliveryStatsRequest.SerializeToString,
+                response_deserializer=notification_dot_notification__pb2.GetDeliveryStatsResponse.FromString,
+                _registered_method=True)
         self.SendEmail = channel.unary_unary(
                 '/notification.NotificationService/SendEmail',
                 request_serializer=notification_dot_notification__pb2.SendEmailRequest.SerializeToString,
@@ -172,6 +177,21 @@ class NotificationServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetDeliveryStats(self, request, context):
+        """B-7 — cómo le fue a cada aviso, agregado por evento y canal.
+
+        **Entrega, nunca apertura.** El diseño del panel pedía «tasa de apertura» y
+        no existe: la app no reporta que alguien haya abierto un push, no hay dónde
+        guardarlo y no se puede inventar. Lo que sí consta es hasta dónde llegó el
+        envío, que es otra pregunta y hay que llamarla por su nombre.
+
+        Como `ListDeliveries`, devuelve `retained_since`: fuera de la ventana que
+        el servicio conserva, un cero **no significa que no se enviara nada**.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def SendEmail(self, request, context):
         """Send transactional email via SendGrid/SES (S2-12). Async, non-blocking.
         """
@@ -257,6 +277,11 @@ def add_NotificationServiceServicer_to_server(servicer, server):
                     servicer.ListDeliveries,
                     request_deserializer=notification_dot_notification__pb2.ListDeliveriesRequest.FromString,
                     response_serializer=notification_dot_notification__pb2.ListDeliveriesResponse.SerializeToString,
+            ),
+            'GetDeliveryStats': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetDeliveryStats,
+                    request_deserializer=notification_dot_notification__pb2.GetDeliveryStatsRequest.FromString,
+                    response_serializer=notification_dot_notification__pb2.GetDeliveryStatsResponse.SerializeToString,
             ),
             'SendEmail': grpc.unary_unary_rpc_method_handler(
                     servicer.SendEmail,
@@ -445,6 +470,33 @@ class NotificationService:
             '/notification.NotificationService/ListDeliveries',
             notification_dot_notification__pb2.ListDeliveriesRequest.SerializeToString,
             notification_dot_notification__pb2.ListDeliveriesResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetDeliveryStats(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/notification.NotificationService/GetDeliveryStats',
+            notification_dot_notification__pb2.GetDeliveryStatsRequest.SerializeToString,
+            notification_dot_notification__pb2.GetDeliveryStatsResponse.FromString,
             options,
             channel_credentials,
             insecure,

@@ -65,6 +65,11 @@ class MedHistoryServiceStub:
                 request_serializer=medhistory_dot_medhistory__pb2.GetReferenceDataRequest.SerializeToString,
                 response_deserializer=medhistory_dot_medhistory__pb2.GetReferenceDataResponse.FromString,
                 _registered_method=True)
+        self.CountFinalizedRecords = channel.unary_unary(
+                '/medhistory.MedHistoryService/CountFinalizedRecords',
+                request_serializer=medhistory_dot_medhistory__pb2.CountFinalizedRecordsRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.CountFinalizedRecordsResponse.FromString,
+                _registered_method=True)
         self.UpsertReferenceItem = channel.unary_unary(
                 '/medhistory.MedHistoryService/UpsertReferenceItem',
                 request_serializer=medhistory_dot_medhistory__pb2.UpsertReferenceItemRequest.SerializeToString,
@@ -239,6 +244,29 @@ class MedHistoryServiceServicer:
         """Devuelve el contenido de una tabla de referencia (catálogo de vacunas,
         rangos de vitales, hallazgos por sistema, etc.). Es lo que llena los
         desplegables que el template declara en `reference_table`.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CountFinalizedRecords(self, request, context):
+        """B-7 — el PRIMER agregado de este servicio, y por eso lleva escrito por qué
+        se le permite existir.
+
+        Todo lo demás aquí se pide por registro o por mascota, y cada lectura pasa
+        por `consultation_access_logs`: un expediente clínico no se consulta sin
+        dejar rastro de quién y por qué. Un conteo parecía romper esa regla, y no la
+        rompe **mientras el resultado no se pueda reducir a una persona**. De ahí la
+        forma de la petición: acepta un periodo y nada más.
+
+        No admite `pet_id`, ni `client_profile_id`, ni `vet_profile_id`. Un conteo
+        con sujeto es una consulta clínica disfrazada: con n=1 revela que ese
+        paciente tiene expediente, que es justo lo que el resto del servicio protege.
+        Si algún día hace falta desempeño por veterinario, es otro caso de uso, con
+        su fila en la baseline y su decisión propia — no un filtro más en este.
+
+        Se audita igual que una lectura, con `granted_aggregate`: la bitácora no
+        deja de anotar solo porque el resultado sea un número.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -488,6 +516,11 @@ def add_MedHistoryServiceServicer_to_server(servicer, server):
                     request_deserializer=medhistory_dot_medhistory__pb2.GetReferenceDataRequest.FromString,
                     response_serializer=medhistory_dot_medhistory__pb2.GetReferenceDataResponse.SerializeToString,
             ),
+            'CountFinalizedRecords': grpc.unary_unary_rpc_method_handler(
+                    servicer.CountFinalizedRecords,
+                    request_deserializer=medhistory_dot_medhistory__pb2.CountFinalizedRecordsRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.CountFinalizedRecordsResponse.SerializeToString,
+            ),
             'UpsertReferenceItem': grpc.unary_unary_rpc_method_handler(
                     servicer.UpsertReferenceItem,
                     request_deserializer=medhistory_dot_medhistory__pb2.UpsertReferenceItemRequest.FromString,
@@ -699,6 +732,33 @@ class MedHistoryService:
             '/medhistory.MedHistoryService/GetReferenceData',
             medhistory_dot_medhistory__pb2.GetReferenceDataRequest.SerializeToString,
             medhistory_dot_medhistory__pb2.GetReferenceDataResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CountFinalizedRecords(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/CountFinalizedRecords',
+            medhistory_dot_medhistory__pb2.CountFinalizedRecordsRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.CountFinalizedRecordsResponse.FromString,
             options,
             channel_credentials,
             insecure,

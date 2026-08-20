@@ -43,6 +43,17 @@ service NotificationService {
   // pude consultar" dispara compensaciones automáticas sobre un hecho falso.
   rpc ListDeliveries (ListDeliveriesRequest) returns (ListDeliveriesResponse);
 
+  // B-7 — cómo le fue a cada aviso, agregado por evento y canal.
+  //
+  // **Entrega, nunca apertura.** El diseño del panel pedía «tasa de apertura» y
+  // no existe: la app no reporta que alguien haya abierto un push, no hay dónde
+  // guardarlo y no se puede inventar. Lo que sí consta es hasta dónde llegó el
+  // envío, que es otra pregunta y hay que llamarla por su nombre.
+  //
+  // Como `ListDeliveries`, devuelve `retained_since`: fuera de la ventana que
+  // el servicio conserva, un cero **no significa que no se enviara nada**.
+  rpc GetDeliveryStats (GetDeliveryStatsRequest) returns (GetDeliveryStatsResponse);
+
   // Send transactional email via SendGrid/SES (S2-12). Async, non-blocking.
   rpc SendEmail (SendEmailRequest) returns (SendEmailResponse);
 
@@ -355,6 +366,52 @@ message ListDeliveriesResponse {
   // conserva 30 días y se pregunta por 90, quien consulta tiene que saber que
   // la ausencia de entregas fuera de esa ventana no significa nada.
   google.protobuf.Timestamp retained_since = 2;
+}
+
+message GetDeliveryStatsRequest {
+  // YYYY-MM-DD en América/Bogotá, sobre `attempted_at`. El día de cierre entra
+  // entero. Un periodo que se pase de la ventana conservada no es un error: se
+  // recorta, y `retained_since` dice dónde se recortó.
+  string period_start = 1;
+  string period_end = 2;
+
+  // Filtros opcionales. Vacíos = todos.
+  string event = 3;
+  DeliveryChannel channel = 4;
+}
+
+message DeliveryStatsRow {
+  // El evento tal cual se guardó, en texto y no como enum: la tabla acepta
+  // eventos que este contrato todavía no conoce, y traducirlos a
+  // `UNSPECIFIED` los fundiría a todos en una fila que no significa nada.
+  string event = 1;
+  string channel = 2;
+
+  int32 attempted = 3;
+  int32 delivered = 4;
+  // `attempted - delivered`. Viaja calculado para que nadie lo derive al revés.
+  int32 failed = 5;
+
+  // Suma de destinos, no de avisos: un push a tres dispositivos son tres.
+  int32 tokens_sent = 6;
+  int32 tokens_failed = 7;
+
+  // El fallo más repetido del grupo, si hubo alguno. Sirve para saber si los
+  // fallos son de token caducado o de otra cosa; vacío si no hubo fallos.
+  string top_failure_reason = 8;
+}
+
+message GetDeliveryStatsResponse {
+  repeated DeliveryStatsRow rows = 1;
+
+  // Ventana efectivamente cubierta por el registro. Antes de esta fecha no hay
+  // filas porque se purgaron, no porque no se enviara nada.
+  google.protobuf.Timestamp retained_since = 2;
+
+  // Verdadero si el periodo pedido empieza antes de `retained_since`, o sea si
+  // la respuesta cubre menos de lo que se preguntó. Se calcula aquí para que el
+  // que pinta no tenga que acordarse de comparar dos fechas.
+  bool period_truncated = 3;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
