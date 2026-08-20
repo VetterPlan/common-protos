@@ -564,6 +564,24 @@ message ReferenceItem {
   google.protobuf.Struct attributes = 4;
   string id = 5;
   bool is_active = 6;
+
+  // B-5 — la especie a la que aplica la fila, como campo propio.
+  //
+  // Ya viajaba dentro de `attributes.species_profile`, pero ahi es un valor de
+  // un Struct sin contrato: el panel tenia que adivinar la clave y el tipo. Las
+  // tablas no particionadas por especie (`system_findings`) lo dejan vacio, y
+  // vacio significa "aplica a todas", no "no se sabe".
+  string species_profile = 7;
+
+  // B-5 — cuando y quien toco la fila por ultima vez. Un vocabulario clinico
+  // que alguien aprueba necesita decir sobre que version se aprobo.
+  //
+  // Vacios en una fila que nadie ha editado desde que existen estas columnas:
+  // la ausencia es "no consta", nunca "lo edito el sistema". `updated_by` es el
+  // user id de auth del actor, el mismo que ya llegaba en
+  // `UpsertReferenceItemRequest.actor_user_id` y hasta ahora solo iba al log.
+  google.protobuf.Timestamp updated_at = 8;
+  string updated_by = 9;
 }
 
 message GetReferenceDataResponse {

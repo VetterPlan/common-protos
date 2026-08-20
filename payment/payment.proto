@@ -693,6 +693,12 @@ message OutstandingCollection {
   google.protobuf.Timestamp failed_at = 7;
   google.protobuf.Timestamp next_retry_at = 8;
   string last_error = 9;
+
+  // B-5 — quien atendio la visita que quedo sin cobrar. Es informacion para la
+  // fila de la tabla de cobranza, NO autoridad: nadie decide un permiso con
+  // esto. Vacio significa que el pago no tiene vet asociado, no "no se sabe":
+  // un cobro fallido siempre nace de una cita.
+  string vet_profile_id = 10;
 }
 
 message GetClientCollectionStatusResponse {
@@ -714,6 +720,15 @@ message ClientOutstandingSummary {
   double total_amount = 2;
   int32 count = 3;
   google.protobuf.Timestamp oldest_failed_at = 4;
+
+  // B-5 — las visitas que componen esa deuda. El panel lista cobranza POR
+  // VISITA (vet, intentos, cuanto), y hasta ahora eso obligaba a una llamada a
+  // `GetClientCollectionStatus` por cada fila de la pagina.
+  //
+  // Trae como mucho las `MAX_VISITAS_POR_CLIENTE` mas antiguas; `count` sigue
+  // diciendo cuantas hay en total, asi que una lista mas corta que `count` es
+  // un recorte declarado y no una deuda que encogio.
+  repeated OutstandingCollection visits = 5;
 }
 
 message ListFailedCollectionsResponse {
@@ -1302,6 +1317,26 @@ message ReconciliationReportResponse {
   double gmv_cop = 6;
   double platform_revenue_cop = 7;
   repeated ReconciliationDiscrepancyProto items = 8;
+
+  // B-5 — los dos lados de la comparacion del dia, sumados.
+  //
+  // `local_total_cop` NO es `gmv_cop`: el GMV incluye lo cobrado sin pasar por
+  // la pasarela (saldo de wallet), y eso Wompi no lo ha visto nunca. Comparar
+  // el GMV contra Wompi acusaria una diferencia que no es una discrepancia.
+  // Este suma solo los pagos capturados que llevan `gateway_transaction_id`,
+  // que es exactamente el conjunto que se conteo contra la pasarela.
+  //
+  // Los tres son `optional` porque un informe anterior a esta version no los
+  // tiene, y un cero afirmaria "ese dia no se movio dinero".
+  optional double wompi_total_cop = 9;
+  optional double local_total_cop = 10;
+
+  // Falso = la consulta a Wompi se corto a medias (error de la API o de red) y
+  // el lado de la pasarela esta INCOMPLETO. El total sigue viajando porque es
+  // lo que se leyo, pero no se puede restar contra el local ni presentar como
+  // "cuadra": la ausencia de una transaccion no es prueba de que no exista.
+  // Ausente = informe anterior a esta version, donde no se registro.
+  optional bool wompi_query_complete = 11;
 }
 
 message ListReconciliationReportsResponse {

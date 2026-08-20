@@ -133,6 +133,22 @@ message UnverifiedCheck {
   string detail           = 6;
 }
 
+// Una comprobación que SÍ se hizo y no trajo hechos.
+//
+// No comparte lista con `UnverifiedCheck` a propósito: aquella dice «no se
+// pudo consultar» y esta dice «se consultó y no hay». Juntarlas es el defecto
+// que cerró §33 — quien no las distinga lee «no pude comprobar el historial»
+// cuando la verdad es «el historial está vacío», y concluye lo contrario de lo
+// que pasó. Por eso `finding_text` no empieza nunca por «No se pudo».
+message CheckedFinding {
+  string tool             = 1;
+  string reason           = 2;
+  bool   affects_outcome  = 3;
+  string tool_label       = 4;
+  string finding_text     = 5;
+  string detail           = 6;
+}
+
 // ─── Acciones y constancias ────────────────────────────────────────────────
 
 message PlannedAction {
@@ -369,6 +385,10 @@ message Case {
   // de una columna: un caso se puede reabrir y volver a escalar, y la cola mide
   // la espera en curso. Ausente si el caso nunca escaló.
   google.protobuf.Timestamp  escalated_at      = 29;
+
+  // Lo que se comprobó y vino vacío. Es un hallazgo, no un hueco: va aparte de
+  // `unverified` porque publicarlo ahí sería afirmar que no se pudo mirar.
+  repeated CheckedFinding    checked           = 30;
 }
 
 enum CaseParty {

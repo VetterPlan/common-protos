@@ -307,6 +307,12 @@ message ListUsersRequest {
   string search = 3;        // optional: case-insensitive email/phone substring
   string role_slug = 4;     // optional: filter by role ("client" | "vet" | "admin")
   string active_filter = 5; // optional: "active" | "inactive" | "" (all)
+
+  // B-5 — "verified" | "unverified" | "" (todos). Mismo idioma que
+  // `active_filter`: un bool no distinguiria "sin verificar" de "sin filtro".
+  // El dato ya viaja por fila en `UserSummary.is_email_verified`; esto permite
+  // que el KPI "Sin verificar email" salga con un total y no contando una pagina.
+  string email_verified_filter = 6;
 }
 
 message UserSummary {
@@ -341,6 +347,18 @@ message LegalDocument {
   string published_at = 10;     // ISO-8601
   string published_by_user_id = 11;
   string notes = 12;
+
+  // B-5 — cuantas personas aceptaron ESTE texto. Se cuenta por `body_hash`, no
+  // por (doc_type, version): `terms_acceptances` no guarda `locale`, y dos
+  // idiomas comparten numero de version, asi que contar por version sumaria
+  // las dos traducciones en la misma cifra.
+  //
+  // `optional` a proposito. Solo lo rellena `ListLegalDocuments`, que es la
+  // consulta de admin; `GetLegalDocument` esta en el camino caliente de aceptar
+  // los terminos y no paga un COUNT por llamada. Sin presencia explicita, ese
+  // cero significaria "nadie lo ha aceptado" cuando en realidad significa "no
+  // se conto", que es la afirmacion contraria.
+  optional int32 acceptance_count = 13;
 }
 
 message GetLegalDocumentRequest {
