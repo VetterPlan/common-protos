@@ -341,6 +341,34 @@ message Case {
   string                     escalation_text   = 23;
   Incident                   incident       = 21;
   CaseParty                  party          = 22;
+
+  // ─── El sujeto y la guardia (B-3) ───
+  //
+  // Los cuatro estaban escritos en la tabla `cases` y no se podían preguntar:
+  // la autoridad conocía el dato y el contrato no dejaba pedirlo.
+  //
+  // Los dos perfiles son los que conocen payment y appointment de cada parte,
+  // NO el `user_id` de auth de arriba: son identidades distintas y confundirlas
+  // no da error, devuelve vacío. Viajan **solo para el equipo** — un caso puede
+  // llevar el perfil de la contraparte (la matriz de identidad lo permite en
+  // varias celdas) y el titular no tiene por qué recibirlo.
+  string                     client_profile_id = 25;
+  string                     vet_profile_id    = 26;
+
+  // Cuándo el TITULAR tuvo la salida al humano delante. Es el denominador del
+  // KPI de elección voluntaria, y se sella una sola vez. **No es "desde cuándo
+  // espera": eso es `escalated_at`.**
+  google.protobuf.Timestamp  human_offered_at  = 27;
+
+  // El administrador de guardia que lleva el caso: un `user_id` de auth, no un
+  // equipo. Viaja **solo para el equipo**: a quién le tocó un escalado es
+  // topología nuestra, no información del titular.
+  string                     escalated_to      = 28;
+
+  // Desde cuándo espera a una persona. Sale del último evento de escalado, no
+  // de una columna: un caso se puede reabrir y volver a escalar, y la cola mide
+  // la espera en curso. Ausente si el caso nunca escaló.
+  google.protobuf.Timestamp  escalated_at      = 29;
 }
 
 enum CaseParty {
