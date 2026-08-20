@@ -133,6 +133,11 @@ class PaymentServiceStub:
                 request_serializer=payment_dot_payment__pb2.ListFailedCollectionsRequest.SerializeToString,
                 response_deserializer=payment_dot_payment__pb2.ListFailedCollectionsResponse.FromString,
                 _registered_method=True)
+        self.ListPayments = channel.unary_unary(
+                '/payment.PaymentService/ListPayments',
+                request_serializer=payment_dot_payment__pb2.ListPaymentsRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.ListPaymentsResponse.FromString,
+                _registered_method=True)
         self.WriteOffCollection = channel.unary_unary(
                 '/payment.PaymentService/WriteOffCollection',
                 request_serializer=payment_dot_payment__pb2.WriteOffCollectionRequest.SerializeToString,
@@ -442,6 +447,16 @@ class PaymentServiceServicer:
 
     def ListFailedCollections(self, request, context):
         """Cobros pendientes de todos los clientes. Operación de cobranza (admin).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListPayments(self, request, context):
+        """Listado global de pagos para el panel de administración. Es la primera
+        consulta de este servicio que NO va acotada por un dueño: los filtros son
+        de búsqueda y ninguno se lee como autoridad. La puerta es @Admin en la
+        gateway; ver authorization-baseline.md §Dinero.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -782,6 +797,11 @@ def add_PaymentServiceServicer_to_server(servicer, server):
                     servicer.ListFailedCollections,
                     request_deserializer=payment_dot_payment__pb2.ListFailedCollectionsRequest.FromString,
                     response_serializer=payment_dot_payment__pb2.ListFailedCollectionsResponse.SerializeToString,
+            ),
+            'ListPayments': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListPayments,
+                    request_deserializer=payment_dot_payment__pb2.ListPaymentsRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.ListPaymentsResponse.SerializeToString,
             ),
             'WriteOffCollection': grpc.unary_unary_rpc_method_handler(
                     servicer.WriteOffCollection,
@@ -1417,6 +1437,33 @@ class PaymentService:
             '/payment.PaymentService/ListFailedCollections',
             payment_dot_payment__pb2.ListFailedCollectionsRequest.SerializeToString,
             payment_dot_payment__pb2.ListFailedCollectionsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListPayments(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/ListPayments',
+            payment_dot_payment__pb2.ListPaymentsRequest.SerializeToString,
+            payment_dot_payment__pb2.ListPaymentsResponse.FromString,
             options,
             channel_credentials,
             insecure,

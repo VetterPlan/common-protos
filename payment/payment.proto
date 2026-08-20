@@ -87,6 +87,12 @@ service PaymentService {
   // Cobros pendientes de todos los clientes. Operación de cobranza (admin).
   rpc ListFailedCollections (ListFailedCollectionsRequest) returns (ListFailedCollectionsResponse);
 
+  // Listado global de pagos para el panel de administración. Es la primera
+  // consulta de este servicio que NO va acotada por un dueño: los filtros son
+  // de búsqueda y ninguno se lee como autoridad. La puerta es @Admin en la
+  // gateway; ver authorization-baseline.md §Dinero.
+  rpc ListPayments (ListPaymentsRequest) returns (ListPaymentsResponse);
+
   // Da por perdido un cobro incobrable (admin). Sin esto un CAPTURE_FAILED solo
   // sale con un cobro exitoso: si la pasarela nunca va a aprobarlo, el cliente
   // queda bloqueado para siempre y nadie puede levantarlo.
@@ -698,6 +704,32 @@ message ListFailedCollectionsResponse {
   repeated ClientOutstandingSummary clients = 1;
   int32 total_count = 2;
   double total_amount = 3;
+}
+
+message ListPaymentsRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+
+  // Vacío = todos los estados.
+  repeated PaymentStatus statuses = 3;
+
+  // YYYY-MM-DD en América/Bogotá, sobre created_at. El día de cierre entra
+  // entero: el rango se resuelve como [inicio, fin+1día) en UTC.
+  string period_start = 4;
+  string period_end = 5;
+
+  // Filtros de búsqueda, NO de autoridad. Que el llamante mande un perfil no
+  // legitima la llamada: eso sería autorizar con datos del cliente.
+  string client_profile_id = 6;
+  string vet_profile_id = 7;
+  string appointment_id = 8;
+}
+
+message ListPaymentsResponse {
+  repeated Payment payments = 1;
+
+  // Total que cumple el filtro, no el tamaño de la página.
+  int32 total_count = 2;
 }
 
 message WriteOffCollectionRequest {
