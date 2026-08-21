@@ -127,6 +127,18 @@ service PetService {
   // Returns structured fields matching the PetVaccination model.
   // Does NOT persist data — the client reviews extracted data and calls AddVaccination to save.
   rpc ExtractVaccinationCard (ExtractVaccinationCardRequest) returns (ExtractVaccinationCardResponse);
+
+  // ─── AUTORIZACION DE IA PARA EL CARNE (Ley 1581) ───
+  //
+  // Leer el carne manda la imagen a un proveedor de vision FUERA del pais. Es
+  // transferencia internacional y necesita autorizacion expresa e informada.
+  //
+  // Es SUYA, no del expediente: `medhistory.ai_consents` cuelga de un registro
+  // clinico y cuando alguien escanea un carne no hay registro al que colgarse.
+  // Se piden y se revocan por separado.
+  rpc GrantVaccinationCardAiConsent (GrantVaccinationCardAiConsentRequest) returns (VaccinationCardAiConsentResponse);
+  rpc GetVaccinationCardAiConsent (GetVaccinationCardAiConsentRequest) returns (VaccinationCardAiConsentResponse);
+  rpc RevokeVaccinationCardAiConsent (RevokeVaccinationCardAiConsentRequest) returns (VaccinationCardAiConsentResponse);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -607,6 +619,34 @@ message ExtractVaccinationCardRequest {
   string pet_id = 2;       // Optional: pet UUID for audit context
   string hint = 3;         // Optional: user hint to improve extraction
                            // e.g. "carnet escrito en español", "fecha en formato DD/MM/AAAA"
+  // Lo resuelve la gateway desde el JWT, nunca lo manda el cliente. Sin el no
+  // se puede saber si el titular autorizo la transferencia internacional.
+  string client_profile_id = 4;
+}
+
+message OwnerAiConsent {
+  string client_profile_id = 1;
+  bool granted = 2;
+  string consent_version = 3;
+  string granted_at = 4;
+  string revoked_at = 5;
+}
+
+message GrantVaccinationCardAiConsentRequest {
+  string client_profile_id = 1;
+  string consent_version = 2;
+}
+
+message GetVaccinationCardAiConsentRequest {
+  string client_profile_id = 1;
+}
+
+message RevokeVaccinationCardAiConsentRequest {
+  string client_profile_id = 1;
+}
+
+message VaccinationCardAiConsentResponse {
+  OwnerAiConsent consent = 1;
 }
 
 // Extracted fields matching the PetVaccination model.

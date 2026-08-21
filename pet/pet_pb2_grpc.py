@@ -168,6 +168,21 @@ class PetServiceStub:
                 request_serializer=pet_dot_pet__pb2.ExtractVaccinationCardRequest.SerializeToString,
                 response_deserializer=pet_dot_pet__pb2.ExtractVaccinationCardResponse.FromString,
                 _registered_method=True)
+        self.GrantVaccinationCardAiConsent = channel.unary_unary(
+                '/pet.PetService/GrantVaccinationCardAiConsent',
+                request_serializer=pet_dot_pet__pb2.GrantVaccinationCardAiConsentRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.VaccinationCardAiConsentResponse.FromString,
+                _registered_method=True)
+        self.GetVaccinationCardAiConsent = channel.unary_unary(
+                '/pet.PetService/GetVaccinationCardAiConsent',
+                request_serializer=pet_dot_pet__pb2.GetVaccinationCardAiConsentRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.VaccinationCardAiConsentResponse.FromString,
+                _registered_method=True)
+        self.RevokeVaccinationCardAiConsent = channel.unary_unary(
+                '/pet.PetService/RevokeVaccinationCardAiConsent',
+                request_serializer=pet_dot_pet__pb2.RevokeVaccinationCardAiConsentRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.VaccinationCardAiConsentResponse.FromString,
+                _registered_method=True)
 
 
 class PetServiceServicer:
@@ -395,6 +410,32 @@ class PetServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GrantVaccinationCardAiConsent(self, request, context):
+        """─── AUTORIZACION DE IA PARA EL CARNE (Ley 1581) ───
+
+        Leer el carne manda la imagen a un proveedor de vision FUERA del pais. Es
+        transferencia internacional y necesita autorizacion expresa e informada.
+
+        Es SUYA, no del expediente: `medhistory.ai_consents` cuelga de un registro
+        clinico y cuando alguien escanea un carne no hay registro al que colgarse.
+        Se piden y se revocan por separado.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetVaccinationCardAiConsent(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RevokeVaccinationCardAiConsent(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_PetServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -522,6 +563,21 @@ def add_PetServiceServicer_to_server(servicer, server):
                     servicer.ExtractVaccinationCard,
                     request_deserializer=pet_dot_pet__pb2.ExtractVaccinationCardRequest.FromString,
                     response_serializer=pet_dot_pet__pb2.ExtractVaccinationCardResponse.SerializeToString,
+            ),
+            'GrantVaccinationCardAiConsent': grpc.unary_unary_rpc_method_handler(
+                    servicer.GrantVaccinationCardAiConsent,
+                    request_deserializer=pet_dot_pet__pb2.GrantVaccinationCardAiConsentRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.VaccinationCardAiConsentResponse.SerializeToString,
+            ),
+            'GetVaccinationCardAiConsent': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetVaccinationCardAiConsent,
+                    request_deserializer=pet_dot_pet__pb2.GetVaccinationCardAiConsentRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.VaccinationCardAiConsentResponse.SerializeToString,
+            ),
+            'RevokeVaccinationCardAiConsent': grpc.unary_unary_rpc_method_handler(
+                    servicer.RevokeVaccinationCardAiConsent,
+                    request_deserializer=pet_dot_pet__pb2.RevokeVaccinationCardAiConsentRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.VaccinationCardAiConsentResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -1208,6 +1264,87 @@ class PetService:
             '/pet.PetService/ExtractVaccinationCard',
             pet_dot_pet__pb2.ExtractVaccinationCardRequest.SerializeToString,
             pet_dot_pet__pb2.ExtractVaccinationCardResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GrantVaccinationCardAiConsent(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/pet.PetService/GrantVaccinationCardAiConsent',
+            pet_dot_pet__pb2.GrantVaccinationCardAiConsentRequest.SerializeToString,
+            pet_dot_pet__pb2.VaccinationCardAiConsentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetVaccinationCardAiConsent(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/pet.PetService/GetVaccinationCardAiConsent',
+            pet_dot_pet__pb2.GetVaccinationCardAiConsentRequest.SerializeToString,
+            pet_dot_pet__pb2.VaccinationCardAiConsentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RevokeVaccinationCardAiConsent(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/pet.PetService/RevokeVaccinationCardAiConsent',
+            pet_dot_pet__pb2.RevokeVaccinationCardAiConsentRequest.SerializeToString,
+            pet_dot_pet__pb2.VaccinationCardAiConsentResponse.FromString,
             options,
             channel_credentials,
             insecure,

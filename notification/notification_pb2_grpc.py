@@ -142,105 +142,67 @@ class NotificationServiceServicer:
     """
 
     def RegisterDeviceToken(self, request, context):
-        """Register an FCM device token for a user (call on app launch / token refresh)
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def UnregisterDeviceToken(self, request, context):
-        """Remove a device token (call on logout or token invalidation)
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def PurgeUserDeviceTokens(self, request, context):
-        """Retira TODOS los tokens de un usuario. Lo llama la baja de cuenta: sin
-        esto el telefono sigue recibiendo avisos de una cuenta que ya no existe.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SendPushNotification(self, request, context):
-        """Send a push notification to a specific user (all their active devices)
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def BroadcastToTopic(self, request, context):
-        """Broadcast to a named topic (e.g. "admin-alerts")
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListDeliveries(self, request, context):
-        """Consulta de entregas. Sin esto no se puede saber si un aviso LLEGÓ, y por
-        tanto no se puede detectar el fallo más caro que existe: el silencio.
-
-        Contrato crítico: si el servicio no puede responder, debe devolver error,
-        NUNCA una lista vacía. Vacío significa "no hubo entregas" y quien consulta
-        lo interpreta como "le fallamos al usuario". Confundir "no hay" con "no
-        pude consultar" dispara compensaciones automáticas sobre un hecho falso.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetDeliveryStats(self, request, context):
-        """B-7 — cómo le fue a cada aviso, agregado por evento y canal.
-
-        **Entrega, nunca apertura.** El diseño del panel pedía «tasa de apertura» y
-        no existe: la app no reporta que alguien haya abierto un push, no hay dónde
-        guardarlo y no se puede inventar. Lo que sí consta es hasta dónde llegó el
-        envío, que es otra pregunta y hay que llamarla por su nombre.
-
-        Como `ListDeliveries`, devuelve `retained_since`: fuera de la ventana que
-        el servicio conserva, un cero **no significa que no se enviara nada**.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SendEmail(self, request, context):
-        """Send transactional email via SendGrid/SES (S2-12). Async, non-blocking.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ScheduleReminder(self, request, context):
-        """─── SCHEDULED REMINDERS ───
-        Programa un push para enviarse en `due_at` (no ahora). El motor de
-        recordatorios de notification-service lo persiste y lo dispara cuando vence.
-        Idempotente por idempotency_key: reprogramar el mismo recordatorio no
-        duplica. Lo llaman pets-service (vacunas/desparasitación próximas) y
-        medhistory-service (follow-up agendado por el vet).
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def CancelReminder(self, request, context):
-        """Cancela un recordatorio aún no enviado (p.ej. si se re-agenda la dosis).
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListNotificationCopy(self, request, context):
-        """─── COPY EDITABLE (panel de admin) ───
-        El texto de cada aviso vivía en el código: cambiar una palabra costaba un
-        despliegue. Estos RPCs lo mueven a la DB, con el default del código como
-        respaldo (fila ausente = texto original, así revertir no despliega nada).
-
-        Contrato crítico: `variables` es lo único interpolable. Un texto que use
-        una variable que ningún servicio envía NO se guarda — si se guardara, no
-        fallaría acá sino al enviarse, y el aviso no saldría.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')

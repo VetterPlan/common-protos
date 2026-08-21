@@ -118,6 +118,16 @@ message PurgeUserDeviceTokensResponse {
   int32 purged_count = 1;
 }
 
+// Naturaleza del contacto, para la Ley 2300 de 2023.
+//
+// TRANSACTIONAL es el defecto a proposito: si lo fuera COLLECTIONS, cada aviso
+// de cita se retrasaria hasta el lunes. Quien haga gestion de cobranza tiene
+// que declararlo, y hay un trinquete en payment que lo exige.
+enum ContactClass {
+  CONTACT_CLASS_TRANSACTIONAL = 0;
+  CONTACT_CLASS_COLLECTIONS = 1;
+}
+
 message NotificationDataEntry {
   string key   = 1;
   string value = 2;
@@ -131,6 +141,10 @@ message SendPushNotificationRequest {
   repeated NotificationDataEntry data = 5;
   string idempotency_key = 6;
   string copy_key = 7;
+
+  // Ley 2300: la cobranza solo sale L-V 7-19 y sabados 8-15, nunca domingos ni
+  // festivos, y una sola vez al dia. Fuera de ventana se PROGRAMA, no se pierde.
+  ContactClass contact_class = 8;
 }
 
 message SendPushNotificationResponse {
@@ -138,6 +152,10 @@ message SendPushNotificationResponse {
   int32  tokens_sent       = 2;  // number of FCM messages dispatched
   int32  tokens_failed     = 3;
   string error_message     = 4;  // non-empty only on hard failure
+  // La cobranza fuera de ventana no se envia: se programa. `success` sigue
+  // siendo true —el aviso no se perdio— y esto dice cuando sale.
+  bool   deferred          = 5;
+  string deferred_until    = 6;
 }
 
 message BroadcastToTopicRequest {
