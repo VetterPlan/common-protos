@@ -3,7 +3,6 @@ syntax = "proto3";
 package auth;
 
 service AuthService {
-  // Authentication
   rpc Login (LoginRequest) returns (LoginResponse);
   rpc RefreshToken (RefreshTokenRequest) returns (LoginResponse);
   rpc ValidateToken (ValidateTokenRequest) returns (ValidateTokenResponse);
@@ -17,60 +16,22 @@ service AuthService {
   rpc ChangePassword (ChangePasswordRequest) returns (ChangePasswordResponse);
   rpc ResendVerificationEmail (ResendVerificationEmailRequest) returns (ResendVerificationEmailResponse);
   rpc GetAccountVerification (GetAccountVerificationRequest) returns (GetAccountVerificationResponse);
-
-  // Role Management (NEW - Sprint 3)
   rpc AssignRole (AssignRoleRequest) returns (AssignRoleResponse);
   rpc GetUserRoles (GetUserRolesRequest) returns (GetUserRolesResponse);
   rpc RemoveRole (RemoveRoleRequest) returns (RemoveRoleResponse);
-
-  // Hard delete (testing utility)
   rpc HardDeleteUser (HardDeleteUserRequest) returns (HardDeleteUserResponse);
-
-  // ─── BAJA DE CUENTA (P-4a) ───
-  // El titular de la baja es auth. La gateway no puede serlo: una saga durable
-  // necesita estado y la gateway es un traductor.
-  //
-  // Los perfiles NO viajan en la peticion: los resuelve auth contra
-  // profile-service. Si los mandara el cliente, podria comprobar las
-  // precondiciones contra la wallet de otra persona.
   rpc RequestAccountDeletion (RequestAccountDeletionRequest) returns (AccountDeletionResponse);
   rpc CancelAccountDeletion (CancelAccountDeletionRequest) returns (AccountDeletionResponse);
   rpc GetAccountDeletionStatus (GetAccountDeletionStatusRequest) returns (AccountDeletionResponse);
-
-  // Admin: look up a user account by email address
+  rpc ListStuckAccountDeletions (ListStuckAccountDeletionsRequest) returns (ListStuckAccountDeletionsResponse);
+  rpc ExportUserData (ExportUserDataRequest) returns (ExportUserDataResponse);
   rpc FindUserByEmail (FindUserByEmailRequest) returns (FindUserByEmailResponse);
-
-  // Servicio-a-servicio: la direccion de correo de un usuario, para poder
-  // escribirle. NO se expone en la gateway.
-  //
-  // Existe porque `FindUserByEmail` va en la direccion contraria y ningun otro
-  // servicio guarda el correo personal: `VetProfile.clinic_email` es el de la
-  // clinica y es opcional. Sin esto, avisar por correo al dueno de un perfil
-  // obliga a inventarse la direccion o a no avisar.
   rpc GetUserContact (GetUserContactRequest) returns (GetUserContactResponse);
-
-  // Admin: paginated list of all accounts (clients + vets + admins), with filters
   rpc ListUsers (ListUsersRequest) returns (ListUsersResponse);
-
-  // ─── DOCUMENTOS LEGALES (T&C, privacidad) ───
-  //
-  // Append-only: publicar crea una versión y la anterior queda inactiva. La
-  // aceptación guarda versión + hash del texto que se mostró, porque sin eso no
-  // hay forma de probar QUÉ aceptó cada usuario.
-
-  // Texto vigente de un documento. Público (se lee antes de tener cuenta).
   rpc GetLegalDocument (GetLegalDocumentRequest) returns (LegalDocumentResponse);
-
-  // Registra la aceptación de un usuario. Idempotente por (usuario, tipo, versión).
   rpc AcceptLegalDocument (AcceptLegalDocumentRequest) returns (AcceptLegalDocumentResponse);
-
-  // Qué documentos le faltan por aceptar a un usuario (se consulta en login).
   rpc GetPendingLegalAcceptances (GetPendingLegalAcceptancesRequest) returns (GetPendingLegalAcceptancesResponse);
-
-  // Admin: publica una versión nueva. NUNCA edita la vigente.
   rpc PublishLegalDocument (PublishLegalDocumentRequest) returns (LegalDocumentResponse);
-
-  // Admin: histórico de versiones de un tipo de documento.
   rpc ListLegalDocuments (ListLegalDocumentsRequest) returns (ListLegalDocumentsResponse);
 }
 
@@ -113,8 +74,6 @@ message ValidateTokenResponse {
   repeated string roles = 5;  // CHANGED: from string to repeated string
   string user_type = 6;       // NEW: "client", "vet", "both", or "admin"
   bool is_email_verified = 7; // NEW: renamed from is_verified
-  // E1-A3: identificador del access token. Es la clave con la que la gateway
-  // consulta la lista de revocación; sin él ese camino de validación es ciego.
   string jti = 8;
 }
 
@@ -137,9 +96,6 @@ message ResetPasswordResponse {
   string message = 2;
 }
 
-// `user_id` lo pone la gateway desde el JWT, nunca el cliente: sin el, esto
-// seria "cambiale la contrasena a quien quieras". No lleva `confirm_password`
-// --comparar dos campos es del formulario, no del contrato--.
 message ChangePasswordRequest {
   string user_id = 1;
   string current_password = 2;
@@ -151,8 +107,6 @@ message ChangePasswordResponse {
   string message = 2;
 }
 
-// Existe porque el envio del registro es best effort: sin esta operacion, un
-// encolado fallido deja al usuario esperando un correo que no va a llegar.
 message ResendVerificationEmailRequest {
   string user_id = 1;
 }
@@ -294,6 +248,45 @@ message RequestAccountDeletionRequest {
   string user_id = 1;
   string ip = 2;
   string user_agent = 3;
+  string password = 4;
+  string otp_code = 5;
+}
+
+message StuckAccountDeletion {
+  string id = 1;
+  string user_id = 2;
+  string status = 3;
+  string scheduled_for = 4;
+  int32 attempts = 5;
+  int32 days_stuck = 6;
+  repeated AccountDeletionStep steps = 7;
+}
+
+message ListStuckAccountDeletionsRequest {
+  int32 limit = 1;
+}
+
+message ListStuckAccountDeletionsResponse {
+  repeated StuckAccountDeletion deletions = 1;
+  int32 total_count = 2;
+}
+
+message ExportUserDataRequest {
+  string user_id = 1;
+}
+
+message ExportedSection {
+  string service = 1;
+  string state = 2;      // hecho | pendiente | fallido
+  string detail = 3;
+  string payload_json = 4;
+}
+
+message ExportUserDataResponse {
+  string user_id = 1;
+  string generated_at = 2;
+  bool complete = 3;
+  repeated ExportedSection sections = 4;
 }
 
 message CancelAccountDeletionRequest {
@@ -343,26 +336,16 @@ message GetUserContactRequest {
 message GetUserContactResponse {
   string user_id = 1;
   string email = 2;
-
-  // Una cuenta desactivada o con el correo sin verificar sigue teniendo
-  // direccion. Quien avisa decide si escribirle; este servicio no lo decide por
-  // el ni devuelve vacio, que se leeria como "no tiene correo".
   bool is_active = 3;
   bool is_email_verified = 4;
 }
 
-// Admin: paginated listing of ALL accounts.
 message ListUsersRequest {
   int32 limit = 1;          // default 50, max 200
   int32 offset = 2;
   string search = 3;        // optional: case-insensitive email/phone substring
   string role_slug = 4;     // optional: filter by role ("client" | "vet" | "admin")
   string active_filter = 5; // optional: "active" | "inactive" | "" (all)
-
-  // B-5 — "verified" | "unverified" | "" (todos). Mismo idioma que
-  // `active_filter`: un bool no distinguiria "sin verificar" de "sin filtro".
-  // El dato ya viaja por fila en `UserSummary.is_email_verified`; esto permite
-  // que el KPI "Sin verificar email" salga con un total y no contando una pagina.
   string email_verified_filter = 6;
 }
 
@@ -398,25 +381,12 @@ message LegalDocument {
   string published_at = 10;     // ISO-8601
   string published_by_user_id = 11;
   string notes = 12;
-
-  // B-5 — cuantas personas aceptaron ESTE texto. Se cuenta por `body_hash`, no
-  // por (doc_type, version): `terms_acceptances` no guarda `locale`, y dos
-  // idiomas comparten numero de version, asi que contar por version sumaria
-  // las dos traducciones en la misma cifra.
-  //
-  // `optional` a proposito. Solo lo rellena `ListLegalDocuments`, que es la
-  // consulta de admin; `GetLegalDocument` esta en el camino caliente de aceptar
-  // los terminos y no paga un COUNT por llamada. Sin presencia explicita, ese
-  // cero significaria "nadie lo ha aceptado" cuando en realidad significa "no
-  // se conto", que es la afirmacion contraria.
   optional int32 acceptance_count = 13;
 }
 
 message GetLegalDocumentRequest {
   string doc_type = 1;
   string locale = 2;            // vacío = es-CO
-  // Opcional: una versión concreta. Vacío = la vigente. Sirve para releer lo
-  // que alguien aceptó en su momento.
   int32 version = 3;
 }
 
@@ -430,7 +400,6 @@ message AcceptLegalDocumentRequest {
   int32 version = 3;
   string body_hash = 4;         // el hash de lo que REALMENTE se mostró
   string locale = 5;
-  // Contexto de la aceptación (evidencia)
   string ip = 6;
   string user_agent = 7;
   string app_version = 8;

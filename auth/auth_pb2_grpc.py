@@ -134,6 +134,16 @@ class AuthServiceStub:
                 request_serializer=auth_dot_auth__pb2.GetAccountDeletionStatusRequest.SerializeToString,
                 response_deserializer=auth_dot_auth__pb2.AccountDeletionResponse.FromString,
                 _registered_method=True)
+        self.ListStuckAccountDeletions = channel.unary_unary(
+                '/auth.AuthService/ListStuckAccountDeletions',
+                request_serializer=auth_dot_auth__pb2.ListStuckAccountDeletionsRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.ListStuckAccountDeletionsResponse.FromString,
+                _registered_method=True)
+        self.ExportUserData = channel.unary_unary(
+                '/auth.AuthService/ExportUserData',
+                request_serializer=auth_dot_auth__pb2.ExportUserDataRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.ExportUserDataResponse.FromString,
+                _registered_method=True)
         self.FindUserByEmail = channel.unary_unary(
                 '/auth.AuthService/FindUserByEmail',
                 request_serializer=auth_dot_auth__pb2.FindUserByEmailRequest.SerializeToString,
@@ -309,6 +319,21 @@ class AuthServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ListStuckAccountDeletions(self, request, context):
+        """Solo admin: las bajas que se quedaron a medias. Un hueco que nadie mira es
+        un hueco callado con mas pasos.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ExportUserData(self, request, context):
+        """Ley 1581: el derecho de acceso, que acompana al de supresion.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def FindUserByEmail(self, request, context):
         """Admin: look up a user account by email address
         """
@@ -479,6 +504,16 @@ def add_AuthServiceServicer_to_server(servicer, server):
                     servicer.GetAccountDeletionStatus,
                     request_deserializer=auth_dot_auth__pb2.GetAccountDeletionStatusRequest.FromString,
                     response_serializer=auth_dot_auth__pb2.AccountDeletionResponse.SerializeToString,
+            ),
+            'ListStuckAccountDeletions': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListStuckAccountDeletions,
+                    request_deserializer=auth_dot_auth__pb2.ListStuckAccountDeletionsRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.ListStuckAccountDeletionsResponse.SerializeToString,
+            ),
+            'ExportUserData': grpc.unary_unary_rpc_method_handler(
+                    servicer.ExportUserData,
+                    request_deserializer=auth_dot_auth__pb2.ExportUserDataRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.ExportUserDataResponse.SerializeToString,
             ),
             'FindUserByEmail': grpc.unary_unary_rpc_method_handler(
                     servicer.FindUserByEmail,
@@ -1061,6 +1096,60 @@ class AuthService:
             '/auth.AuthService/GetAccountDeletionStatus',
             auth_dot_auth__pb2.GetAccountDeletionStatusRequest.SerializeToString,
             auth_dot_auth__pb2.AccountDeletionResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListStuckAccountDeletions(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/ListStuckAccountDeletions',
+            auth_dot_auth__pb2.ListStuckAccountDeletionsRequest.SerializeToString,
+            auth_dot_auth__pb2.ListStuckAccountDeletionsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ExportUserData(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/ExportUserData',
+            auth_dot_auth__pb2.ExportUserDataRequest.SerializeToString,
+            auth_dot_auth__pb2.ExportUserDataResponse.FromString,
             options,
             channel_credentials,
             insecure,
