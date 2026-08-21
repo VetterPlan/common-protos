@@ -206,6 +206,11 @@ class AppointmentServiceStub:
                 request_serializer=appointment_dot_appointment__pb2.ListVetCancellationsRequest.SerializeToString,
                 response_deserializer=appointment_dot_appointment__pb2.ListVetCancellationsResponse.FromString,
                 _registered_method=True)
+        self.AnonymizeClientData = channel.unary_unary(
+                '/appointment.AppointmentService/AnonymizeClientData',
+                request_serializer=appointment_dot_appointment__pb2.AnonymizeClientDataRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.AnonymizeClientDataResponse.FromString,
+                _registered_method=True)
         self.ListAppointments = channel.unary_unary(
                 '/appointment.AppointmentService/ListAppointments',
                 request_serializer=appointment_dot_appointment__pb2.ListAppointmentsRequest.SerializeToString,
@@ -521,6 +526,14 @@ class AppointmentServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def AnonymizeClientData(self, request, context):
+        """Baja de cuenta (P-4a): borra el dato personal del titular y CONSERVA el
+        hecho, que es el soporte del pago.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def ListAppointments(self, request, context):
         """Listado global de citas para el panel de administración. Es la primera
         consulta de este servicio que NO va acotada por un dueño: los filtros son
@@ -702,6 +715,11 @@ def add_AppointmentServiceServicer_to_server(servicer, server):
                     servicer.ListVetCancellations,
                     request_deserializer=appointment_dot_appointment__pb2.ListVetCancellationsRequest.FromString,
                     response_serializer=appointment_dot_appointment__pb2.ListVetCancellationsResponse.SerializeToString,
+            ),
+            'AnonymizeClientData': grpc.unary_unary_rpc_method_handler(
+                    servicer.AnonymizeClientData,
+                    request_deserializer=appointment_dot_appointment__pb2.AnonymizeClientDataRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.AnonymizeClientDataResponse.SerializeToString,
             ),
             'ListAppointments': grpc.unary_unary_rpc_method_handler(
                     servicer.ListAppointments,
@@ -1590,6 +1608,33 @@ class AppointmentService:
             '/appointment.AppointmentService/ListVetCancellations',
             appointment_dot_appointment__pb2.ListVetCancellationsRequest.SerializeToString,
             appointment_dot_appointment__pb2.ListVetCancellationsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def AnonymizeClientData(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/AnonymizeClientData',
+            appointment_dot_appointment__pb2.AnonymizeClientDataRequest.SerializeToString,
+            appointment_dot_appointment__pb2.AnonymizeClientDataResponse.FromString,
             options,
             channel_credentials,
             insecure,

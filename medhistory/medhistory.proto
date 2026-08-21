@@ -179,6 +179,11 @@ service MedHistoryService {
   // registro FINALIZADO. Segunda salida de la misma captura: lenguaje claro, sin
   // jerga. Solo el vet (o admin) genera; el dueño lo lee del registro.
   rpc GenerateOwnerSummary (GenerateOwnerSummaryRequest) returns (GenerateOwnerSummaryResponse);
+
+  // Baja de cuenta (P-4a): desvincula al titular y CONSERVA el acto medico.
+  // Ley 576 de 2000: la historia clinica es obligatoria y confidencial, y es
+  // la evidencia del veterinario sobre su propia conducta profesional.
+  rpc AnonymizeClientData (AnonymizeClientDataRequest) returns (AnonymizeClientDataResponse);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1175,4 +1180,14 @@ message ListConsentTemplatesRequest {
 
 message ListConsentTemplatesResponse {
   repeated ConsentTemplate templates = 1;
+}
+
+message AnonymizeClientDataRequest {
+  string client_profile_id = 1;
+}
+
+message AnonymizeClientDataResponse {
+  int32 records_anonymized = 1;
+  int32 summaries_cleared = 2;
+  int32 consents_anonymized = 3;
 }

@@ -205,6 +205,11 @@ class MedHistoryServiceStub:
                 request_serializer=medhistory_dot_medhistory__pb2.GenerateOwnerSummaryRequest.SerializeToString,
                 response_deserializer=medhistory_dot_medhistory__pb2.GenerateOwnerSummaryResponse.FromString,
                 _registered_method=True)
+        self.AnonymizeClientData = channel.unary_unary(
+                '/medhistory.MedHistoryService/AnonymizeClientData',
+                request_serializer=medhistory_dot_medhistory__pb2.AnonymizeClientDataRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.AnonymizeClientDataResponse.FromString,
+                _registered_method=True)
 
 
 class MedHistoryServiceServicer:
@@ -503,6 +508,15 @@ class MedHistoryServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def AnonymizeClientData(self, request, context):
+        """Baja de cuenta (P-4a): desvincula al titular y CONSERVA el acto medico.
+        Ley 576 de 2000: la historia clinica es obligatoria y confidencial, y es
+        la evidencia del veterinario sobre su propia conducta profesional.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_MedHistoryServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -655,6 +669,11 @@ def add_MedHistoryServiceServicer_to_server(servicer, server):
                     servicer.GenerateOwnerSummary,
                     request_deserializer=medhistory_dot_medhistory__pb2.GenerateOwnerSummaryRequest.FromString,
                     response_serializer=medhistory_dot_medhistory__pb2.GenerateOwnerSummaryResponse.SerializeToString,
+            ),
+            'AnonymizeClientData': grpc.unary_unary_rpc_method_handler(
+                    servicer.AnonymizeClientData,
+                    request_deserializer=medhistory_dot_medhistory__pb2.AnonymizeClientDataRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.AnonymizeClientDataResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -1488,6 +1507,33 @@ class MedHistoryService:
             '/medhistory.MedHistoryService/GenerateOwnerSummary',
             medhistory_dot_medhistory__pb2.GenerateOwnerSummaryRequest.SerializeToString,
             medhistory_dot_medhistory__pb2.GenerateOwnerSummaryResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def AnonymizeClientData(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/AnonymizeClientData',
+            medhistory_dot_medhistory__pb2.AnonymizeClientDataRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.AnonymizeClientDataResponse.FromString,
             options,
             channel_credentials,
             insecure,

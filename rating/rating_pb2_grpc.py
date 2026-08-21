@@ -54,6 +54,11 @@ class RatingServiceStub:
                 request_serializer=rating_dot_rating__pb2.SubmitOutcomeCheckInRequest.SerializeToString,
                 response_deserializer=rating_dot_rating__pb2.OutcomeCheckInResponse.FromString,
                 _registered_method=True)
+        self.AnonymizeClientData = channel.unary_unary(
+                '/rating.RatingService/AnonymizeClientData',
+                request_serializer=rating_dot_rating__pb2.AnonymizeClientDataRequest.SerializeToString,
+                response_deserializer=rating_dot_rating__pb2.AnonymizeClientDataResponse.FromString,
+                _registered_method=True)
         self.GetOutcomeCheckIn = channel.unary_unary(
                 '/rating.RatingService/GetOutcomeCheckIn',
                 request_serializer=rating_dot_rating__pb2.GetOutcomeCheckInRequest.SerializeToString,
@@ -136,6 +141,14 @@ class RatingServiceServicer:
 
     def SubmitOutcomeCheckIn(self, request, context):
         """─── DESENLACE (el núcleo) ───
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def AnonymizeClientData(self, request, context):
+        """Baja de cuenta (P-4a): la reputacion del vet no la borra quien la escribio.
+        Se retira al autor y se conserva el testimonio.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -230,6 +243,11 @@ def add_RatingServiceServicer_to_server(servicer, server):
                     servicer.SubmitOutcomeCheckIn,
                     request_deserializer=rating_dot_rating__pb2.SubmitOutcomeCheckInRequest.FromString,
                     response_serializer=rating_dot_rating__pb2.OutcomeCheckInResponse.SerializeToString,
+            ),
+            'AnonymizeClientData': grpc.unary_unary_rpc_method_handler(
+                    servicer.AnonymizeClientData,
+                    request_deserializer=rating_dot_rating__pb2.AnonymizeClientDataRequest.FromString,
+                    response_serializer=rating_dot_rating__pb2.AnonymizeClientDataResponse.SerializeToString,
             ),
             'GetOutcomeCheckIn': grpc.unary_unary_rpc_method_handler(
                     servicer.GetOutcomeCheckIn,
@@ -334,6 +352,33 @@ class RatingService:
             '/rating.RatingService/SubmitOutcomeCheckIn',
             rating_dot_rating__pb2.SubmitOutcomeCheckInRequest.SerializeToString,
             rating_dot_rating__pb2.OutcomeCheckInResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def AnonymizeClientData(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/rating.RatingService/AnonymizeClientData',
+            rating_dot_rating__pb2.AnonymizeClientDataRequest.SerializeToString,
+            rating_dot_rating__pb2.AnonymizeClientDataResponse.FromString,
             options,
             channel_credentials,
             insecure,

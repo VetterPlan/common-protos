@@ -22,6 +22,10 @@ import "google/protobuf/timestamp.proto";
 service RatingService {
   // ─── DESENLACE (el núcleo) ───
   rpc SubmitOutcomeCheckIn (SubmitOutcomeCheckInRequest) returns (OutcomeCheckInResponse);
+
+  // Baja de cuenta (P-4a): la reputacion del vet no la borra quien la escribio.
+  // Se retira al autor y se conserva el testimonio.
+  rpc AnonymizeClientData (AnonymizeClientDataRequest) returns (AnonymizeClientDataResponse);
   rpc GetOutcomeCheckIn (GetOutcomeCheckInRequest) returns (OutcomeCheckInResponse);
 
   // ─── RESEÑAS ───
@@ -422,4 +426,14 @@ message Contest {
 
 message ContestResponse {
   Contest contest = 1;
+}
+
+message AnonymizeClientDataRequest {
+  string client_profile_id = 1;
+}
+
+message AnonymizeClientDataResponse {
+  int32 reviews_anonymized = 1;
+  int32 events_anonymized = 2;
+  int32 checkins_anonymized = 3;
 }

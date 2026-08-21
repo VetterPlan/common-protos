@@ -16,212 +16,59 @@ import "google/protobuf/timestamp.proto";
 // ═══════════════════════════════════════════════════════════════════════════
 
 service AppointmentService {
-  // ─── LIFECYCLE ───
-
-  // Client requests a new appointment (creates REQUESTED state)
   rpc RequestAppointment (RequestAppointmentRequest) returns (AppointmentResponse);
-
-  // Vet accepts an appointment (REQUESTED -> ACCEPTED, first-come-first-served)
   rpc AcceptAppointment (AcceptAppointmentRequest) returns (AppointmentResponse);
-
-  // Update appointment status (EN_ROUTE, COMPLETED, etc.)
   rpc UpdateAppointmentStatus (UpdateAppointmentStatusRequest) returns (AppointmentResponse);
-
-  // Vet confirms arrival with 6-digit PIN (ARRIVED -> IN_PROGRESS)
   rpc ConfirmArrival (ConfirmArrivalRequest) returns (AppointmentResponse);
-
-  // Cancel an appointment (client, vet, or system)
   rpc CancelAppointment (CancelAppointmentRequest) returns (AppointmentResponse);
-
-  // Abort a consultation already under way (IN_PROGRESS -> CANCELLED)
   rpc AbortAppointment (AbortAppointmentRequest) returns (AppointmentResponse);
-
-  // Cuanto costaria cancelar AHORA, sin cancelar nada. La politica de E1-A8 ya
-  // cobraba y no habia forma de anunciar el coste antes de confirmar.
-  //
-  // Devuelve la cotizacion del rol de QUIEN PREGUNTA, deducido de la propia
-  // cita: el cliente y el vet pagan cosas distintas —la cita contra el viaje— y
-  // ninguno de los dos tiene por que ver la exposicion economica del otro. Por
-  // eso el rol NO viaja en la peticion: un parametro que el llamante elige
-  // seria una forma de leer la penalidad del vecino.
   rpc GetCancellationQuote (GetCancellationQuoteRequest) returns (GetCancellationQuoteResponse);
-
-  // ─── QUERIES ───
-
-  // Get a single appointment by ID
   rpc GetAppointment (GetAppointmentRequest) returns (AppointmentResponse);
-
-  // Get appointments for a client (with optional status filter)
   rpc GetClientAppointments (GetClientAppointmentsRequest) returns (AppointmentsResponse);
-
-  // Get appointments for a vet (with optional status filter)
   rpc GetVetAppointments (GetVetAppointmentsRequest) returns (AppointmentsResponse);
-
-  // ─── MATCHING ───
-
-  // Find available vets for a service at a location and time
   rpc GetAvailableVets (GetAvailableVetsRequest) returns (AvailableVetsResponse);
-
-  // ─── NEW: Appointment Modes + Slots ───
-
-  // Get vet's appointments for a specific date (called by Profile Service)
   rpc GetVetAppointmentsForDate (GetVetAppointmentsForDateRequest) returns (GetVetAppointmentsForDateResponse);
-
-  // Get next available calculated slots (MVP aggregator)
   rpc GetNextAvailableSlots (GetNextAvailableSlotsRequest) returns (GetNextAvailableSlotsResponse);
-
-  // Get pet's appointment history (for follow-up recommendations)
   rpc GetPetAppointmentHistory (GetPetAppointmentHistoryRequest) returns (GetPetAppointmentHistoryResponse);
-
-  // A1.2 — Hechos de engagement activo por mascota. NO decide autorizacion: la
-  // gateway lee estos hechos y aplica la politica. Batch obligatorio: la agenda
-  // del vet resuelve ~90 mascotas por pantalla y un RPC unario recrearia el N+1
-  // que E1-A1 existe para eliminar, esta vez en la ruta de autorizacion.
-  //
-  // "Activo" = el conjunto declarado por AppointmentStatus.is_active. La
-  // unificacion de las demas listas de estados activos queda fuera de A1.2
-  // (ver docs/PLAN_E1_A1_EJECUCION.md).
   rpc GetActivePetEngagements (GetActivePetEngagementsRequest) returns (GetActivePetEngagementsResponse);
-
-  // A1.3-ClientProfile — hechos de engagement activo por CLIENTE. Hermano del de
-  // mascotas y NO derivable de el: aquel responde "que citas activas tocan estas
-  // mascotas"; este, "tiene este vet cita activa con este cliente". En la agenda,
-  // `client` se resuelve por clientProfileId sin mencionar mascota alguna.
-  //
-  // Responde HECHOS. No es un `can_read_client()`: quien puede ver que lo decide
-  // la gateway.
   rpc GetActiveClientEngagements (GetActiveClientEngagementsRequest) returns (GetActiveClientEngagementsResponse);
-
-  // ─── REAL-TIME LOCATION ───
-
-  // Vet pushes current GPS position (called ~every 10s while EN_ROUTE).
-  // Stores position in Redis with TTL=90s for client ETA polling.
   rpc UpdateVetLocation (UpdateVetLocationRequest) returns (UpdateVetLocationResponse);
-
   rpc GetAppointmentTracking (GetAppointmentTrackingRequest) returns (GetAppointmentTrackingResponse);
-
-  // ─── AUDIT ───
-
-  // Get status change history for an appointment (audit log)
   rpc GetAppointmentHistory (GetAppointmentHistoryRequest) returns (GetAppointmentHistoryResponse);
-
-  // ─── RECOMMENDATIONS ───
-
-  // Get vaccine recommendations for a pet (overdue, upcoming, suggested)
   rpc GetVaccineRecommendations (GetVaccineRecommendationsRequest) returns (GetVaccineRecommendationsResponse);
-
-  // Get follow-up recommendations based on recent appointment history
   rpc GetFollowUpRecommendations (GetFollowUpRecommendationsRequest) returns (GetFollowUpRecommendationsResponse);
-
-  // ─── REVIEWS (S2-3) ───
-
-  // Submit a review for a completed appointment. Only client, one per appointment.
   rpc SubmitReview (SubmitReviewRequest) returns (ReviewResponse);
-
-  // Get vet rating summary (avg, count) for display in slots/catalog.
   rpc GetVetRatingSummary (GetVetRatingSummaryRequest) returns (VetRatingSummaryResponse);
-
-  // ─── ADMIN REPORTS ───
-
-  // Appointments count by status in period (for admin analytics).
   rpc AdminReportAppointments (AdminReportAppointmentsRequest) returns (AdminReportAppointmentsResponse);
-
-  // ─── P2: Nequi payment authorization ───
-
-  // Advance appointment from PENDING_PAYMENT_AUTH → ACCEPTED (triggered by payment-service on Nequi authorized).
   rpc AdvanceFromPendingPaymentAuth (AdvanceFromPendingPaymentAuthRequest) returns (AppointmentResponse);
-
-  // ─── P5: Supply health metrics ───
-
-  // Get supply health metrics for admin dashboard (slot fill rate, median response time, etc.).
   rpc GetSupplyHealthMetrics (SupplyHealthMetricsRequest) returns (SupplyHealthMetricsResponse);
-
-  // ─── RESCHEDULE ───
-
-  // Client reschedules an appointment (REQUESTED or ACCEPTED state).
-  // Preserves appointment_id and pet history. If ACCEPTED, voids preauth and
-  // returns to REQUESTED so the vet can re-accept at the new time.
   rpc RescheduleAppointment (RescheduleAppointmentRequest) returns (AppointmentResponse);
-
-  // ─── PUENTE CON CONSTANCIA ───
-  //
-  // El bloqueo por deuda (OUTSTANDING_PAYMENT) se calcula en vivo desde los
-  // cobros fallidos: no hay estado que apagar. Estos dos RPC existen porque
-  // constancia-service necesitaba prometerle algo al usuario y no tenía cómo
-  // cumplirlo — y un recibo firmado de algo que no ocurrió es peor que no
-  // tener la acción.
-
-  // Exime temporalmente a un cliente del bloqueo por deuda. SIEMPRE con fecha
-  // de fin: una exención indefinida deja agendar sobre deuda que crece, y quien
-  // la concedió no se entera. No perdona la deuda — para eso está
-  // PaymentService.WriteOffCollection.
   rpc SuspendBookingBlock (SuspendBookingBlockRequest) returns (SuspendBookingBlockResponse);
-
-  // Revoca las exenciones activas de un cliente antes de que venzan.
   rpc RevokeBookingBlockSuspension (RevokeBookingBlockSuspensionRequest) returns (RevokeBookingBlockSuspensionResponse);
-
-  // Libera al vet de una cita ACEPTADA y la devuelve a REQUESTED para que otro
-  // la tome. Opera sobre el grupo entero, porque la aceptación es del grupo.
-  // No aplica desde EN_ROUTE en adelante: ahí el vet ya salió y eso es una
-  // cancelación, con sus reglas de cobro, no una reasignación.
   rpc RequestVetReassignment (RequestVetReassignmentRequest) returns (AppointmentResponse);
-
-  // Interno (rating-service): el bus de Redis es pubsub y no reenvía, así que
-  // un suscriptor caído pierde el desenlace y con él el denominador de la tasa
-  // de respuesta. Esto es el camino de reconciliación.
   rpc ListCompletedAppointments (ListCompletedAppointmentsRequest) returns (ListCompletedAppointmentsResponse);
-
-  // Interno (rating-service): el equivalente del anterior para las
-  // cancelaciones del vet. Sin esto, una señal perdida deja la cancelación
-  // fuera del ledger para siempre y la reputación se calcula sobre hechos
-  // incompletos — la autoridad conoce el hecho y el contrato no dejaba
-  // preguntarlo.
   rpc ListVetCancellations (ListVetCancellationsRequest) returns (ListVetCancellationsResponse);
-
-  // Listado global de citas para el panel de administración. Es la primera
-  // consulta de este servicio que NO va acotada por un dueño: los filtros son
-  // de búsqueda y ninguno se lee como autoridad. La puerta es @Admin en la
-  // gateway; ver authorization-baseline.md §Citas.
+  rpc AnonymizeClientData (AnonymizeClientDataRequest) returns (AnonymizeClientDataResponse);
   rpc ListAppointments (ListAppointmentsRequest) returns (ListAppointmentsResponse);
-
-  // B-4 — cuántas citas tiene cada perfil, por lote. Existe para que las tablas
-  // de clientes y de veterinarios del panel se pinten con UNA llamada por
-  // página y no con una por fila.
   rpc CountAppointmentsByProfiles (CountAppointmentsByProfilesRequest) returns (CountAppointmentsByProfilesResponse);
 }
 
 message ListAppointmentsRequest {
   int32 limit = 1;
   int32 offset = 2;
-
-  // Vacío = todos los estados.
   repeated AppointmentStatus statuses = 3;
-
-  // YYYY-MM-DD sobre `scheduled_date`, que es el día de la visita y no un
-  // instante: la columna ya es la fecha del calendario, así que no hay huso que
-  // convertir. Los dos extremos entran.
   string date_from = 4;
   string date_to = 5;
-
-  // Filtros de búsqueda, NO de autoridad. Que el llamante mande un perfil no
-  // legitima la llamada: eso sería autorizar con datos del cliente.
   string client_profile_id = 6;
   string vet_profile_id = 7;
-
-  // SERVICE_TYPE_UNSPECIFIED = todos.
   ServiceType service_type = 8;
 }
 
 message ListAppointmentsResponse {
   repeated Appointment appointments = 1;
-
-  // Total que cumple el filtro, no el tamaño de la página.
   int32 total_count = 2;
 }
 
-// De qué lado del negocio son los perfiles que vienen en el lote. Es obligatorio:
-// un mismo UUID puede ser el perfil de cliente de alguien y el de vet de otro, y
-// adivinarlo contaría las citas del que no es.
 enum ProfileRole {
   PROFILE_ROLE_UNSPECIFIED = 0;
   PROFILE_ROLE_CLIENT      = 1;
@@ -231,13 +78,8 @@ enum ProfileRole {
 message CountAppointmentsByProfilesRequest {
   repeated string profile_ids = 1;   // techo de 100
   ProfileRole role = 2;              // obligatorio
-
-  // YYYY-MM-DD sobre `scheduled_date`, el día de la visita. Los dos extremos
-  // entran. Vacío = sin acotar.
   string date_from = 3;
   string date_to = 4;
-
-  // Vacío = todos los estados.
   repeated AppointmentStatus statuses = 5;
 }
 
@@ -278,7 +120,6 @@ message ListVetCancellationsRequest {
   google.protobuf.Timestamp until = 2;
   int32 page = 3;
   int32 page_size = 4;
-  // Vacío = todos los vets. Con valor responde "¿qué canceló ESTE vet?".
   string vet_profile_id = 5;
 }
 
@@ -289,8 +130,6 @@ message VetCancellationSummary {
   string service_type = 4;
   bool   urgent = 5;
   string cancellation_reason = 6;
-  // Estado desde el que se canceló. Es lo que distingue plantar al cliente en
-  // la puerta de cancelar el día antes, y viaja en la señal.
   string from_status = 7;
   google.protobuf.Timestamp cancelled_at = 8;
 }
@@ -385,47 +224,29 @@ enum UrgencyLevel {
 
 message Appointment {
   string id = 1;
-
-  // Parties
   string client_profile_id = 2;
   string vet_profile_id = 3;        // Empty until accepted
   repeated string pet_ids = 4;
-
-  // Service
   ServiceType service_type = 5;
   UrgencyLevel urgency = 6;
   int32 estimated_duration_minutes = 7;
-
-  // Status
   AppointmentStatus status = 8;
   string confirmation_code = 9;     // 6-digit PIN for arrival confirmation
-
-  // Scheduling
   string scheduled_date = 10;       // ISO 8601 date (YYYY-MM-DD)
   string scheduled_time_start = 11; // ISO 8601 datetime
   string scheduled_time_end = 12;   // ISO 8601 datetime
-
-  // Location (denormalized from profile address)
   string address_id = 13;
   double address_lat = 14;
   double address_lng = 15;
   string address_text = 16;
-
-  // Notes
   string client_notes = 17;
   string vet_notes = 18;
-
-  // Payment
   double estimated_price = 19;
   double final_price = 20;
   string currency = 21;
   string payment_preauth_id = 22;
-
-  // Cancellation
   CancellationReason cancellation_reason = 23;
   string cancelled_by = 24;
-
-  // Timestamps
   google.protobuf.Timestamp created_at = 25;
   google.protobuf.Timestamp updated_at = 26;
   google.protobuf.Timestamp accepted_at = 27;
@@ -434,26 +255,14 @@ message Appointment {
   google.protobuf.Timestamp started_at = 30;
   google.protobuf.Timestamp completed_at = 31;
   google.protobuf.Timestamp expires_at = 32;
-
-  // Embedded relations (when requested)
   repeated StatusHistoryEntry status_history = 33;
-
-  // NEW: Appointment mode fields
   string appointment_mode = 34;        // on_demand, flex_window, scheduled
   string time_window_start = 35;       // ISO 8601 datetime
   string time_window_end = 36;         // ISO 8601 datetime
   string preferred_vet_id = 37;
   string service_metadata = 38;        // JSON string
-
-  // Payment method captured at booking time
   string payment_method_id = 39;       // ClientPaymentMethod UUID from payment-service
-
-  // Live ETA (populated when vet marks EN_ROUTE)
   int32 eta_minutes = 40;             // Estimated travel time in minutes
-
-  // Grouping: visita de un cliente con varias mascotas = N citas (una por
-  // mascota) con el mismo group_id, agendadas secuencialmente. El grupo es la
-  // unidad de agenda, aceptación y arranque (PIN); NO la de cobro ni cancelación.
   string group_id = 41;
 }
 
@@ -502,10 +311,6 @@ message ServiceCatalogItem {
 // MESSAGES - Requests
 // ═══════════════════════════════════════════════════════════════════════════
 
-// ─── Lifecycle ───
-
-// Una mascota dentro de una solicitud. Cada una genera su propia cita, con su
-// propio servicio y duración, encadenadas secuencialmente dentro del grupo.
 message PetRequestItem {
   string pet_id = 1;
   ServiceType service_type = 2;
@@ -514,8 +319,6 @@ message PetRequestItem {
 
 message RequestAppointmentRequest {
   string client_profile_id = 1;
-  // DEPRECADO: usar `pets`. Se mantiene para clientes viejos — si `pets` viene
-  // vacío se reconstruye desde pet_ids + service_type (mismo servicio para todas).
   repeated string pet_ids = 2;
   ServiceType service_type = 3;
   UrgencyLevel urgency = 4;
@@ -527,7 +330,6 @@ message RequestAppointmentRequest {
   double address_lng = 10;
   string address_text = 11;
   string client_notes = 12;
-  // NEW FIELDS for appointment modes:
   string appointment_mode = 13;        // on_demand, flex_window, scheduled
   string time_window_start = 14;       // ISO 8601 UTC (required for FLEX_WINDOW/SCHEDULED)
   string time_window_end = 15;         // ISO 8601 UTC (required for FLEX_WINDOW/SCHEDULED)
@@ -536,18 +338,10 @@ message RequestAppointmentRequest {
   string payment_method_id = 18;       // Required: ClientPaymentMethod UUID for preauth at acceptance
   string client_email = 19;            // Optional: client email for transactional emails (S2-12)
   double slot_price = 20;              // P1: price seen by client in slot listing (locks price for 90 min, 0 = not provided)
-  // Una entrada por mascota. Reemplaza pet_ids + service_type.
   repeated PetRequestItem pets = 21;
-  // El codigo promocional lo elige el cliente al pedir la cita, pero el cobro
-  // ocurre al aceptarla: se guarda en la cita y viaja a CreatePayment despues.
-  // Viaja el ID, no el codigo: la app lo obtiene de ValidatePromoCode, que es
-  // quien sabe si existe. Y viaja solo el ID porque el IMPORTE lo decide
-  // payment-service; mandarlo desde aqui seria decidir un numero del que este
-  // servicio no es autoridad.
   string promo_id = 22;
 }
 
-// Precio confirmado por el vet para una cita concreta del grupo.
 message AppointmentPrice {
   string appointment_id = 1;
   double estimated_price = 2;
@@ -559,8 +353,6 @@ message AcceptAppointmentRequest {
   double estimated_price = 3;
   int32 estimated_arrival_minutes = 4;
   string vet_notes = 5;
-  // Aceptación grupal: precio por cada cita del grupo. Si viene vacío se acepta
-  // solo `appointment_id` con `estimated_price` (comportamiento de una cita).
   repeated AppointmentPrice group_prices = 6;
 }
 
@@ -570,13 +362,8 @@ message UpdateAppointmentStatusRequest {
   StatusChangeReason reason = 3;
   string reason_details = 4;
   string changed_by = 5;
-  // Optional fields for specific transitions
   string vet_notes = 6;
   double final_price = 7;
-  // Vet current location — ETA en EN_ROUTE, geocerca en ARRIVED.
-  // `optional` porque 0.0 es una coordenada valida y el default de proto3 es
-  // 0.0: sin presencia no se puede distinguir "no la mando" de "mando cero", y
-  // la geocerca necesita esa diferencia para no rechazar por lo que no sabe.
   optional double vet_lat = 8;
   optional double vet_lng = 9;
 }
@@ -595,52 +382,26 @@ message CancelAppointmentRequest {
 
 message GetCancellationQuoteRequest {
   string appointment_id = 1;
-  // Los perfiles de quien pregunta, sellados por la gateway. De ellos sale el
-  // rol, comparandolos contra la cita. Repetido y no singular por la misma
-  // razon que en GetAppointment: un vet tambien es cliente de VetterPlan, asi
-  // que un usuario puede traer los dos y solo uno casara con esta cita.
-  // Lista vacia = llamada de servicio ya autorizada aguas arriba.
   repeated string requester_profile_ids = 2;
 }
 
 message GetCancellationQuoteResponse {
-  // "client" | "vet", deducido de la cita. Viaja de vuelta para que el
-  // llamante sepa que cotizacion recibio y no la interprete al reves.
   string role = 1;
-
   bool chargeable = 2;
   double fee_amount_cop = 3;
   double fee_percent = 4;
-  // La base: el precio de ESA cita para el cliente, el del viaje entero para
-  // el vet. Se nombra en la respuesta porque las dos son legitimas y confundir
-  // una con otra cambia el numero por un factor igual al tamano del grupo.
   double base_amount_cop = 5;
   string base_kind = 6;               // "appointment" | "trip"
-
-  // Por que no se cobra, cuando chargeable es false: mostrar "es gratis" no
-  // deberia obligar a deducirlo de un cero.
   string not_chargeable_reason = 7;
-
-  // Instante a partir del cual deja de ser gratis, cuando hoy lo es por la
-  // ventana de gracia. Ausente si no aplica. Sirve para "gratis hasta las
-  // 14:00", que es lo que evita que el cobro se perciba como sorpresa.
   google.protobuf.Timestamp free_until = 8;
-
-  // Cuantas citas caerian con esta cancelacion. Para el vet es el viaje
-  // entero; para el cliente es 1.
   int32 appointments_affected = 9;
 }
 
-// Quien aborta sale del JWT, nunca de la peticion: de el cuelga la politica de
-// cobro. `reason_details` es obligatorio — un aborto sin explicacion no es
-// auditable.
 message AbortAppointmentRequest {
   string appointment_id = 1;
   CancellationReason reason = 2;
   string reason_details = 3;
 }
-
-// ─── Queries ───
 
 message GetAppointmentRequest {
   string appointment_id = 1;
@@ -662,8 +423,6 @@ message GetVetAppointmentsRequest {
   int32 offset = 4;
 }
 
-// ─── Matching ───
-
 message GetAvailableVetsRequest {
   ServiceType service_type = 1;
   double address_lat = 2;
@@ -674,7 +433,6 @@ message GetAvailableVetsRequest {
   string pet_species = 7;             // For certification filtering
   double radius_km = 8;               // Search radius (default: 15km)
   int32 max_results = 9;              // Max vets to return (default: 5)
-  // NEW FIELDS for appointment modes:
   string appointment_mode = 10;        // on_demand, flex_window, scheduled
   string time_window_start = 11;       // ISO 8601 UTC
   string time_window_end = 12;         // ISO 8601 UTC
@@ -689,9 +447,6 @@ message GetAvailableVetsRequest {
 
 message AppointmentResponse {
   Appointment appointment = 1;
-  // Todas las citas del grupo, en orden de agenda. RequestAppointment y la
-  // aceptación grupal la rellenan; `appointment` sigue siendo la primera para
-  // no romper clientes que solo leen ese campo.
   repeated Appointment group_appointments = 2;
 }
 
@@ -743,8 +498,6 @@ message GetNextAvailableSlotsResponse {
   repeated DaySlots days = 1;                  // Grouped by day
   int32 total_vets_in_area = 2;
   int32 service_duration_minutes = 3;          // Duration of the service
-  // Fix 12: ISO 8601 UTC timestamp of when ETAs were calculated.
-  // UI should refresh if (now - slot_calculated_at) > 5 min to avoid stale ETAs.
   string slot_calculated_at = 4;
 }
 
@@ -786,8 +539,6 @@ message GetPetAppointmentHistoryRequest {
   int32 days_back = 2;                // default 90
 }
 
-// ─── A1.2 · Engagement activo por mascota ───
-
 message GetActiveClientEngagementsRequest {
   repeated string client_profile_ids = 1;   // techo de 100
 }
@@ -814,19 +565,8 @@ message GetActivePetEngagementsResponse {
 message PetEngagement {
   string pet_id = 1;
   string appointment_id = 2;
-
-  // Vacio  => la cita esta REQUESTED y abierta a CUALQUIER vet (broadcast).
-  // Es inequivoco: los cuatro caminos que anulan vet_profile_id terminan en
-  // REQUESTED, y PENDING_PAYMENT_AUTH solo se alcanza desde ACCEPTED. Hay un
-  // test que lo impone (test_invariantes_de_engagement.py); por eso no existe
-  // un campo `open_for_any_vet`.
   string vet_profile_id = 3;
-
   string status = 4;                  // siempre uno de AppointmentStatus.is_active
-
-  // Una mascota puede tener VARIOS engagements activos, con vets distintos: el
-  // unico control de solape mira la agenda del vet, no la de la mascota. Cada
-  // engagement autoriza de forma independiente.
 }
 
 message GetPetAppointmentHistoryResponse {
@@ -841,10 +581,6 @@ message PetAppointmentSummary {
   string status = 5;
   string completed_at = 6;
   string service_metadata = 7;         // JSON string
-
-  // Fix 11: incomplete attempt tracking
-  // True when a CANCELLED appointment had cancellation_reason = VET_UNAVAILABLE.
-  // The service was NOT delivered — recommendations engine should still flag it as pending.
   bool incomplete_attempt = 8;
   string cancellation_reason = 9;      // populated when incomplete_attempt is true
 }
@@ -1095,4 +831,12 @@ message SupplyHealthMetricsResponse {
   int32  completed_appointments = 6;
   int32  cancelled_by_vet = 7;
   int32  expired_no_vet = 8;
+}
+
+message AnonymizeClientDataRequest {
+  string client_profile_id = 1;
+}
+
+message AnonymizeClientDataResponse {
+  int32 appointments_anonymized = 1;
 }
