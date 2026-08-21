@@ -20,212 +20,86 @@ import "google/protobuf/timestamp.proto";
 service PaymentService {
   // ─── PAYMENT LIFECYCLE (10 RPCs) ───
 
-  // Create a PENDING payment when appointment is requested. No money moves.
   rpc CreatePayment (CreatePaymentRequest) returns (PaymentResponse);
-
-  // Pre-authorize payment (Wompi preauth + wallet HOLD). Called when vet accepts.
   rpc AuthorizePayment (AuthorizePaymentRequest) returns (PaymentResponse);
-
-  // Capture authorized payment. Called when appointment completes.
   rpc CapturePayment (CapturePaymentRequest) returns (PaymentResponse);
-
-  // Void/release pre-authorization without charging. Called on cancel/expire pre-capture.
   rpc VoidPayment (VoidPaymentRequest) returns (PaymentResponse);
-
-  // Process refund with client-chosen destination (WALLET/GATEWAY/MIXED).
   rpc RefundPayment (RefundPaymentRequest) returns (RefundResponse);
-
-  // Charge no-show fee (30% capture + 70% void + partial refund).
   rpc ChargeNoShowFee (ChargeNoShowFeeRequest) returns (PaymentResponse);
-
-  // Tarifa por VIAJE PERDIDO. Mismo cálculo que el no-show con otro motivo:
-  // el desplazamiento cuesta lo mismo se niegue el cliente a firmar el
-  // consentimiento o no abra la puerta. Reemplaza a ChargeNoShowFee, que queda
-  // como alias.
   rpc ChargeCancellationFee (ChargeCancellationFeeRequest) returns (PaymentResponse);
-
-  // Charge 10% cancellation fee to vet wallet when vet cancels from ACCEPTED/EN_ROUTE.
   rpc ChargeVetCancellationFee (ChargeVetCancellationFeeRequest) returns (PaymentResponse);
-
-  // Cuánto costaría cobrar ese motivo, SIN cobrar nada. Existe para que el
-  // cliente pueda ver el coste antes de confirmar una cancelación: la política
-  // ya cobraba y no había forma de anunciarlo.
-  //
-  // Los porcentajes viven aquí, junto a la base que los aplica (E1-A8), y por
-  // eso la cotización también: duplicarlos en appointment los dejaría derivar.
-  // No toca ninguna fila y no necesita idempotency_key.
   rpc QuoteCancellationFee (QuoteCancellationFeeRequest) returns (QuoteCancellationFeeResponse);
-
-  // Add tip post-appointment. Goes to vet wallet.
   rpc AddTip (AddTipRequest) returns (PaymentResponse);
-
-  // Get payment by ID.
   rpc GetPayment (GetPaymentRequest) returns (PaymentResponse);
-
-  // Get payment by appointment ID.
   rpc GetPaymentByAppointment (GetPaymentByAppointmentRequest) returns (PaymentResponse);
-
-  // Devuelve TODOS los pagos de una cita, no el primero. Sin esto un cobro
-  // duplicado es invisible: `GetPaymentByAppointment` devuelve uno solo y quien
-  // pregunta "¿le cobramos dos veces?" no tiene cómo saberlo.
   rpc ListPaymentsByAppointment (ListPaymentsByAppointmentRequest) returns (ListPaymentsByAppointmentResponse);
-
-  // Get refunds for a payment.
   rpc GetRefunds (GetRefundsRequest) returns (RefundsResponse);
-
-  // Los reembolsos de un cliente, acotados por su perfil EN EL ORIGEN. Sin
-  // esto, enumerarlos exigía recorrer sus pagos uno a uno, y no había forma de
-  // partir del cliente — que es de lo único que dispone quien pregunta por qué
-  // no le ha llegado su dinero.
   rpc GetRefundsByClient (GetRefundsByClientRequest) returns (RefundsResponse);
-
-  // Cobros pendientes de un cliente: servicios ya prestados que la pasarela no
-  // pudo cobrar. Lo consulta appointment-service antes de aceptar una cita
-  // nueva, y la app para avisarle al dueño que tiene un pago pendiente.
   rpc GetClientCollectionStatus (GetClientCollectionStatusRequest) returns (GetClientCollectionStatusResponse);
-
-  // Cobros pendientes de todos los clientes. Operación de cobranza (admin).
   rpc ListFailedCollections (ListFailedCollectionsRequest) returns (ListFailedCollectionsResponse);
-
-  // Listado global de pagos para el panel de administración. Es la primera
-  // consulta de este servicio que NO va acotada por un dueño: los filtros son
-  // de búsqueda y ninguno se lee como autoridad. La puerta es @Admin en la
-  // gateway; ver authorization-baseline.md §Dinero.
   rpc ListPayments (ListPaymentsRequest) returns (ListPaymentsResponse);
-
-  // Da por perdido un cobro incobrable (admin). Sin esto un CAPTURE_FAILED solo
-  // sale con un cobro exitoso: si la pasarela nunca va a aprobarlo, el cliente
-  // queda bloqueado para siempre y nadie puede levantarlo.
   rpc WriteOffCollection (WriteOffCollectionRequest) returns (PaymentResponse);
-
-  // ─── WALLET (7 RPCs) ───
-
-  // Create wallet for new user (called by Profile Service on profile creation).
   rpc CreateWallet (CreateWalletRequest) returns (WalletResponse);
-
-  // Get wallet with balance info.
   rpc GetWallet (GetWalletRequest) returns (WalletResponse);
-
-  // B-4 — saldos por lote, solo lectura. Existe para que la tabla de clientes
-  // del panel se pinte con UNA llamada por página y no con una por fila.
-  // No autoriza: la puerta es la gateway, igual que en `GetWallet`.
   rpc GetWalletBalancesByOwners (GetWalletBalancesByOwnersRequest) returns (GetWalletBalancesByOwnersResponse);
-
-  // Get wallet transaction history with pagination and filters.
   rpc GetWalletTransactions (GetWalletTransactionsRequest) returns (WalletTransactionsResponse);
-
-  // Credit wallet (refund, promo, referral, compensation). Internal/Admin.
   rpc CreditWallet (CreditWalletRequest) returns (WalletResponse);
   rpc DebitWallet  (DebitWalletRequest)  returns (WalletResponse);
-
-  // Get balance only (lightweight for UI header).
   rpc GetBalance (GetBalanceRequest) returns (BalanceResponse);
-
-  // Freeze wallet (fraud prevention).
   rpc FreezeWallet (FreezeWalletRequest) returns (WalletResponse);
-
-  // Unfreeze wallet.
   rpc UnfreezeWallet (UnfreezeWalletRequest) returns (WalletResponse);
 
   // ─── PAYMENT METHODS (3 RPCs) ───
 
-  // Add tokenized card/Nequi via Wompi.
   rpc AddPaymentMethod (AddPaymentMethodRequest) returns (PaymentMethodResponse);
-
-  // List active payment methods for a client.
   rpc GetPaymentMethods (GetPaymentMethodsRequest) returns (PaymentMethodsResponse);
-
-  // Soft-delete a payment method.
   rpc RemovePaymentMethod (RemovePaymentMethodRequest) returns (PaymentMethodResponse);
 
   // ─── PAYOUTS (2 RPCs) ───
 
-  // Vet requests payout. Calculates earnings and transfers via Wompi.
   rpc RequestPayout (RequestPayoutRequest) returns (PayoutResponse);
-
-  // Get payout history for a vet with pagination.
   rpc GetPayoutHistory (GetPayoutHistoryRequest) returns (PayoutHistoryResponse);
 
   // ─── BANK ACCOUNTS & EARNINGS (3 RPCs) ───
 
-  // Register vet bank account (encrypted AES-256-GCM).
   rpc AddBankAccount (AddBankAccountRequest) returns (BankAccountResponse);
-
-  // List vet bank accounts.
   rpc GetBankAccounts (GetBankAccountsRequest) returns (BankAccountsResponse);
-
-  // Get vet earnings summary by period.
   rpc GetVetEarnings (GetVetEarningsRequest) returns (VetEarningsResponse);
 
-  // El dinero del veterinario que está RETENIDO, con el pago concreto que lo
-  // retiene. `GetVetEarnings` da el total (`pending_payout`) y con un total no
-  // se puede abrir un expediente: `vet.earnings_blocked` identifica su caso por
-  // `payment_id`, porque el vet cobra EN LA CAPTURA y es esa captura la que
-  // falló.
-  //
-  // No devuelve nada del cliente —ni el total que pagó, ni su medio de pago, ni
-  // el estado de la pasarela—: el expediente es del vet.
-  rpc GetVetBlockedEarnings (GetVetBlockedEarningsRequest) returns (VetBlockedEarningsResponse);
+  // ─── PERFIL TRIBUTARIO Y OUTLOOK (P-3) ───
 
-  // Get client spending history by period (S2-11).
+  rpc SetVetTaxProfile (SetVetTaxProfileRequest) returns (VetTaxProfileResponse);
+  rpc GetVetTaxProfile (GetVetTaxProfileRequest) returns (VetTaxProfileResponse);
+  rpc ConfirmVetTaxProfile (ConfirmVetTaxProfileRequest) returns (VetTaxProfileResponse);
+  rpc ListPendingVetTaxProfiles (ListPendingVetTaxProfilesRequest) returns (VetTaxProfilesResponse);
+  rpc GetPayoutOutlook (GetPayoutOutlookRequest) returns (PayoutOutlookResponse);
+  rpc GetVetBlockedEarnings (GetVetBlockedEarningsRequest) returns (VetBlockedEarningsResponse);
   rpc GetClientSpendingHistory (GetClientSpendingHistoryRequest) returns (ClientSpendingHistoryResponse);
 
   // ─── DISPUTES (FASE 3) ───
 
-  // Client opens a dispute for a completed appointment.
   rpc OpenDispute (OpenDisputeRequest) returns (DisputeResponse);
-
-  // Admin resolves a dispute (refund or keep payment).
   rpc ResolveDispute (ResolveDisputeRequest) returns (DisputeResponse);
-
-  // Get dispute by ID.
   rpc GetDispute (GetDisputeRequest) returns (DisputeResponse);
-
-  // List disputes (admin/client).
   rpc ListDisputes (ListDisputesRequest) returns (ListDisputesResponse);
 
   // ─── PROMOTIONS (FASE 3 — disabled until PROMOTIONS_ENABLED=true) ───
 
-  // Validate and return discount for a promo code (does not apply it yet).
   rpc ValidatePromoCode (ValidatePromoCodeRequest) returns (ValidatePromoCodeResponse);
-
-  // Get vet commission tier based on completed appointment count.
   rpc GetVetCommissionTier (GetVetCommissionTierRequest) returns (GetVetCommissionTierResponse);
-
-  // B-4 — el tier de comisión por lote, SOLO LECTURA.
-  //
-  // A diferencia de `GetVetCommissionTier`, este NO consulta a rating-service ni
-  // persiste nada: pintar una tabla de cincuenta filas no puede disparar
-  // cincuenta llamadas a otro servicio ni cincuenta escrituras. **Un listado no
-  // tiene efectos.**
-  //
-  // El precio de eso es que puede devolver un tier distinto del que decidiría un
-  // cobro real, y por eso cada fila dice de dónde salió el suyo en `source`.
   rpc GetCommissionTiersByVets (GetCommissionTiersByVetsRequest) returns (GetCommissionTiersByVetsResponse);
 
   // ─── RECONCILIATION (P4) ───
 
-  // Get reconciliation report for a specific date.
   rpc GetReconciliationReport (GetReconciliationReportRequest) returns (ReconciliationReportResponse);
-
-  // List reconciliation reports (paginated).
   rpc ListReconciliationReports (ListReconciliationReportsRequest) returns (ListReconciliationReportsResponse);
-
-  // Manually trigger reconciliation for a specific date.
   rpc TriggerReconciliation (TriggerReconciliationRequest) returns (ReconciliationReportResponse);
 
   // ─── ADMIN REPORTS ───
 
-  // Income report by period (global, by vet, by service).
   rpc AdminReportIncome (AdminReportIncomeRequest) returns (AdminReportIncomeResponse);
-
-  // Top vets by earnings in period.
   rpc AdminTopVetsByIncome (AdminTopVetsByIncomeRequest) returns (AdminTopVetsByIncomeResponse);
-
-  // Dispute stats: total payments, total disputes, dispute rate.
   rpc AdminDisputeStats (AdminDisputeStatsRequest) returns (AdminDisputeStatsResponse);
-
-  // Commission summary grouped by tier (Bronze/Silver/Gold/Platinum).
   rpc AdminCommissionByTier (AdminCommissionByTierRequest) returns (AdminCommissionByTierResponse);
 }
 
@@ -242,7 +116,6 @@ enum PaymentStatus {
   PAYMENT_STATUS_REFUNDED = 5;
   PAYMENT_STATUS_FAILED = 6;
   PAYMENT_STATUS_VOIDED = 7;
-  // Capture was attempted but failed (Wompi down/timeout) — retries in progress
   PAYMENT_STATUS_CAPTURE_FAILED = 8;
 }
 
@@ -294,10 +167,6 @@ enum WalletReferenceType {
   WALLET_REFERENCE_TYPE_PAYOUT = 3;
   WALLET_REFERENCE_TYPE_PROMO = 4;
   WALLET_REFERENCE_TYPE_REFUND = 5;
-
-  // Un movimiento cuya causa es un expediente de Constancia. Sin esto, la
-  // devolución de una penalidad al veterinario se guardaba con referencia
-  // vacía y no había forma de atarla a la reparación que la ordenó.
   WALLET_REFERENCE_TYPE_CASE = 6;
 }
 
@@ -397,8 +266,6 @@ message Payment {
   string appointment_id = 2;
   string client_profile_id = 3;
   string vet_profile_id = 4;
-
-  // Amounts
   double amount_subtotal = 5;
   double platform_fee_amount = 6;
   double gateway_fee_amount = 7;
@@ -407,44 +274,26 @@ message Payment {
   double wallet_amount_used = 10;
   double gateway_amount_charged = 11;
   double tip_amount = 12;
-
   string currency = 13;
   PaymentStatus status = 14;
   PaymentGateway gateway = 15;
-
-  // Gateway info
   string gateway_transaction_id = 16;
   string gateway_auth_code = 17;
-
-  // Refund tracking
   double refund_total_amount = 18;
   double refund_to_wallet_amount = 19;
   double refund_to_gateway_amount = 20;
   double no_show_fee_amount = 21;
-
   string idempotency_key = 22;
-
-  // Timestamps
   google.protobuf.Timestamp created_at = 23;
   google.protobuf.Timestamp authorized_at = 24;
   google.protobuf.Timestamp captured_at = 25;
   google.protobuf.Timestamp voided_at = 26;
   google.protobuf.Timestamp refunded_at = 27;
-
-  // Capture retry tracking
   google.protobuf.Timestamp capture_failed_at = 28;
   int32 capture_retry_count = 29;
   google.protobuf.Timestamp capture_next_retry_at = 30;
-
-  // Estado CRUDO devuelto por la pasarela: DECLINED | APPROVED | PENDING |
-  // VOIDED | ERROR. Sin esto no se distingue un rechazo real de un cobro en
-  // curso, y tratar PENDING como fallo cobra dos veces y crea deuda falsa.
-  // Nuestro `status` es una interpretación; esto es el dato de origen.
   string gateway_status = 31;
   string gateway_status_detail = 32;
-
-  // Últimos 4 de la tarjeta usada. Sin PAN ni BIN: solo lo que le sirve al
-  // usuario para reconocer cuál de sus tarjetas fue.
   string card_last4 = 33;
 }
 
@@ -475,14 +324,6 @@ message WalletTransaction {
   string reference_id = 9;
   string description = 10;
   google.protobuf.Timestamp created_at = 11;
-
-  // La clave con la que se pidió el movimiento. La columna existe desde la
-  // migración 011 y el contrato no la devolvía, así que quien necesitara saber
-  // QUÉ acción causó este crédito no podía preguntarlo: el saldo dice cuánto
-  // hay, no de dónde salió.
-  //
-  // Es la referencia causal, no una segunda idempotencia: la fuente sigue
-  // siendo la clave del outbox de quien pidió el movimiento.
   string idempotency_key = 12;
 }
 
@@ -547,14 +388,6 @@ message Refund {
   string idempotency_key = 12;
   google.protobuf.Timestamp created_at = 13;
   google.protobuf.Timestamp completed_at = 14;
-
-  // De quién es este reembolso. Sale del pago al que pertenece —no hay columna
-  // nueva en `refunds`: duplicar el dueño crearía dos verdades sobre el mismo
-  // hecho, que es lo que §20 del plan de VetterPay rechaza—. Se revela aquí
-  // para que quien autorice no tenga que encadenar servicios para deducirlo.
-  //
-  // NO confundir con `refund_owner` (F3-4), que dice quién ASUME el coste. Este
-  // dice quién lo RECIBE, y es el único que sirve para autorizar una lectura.
   string client_profile_id = 15;
 }
 
@@ -571,16 +404,8 @@ message CreatePaymentRequest {
   double amount_subtotal = 4;
   string currency = 5;
   string idempotency_key = 6;
-  // VP-H7. `amount_subtotal` es el precio del servicio SIN descontar; el
-  // descuento viaja aparte para que quede escrito en el pago quien lo pago.
-  // Restarlo antes de llamar hace que la comision se reparta sobre el total ya
-  // rebajado y el veterinario financie la campana sin saberlo.
   string promo_id = 7;
   double discount_amount = 8;
-  // F1-R2. `amount_subtotal` es la BASE del servicio, sin IVA. El IVA viaja
-  // aparte porque no entra en la base de comision: comisionar sobre impuestos
-  // encarece el servicio artificialmente. Es del veterinario, no de VetterPlan,
-  // y se le transfiere con su pago.
   double iva_amount = 9;
 }
 
@@ -595,8 +420,6 @@ message AuthorizePaymentRequest {
 message CapturePaymentRequest {
   string payment_id = 1;
   string idempotency_key = 2;
-  // Vet-confirmed final price to capture (COP). 0 = capture the full
-  // pre-authorized amount. Capped server-side at the authorized total.
   double amount = 3;
 }
 
@@ -624,25 +447,19 @@ message ChargeNoShowFeeRequest {
 message ChargeCancellationFeeRequest {
   string payment_id = 1;
   string idempotency_key = 2;
-  // 'no_show' | 'consent_refused'. Vacío = no_show.
   string reason = 3;
 }
 
 message QuoteCancellationFeeRequest {
   string payment_id = 1;
-  // Mismos valores que ChargeCancellationFeeRequest.reason. Vacío = no_show.
   string reason = 2;
 }
 
 message QuoteCancellationFeeResponse {
-  // false cuando el motivo no cobra, o cuando el pago no admite cobro todavía.
   bool chargeable = 1;
   double fee_percent = 2;
   double fee_amount_cop = 3;
-  // La base sobre la que se aplicó el porcentaje.
   double amount_total_cop = 4;
-  // Por qué no se cobra, cuando chargeable es false. Para mostrar "es gratis"
-  // sin que el cliente tenga que deducirlo de un cero.
   string not_chargeable_reason = 5;
 }
 
@@ -693,11 +510,6 @@ message OutstandingCollection {
   google.protobuf.Timestamp failed_at = 7;
   google.protobuf.Timestamp next_retry_at = 8;
   string last_error = 9;
-
-  // B-5 — quien atendio la visita que quedo sin cobrar. Es informacion para la
-  // fila de la tabla de cobranza, NO autoridad: nadie decide un permiso con
-  // esto. Vacio significa que el pago no tiene vet asociado, no "no se sabe":
-  // un cobro fallido siempre nace de una cita.
   string vet_profile_id = 10;
 }
 
@@ -720,14 +532,6 @@ message ClientOutstandingSummary {
   double total_amount = 2;
   int32 count = 3;
   google.protobuf.Timestamp oldest_failed_at = 4;
-
-  // B-5 — las visitas que componen esa deuda. El panel lista cobranza POR
-  // VISITA (vet, intentos, cuanto), y hasta ahora eso obligaba a una llamada a
-  // `GetClientCollectionStatus` por cada fila de la pagina.
-  //
-  // Trae como mucho las `MAX_VISITAS_POR_CLIENTE` mas antiguas; `count` sigue
-  // diciendo cuantas hay en total, asi que una lista mas corta que `count` es
-  // un recorte declarado y no una deuda que encogio.
   repeated OutstandingCollection visits = 5;
 }
 
@@ -740,17 +544,9 @@ message ListFailedCollectionsResponse {
 message ListPaymentsRequest {
   int32 limit = 1;
   int32 offset = 2;
-
-  // Vacío = todos los estados.
   repeated PaymentStatus statuses = 3;
-
-  // YYYY-MM-DD en América/Bogotá, sobre created_at. El día de cierre entra
-  // entero: el rango se resuelve como [inicio, fin+1día) en UTC.
   string period_start = 4;
   string period_end = 5;
-
-  // Filtros de búsqueda, NO de autoridad. Que el llamante mande un perfil no
-  // legitima la llamada: eso sería autorizar con datos del cliente.
   string client_profile_id = 6;
   string vet_profile_id = 7;
   string appointment_id = 8;
@@ -758,8 +554,6 @@ message ListPaymentsRequest {
 
 message ListPaymentsResponse {
   repeated Payment payments = 1;
-
-  // Total que cumple el filtro, no el tamaño de la página.
   int32 total_count = 2;
 }
 
@@ -786,8 +580,6 @@ message GetWalletBalancesByOwnersRequest {
   repeated string owner_ids = 1;   // techo de 100
 }
 
-// Identidad y saldo, no el movimiento: las transacciones siguen detrás de
-// `GetWalletTransactions`, que se pide de una en una y queda registrada.
 message WalletBalance {
   string owner_id = 1;
   string wallet_id = 2;
@@ -799,8 +591,6 @@ message WalletBalance {
 }
 
 message GetWalletBalancesByOwnersResponse {
-  // Solo los dueños que TIENEN wallet. Ausente = no tiene, que es un estado real
-  // y distinto de tener cero.
   repeated WalletBalance balances = 1;
 }
 
@@ -812,9 +602,6 @@ message GetWalletTransactionsRequest {
   int32 offset = 5;
 }
 
-// `idempotency_key` es opcional por compatibilidad, pero sin ella el llamador no
-// puede distinguir un timeout de un abono perdido: reintentar abona dos veces.
-// Con ella, repetir la llamada devuelve el mismo saldo sin mover un peso.
 message CreditWalletRequest {
   string owner_id = 1;
   WalletOwnerType owner_type = 2;
@@ -826,9 +613,6 @@ message CreditWalletRequest {
   string idempotency_key = 8;
 }
 
-// Existe para que un abono se pueda REVERTIR. Sin esto, todo crédito es
-// irreversible y quien lo emite no puede compensarse a sí mismo si se equivoca.
-// Nunca deja el saldo en negativo: si no alcanza, falla en voz alta.
 message DebitWalletRequest {
   string owner_id = 1;
   WalletOwnerType owner_type = 2;
@@ -865,13 +649,9 @@ message AddPaymentMethodRequest {
   string wompi_token = 3;
   string acceptance_token = 4;
   string accept_personal_auth = 5;
-  // Card-specific
   string holder_name = 6;
-  // Nequi-specific
   string nequi_phone = 7;
-  // Required by Wompi for payment source creation
   string customer_email = 8;
-  // Card expiry from frontend tokenization (fallback when Wompi doesn't return them)
   int32 card_expiry_month = 9;
   int32 card_expiry_year = 10;
 }
@@ -942,6 +722,103 @@ message GetVetEarningsRequest {
   string vet_profile_id = 1;
   string period_start = 2;
   string period_end = 3;
+}
+
+// ─── Perfil tributario del veterinario (P-3.0) ───
+
+enum VetTaxRegime {
+  VET_TAX_REGIME_UNSPECIFIED = 0;
+  VET_TAX_REGIME_PERSONA_NATURAL_DECLARANTE = 1;
+  VET_TAX_REGIME_PERSONA_NATURAL_NO_DECLARANTE = 2;
+  VET_TAX_REGIME_REGIMEN_SIMPLE = 3;
+  VET_TAX_REGIME_PERSONA_JURIDICA = 4;
+}
+
+message VetTaxProfile {
+  string vet_profile_id = 1;
+  VetTaxRegime tax_regime = 2;
+  bool is_iva_responsible = 3;
+  int32 valid_for_year = 4;
+  bool art_383_election = 5;
+  string art_383_acceptance_id = 6;
+  string rut_document_key = 7;
+  google.protobuf.Timestamp declared_at = 8;
+  google.protobuf.Timestamp confirmed_at = 9;
+  string confirmed_by = 10;
+  double renta_rate = 11;
+  bool is_valid_now = 12;
+}
+
+message SetVetTaxProfileRequest {
+  string vet_profile_id = 1;
+  VetTaxRegime tax_regime = 2;
+  bool is_iva_responsible = 3;
+  int32 valid_for_year = 4;
+  bool art_383_election = 5;
+  string art_383_acceptance_id = 6;
+  string rut_document_key = 7;
+}
+
+message GetVetTaxProfileRequest {
+  string vet_profile_id = 1;
+}
+
+message ConfirmVetTaxProfileRequest {
+  string vet_profile_id = 1;
+  string confirmed_by_user_id = 2;
+}
+
+message ListPendingVetTaxProfilesRequest {
+  int32 limit = 1;
+}
+
+message VetTaxProfileResponse {
+  VetTaxProfile profile = 1;
+}
+
+message VetTaxProfilesResponse {
+  repeated VetTaxProfile profiles = 1;
+  int32 total_count = 2;
+}
+
+// ─── Outlook del payout (P-3.2) ───
+
+enum PayoutBlockedReason {
+  PAYOUT_BLOCKED_REASON_NONE = 0;
+  PAYOUT_BLOCKED_REASON_FROZEN_UNCERTAIN = 1;
+  PAYOUT_BLOCKED_REASON_STATUS_UNKNOWN = 2;
+  PAYOUT_BLOCKED_REASON_PROFILE_NOT_ACTIVE = 3;
+  PAYOUT_BLOCKED_REASON_NO_TAX_PROFILE = 4;
+  PAYOUT_BLOCKED_REASON_TAX_PROFILE_UNCONFIRMED = 5;
+  PAYOUT_BLOCKED_REASON_TAX_PROFILE_EXPIRED = 6;
+  PAYOUT_BLOCKED_REASON_MIXED_WITHHOLDING_CONCEPTS = 7;
+  PAYOUT_BLOCKED_REASON_ART_383_REQUIRES_REVIEW = 8;
+  PAYOUT_BLOCKED_REASON_NO_BANK_ACCOUNT = 9;
+  PAYOUT_BLOCKED_REASON_OUTSTANDING_DEBT = 10;
+  PAYOUT_BLOCKED_REASON_BELOW_MINIMUM = 11;
+}
+
+message GetPayoutOutlookRequest {
+  string vet_profile_id = 1;
+}
+
+message PayoutOutlookResponse {
+  string vet_profile_id = 1;
+  string next_payout_date = 2;
+  bool automatic_payouts_enabled = 3;
+  double available_now = 4;
+  double outstanding_debt = 5;
+  double minimum_payout = 6;
+  double estimated_renta_withholding = 7;
+  double renta_rate = 8;
+  string renta_basis = 9;
+  double iva_in_transit = 10;
+  PayoutBlockedReason blocked_reason = 11;
+  string blocked_detail = 12;
+  double uvt_accumulated = 13;
+  double uvt_threshold_percent = 14;
+  bool uvt_alert = 15;
+  VetPayout last_payout = 16;
 }
 
 message GetClientSpendingHistoryRequest {

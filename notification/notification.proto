@@ -162,6 +162,12 @@ enum NotificationEvent {
   NOTIFICATION_EVENT_CERTIFICATION_REJECTED  = 35;
   NOTIFICATION_EVENT_CERTIFICATION_SUSPENDED = 36;
 
+  // Dinero hacia el veterinario. VET_PAYOUT_SENT (21) ya existía y no lo
+  // emitía nadie; el rebote necesita evento propio porque PAYMENT_FAILED es
+  // del cliente y el canal de Android sale del evento.
+  NOTIFICATION_EVENT_VET_PAYOUT_FAILED       = 38;
+  NOTIFICATION_EVENT_VET_TAX_THRESHOLD       = 39;
+
   // System / admin
   NOTIFICATION_EVENT_SYSTEM_ALERT           = 99;
 }

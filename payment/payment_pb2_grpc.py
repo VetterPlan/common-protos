@@ -228,6 +228,31 @@ class PaymentServiceStub:
                 request_serializer=payment_dot_payment__pb2.GetVetEarningsRequest.SerializeToString,
                 response_deserializer=payment_dot_payment__pb2.VetEarningsResponse.FromString,
                 _registered_method=True)
+        self.SetVetTaxProfile = channel.unary_unary(
+                '/payment.PaymentService/SetVetTaxProfile',
+                request_serializer=payment_dot_payment__pb2.SetVetTaxProfileRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.VetTaxProfileResponse.FromString,
+                _registered_method=True)
+        self.GetVetTaxProfile = channel.unary_unary(
+                '/payment.PaymentService/GetVetTaxProfile',
+                request_serializer=payment_dot_payment__pb2.GetVetTaxProfileRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.VetTaxProfileResponse.FromString,
+                _registered_method=True)
+        self.ConfirmVetTaxProfile = channel.unary_unary(
+                '/payment.PaymentService/ConfirmVetTaxProfile',
+                request_serializer=payment_dot_payment__pb2.ConfirmVetTaxProfileRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.VetTaxProfileResponse.FromString,
+                _registered_method=True)
+        self.ListPendingVetTaxProfiles = channel.unary_unary(
+                '/payment.PaymentService/ListPendingVetTaxProfiles',
+                request_serializer=payment_dot_payment__pb2.ListPendingVetTaxProfilesRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.VetTaxProfilesResponse.FromString,
+                _registered_method=True)
+        self.GetPayoutOutlook = channel.unary_unary(
+                '/payment.PaymentService/GetPayoutOutlook',
+                request_serializer=payment_dot_payment__pb2.GetPayoutOutlookRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.PayoutOutlookResponse.FromString,
+                _registered_method=True)
         self.GetVetBlockedEarnings = channel.unary_unary(
                 '/payment.PaymentService/GetVetBlockedEarnings',
                 request_serializer=payment_dot_payment__pb2.GetVetBlockedEarningsRequest.SerializeToString,
@@ -609,6 +634,43 @@ class PaymentServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SetVetTaxProfile(self, request, context):
+        """─── PERFIL TRIBUTARIO Y OUTLOOK (P-3) ───
+
+        El vet declara su régimen. Ver §18.3.2 y §18.3.3 de la Parte III.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetVetTaxProfile(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ConfirmVetTaxProfile(self, request, context):
+        """Solo admin: confirma el régimen declarado contra el RUT.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListPendingVetTaxProfiles(self, request, context):
+        """Cola de revisión del panel de admin.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetPayoutOutlook(self, request, context):
+        """Cuánto y cuándo cobra. Contrato aparte de GetVetEarnings: ese es de un
+        periodo y se cachea; este es de ahora y cambia con cada captura.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def GetVetBlockedEarnings(self, request, context):
         """El dinero del veterinario que está RETENIDO, con el pago concreto que lo
         retiene. `GetVetEarnings` da el total (`pending_payout`) y con un total no
@@ -926,6 +988,31 @@ def add_PaymentServiceServicer_to_server(servicer, server):
                     servicer.GetVetEarnings,
                     request_deserializer=payment_dot_payment__pb2.GetVetEarningsRequest.FromString,
                     response_serializer=payment_dot_payment__pb2.VetEarningsResponse.SerializeToString,
+            ),
+            'SetVetTaxProfile': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetVetTaxProfile,
+                    request_deserializer=payment_dot_payment__pb2.SetVetTaxProfileRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.VetTaxProfileResponse.SerializeToString,
+            ),
+            'GetVetTaxProfile': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetVetTaxProfile,
+                    request_deserializer=payment_dot_payment__pb2.GetVetTaxProfileRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.VetTaxProfileResponse.SerializeToString,
+            ),
+            'ConfirmVetTaxProfile': grpc.unary_unary_rpc_method_handler(
+                    servicer.ConfirmVetTaxProfile,
+                    request_deserializer=payment_dot_payment__pb2.ConfirmVetTaxProfileRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.VetTaxProfileResponse.SerializeToString,
+            ),
+            'ListPendingVetTaxProfiles': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListPendingVetTaxProfiles,
+                    request_deserializer=payment_dot_payment__pb2.ListPendingVetTaxProfilesRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.VetTaxProfilesResponse.SerializeToString,
+            ),
+            'GetPayoutOutlook': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetPayoutOutlook,
+                    request_deserializer=payment_dot_payment__pb2.GetPayoutOutlookRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.PayoutOutlookResponse.SerializeToString,
             ),
             'GetVetBlockedEarnings': grpc.unary_unary_rpc_method_handler(
                     servicer.GetVetBlockedEarnings,
@@ -1994,6 +2081,141 @@ class PaymentService:
             '/payment.PaymentService/GetVetEarnings',
             payment_dot_payment__pb2.GetVetEarningsRequest.SerializeToString,
             payment_dot_payment__pb2.VetEarningsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SetVetTaxProfile(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/SetVetTaxProfile',
+            payment_dot_payment__pb2.SetVetTaxProfileRequest.SerializeToString,
+            payment_dot_payment__pb2.VetTaxProfileResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetVetTaxProfile(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/GetVetTaxProfile',
+            payment_dot_payment__pb2.GetVetTaxProfileRequest.SerializeToString,
+            payment_dot_payment__pb2.VetTaxProfileResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ConfirmVetTaxProfile(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/ConfirmVetTaxProfile',
+            payment_dot_payment__pb2.ConfirmVetTaxProfileRequest.SerializeToString,
+            payment_dot_payment__pb2.VetTaxProfileResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListPendingVetTaxProfiles(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/ListPendingVetTaxProfiles',
+            payment_dot_payment__pb2.ListPendingVetTaxProfilesRequest.SerializeToString,
+            payment_dot_payment__pb2.VetTaxProfilesResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetPayoutOutlook(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/GetPayoutOutlook',
+            payment_dot_payment__pb2.GetPayoutOutlookRequest.SerializeToString,
+            payment_dot_payment__pb2.PayoutOutlookResponse.FromString,
             options,
             channel_credentials,
             insecure,
