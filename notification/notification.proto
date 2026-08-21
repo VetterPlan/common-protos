@@ -266,14 +266,7 @@ message DeliveryStatsRow {
 
 message GetDeliveryStatsResponse {
   repeated DeliveryStatsRow rows = 1;
-
-  // Ventana efectivamente cubierta por el registro. Antes de esta fecha no hay
-  // filas porque se purgaron, no porque no se enviara nada.
   google.protobuf.Timestamp retained_since = 2;
-
-  // Verdadero si el periodo pedido empieza antes de `retained_since`, o sea si
-  // la respuesta cubre menos de lo que se preguntó. Se calcula aquí para que el
-  // que pinta no tenga que acordarse de comparar dos fechas.
   bool period_truncated = 3;
 }
 
@@ -281,7 +274,6 @@ message GetDeliveryStatsResponse {
 // COPY EDITABLE
 // ═══════════════════════════════════════════════════════════════════════════
 
-// Un campo editable de un correo. Push usa title/body; correo tiene varios.
 message CopySlot {
   string name  = 1;  // subject | eyebrow | title | message | preheader | ...
   string label = 2;  // etiqueta para el panel
@@ -289,51 +281,27 @@ message CopySlot {
 }
 
 message NotificationCopyEntry {
-  // Clave editable. Más fina que el evento: un mismo NotificationEvent lleva
-  // textos distintos según la situación.
   string copy_key = 1;
-
-  // Evento y destinatario al que pertenece, para agrupar en el panel.
   string event    = 2;
   string audience = 3;  // client | vet | topic
-
-  // Texto vigente (el override si existe, el default del código si no).
   string title = 4;
   string body  = 5;
-
-  // Texto original del código, para mostrar el diff y ofrecer "revertir".
   string default_title = 6;
   string default_body  = 7;
-
-  // Lo único que se puede interpolar. El panel las ofrece y rechaza cualquier
-  // otra al guardar.
   repeated string variables = 8;
-
-  // false = nadie lo ha tocado, se está usando el default.
   bool overridden = 9;
-
-  // Para bloqueo optimista: se manda de vuelta en UpdateNotificationCopy. 0
-  // mientras no haya override.
   int32  version    = 10;
   string updated_by = 11;
   google.protobuf.Timestamp updated_at = 12;
-
-  // push | email. El correo no cabe en título + cuerpo: trae sus slots acá y
-  // deja title/body vacíos.
   string channel = 13;
   repeated CopySlot slots         = 14;
   repeated CopySlot default_slots = 15;
-
-  // Nombres para humanos. El panel lo usa gente que no tiene por qué saber
-  // inglés, y `event`/`copy_key` son identificadores, no etiquetas. Viven acá
-  // —donde se declara la clave— para que agregar una obligue a nombrarla.
   string label       = 16;  // "Último aviso antes de cancelar"
   string description = 17;  // cuándo se dispara
   string event_label = 18;  // "Avisos del PIN"
 }
 
 message ListNotificationCopyRequest {
-  // Filtros opcionales. Sin ellos devuelve el catálogo entero.
   string event = 1;
   bool   only_overridden = 2;
   string channel = 3;  // push | email; vacío = ambos
@@ -347,44 +315,23 @@ message UpdateNotificationCopyRequest {
   string copy_key = 1;
   string title    = 2;
   string body     = 3;
-
-  // Quién lo cambia. Queda en el historial: este texto sale hacia todos los
-  // usuarios y "quién escribió esto" tiene que tener respuesta.
   string updated_by = 4;
-
-  // Versión sobre la que se editó. Si otro admin guardó en el medio, se
-  // rechaza con ABORTED en vez de pisarlo. 0 = no había override.
   int32 expected_version = 5;
-
-  // Para correo: los slots que se cambian. Los que no se manden quedan como
-  // están. title/body se ignoran cuando esto viene lleno.
   repeated CopySlot slots = 6;
 }
 
 message PreviewNotificationCopyRequest {
   string copy_key = 1;
-
-  // Texto tentativo. Vacío = previsualiza el vigente.
   string title = 2;
   string body  = 3;
-
-  // Valores de ejemplo para las variables.
   repeated NotificationDataEntry sample_data = 4;
-
-  // Para correo: slots tentativos. Vacío = previsualiza los vigentes.
   repeated CopySlot slots = 5;
 }
 
 message PreviewNotificationCopyResponse {
   string rendered_title = 1;
   string rendered_body  = 2;
-
-  // Para correo: el HTML que produce el render de marca. Lo que se ve en el
-  // panel es lo que sale del servidor, no una aproximación del navegador.
   string rendered_html = 4;
-
-  // Variables usadas en el texto que no traen valor de ejemplo: así se ve el
-  // hueco antes de publicar, no después de enviar.
   repeated string missing_variables = 3;
 }
 
