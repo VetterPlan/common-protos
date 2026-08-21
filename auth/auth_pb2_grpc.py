@@ -119,6 +119,21 @@ class AuthServiceStub:
                 request_serializer=auth_dot_auth__pb2.HardDeleteUserRequest.SerializeToString,
                 response_deserializer=auth_dot_auth__pb2.HardDeleteUserResponse.FromString,
                 _registered_method=True)
+        self.RequestAccountDeletion = channel.unary_unary(
+                '/auth.AuthService/RequestAccountDeletion',
+                request_serializer=auth_dot_auth__pb2.RequestAccountDeletionRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.AccountDeletionResponse.FromString,
+                _registered_method=True)
+        self.CancelAccountDeletion = channel.unary_unary(
+                '/auth.AuthService/CancelAccountDeletion',
+                request_serializer=auth_dot_auth__pb2.CancelAccountDeletionRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.AccountDeletionResponse.FromString,
+                _registered_method=True)
+        self.GetAccountDeletionStatus = channel.unary_unary(
+                '/auth.AuthService/GetAccountDeletionStatus',
+                request_serializer=auth_dot_auth__pb2.GetAccountDeletionStatusRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.AccountDeletionResponse.FromString,
+                _registered_method=True)
         self.FindUserByEmail = channel.unary_unary(
                 '/auth.AuthService/FindUserByEmail',
                 request_serializer=auth_dot_auth__pb2.FindUserByEmailRequest.SerializeToString,
@@ -265,6 +280,31 @@ class AuthServiceServicer:
     def HardDeleteUser(self, request, context):
         """Hard delete (testing utility)
         """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RequestAccountDeletion(self, request, context):
+        """─── BAJA DE CUENTA (P-4a) ───
+        El titular de la baja es auth. La gateway no puede serlo: una saga durable
+        necesita estado y la gateway es un traductor.
+
+        Los perfiles NO viajan en la peticion: los resuelve auth contra
+        profile-service. Si los mandara el cliente, podria comprobar las
+        precondiciones contra la wallet de otra persona.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CancelAccountDeletion(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetAccountDeletionStatus(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -424,6 +464,21 @@ def add_AuthServiceServicer_to_server(servicer, server):
                     servicer.HardDeleteUser,
                     request_deserializer=auth_dot_auth__pb2.HardDeleteUserRequest.FromString,
                     response_serializer=auth_dot_auth__pb2.HardDeleteUserResponse.SerializeToString,
+            ),
+            'RequestAccountDeletion': grpc.unary_unary_rpc_method_handler(
+                    servicer.RequestAccountDeletion,
+                    request_deserializer=auth_dot_auth__pb2.RequestAccountDeletionRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.AccountDeletionResponse.SerializeToString,
+            ),
+            'CancelAccountDeletion': grpc.unary_unary_rpc_method_handler(
+                    servicer.CancelAccountDeletion,
+                    request_deserializer=auth_dot_auth__pb2.CancelAccountDeletionRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.AccountDeletionResponse.SerializeToString,
+            ),
+            'GetAccountDeletionStatus': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetAccountDeletionStatus,
+                    request_deserializer=auth_dot_auth__pb2.GetAccountDeletionStatusRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.AccountDeletionResponse.SerializeToString,
             ),
             'FindUserByEmail': grpc.unary_unary_rpc_method_handler(
                     servicer.FindUserByEmail,
@@ -925,6 +980,87 @@ class AuthService:
             '/auth.AuthService/HardDeleteUser',
             auth_dot_auth__pb2.HardDeleteUserRequest.SerializeToString,
             auth_dot_auth__pb2.HardDeleteUserResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RequestAccountDeletion(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/RequestAccountDeletion',
+            auth_dot_auth__pb2.RequestAccountDeletionRequest.SerializeToString,
+            auth_dot_auth__pb2.AccountDeletionResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CancelAccountDeletion(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/CancelAccountDeletion',
+            auth_dot_auth__pb2.CancelAccountDeletionRequest.SerializeToString,
+            auth_dot_auth__pb2.AccountDeletionResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetAccountDeletionStatus(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/GetAccountDeletionStatus',
+            auth_dot_auth__pb2.GetAccountDeletionStatusRequest.SerializeToString,
+            auth_dot_auth__pb2.AccountDeletionResponse.FromString,
             options,
             channel_credentials,
             insecure,

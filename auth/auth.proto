@@ -26,6 +26,17 @@ service AuthService {
   // Hard delete (testing utility)
   rpc HardDeleteUser (HardDeleteUserRequest) returns (HardDeleteUserResponse);
 
+  // ─── BAJA DE CUENTA (P-4a) ───
+  // El titular de la baja es auth. La gateway no puede serlo: una saga durable
+  // necesita estado y la gateway es un traductor.
+  //
+  // Los perfiles NO viajan en la peticion: los resuelve auth contra
+  // profile-service. Si los mandara el cliente, podria comprobar las
+  // precondiciones contra la wallet de otra persona.
+  rpc RequestAccountDeletion (RequestAccountDeletionRequest) returns (AccountDeletionResponse);
+  rpc CancelAccountDeletion (CancelAccountDeletionRequest) returns (AccountDeletionResponse);
+  rpc GetAccountDeletionStatus (GetAccountDeletionStatusRequest) returns (AccountDeletionResponse);
+
   // Admin: look up a user account by email address
   rpc FindUserByEmail (FindUserByEmailRequest) returns (FindUserByEmailResponse);
 
@@ -256,6 +267,46 @@ message RoleAssignment {
 // ============================================================================
 // HARD DELETE (Testing Utility)
 // ============================================================================
+
+// ═══════════════════════════════════════════════════════════════════════════
+// BAJA DE CUENTA
+// ═══════════════════════════════════════════════════════════════════════════
+
+message AccountDeletionStep {
+  string service = 1;
+  string verb = 2;         // borra | anonimiza | conserva
+  string state = 3;        // hecho | pendiente | fallido | conserva
+  string detail = 4;
+}
+
+message AccountDeletion {
+  string id = 1;
+  string status = 2;       // requested | running | done | incomplete | blocked | cancelled
+  string requested_at = 3;
+  string scheduled_for = 4;
+  string completed_at = 5;
+  string cancelled_at = 6;
+  int32 attempts = 7;
+  repeated AccountDeletionStep steps = 8;
+}
+
+message RequestAccountDeletionRequest {
+  string user_id = 1;
+  string ip = 2;
+  string user_agent = 3;
+}
+
+message CancelAccountDeletionRequest {
+  string user_id = 1;
+}
+
+message GetAccountDeletionStatusRequest {
+  string user_id = 1;
+}
+
+message AccountDeletionResponse {
+  AccountDeletion deletion = 1;
+}
 
 message HardDeleteUserRequest {
   string user_id = 1;

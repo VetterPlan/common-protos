@@ -60,6 +60,11 @@ class NotificationServiceStub:
                 request_serializer=notification_dot_notification__pb2.UnregisterDeviceTokenRequest.SerializeToString,
                 response_deserializer=notification_dot_notification__pb2.UnregisterDeviceTokenResponse.FromString,
                 _registered_method=True)
+        self.PurgeUserDeviceTokens = channel.unary_unary(
+                '/notification.NotificationService/PurgeUserDeviceTokens',
+                request_serializer=notification_dot_notification__pb2.PurgeUserDeviceTokensRequest.SerializeToString,
+                response_deserializer=notification_dot_notification__pb2.PurgeUserDeviceTokensResponse.FromString,
+                _registered_method=True)
         self.SendPushNotification = channel.unary_unary(
                 '/notification.NotificationService/SendPushNotification',
                 request_serializer=notification_dot_notification__pb2.SendPushNotificationRequest.SerializeToString,
@@ -145,6 +150,14 @@ class NotificationServiceServicer:
 
     def UnregisterDeviceToken(self, request, context):
         """Remove a device token (call on logout or token invalidation)
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def PurgeUserDeviceTokens(self, request, context):
+        """Retira TODOS los tokens de un usuario. Lo llama la baja de cuenta: sin
+        esto el telefono sigue recibiendo avisos de una cuenta que ya no existe.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -262,6 +275,11 @@ def add_NotificationServiceServicer_to_server(servicer, server):
                     servicer.UnregisterDeviceToken,
                     request_deserializer=notification_dot_notification__pb2.UnregisterDeviceTokenRequest.FromString,
                     response_serializer=notification_dot_notification__pb2.UnregisterDeviceTokenResponse.SerializeToString,
+            ),
+            'PurgeUserDeviceTokens': grpc.unary_unary_rpc_method_handler(
+                    servicer.PurgeUserDeviceTokens,
+                    request_deserializer=notification_dot_notification__pb2.PurgeUserDeviceTokensRequest.FromString,
+                    response_serializer=notification_dot_notification__pb2.PurgeUserDeviceTokensResponse.SerializeToString,
             ),
             'SendPushNotification': grpc.unary_unary_rpc_method_handler(
                     servicer.SendPushNotification,
@@ -389,6 +407,33 @@ class NotificationService:
             '/notification.NotificationService/UnregisterDeviceToken',
             notification_dot_notification__pb2.UnregisterDeviceTokenRequest.SerializeToString,
             notification_dot_notification__pb2.UnregisterDeviceTokenResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PurgeUserDeviceTokens(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/notification.NotificationService/PurgeUserDeviceTokens',
+            notification_dot_notification__pb2.PurgeUserDeviceTokensRequest.SerializeToString,
+            notification_dot_notification__pb2.PurgeUserDeviceTokensResponse.FromString,
             options,
             channel_credentials,
             insecure,
