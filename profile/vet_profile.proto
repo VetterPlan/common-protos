@@ -261,6 +261,22 @@ message RemoveServicePriceResponse {
 
 message GetVetsByServiceRequest {
   VetServiceType service_type = 1;
+
+  // Caja envolvente opcional. Sin ella la respuesta trae todos los vets activos
+  // del pais que ofrecen el servicio: con 800 son 196 KB por busqueda, y el
+  // coste no es el cable sino serializar 800 mensajes aqui y parsearlos alla.
+  //
+  // Solo aditivo: un cliente que no la mande recibe exactamente lo que recibia
+  // antes. Los cuatro campos van juntos o no van — tres de cuatro se ignora,
+  // porque una caja a medias filtraria por un lado y no por el otro.
+  //
+  // Es un prefiltro barato, no la decision: quien decide el radio sigue siendo
+  // appointment-service con su haversine. La caja es un cuadrado y el radio un
+  // circulo, asi que la caja deja pasar de mas y nunca de menos.
+  optional double min_lat = 2;
+  optional double max_lat = 3;
+  optional double min_lng = 4;
+  optional double max_lng = 5;
 }
 
 message VetByService {
