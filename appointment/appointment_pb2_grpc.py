@@ -37,7 +37,6 @@ class AppointmentServiceStub:
     Notification services.
     ═══════════════════════════════════════════════════════════════════════════
 
-    ─── LIFECYCLE ───
     """
 
     def __init__(self, channel):
@@ -235,153 +234,106 @@ class AppointmentServiceServicer:
     Notification services.
     ═══════════════════════════════════════════════════════════════════════════
 
-    ─── LIFECYCLE ───
     """
 
     def RequestAppointment(self, request, context):
-        """Client requests a new appointment (creates REQUESTED state)
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def AcceptAppointment(self, request, context):
-        """Vet accepts an appointment (REQUESTED -> ACCEPTED, first-come-first-served)
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def UpdateAppointmentStatus(self, request, context):
-        """Update appointment status (EN_ROUTE, COMPLETED, etc.)
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ConfirmArrival(self, request, context):
-        """Vet confirms arrival with 6-digit PIN (ARRIVED -> IN_PROGRESS)
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def CancelAppointment(self, request, context):
-        """Cancel an appointment (client, vet, or system)
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def AbortAppointment(self, request, context):
-        """Abort a consultation already under way (IN_PROGRESS -> CANCELLED)
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetCancellationQuote(self, request, context):
-        """Cuanto costaria cancelar AHORA, sin cancelar nada. La politica de E1-A8 ya
-        cobraba y no habia forma de anunciar el coste antes de confirmar.
-
-        Devuelve la cotizacion del rol de QUIEN PREGUNTA, deducido de la propia
-        cita: el cliente y el vet pagan cosas distintas —la cita contra el viaje— y
-        ninguno de los dos tiene por que ver la exposicion economica del otro. Por
-        eso el rol NO viaja en la peticion: un parametro que el llamante elige
-        seria una forma de leer la penalidad del vecino.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetAppointment(self, request, context):
-        """─── QUERIES ───
-
-        Get a single appointment by ID
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetClientAppointments(self, request, context):
-        """Get appointments for a client (with optional status filter)
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetVetAppointments(self, request, context):
-        """Get appointments for a vet (with optional status filter)
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetAvailableVets(self, request, context):
-        """─── MATCHING ───
-
-        Find available vets for a service at a location and time
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetVetAppointmentsForDate(self, request, context):
-        """─── NEW: Appointment Modes + Slots ───
-
-        Get vet's appointments for a specific date (called by Profile Service)
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetNextAvailableSlots(self, request, context):
-        """Get next available calculated slots (MVP aggregator)
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetPetAppointmentHistory(self, request, context):
-        """Get pet's appointment history (for follow-up recommendations)
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetActivePetEngagements(self, request, context):
-        """A1.2 — Hechos de engagement activo por mascota. NO decide autorizacion: la
-        gateway lee estos hechos y aplica la politica. Batch obligatorio: la agenda
-        del vet resuelve ~90 mascotas por pantalla y un RPC unario recrearia el N+1
-        que E1-A1 existe para eliminar, esta vez en la ruta de autorizacion.
-
-        "Activo" = el conjunto declarado por AppointmentStatus.is_active. La
-        unificacion de las demas listas de estados activos queda fuera de A1.2
-        (ver docs/PLAN_E1_A1_EJECUCION.md).
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetActiveClientEngagements(self, request, context):
-        """A1.3-ClientProfile — hechos de engagement activo por CLIENTE. Hermano del de
-        mascotas y NO derivable de el: aquel responde "que citas activas tocan estas
-        mascotas"; este, "tiene este vet cita activa con este cliente". En la agenda,
-        `client` se resuelve por clientProfileId sin mencionar mascota alguna.
-
-        Responde HECHOS. No es un `can_read_client()`: quien puede ver que lo decide
-        la gateway.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def UpdateVetLocation(self, request, context):
-        """─── REAL-TIME LOCATION ───
-
-        Vet pushes current GPS position (called ~every 10s while EN_ROUTE).
-        Stores position in Redis with TTL=90s for client ETA polling.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -393,162 +345,103 @@ class AppointmentServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def GetAppointmentHistory(self, request, context):
-        """─── AUDIT ───
-
-        Get status change history for an appointment (audit log)
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetVaccineRecommendations(self, request, context):
-        """─── RECOMMENDATIONS ───
-
-        Get vaccine recommendations for a pet (overdue, upcoming, suggested)
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetFollowUpRecommendations(self, request, context):
-        """Get follow-up recommendations based on recent appointment history
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SubmitReview(self, request, context):
-        """─── REVIEWS (S2-3) ───
-
-        Submit a review for a completed appointment. Only client, one per appointment.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetVetRatingSummary(self, request, context):
-        """Get vet rating summary (avg, count) for display in slots/catalog.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def AdminReportAppointments(self, request, context):
-        """─── ADMIN REPORTS ───
-
-        Appointments count by status in period (for admin analytics).
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def AdvanceFromPendingPaymentAuth(self, request, context):
-        """─── P2: Nequi payment authorization ───
-
-        Advance appointment from PENDING_PAYMENT_AUTH → ACCEPTED (triggered by payment-service on Nequi authorized).
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetSupplyHealthMetrics(self, request, context):
-        """─── P5: Supply health metrics ───
-
-        Get supply health metrics for admin dashboard (slot fill rate, median response time, etc.).
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def RescheduleAppointment(self, request, context):
-        """─── RESCHEDULE ───
-
-        Client reschedules an appointment (REQUESTED or ACCEPTED state).
-        Preserves appointment_id and pet history. If ACCEPTED, voids preauth and
-        returns to REQUESTED so the vet can re-accept at the new time.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def SuspendBookingBlock(self, request, context):
-        """─── PUENTE CON CONSTANCIA ───
-
-        El bloqueo por deuda (OUTSTANDING_PAYMENT) se calcula en vivo desde los
-        cobros fallidos: no hay estado que apagar. Estos dos RPC existen porque
-        constancia-service necesitaba prometerle algo al usuario y no tenía cómo
-        cumplirlo — y un recibo firmado de algo que no ocurrió es peor que no
-        tener la acción.
-
-        Exime temporalmente a un cliente del bloqueo por deuda. SIEMPRE con fecha
-        de fin: una exención indefinida deja agendar sobre deuda que crece, y quien
-        la concedió no se entera. No perdona la deuda — para eso está
-        PaymentService.WriteOffCollection.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def RevokeBookingBlockSuspension(self, request, context):
-        """Revoca las exenciones activas de un cliente antes de que venzan.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def RequestVetReassignment(self, request, context):
-        """Libera al vet de una cita ACEPTADA y la devuelve a REQUESTED para que otro
-        la tome. Opera sobre el grupo entero, porque la aceptación es del grupo.
-        No aplica desde EN_ROUTE en adelante: ahí el vet ya salió y eso es una
-        cancelación, con sus reglas de cobro, no una reasignación.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListCompletedAppointments(self, request, context):
-        """Interno (rating-service): el bus de Redis es pubsub y no reenvía, así que
-        un suscriptor caído pierde el desenlace y con él el denominador de la tasa
-        de respuesta. Esto es el camino de reconciliación.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListVetCancellations(self, request, context):
-        """Interno (rating-service): el equivalente del anterior para las
-        cancelaciones del vet. Sin esto, una señal perdida deja la cancelación
-        fuera del ledger para siempre y la reputación se calcula sobre hechos
-        incompletos — la autoridad conoce el hecho y el contrato no dejaba
-        preguntarlo.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def AnonymizeClientData(self, request, context):
-        """Baja de cuenta (P-4a): borra el dato personal del titular y CONSERVA el
-        hecho, que es el soporte del pago.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListAppointments(self, request, context):
-        """Listado global de citas para el panel de administración. Es la primera
-        consulta de este servicio que NO va acotada por un dueño: los filtros son
-        de búsqueda y ninguno se lee como autoridad. La puerta es @Admin en la
-        gateway; ver authorization-baseline.md §Citas.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def CountAppointmentsByProfiles(self, request, context):
-        """B-4 — cuántas citas tiene cada perfil, por lote. Existe para que las tablas
-        de clientes y de veterinarios del panel se pinten con UNA llamada por
-        página y no con una por fila.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -751,7 +644,6 @@ class AppointmentService:
     Notification services.
     ═══════════════════════════════════════════════════════════════════════════
 
-    ─── LIFECYCLE ───
     """
 
     @staticmethod

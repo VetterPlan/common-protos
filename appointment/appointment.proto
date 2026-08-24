@@ -492,6 +492,7 @@ message GetNextAvailableSlotsRequest {
   double address_lng = 3;
   int32 hours_ahead = 4;              // How many hours ahead to search (default 48)
   string service_metadata = 5;        // JSON string with subtype info (passthrough, does not affect slot logic)
+  bool prefer_vet_directory = 6;
 }
 
 message GetNextAvailableSlotsResponse {
@@ -499,6 +500,9 @@ message GetNextAvailableSlotsResponse {
   int32 total_vets_in_area = 2;
   int32 service_duration_minutes = 3;          // Duration of the service
   string slot_calculated_at = 4;
+  // H23.1. Cada veterinario una sola vez. Vacio salvo que el llamante haya
+  // pedido `prefer_vet_directory`.
+  repeated SlotVetPreview vet_directory = 5;
 }
 
 message DaySlots {
@@ -516,7 +520,12 @@ message CalculatedSlot {
   int32 available_vet_count = 6;
   double lowest_price = 7;
   double highest_price = 8;
+  // Se sigue poblando salvo que el llamante pida `prefer_vet_directory`.
   repeated SlotVetPreview vets = 9;
+  // H23.1. Indices dentro de `GetNextAvailableSlotsResponse.vet_directory`,
+  // EN EL MISMO ORDEN en que irian los previews de `vets`. El orden es
+  // significativo: los veterinarios de un hueco van por precio ascendente.
+  repeated int32 vet_indices = 10;
 }
 
 message SlotVetPreview {
