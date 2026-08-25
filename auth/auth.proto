@@ -21,6 +21,11 @@ service AuthService {
   rpc RemoveRole (RemoveRoleRequest) returns (RemoveRoleResponse);
   rpc HardDeleteUser (HardDeleteUserRequest) returns (HardDeleteUserResponse);
   rpc RequestAccountDeletion (RequestAccountDeletionRequest) returns (AccountDeletionResponse);
+  rpc AdminRequestAccountDeletion (AdminRequestAccountDeletionRequest) returns (AccountDeletionResponse);
+  rpc ConfirmAccountDeletion (AccountDeletionTokenRequest) returns (AccountDeletionResponse);
+  rpc CancelAccountDeletionByToken (AccountDeletionTokenRequest) returns (AccountDeletionResponse);
+  rpc ExecuteAccountDeletionNow (AccountDeletionTokenRequest) returns (AccountDeletionResponse);
+  rpc GetAccountDeletionByToken (AccountDeletionTokenRequest) returns (AccountDeletionResponse);
   rpc CancelAccountDeletion (CancelAccountDeletionRequest) returns (AccountDeletionResponse);
   rpc GetAccountDeletionStatus (GetAccountDeletionStatusRequest) returns (AccountDeletionResponse);
   rpc ListStuckAccountDeletions (ListStuckAccountDeletionsRequest) returns (ListStuckAccountDeletionsResponse);
@@ -252,6 +257,20 @@ message RequestAccountDeletionRequest {
   string otp_code = 5;
 }
 
+message AdminRequestAccountDeletionRequest {
+  string user_id = 1;
+  string admin_user_id = 2;
+  string reason = 3;
+  string ip = 4;
+  string user_agent = 5;
+}
+
+message AccountDeletionTokenRequest {
+  string token = 1;
+  string ip = 2;
+  string user_agent = 3;
+}
+
 message StuckAccountDeletion {
   string id = 1;
   string user_id = 2;
@@ -299,6 +318,7 @@ message GetAccountDeletionStatusRequest {
 
 message AccountDeletionResponse {
   AccountDeletion deletion = 1;
+  string outcome = 2;      // scheduled | confirmation_email_sent
 }
 
 message HardDeleteUserRequest {

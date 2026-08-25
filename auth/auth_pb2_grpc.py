@@ -124,6 +124,31 @@ class AuthServiceStub:
                 request_serializer=auth_dot_auth__pb2.RequestAccountDeletionRequest.SerializeToString,
                 response_deserializer=auth_dot_auth__pb2.AccountDeletionResponse.FromString,
                 _registered_method=True)
+        self.AdminRequestAccountDeletion = channel.unary_unary(
+                '/auth.AuthService/AdminRequestAccountDeletion',
+                request_serializer=auth_dot_auth__pb2.AdminRequestAccountDeletionRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.AccountDeletionResponse.FromString,
+                _registered_method=True)
+        self.ConfirmAccountDeletion = channel.unary_unary(
+                '/auth.AuthService/ConfirmAccountDeletion',
+                request_serializer=auth_dot_auth__pb2.AccountDeletionTokenRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.AccountDeletionResponse.FromString,
+                _registered_method=True)
+        self.CancelAccountDeletionByToken = channel.unary_unary(
+                '/auth.AuthService/CancelAccountDeletionByToken',
+                request_serializer=auth_dot_auth__pb2.AccountDeletionTokenRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.AccountDeletionResponse.FromString,
+                _registered_method=True)
+        self.ExecuteAccountDeletionNow = channel.unary_unary(
+                '/auth.AuthService/ExecuteAccountDeletionNow',
+                request_serializer=auth_dot_auth__pb2.AccountDeletionTokenRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.AccountDeletionResponse.FromString,
+                _registered_method=True)
+        self.GetAccountDeletionByToken = channel.unary_unary(
+                '/auth.AuthService/GetAccountDeletionByToken',
+                request_serializer=auth_dot_auth__pb2.AccountDeletionTokenRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.AccountDeletionResponse.FromString,
+                _registered_method=True)
         self.CancelAccountDeletion = channel.unary_unary(
                 '/auth.AuthService/CancelAccountDeletion',
                 request_serializer=auth_dot_auth__pb2.CancelAccountDeletionRequest.SerializeToString,
@@ -190,8 +215,7 @@ class AuthServiceServicer:
     """Missing associated documentation comment in .proto file."""
 
     def Login(self, request, context):
-        """Authentication
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -269,8 +293,7 @@ class AuthServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def AssignRole(self, request, context):
-        """Role Management (NEW - Sprint 3)
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -288,21 +311,43 @@ class AuthServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def HardDeleteUser(self, request, context):
-        """Hard delete (testing utility)
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def RequestAccountDeletion(self, request, context):
-        """─── BAJA DE CUENTA (P-4a) ───
-        El titular de la baja es auth. La gateway no puede serlo: una saga durable
-        necesita estado y la gateway es un traductor.
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
 
-        Los perfiles NO viajan en la peticion: los resuelve auth contra
-        profile-service. Si los mandara el cliente, podria comprobar las
-        precondiciones contra la wallet de otra persona.
-        """
+    def AdminRequestAccountDeletion(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ConfirmAccountDeletion(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CancelAccountDeletionByToken(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ExecuteAccountDeletionNow(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetAccountDeletionByToken(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -320,84 +365,61 @@ class AuthServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def ListStuckAccountDeletions(self, request, context):
-        """Solo admin: las bajas que se quedaron a medias. Un hueco que nadie mira es
-        un hueco callado con mas pasos.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ExportUserData(self, request, context):
-        """Ley 1581: el derecho de acceso, que acompana al de supresion.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def FindUserByEmail(self, request, context):
-        """Admin: look up a user account by email address
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetUserContact(self, request, context):
-        """Servicio-a-servicio: la direccion de correo de un usuario, para poder
-        escribirle. NO se expone en la gateway.
-
-        Existe porque `FindUserByEmail` va en la direccion contraria y ningun otro
-        servicio guarda el correo personal: `VetProfile.clinic_email` es el de la
-        clinica y es opcional. Sin esto, avisar por correo al dueno de un perfil
-        obliga a inventarse la direccion o a no avisar.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListUsers(self, request, context):
-        """Admin: paginated list of all accounts (clients + vets + admins), with filters
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetLegalDocument(self, request, context):
-        """─── DOCUMENTOS LEGALES (T&C, privacidad) ───
-
-        Append-only: publicar crea una versión y la anterior queda inactiva. La
-        aceptación guarda versión + hash del texto que se mostró, porque sin eso no
-        hay forma de probar QUÉ aceptó cada usuario.
-
-        Texto vigente de un documento. Público (se lee antes de tener cuenta).
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def AcceptLegalDocument(self, request, context):
-        """Registra la aceptación de un usuario. Idempotente por (usuario, tipo, versión).
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetPendingLegalAcceptances(self, request, context):
-        """Qué documentos le faltan por aceptar a un usuario (se consulta en login).
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def PublishLegalDocument(self, request, context):
-        """Admin: publica una versión nueva. NUNCA edita la vigente.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListLegalDocuments(self, request, context):
-        """Admin: histórico de versiones de un tipo de documento.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -493,6 +515,31 @@ def add_AuthServiceServicer_to_server(servicer, server):
             'RequestAccountDeletion': grpc.unary_unary_rpc_method_handler(
                     servicer.RequestAccountDeletion,
                     request_deserializer=auth_dot_auth__pb2.RequestAccountDeletionRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.AccountDeletionResponse.SerializeToString,
+            ),
+            'AdminRequestAccountDeletion': grpc.unary_unary_rpc_method_handler(
+                    servicer.AdminRequestAccountDeletion,
+                    request_deserializer=auth_dot_auth__pb2.AdminRequestAccountDeletionRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.AccountDeletionResponse.SerializeToString,
+            ),
+            'ConfirmAccountDeletion': grpc.unary_unary_rpc_method_handler(
+                    servicer.ConfirmAccountDeletion,
+                    request_deserializer=auth_dot_auth__pb2.AccountDeletionTokenRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.AccountDeletionResponse.SerializeToString,
+            ),
+            'CancelAccountDeletionByToken': grpc.unary_unary_rpc_method_handler(
+                    servicer.CancelAccountDeletionByToken,
+                    request_deserializer=auth_dot_auth__pb2.AccountDeletionTokenRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.AccountDeletionResponse.SerializeToString,
+            ),
+            'ExecuteAccountDeletionNow': grpc.unary_unary_rpc_method_handler(
+                    servicer.ExecuteAccountDeletionNow,
+                    request_deserializer=auth_dot_auth__pb2.AccountDeletionTokenRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.AccountDeletionResponse.SerializeToString,
+            ),
+            'GetAccountDeletionByToken': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetAccountDeletionByToken,
+                    request_deserializer=auth_dot_auth__pb2.AccountDeletionTokenRequest.FromString,
                     response_serializer=auth_dot_auth__pb2.AccountDeletionResponse.SerializeToString,
             ),
             'CancelAccountDeletion': grpc.unary_unary_rpc_method_handler(
@@ -1041,6 +1088,141 @@ class AuthService:
             target,
             '/auth.AuthService/RequestAccountDeletion',
             auth_dot_auth__pb2.RequestAccountDeletionRequest.SerializeToString,
+            auth_dot_auth__pb2.AccountDeletionResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def AdminRequestAccountDeletion(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/AdminRequestAccountDeletion',
+            auth_dot_auth__pb2.AdminRequestAccountDeletionRequest.SerializeToString,
+            auth_dot_auth__pb2.AccountDeletionResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ConfirmAccountDeletion(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/ConfirmAccountDeletion',
+            auth_dot_auth__pb2.AccountDeletionTokenRequest.SerializeToString,
+            auth_dot_auth__pb2.AccountDeletionResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CancelAccountDeletionByToken(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/CancelAccountDeletionByToken',
+            auth_dot_auth__pb2.AccountDeletionTokenRequest.SerializeToString,
+            auth_dot_auth__pb2.AccountDeletionResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ExecuteAccountDeletionNow(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/ExecuteAccountDeletionNow',
+            auth_dot_auth__pb2.AccountDeletionTokenRequest.SerializeToString,
+            auth_dot_auth__pb2.AccountDeletionResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetAccountDeletionByToken(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/GetAccountDeletionByToken',
+            auth_dot_auth__pb2.AccountDeletionTokenRequest.SerializeToString,
             auth_dot_auth__pb2.AccountDeletionResponse.FromString,
             options,
             channel_credentials,
