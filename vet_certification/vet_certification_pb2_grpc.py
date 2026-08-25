@@ -58,6 +58,16 @@ class VetCertificationServiceStub:
                 request_serializer=vet__certification_dot_vet__certification__pb2.GetCertificationsByVetProfileRequest.SerializeToString,
                 response_deserializer=vet__certification_dot_vet__certification__pb2.CertificationsResponse.FromString,
                 _registered_method=True)
+        self.CorrectPendingCertification = channel.unary_unary(
+                '/vet_certification.VetCertificationService/CorrectPendingCertification',
+                request_serializer=vet__certification_dot_vet__certification__pb2.CorrectPendingCertificationRequest.SerializeToString,
+                response_deserializer=vet__certification_dot_vet__certification__pb2.CertificationResponse.FromString,
+                _registered_method=True)
+        self.UpdateCertificationDetails = channel.unary_unary(
+                '/vet_certification.VetCertificationService/UpdateCertificationDetails',
+                request_serializer=vet__certification_dot_vet__certification__pb2.UpdateCertificationDetailsRequest.SerializeToString,
+                response_deserializer=vet__certification_dot_vet__certification__pb2.CertificationResponse.FromString,
+                _registered_method=True)
         self.ValidateCanPractice = channel.unary_unary(
                 '/vet_certification.VetCertificationService/ValidateCanPractice',
                 request_serializer=vet__certification_dot_vet__certification__pb2.ValidateCanPracticeRequest.SerializeToString,
@@ -176,6 +186,26 @@ class VetCertificationServiceServicer:
 
     def GetCertificationsByVetProfile(self, request, context):
         """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CorrectPendingCertification(self, request, context):
+        """Reescribe la MISMA fila, matricula incluida, mientras status == PENDING y
+        reviewed_at IS NULL. Conserva los documentos adjuntos, resetea el cotejo
+        del registro y lo vuelve a encolar. En cualquier otro estado aborta
+        FAILED_PRECONDITION (distinguible del ALREADY_EXISTS de Submit).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def UpdateCertificationDetails(self, request, context):
+        """Actualizacion parcial con semantica de presencia: lo ausente NO se toca.
+        Nunca escribe license_number. Valida en PENDING y APPROVED. Solo limpia el
+        sello de identidad (document_verified_at) si el numero de documento cambia
+        de verdad; reenviarlo identico es un no-op sobre el sello.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -322,6 +352,16 @@ def add_VetCertificationServiceServicer_to_server(servicer, server):
                     servicer.GetCertificationsByVetProfile,
                     request_deserializer=vet__certification_dot_vet__certification__pb2.GetCertificationsByVetProfileRequest.FromString,
                     response_serializer=vet__certification_dot_vet__certification__pb2.CertificationsResponse.SerializeToString,
+            ),
+            'CorrectPendingCertification': grpc.unary_unary_rpc_method_handler(
+                    servicer.CorrectPendingCertification,
+                    request_deserializer=vet__certification_dot_vet__certification__pb2.CorrectPendingCertificationRequest.FromString,
+                    response_serializer=vet__certification_dot_vet__certification__pb2.CertificationResponse.SerializeToString,
+            ),
+            'UpdateCertificationDetails': grpc.unary_unary_rpc_method_handler(
+                    servicer.UpdateCertificationDetails,
+                    request_deserializer=vet__certification_dot_vet__certification__pb2.UpdateCertificationDetailsRequest.FromString,
+                    response_serializer=vet__certification_dot_vet__certification__pb2.CertificationResponse.SerializeToString,
             ),
             'ValidateCanPractice': grpc.unary_unary_rpc_method_handler(
                     servicer.ValidateCanPractice,
@@ -504,6 +544,60 @@ class VetCertificationService:
             '/vet_certification.VetCertificationService/GetCertificationsByVetProfile',
             vet__certification_dot_vet__certification__pb2.GetCertificationsByVetProfileRequest.SerializeToString,
             vet__certification_dot_vet__certification__pb2.CertificationsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CorrectPendingCertification(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/vet_certification.VetCertificationService/CorrectPendingCertification',
+            vet__certification_dot_vet__certification__pb2.CorrectPendingCertificationRequest.SerializeToString,
+            vet__certification_dot_vet__certification__pb2.CertificationResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def UpdateCertificationDetails(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/vet_certification.VetCertificationService/UpdateCertificationDetails',
+            vet__certification_dot_vet__certification__pb2.UpdateCertificationDetailsRequest.SerializeToString,
+            vet__certification_dot_vet__certification__pb2.CertificationResponse.FromString,
             options,
             channel_credentials,
             insecure,

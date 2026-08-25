@@ -19,6 +19,18 @@ service VetCertificationService {
   rpc GetCertification (GetCertificationRequest) returns (CertificationResponse);
   rpc GetCertificationsByVetProfile (GetCertificationsByVetProfileRequest) returns (CertificationsResponse);
 
+  // Reescribe la MISMA fila, matricula incluida, mientras status == PENDING y
+  // reviewed_at IS NULL. Conserva los documentos adjuntos, resetea el cotejo
+  // del registro y lo vuelve a encolar. En cualquier otro estado aborta
+  // FAILED_PRECONDITION (distinguible del ALREADY_EXISTS de Submit).
+  rpc CorrectPendingCertification (CorrectPendingCertificationRequest) returns (CertificationResponse);
+
+  // Actualizacion parcial con semantica de presencia: lo ausente NO se toca.
+  // Nunca escribe license_number. Valida en PENDING y APPROVED. Solo limpia el
+  // sello de identidad (document_verified_at) si el numero de documento cambia
+  // de verdad; reenviarlo identico es un no-op sobre el sello.
+  rpc UpdateCertificationDetails (UpdateCertificationDetailsRequest) returns (CertificationResponse);
+
   // ─── PRACTICE VALIDATION ───
 
   rpc ValidateCanPractice (ValidateCanPracticeRequest) returns (ValidateCanPracticeResponse);
@@ -186,6 +198,15 @@ message CertificationRequirements {
   repeated DocumentIdType id_document_types = 9;
   repeated AcademicDegree optional_credentials = 10;
   bool has_registry_check = 11;
+  // Que prueba cada documento, por jurisdiccion: "identity" | "background" |
+  // "optional". Cubre obligatorios y opcionales; un consumidor que no lo
+  // entienda lo ignora sin perder nada.
+  repeated DocumentGroup document_groups = 12;
+}
+
+message DocumentGroup {
+  DocumentType document_type = 1;
+  string group = 2;
 }
 
 message GetCertificationRequirementsResponse {
@@ -294,11 +315,38 @@ message Certification {
   int32 days_until_expiration = 20;      // -1 if no expiration
   DocumentIdType document_type = 21;
   string document_number_masked = 22;    // ****9502
-  bool document_verified = 23;           // un admin lo cotejó contra la cédula
+  // Un ADMIN lo cotejo contra la cedula escaneada. Es compuerta: decide si el
+  // barrido del registro puede suspender (cedula confirmada) o solo avisar
+  // (declarada), y ReviewCertification no aprueba sin el. Significa "lo
+  // confirmo una persona": cuando exista una comprobacion automatica de la
+  // foto, tendra su PROPIO campo, estado y codigo de fallo — nunca este.
+  bool document_verified = 23;
   RegistryStatus registry_status = 24;
   google.protobuf.Timestamp registry_checked_at = 25;
+  // GARANTIA: siempre la matricula DECLARADA por el vet (o vacio), nunca una
+  // encontrada en el registro. Las encontradas para una cedula solo viajan en
+  // registry_detail (admin-only): con la cedula mal tecleada serian de un
+  // tercero. Exponer una matricula del registro exige un campo nuevo y una
+  // decision de privacidad explicita. Trinquete:
+  // test_registry_matching.py::TestLaMatriculaDelResultadoEsLaDeclarada.
   string registry_matricula = 26;
   string registry_detail = 27;
+  // Solo con registry_status NOT_FOUND: cual de los dos numeros fallo.
+  // Derivado, no almacenado: el cotejo busca por cedula cuando hay una
+  // guardada, y todo cambio de cedula resetea el veredicto a UNCHECKED, asi
+  // que un NOT_FOUND vigente siempre se emitio con la presencia actual del
+  // documento. Enum saneado: apto para la vet, no nombra a terceros.
+  RegistryNotFoundCause registry_not_found_cause = 28;
+  // Registro VERIFIED y vigente + cedula confirmada por un revisor + cotejo
+  // posterior a esa confirmacion. La misma afirmacion IDENTITY_MATCHED de la
+  // tarjeta publica, expuesta a la duena de la certificacion.
+  bool identity_matched = 29;
+}
+
+enum RegistryNotFoundCause {
+  REGISTRY_NOT_FOUND_CAUSE_UNSPECIFIED = 0;
+  REGISTRY_NOT_FOUND_CAUSE_CEDULA_NOT_IN_REGISTRY = 1;
+  REGISTRY_NOT_FOUND_CAUSE_MATRICULA_NOT_IN_REGISTRY = 2;
 }
 
 message StatusHistoryEntry {
@@ -495,6 +543,10 @@ enum DocumentType {
   DOCUMENT_TYPE_BACKGROUND_CHECK = 8;// Background check results
   DOCUMENT_TYPE_OTHER = 9;           // Other
   DOCUMENT_TYPE_DISCIPLINARY_RECORD = 10;// Antecedentes disciplinarios (Procuraduria)
+  // Reverso de la cedula. Tipo propio para que cada cara se suba, sustituya y
+  // revise por separado (la sustitucion atomica es por tipo). Opcional hoy:
+  // promoverlo a obligatorio exige expand/contract con la adopcion de la app.
+  DOCUMENT_TYPE_ID_CARD_BACK = 11;
 }
 
 message CertificationDocument {
@@ -511,6 +563,33 @@ message CertificationDocument {
   string expires_at = 11;                // ISO8601 date (YYYY-MM-DD), optional
   google.protobuf.Timestamp uploaded_at = 12;
   string view_url = 13;
+  // Estado explicito del documento. Una nota sin veredicto NO es un rechazo:
+  // antes el cliente lo deducia de !is_verified && notes y una nota de trabajo
+  // se presentaba como devolucion.
+  DocumentReviewStatus status = 14;
+  // Fecha del ultimo veredicto (verificar, rechazar, vencer). Sobrevive al
+  // des-verificar, a diferencia de verified_at.
+  google.protobuf.Timestamp reviewed_at = 15;
+  // Solo con status REJECTED: que corregir, saneado. No sustituye a la nota.
+  DocumentRejectionReason rejection_reason_code = 16;
+}
+
+enum DocumentReviewStatus {
+  DOCUMENT_REVIEW_STATUS_UNSPECIFIED = 0;
+  DOCUMENT_REVIEW_STATUS_PENDING = 1;
+  DOCUMENT_REVIEW_STATUS_VERIFIED = 2;
+  DOCUMENT_REVIEW_STATUS_REJECTED = 3;
+  DOCUMENT_REVIEW_STATUS_EXPIRED = 4;
+}
+
+enum DocumentRejectionReason {
+  DOCUMENT_REJECTION_REASON_UNSPECIFIED = 0;
+  DOCUMENT_REJECTION_REASON_ILLEGIBLE = 1;
+  DOCUMENT_REJECTION_REASON_EXPIRED = 2;
+  DOCUMENT_REJECTION_REASON_WRONG_DOCUMENT = 3;
+  DOCUMENT_REJECTION_REASON_INCOMPLETE = 4;
+  DOCUMENT_REJECTION_REASON_NAME_MISMATCH = 5;
+  DOCUMENT_REJECTION_REASON_OTHER = 6;
 }
 
 message GenerateCertificationDocumentUploadUrlRequest {
@@ -555,8 +634,13 @@ message CertificationDocumentsResponse {
 message VerifyCertificationDocumentRequest {
   string document_id = 1;           // Required
   string verified_by = 2;           // Required: admin UUID
-  bool is_verified = 3;             // true = verify, false = un-verify
+  bool is_verified = 3;             // Legado: true = verify, false = un-verify
   string verification_notes = 4;    // Optional
+  // Veredicto explicito. Ausente (UNSPECIFIED) = semantica legado: is_verified
+  // true → VERIFIED; false con notas → REJECTED; false sin notas → PENDING.
+  DocumentReviewStatus new_status = 5;
+  // Solo valido con new_status REJECTED.
+  DocumentRejectionReason rejection_reason_code = 6;
 }
 
 message RemoveCertificationDocumentRequest {
@@ -566,4 +650,37 @@ message RemoveCertificationDocumentRequest {
 
 message RemoveCertificationDocumentResponse {
   bool success = 1;
+}
+
+message CorrectPendingCertificationRequest {
+  string certification_id = 1;           // Required: la fila a corregir
+  string vet_profile_id = 2;             // Required: duena; el servicio verifica titularidad
+  string license_number = 3;             // Required
+  LicenseType license_type = 4;          // Optional, defaults to NATIONAL
+  string country = 5;                    // Required: ISO 3166-1 alpha-2
+  string state_province = 6;             // Optional
+  string issuing_authority = 7;          // Required
+  PracticeScope scope = 8;               // Optional, defaults to GENERAL
+  repeated string species_allowed = 9;   // Optional, defaults to ["small_animals"]
+  string valid_from = 10;                // Optional: ISO8601 date
+  string valid_until = 11;               // Optional: ISO8601 date
+  string document_number = 12;           // Optional: ausente conserva la cedula guardada
+  DocumentIdType document_type = 13;     // Por defecto CC
+  string corrected_by = 14;              // Required: UUID de quien corrige
+}
+
+// Wrapper para que una lista tenga presencia: ausente = no tocar,
+// presente = reemplazar (y no puede venir vacia).
+message SpeciesAllowedUpdate {
+  repeated string values = 1;
+}
+
+message UpdateCertificationDetailsRequest {
+  string certification_id = 1;               // Required
+  string vet_profile_id = 2;                 // Required: duena; el servicio verifica titularidad
+  SpeciesAllowedUpdate species_allowed = 3;  // Ausente = no tocar
+  optional string state_province = 4;        // Ausente = no tocar; presente vacio = limpiar
+  optional string document_number = 5;       // Ausente = no tocar; identico = conserva el sello
+  DocumentIdType document_type = 6;          // Acompana a document_number; por defecto CC
+  string updated_by = 7;                     // Required: UUID de quien actualiza
 }
