@@ -264,6 +264,7 @@ message AdminRequestAccountDeletionRequest {
   string reason = 3;
   string ip = 4;
   string user_agent = 5;
+  bool execute_now = 6;
 }
 
 message AccountDeletionTokenRequest {
