@@ -145,6 +145,7 @@ message VerifyEmailResponse {
 
 message SendOtpRequest {
   string phoneNumber = 1;
+  string purpose = 2;      // "" (login, comportamiento historico) | "registration"
 }
 
 message SendOtpResponse {
