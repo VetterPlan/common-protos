@@ -247,6 +247,7 @@ message AccountDeletion {
   string cancelled_at = 6;
   int32 attempts = 7;
   repeated AccountDeletionStep steps = 8;
+  string blocked_reason = 9;
 }
 
 message RequestAccountDeletionRequest {
