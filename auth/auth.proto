@@ -38,6 +38,13 @@ service AuthService {
   rpc GetPendingLegalAcceptances (GetPendingLegalAcceptancesRequest) returns (GetPendingLegalAcceptancesResponse);
   rpc PublishLegalDocument (PublishLegalDocumentRequest) returns (LegalDocumentResponse);
   rpc ListLegalDocuments (ListLegalDocumentsRequest) returns (ListLegalDocumentsResponse);
+
+  // Canal de habeas data (Ley 1581): consultas (10 dias habiles) y reclamos
+  // (15), con vencimiento calculado al radicar y prorroga unica informada.
+  rpc SubmitDataRightsRequest (SubmitDataRightsRequestRequest) returns (DataRightsRequestResponse);
+  rpc ListMyDataRightsRequests (ListMyDataRightsRequestsRequest) returns (DataRightsRequestsResponse);
+  rpc AdminListDataRightsRequests (AdminListDataRightsRequestsRequest) returns (DataRightsRequestsResponse);
+  rpc AdminResolveDataRightsRequest (AdminResolveDataRightsRequestRequest) returns (DataRightsRequestResponse);
 }
 
 message LoginRequest {
@@ -467,4 +474,48 @@ message ListLegalDocumentsRequest {
 
 message ListLegalDocumentsResponse {
   repeated LegalDocument documents = 1;
+}
+
+message DataRightsRequest {
+  string id = 1;
+  string user_id = 2;
+  string category = 3;      // 'consulta' | 'reclamo'
+  string message = 4;
+  string status = 5;        // recibida | en_tramite | incompleta | respondida | desistida
+  string due_at = 6;        // ISO8601: cuando vence el plazo legal
+  bool extended = 7;        // la prorroga (5/8 habiles) ya se ejercio
+  string response = 8;
+  string responded_by = 9;
+  string responded_at = 10;
+  string created_at = 11;
+}
+
+message SubmitDataRightsRequestRequest {
+  string user_id = 1;
+  string category = 2;      // 'consulta' | 'reclamo'
+  string message = 3;
+}
+
+message ListMyDataRightsRequestsRequest {
+  string user_id = 1;
+}
+
+message AdminListDataRightsRequestsRequest {
+  string status = 1;        // vacio = las abiertas (recibida, en_tramite, incompleta)
+  int32 limit = 2;
+}
+
+message AdminResolveDataRightsRequestRequest {
+  string request_id = 1;
+  string admin_user_id = 2;
+  string action = 3;        // respond | extend | mark_incomplete | desist
+  string response = 4;      // obligatorio en respond; opcional en el resto
+}
+
+message DataRightsRequestResponse {
+  DataRightsRequest request = 1;
+}
+
+message DataRightsRequestsResponse {
+  repeated DataRightsRequest requests = 1;
 }

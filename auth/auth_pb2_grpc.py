@@ -209,6 +209,26 @@ class AuthServiceStub:
                 request_serializer=auth_dot_auth__pb2.ListLegalDocumentsRequest.SerializeToString,
                 response_deserializer=auth_dot_auth__pb2.ListLegalDocumentsResponse.FromString,
                 _registered_method=True)
+        self.SubmitDataRightsRequest = channel.unary_unary(
+                '/auth.AuthService/SubmitDataRightsRequest',
+                request_serializer=auth_dot_auth__pb2.SubmitDataRightsRequestRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.DataRightsRequestResponse.FromString,
+                _registered_method=True)
+        self.ListMyDataRightsRequests = channel.unary_unary(
+                '/auth.AuthService/ListMyDataRightsRequests',
+                request_serializer=auth_dot_auth__pb2.ListMyDataRightsRequestsRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.DataRightsRequestsResponse.FromString,
+                _registered_method=True)
+        self.AdminListDataRightsRequests = channel.unary_unary(
+                '/auth.AuthService/AdminListDataRightsRequests',
+                request_serializer=auth_dot_auth__pb2.AdminListDataRightsRequestsRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.DataRightsRequestsResponse.FromString,
+                _registered_method=True)
+        self.AdminResolveDataRightsRequest = channel.unary_unary(
+                '/auth.AuthService/AdminResolveDataRightsRequest',
+                request_serializer=auth_dot_auth__pb2.AdminResolveDataRightsRequestRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.DataRightsRequestResponse.FromString,
+                _registered_method=True)
 
 
 class AuthServiceServicer:
@@ -424,6 +444,32 @@ class AuthServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SubmitDataRightsRequest(self, request, context):
+        """Canal de habeas data (Ley 1581): consultas (10 dias habiles) y reclamos
+        (15), con vencimiento calculado al radicar y prorroga unica informada.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListMyDataRightsRequests(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def AdminListDataRightsRequests(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def AdminResolveDataRightsRequest(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AuthServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -601,6 +647,26 @@ def add_AuthServiceServicer_to_server(servicer, server):
                     servicer.ListLegalDocuments,
                     request_deserializer=auth_dot_auth__pb2.ListLegalDocumentsRequest.FromString,
                     response_serializer=auth_dot_auth__pb2.ListLegalDocumentsResponse.SerializeToString,
+            ),
+            'SubmitDataRightsRequest': grpc.unary_unary_rpc_method_handler(
+                    servicer.SubmitDataRightsRequest,
+                    request_deserializer=auth_dot_auth__pb2.SubmitDataRightsRequestRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.DataRightsRequestResponse.SerializeToString,
+            ),
+            'ListMyDataRightsRequests': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListMyDataRightsRequests,
+                    request_deserializer=auth_dot_auth__pb2.ListMyDataRightsRequestsRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.DataRightsRequestsResponse.SerializeToString,
+            ),
+            'AdminListDataRightsRequests': grpc.unary_unary_rpc_method_handler(
+                    servicer.AdminListDataRightsRequests,
+                    request_deserializer=auth_dot_auth__pb2.AdminListDataRightsRequestsRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.DataRightsRequestsResponse.SerializeToString,
+            ),
+            'AdminResolveDataRightsRequest': grpc.unary_unary_rpc_method_handler(
+                    servicer.AdminResolveDataRightsRequest,
+                    request_deserializer=auth_dot_auth__pb2.AdminResolveDataRightsRequestRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.DataRightsRequestResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -1548,6 +1614,114 @@ class AuthService:
             '/auth.AuthService/ListLegalDocuments',
             auth_dot_auth__pb2.ListLegalDocumentsRequest.SerializeToString,
             auth_dot_auth__pb2.ListLegalDocumentsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SubmitDataRightsRequest(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/SubmitDataRightsRequest',
+            auth_dot_auth__pb2.SubmitDataRightsRequestRequest.SerializeToString,
+            auth_dot_auth__pb2.DataRightsRequestResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListMyDataRightsRequests(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/ListMyDataRightsRequests',
+            auth_dot_auth__pb2.ListMyDataRightsRequestsRequest.SerializeToString,
+            auth_dot_auth__pb2.DataRightsRequestsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def AdminListDataRightsRequests(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/AdminListDataRightsRequests',
+            auth_dot_auth__pb2.AdminListDataRightsRequestsRequest.SerializeToString,
+            auth_dot_auth__pb2.DataRightsRequestsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def AdminResolveDataRightsRequest(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/AdminResolveDataRightsRequest',
+            auth_dot_auth__pb2.AdminResolveDataRightsRequestRequest.SerializeToString,
+            auth_dot_auth__pb2.DataRightsRequestResponse.FromString,
             options,
             channel_credentials,
             insecure,
