@@ -368,6 +368,9 @@ message GetUserContactResponse {
   string email = 2;
   bool is_active = 3;
   bool is_email_verified = 4;
+  // Telefono del usuario, tal como lo registro en auth (la UNICA fuente:
+  // users.phone). Vacio = no tiene; el consumidor no fabrica un valor.
+  string phone = 5;
 }
 
 message ListUsersRequest {
