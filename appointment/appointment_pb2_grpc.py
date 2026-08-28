@@ -195,6 +195,26 @@ class AppointmentServiceStub:
                 request_serializer=appointment_dot_appointment__pb2.RequestVetReassignmentRequest.SerializeToString,
                 response_deserializer=appointment_dot_appointment__pb2.AppointmentResponse.FromString,
                 _registered_method=True)
+        self.ProposeGroupAdjustment = channel.unary_unary(
+                '/appointment.AppointmentService/ProposeGroupAdjustment',
+                request_serializer=appointment_dot_appointment__pb2.ProposeGroupAdjustmentRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+                _registered_method=True)
+        self.ConfirmGroupAdjustment = channel.unary_unary(
+                '/appointment.AppointmentService/ConfirmGroupAdjustment',
+                request_serializer=appointment_dot_appointment__pb2.ConfirmGroupAdjustmentRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+                _registered_method=True)
+        self.DeclineGroupAdjustment = channel.unary_unary(
+                '/appointment.AppointmentService/DeclineGroupAdjustment',
+                request_serializer=appointment_dot_appointment__pb2.DeclineGroupAdjustmentRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+                _registered_method=True)
+        self.CloseUnattended = channel.unary_unary(
+                '/appointment.AppointmentService/CloseUnattended',
+                request_serializer=appointment_dot_appointment__pb2.CloseUnattendedRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+                _registered_method=True)
         self.ListCompletedAppointments = channel.unary_unary(
                 '/appointment.AppointmentService/ListCompletedAppointments',
                 request_serializer=appointment_dot_appointment__pb2.ListCompletedAppointmentsRequest.SerializeToString,
@@ -416,6 +436,30 @@ class AppointmentServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ProposeGroupAdjustment(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ConfirmGroupAdjustment(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DeclineGroupAdjustment(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CloseUnattended(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def ListCompletedAppointments(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -597,6 +641,26 @@ def add_AppointmentServiceServicer_to_server(servicer, server):
             'RequestVetReassignment': grpc.unary_unary_rpc_method_handler(
                     servicer.RequestVetReassignment,
                     request_deserializer=appointment_dot_appointment__pb2.RequestVetReassignmentRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.AppointmentResponse.SerializeToString,
+            ),
+            'ProposeGroupAdjustment': grpc.unary_unary_rpc_method_handler(
+                    servicer.ProposeGroupAdjustment,
+                    request_deserializer=appointment_dot_appointment__pb2.ProposeGroupAdjustmentRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.AppointmentResponse.SerializeToString,
+            ),
+            'ConfirmGroupAdjustment': grpc.unary_unary_rpc_method_handler(
+                    servicer.ConfirmGroupAdjustment,
+                    request_deserializer=appointment_dot_appointment__pb2.ConfirmGroupAdjustmentRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.AppointmentResponse.SerializeToString,
+            ),
+            'DeclineGroupAdjustment': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeclineGroupAdjustment,
+                    request_deserializer=appointment_dot_appointment__pb2.DeclineGroupAdjustmentRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.AppointmentResponse.SerializeToString,
+            ),
+            'CloseUnattended': grpc.unary_unary_rpc_method_handler(
+                    servicer.CloseUnattended,
+                    request_deserializer=appointment_dot_appointment__pb2.CloseUnattendedRequest.FromString,
                     response_serializer=appointment_dot_appointment__pb2.AppointmentResponse.SerializeToString,
             ),
             'ListCompletedAppointments': grpc.unary_unary_rpc_method_handler(
@@ -1445,6 +1509,114 @@ class AppointmentService:
             target,
             '/appointment.AppointmentService/RequestVetReassignment',
             appointment_dot_appointment__pb2.RequestVetReassignmentRequest.SerializeToString,
+            appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ProposeGroupAdjustment(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/ProposeGroupAdjustment',
+            appointment_dot_appointment__pb2.ProposeGroupAdjustmentRequest.SerializeToString,
+            appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ConfirmGroupAdjustment(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/ConfirmGroupAdjustment',
+            appointment_dot_appointment__pb2.ConfirmGroupAdjustmentRequest.SerializeToString,
+            appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DeclineGroupAdjustment(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/DeclineGroupAdjustment',
+            appointment_dot_appointment__pb2.DeclineGroupAdjustmentRequest.SerializeToString,
+            appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CloseUnattended(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/CloseUnattended',
+            appointment_dot_appointment__pb2.CloseUnattendedRequest.SerializeToString,
             appointment_dot_appointment__pb2.AppointmentResponse.FromString,
             options,
             channel_credentials,

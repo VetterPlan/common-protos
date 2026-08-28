@@ -46,6 +46,10 @@ service AppointmentService {
   rpc SuspendBookingBlock (SuspendBookingBlockRequest) returns (SuspendBookingBlockResponse);
   rpc RevokeBookingBlockSuspension (RevokeBookingBlockSuspensionRequest) returns (RevokeBookingBlockSuspensionResponse);
   rpc RequestVetReassignment (RequestVetReassignmentRequest) returns (AppointmentResponse);
+  rpc ProposeGroupAdjustment (ProposeGroupAdjustmentRequest) returns (AppointmentResponse);
+  rpc ConfirmGroupAdjustment (ConfirmGroupAdjustmentRequest) returns (AppointmentResponse);
+  rpc DeclineGroupAdjustment (DeclineGroupAdjustmentRequest) returns (AppointmentResponse);
+  rpc CloseUnattended (CloseUnattendedRequest) returns (AppointmentResponse);
   rpc ListCompletedAppointments (ListCompletedAppointmentsRequest) returns (ListCompletedAppointmentsResponse);
   rpc ListVetCancellations (ListVetCancellationsRequest) returns (ListVetCancellationsResponse);
   rpc AnonymizeClientData (AnonymizeClientDataRequest) returns (AnonymizeClientDataResponse);
@@ -156,6 +160,7 @@ enum AppointmentStatus {
   APPOINTMENT_STATUS_REJECTED = 9;
   APPOINTMENT_STATUS_EXPIRED = 10;
   APPOINTMENT_STATUS_PENDING_PAYMENT_AUTH = 11;  // P2: Nequi — awaiting push-auth
+  APPOINTMENT_STATUS_ADJUSTMENT_PROPOSED = 12;   // vet respondió por mascota; espera al cliente
 }
 
 enum ServiceType {
@@ -208,6 +213,26 @@ enum StatusChangeReason {
   STATUS_CHANGE_REASON_VET_REASSIGNMENT = 21;       // Se libera al vet; la cita sigue viva
   STATUS_CHANGE_REASON_VET_ABORTED = 22;            // El vet interrumpe la consulta empezada
   STATUS_CHANGE_REASON_CLIENT_ABORTED = 23;         // El cliente interrumpe la consulta empezada
+  STATUS_CHANGE_REASON_VET_PARTIAL_RESPONSE = 24;   // El vet propone atender solo parte del grupo
+  STATUS_CHANGE_REASON_CLIENT_CONFIRMED_ADJUSTMENT = 25; // El cliente confirmó la visita ajustada
+  STATUS_CHANGE_REASON_CLIENT_DECLINED_ADJUSTMENT = 26;  // El cliente canceló todo el grupo, gratis
+  STATUS_CHANGE_REASON_VET_REPORTED_UNATTENDED = 27;     // El vet cerró una mascota sin atender
+}
+
+enum VetDeclineReason {
+  VET_DECLINE_REASON_UNSPECIFIED = 0;
+  VET_DECLINE_REASON_OUT_OF_PRACTICE = 1;
+  VET_DECLINE_REASON_CLINIC_NEEDED = 2;
+  VET_DECLINE_REASON_NO_TIME = 3;
+  VET_DECLINE_REASON_OTHER = 4;
+}
+
+enum UnattendedReason {
+  UNATTENDED_REASON_UNSPECIFIED = 0;
+  UNATTENDED_REASON_PET_UNAVAILABLE = 1;       // causa del cliente: se cobra la tarifa de no-show
+  UNATTENDED_REASON_PET_AGGRESSIVE = 2;        // sin cobro
+  UNATTENDED_REASON_CLIENT_DECLINED_ONSITE = 3; // causa del cliente: se cobra la tarifa de no-show
+  UNATTENDED_REASON_CLINIC_NEEDED = 4;         // se remite, sin cobro
 }
 
 enum UrgencyLevel {
@@ -264,6 +289,9 @@ message Appointment {
   string payment_method_id = 39;       // ClientPaymentMethod UUID from payment-service
   int32 eta_minutes = 40;             // Estimated travel time in minutes
   string group_id = 41;
+  string proposed_outcome = 42;        // "attend" | "decline" mientras el grupo está en ADJUSTMENT_PROPOSED
+  VetDeclineReason vet_decline_reason = 43;
+  UnattendedReason unattended_reason = 44;
 }
 
 message StatusHistoryEntry {
@@ -813,6 +841,39 @@ message RevokeBookingBlockSuspensionRequest {
 message RevokeBookingBlockSuspensionResponse {
   bool  revoked       = 1;
   int32 revoked_count = 2;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Visita ajustada — respuesta parcial del vet sobre un grupo multi-mascota
+// ═══════════════════════════════════════════════════════════════════════════
+
+message PetResponseItem {
+  string appointment_id = 1;
+  bool attend = 2;
+  VetDeclineReason decline_reason = 3;  // obligatorio cuando attend = false
+  double estimated_price = 4;           // 0 = usa el precio de catálogo del vet
+}
+
+message ProposeGroupAdjustmentRequest {
+  string appointment_id = 1;            // cualquier cita del grupo
+  string vet_profile_id = 2;
+  repeated PetResponseItem responses = 3;
+  int32 estimated_arrival_minutes = 4;
+  string vet_notes = 5;
+}
+
+message ConfirmGroupAdjustmentRequest {
+  string appointment_id = 1;            // cualquier cita del grupo
+}
+
+message DeclineGroupAdjustmentRequest {
+  string appointment_id = 1;            // cualquier cita del grupo
+}
+
+message CloseUnattendedRequest {
+  string appointment_id = 1;
+  UnattendedReason reason = 2;
+  string reason_details = 3;
 }
 
 message RequestVetReassignmentRequest {
