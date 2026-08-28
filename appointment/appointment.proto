@@ -851,7 +851,7 @@ message PetResponseItem {
   string appointment_id = 1;
   bool attend = 2;
   VetDeclineReason decline_reason = 3;  // obligatorio cuando attend = false
-  double estimated_price = 4;           // 0 = usa el precio de catálogo del vet
+  double estimated_price = 4;           // obligatorio (> 0) cuando attend = true: el dueño confirma un precio, no una sorpresa
 }
 
 message ProposeGroupAdjustmentRequest {
