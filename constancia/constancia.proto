@@ -133,13 +133,6 @@ message UnverifiedCheck {
   string detail           = 6;
 }
 
-// Una comprobación que SÍ se hizo y no trajo hechos.
-//
-// No comparte lista con `UnverifiedCheck` a propósito: aquella dice «no se
-// pudo consultar» y esta dice «se consultó y no hay». Juntarlas es el defecto
-// que cerró §33 — quien no las distinga lee «no pude comprobar el historial»
-// cuando la verdad es «el historial está vacío», y concluye lo contrario de lo
-// que pasó. Por eso `finding_text` no empieza nunca por «No se pudo».
 message CheckedFinding {
   string tool             = 1;
   string reason           = 2;
@@ -357,38 +350,22 @@ message Case {
   string                     escalation_text   = 23;
   Incident                   incident       = 21;
   CaseParty                  party          = 22;
-
-  // ─── El sujeto y la guardia (B-3) ───
-  //
-  // Los cuatro estaban escritos en la tabla `cases` y no se podían preguntar:
-  // la autoridad conocía el dato y el contrato no dejaba pedirlo.
-  //
-  // Los dos perfiles son los que conocen payment y appointment de cada parte,
-  // NO el `user_id` de auth de arriba: son identidades distintas y confundirlas
-  // no da error, devuelve vacío. Viajan **solo para el equipo** — un caso puede
-  // llevar el perfil de la contraparte (la matriz de identidad lo permite en
-  // varias celdas) y el titular no tiene por qué recibirlo.
   string                     client_profile_id = 25;
   string                     vet_profile_id    = 26;
-
-  // Cuándo el TITULAR tuvo la salida al humano delante. Es el denominador del
-  // KPI de elección voluntaria, y se sella una sola vez. **No es "desde cuándo
-  // espera": eso es `escalated_at`.**
   google.protobuf.Timestamp  human_offered_at  = 27;
-
-  // El administrador de guardia que lleva el caso: un `user_id` de auth, no un
-  // equipo. Viaja **solo para el equipo**: a quién le tocó un escalado es
-  // topología nuestra, no información del titular.
   string                     escalated_to      = 28;
-
-  // Desde cuándo espera a una persona. Sale del último evento de escalado, no
-  // de una columna: un caso se puede reabrir y volver a escalar, y la cola mide
-  // la espera en curso. Ausente si el caso nunca escaló.
   google.protobuf.Timestamp  escalated_at      = 29;
-
-  // Lo que se comprobó y vino vacío. Es un hallazgo, no un hueco: va aparte de
-  // `unverified` porque publicarlo ahí sería afirmar que no se pudo mirar.
   repeated CheckedFinding    checked           = 30;
+
+  // De qué lado del negocio es el titular: "client" o "vet", desde la columna
+  // que fija la matriz de identidad. `party` (22) sigue por compatibilidad,
+  // pero se deriva de qué perfil viaja y con los dos presentes elige mal.
+  string                     subject_actor     = 31;
+
+  // La decisión ejecutada, contada al titular en palabras. Se compone al
+  // resolver y queda sellada en el evento RESOLVED: el texto que se le mostró
+  // es el que quedó, aunque las plantillas cambien después.
+  string                     resolution_summary = 32;
 }
 
 enum CaseParty {
@@ -523,6 +500,27 @@ message HandoffBrief {
   int32           commitments_kept  = 9;
   int32           times_we_failed   = 10;
   double          waited_seconds    = 11;
+
+  // "suficiente" | "incompleta" | "no_verificable". Se calculaba desde el
+  // principio y se descartaba en este borde: es la señal que le dice al agente
+  // si puede afirmar o solo acompañar.
+  string          evidence_state    = 12;
+
+  // Con quién habla el agente: "client" o "vet". El nombre sale del caso.
+  string          owner_role        = 13;
+
+  // La asesoría operativa: qué haría el sistema si la decisión fuera suya.
+  // Sale del catálogo ASESORIA por diagnóstico — determinista y auditable,
+  // nunca redactada por el motor.
+  string          recommended_next_step = 14;
+
+  // Los hechos NO verificados (inferidos o de terceros), etiquetados. El
+  // agente decide mejor viendo todo; lo que no puede es citarlos como prueba.
+  repeated string hints             = 15;
+
+  // Por qué el caso no culpó a nadie: las conclusiones que se saltaron por
+  // falta de evidencia, en palabras. Sin esto, "sin determinar" es inescrutable.
+  repeated string skipped           = 16;
 }
 
 // ─── Apertura proactiva ────────────────────────────────────────────────────
