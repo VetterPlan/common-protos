@@ -331,8 +331,6 @@ message Case {
   CaseState                  state          = 5;
   string                     shape          = 6;
   string                     diagnosis      = 7;
-  // El mismo diagnóstico en palabras. Es el titular de la pantalla: mostrar
-  // `diagnosis` en crudo pone `evidencia_incompleta` como encabezado.
   string                     diagnosis_text = 24;
   Blame                      blame          = 8;
   double                     confidence     = 9;
@@ -356,15 +354,7 @@ message Case {
   string                     escalated_to      = 28;
   google.protobuf.Timestamp  escalated_at      = 29;
   repeated CheckedFinding    checked           = 30;
-
-  // De qué lado del negocio es el titular: "client" o "vet", desde la columna
-  // que fija la matriz de identidad. `party` (22) sigue por compatibilidad,
-  // pero se deriva de qué perfil viaja y con los dos presentes elige mal.
   string                     subject_actor     = 31;
-
-  // La decisión ejecutada, contada al titular en palabras. Se compone al
-  // resolver y queda sellada en el evento RESOLVED: el texto que se le mostró
-  // es el que quedó, aunque las plantillas cambien después.
   string                     resolution_summary = 32;
 }
 
@@ -500,26 +490,10 @@ message HandoffBrief {
   int32           commitments_kept  = 9;
   int32           times_we_failed   = 10;
   double          waited_seconds    = 11;
-
-  // "suficiente" | "incompleta" | "no_verificable". Se calculaba desde el
-  // principio y se descartaba en este borde: es la señal que le dice al agente
-  // si puede afirmar o solo acompañar.
   string          evidence_state    = 12;
-
-  // Con quién habla el agente: "client" o "vet". El nombre sale del caso.
   string          owner_role        = 13;
-
-  // La asesoría operativa: qué haría el sistema si la decisión fuera suya.
-  // Sale del catálogo ASESORIA por diagnóstico — determinista y auditable,
-  // nunca redactada por el motor.
   string          recommended_next_step = 14;
-
-  // Los hechos NO verificados (inferidos o de terceros), etiquetados. El
-  // agente decide mejor viendo todo; lo que no puede es citarlos como prueba.
   repeated string hints             = 15;
-
-  // Por qué el caso no culpó a nadie: las conclusiones que se saltaron por
-  // falta de evidencia, en palabras. Sin esto, "sin determinar" es inescrutable.
   repeated string skipped           = 16;
 }
 
