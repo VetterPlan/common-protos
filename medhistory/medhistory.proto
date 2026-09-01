@@ -161,6 +161,16 @@ service MedHistoryService {
   // Admin: histórico de versiones.
   rpc ListConsentTemplates (ListConsentTemplatesRequest) returns (ListConsentTemplatesResponse);
 
+  // Plantillas de documentos que firma el veterinario (hoy: la orden de ayudas
+  // diagnósticas). Hermanas de las de consentimiento y con el mismo ciclo:
+  // borrador → publicada (inmutable) → retirada. Corregir es versionar.
+  rpc ListDocumentTemplates (ListDocumentTemplatesRequest) returns (ListDocumentTemplatesResponse);
+  rpc CreateDocumentTemplateVersion (CreateDocumentTemplateVersionRequest) returns (DocumentTemplateResponse);
+  rpc PublishDocumentTemplate (PublishDocumentTemplateRequest) returns (DocumentTemplateResponse);
+  // Imprime la plantilla con datos de ejemplo: se revisa lo que va a ver una
+  // clínica, no un textarea.
+  rpc PreviewDocumentTemplate (PreviewDocumentTemplateRequest) returns (PreviewDocumentTemplateResponse);
+
   // ─── CAPTURA CON IA (Fase 2) ───
 
   // Encola la estructuración de un segmento: transcribe el audio (o usa el
@@ -1239,6 +1249,63 @@ message ListConsentTemplatesRequest {
 
 message ListConsentTemplatesResponse {
   repeated ConsentTemplate templates = 1;
+}
+
+message DocumentTemplate {
+  string id = 1;
+  string kind = 2;              // diagnostic_order
+  int32 version = 3;
+  string locale = 4;
+  string title = 5;
+  string intro = 6;
+  string body_md = 7;           // con {{variables}}
+  string body_hash = 8;
+  string footer = 9;
+  repeated string variables = 10;
+  string status = 11;           // draft · published · retired
+  google.protobuf.Timestamp published_at = 12;
+  google.protobuf.Timestamp created_at = 13;
+  string notes = 14;
+}
+
+message ListDocumentTemplatesRequest {
+  string kind = 1;              // Vacío = todas
+}
+
+message ListDocumentTemplatesResponse {
+  repeated DocumentTemplate templates = 1;
+  // Las {{variables}} que el servicio sabe llenar para ese kind. Quien redacta
+  // necesita saberlo ANTES de escribir: una que no esté aquí no se rechaza
+  // tarde, se imprimiría entre llaves en un documento clínico.
+  repeated string available_variables = 2;
+}
+
+message CreateDocumentTemplateVersionRequest {
+  string kind = 1;
+  string title = 2;
+  string intro = 3;
+  string body_md = 4;
+  string footer = 5;
+  string notes = 6;
+  string actor_user_id = 7;
+}
+
+message PublishDocumentTemplateRequest {
+  string template_id = 1;
+  string actor_user_id = 2;
+}
+
+message DocumentTemplateResponse {
+  DocumentTemplate template = 1;
+}
+
+message PreviewDocumentTemplateRequest {
+  string template_id = 1;
+}
+
+message PreviewDocumentTemplateResponse {
+  bytes pdf = 1;                // El documento con datos de ejemplo
+  string rendered_text = 2;     // El texto interpolado, para revisarlo en claro
 }
 
 message AnonymizeClientDataRequest {

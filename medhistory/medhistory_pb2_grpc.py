@@ -190,6 +190,26 @@ class MedHistoryServiceStub:
                 request_serializer=medhistory_dot_medhistory__pb2.ListConsentTemplatesRequest.SerializeToString,
                 response_deserializer=medhistory_dot_medhistory__pb2.ListConsentTemplatesResponse.FromString,
                 _registered_method=True)
+        self.ListDocumentTemplates = channel.unary_unary(
+                '/medhistory.MedHistoryService/ListDocumentTemplates',
+                request_serializer=medhistory_dot_medhistory__pb2.ListDocumentTemplatesRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.ListDocumentTemplatesResponse.FromString,
+                _registered_method=True)
+        self.CreateDocumentTemplateVersion = channel.unary_unary(
+                '/medhistory.MedHistoryService/CreateDocumentTemplateVersion',
+                request_serializer=medhistory_dot_medhistory__pb2.CreateDocumentTemplateVersionRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.DocumentTemplateResponse.FromString,
+                _registered_method=True)
+        self.PublishDocumentTemplate = channel.unary_unary(
+                '/medhistory.MedHistoryService/PublishDocumentTemplate',
+                request_serializer=medhistory_dot_medhistory__pb2.PublishDocumentTemplateRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.DocumentTemplateResponse.FromString,
+                _registered_method=True)
+        self.PreviewDocumentTemplate = channel.unary_unary(
+                '/medhistory.MedHistoryService/PreviewDocumentTemplate',
+                request_serializer=medhistory_dot_medhistory__pb2.PreviewDocumentTemplateRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.PreviewDocumentTemplateResponse.FromString,
+                _registered_method=True)
         self.RequestStructuring = channel.unary_unary(
                 '/medhistory.MedHistoryService/RequestStructuring',
                 request_serializer=medhistory_dot_medhistory__pb2.RequestStructuringRequest.SerializeToString,
@@ -482,6 +502,35 @@ class MedHistoryServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ListDocumentTemplates(self, request, context):
+        """Plantillas de documentos que firma el veterinario (hoy: la orden de ayudas
+        diagnósticas). Hermanas de las de consentimiento y con el mismo ciclo:
+        borrador → publicada (inmutable) → retirada. Corregir es versionar.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CreateDocumentTemplateVersion(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def PublishDocumentTemplate(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def PreviewDocumentTemplate(self, request, context):
+        """Imprime la plantilla con datos de ejemplo: se revisa lo que va a ver una
+        clínica, no un textarea.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def RequestStructuring(self, request, context):
         """─── CAPTURA CON IA (Fase 2) ───
 
@@ -667,6 +716,26 @@ def add_MedHistoryServiceServicer_to_server(servicer, server):
                     servicer.ListConsentTemplates,
                     request_deserializer=medhistory_dot_medhistory__pb2.ListConsentTemplatesRequest.FromString,
                     response_serializer=medhistory_dot_medhistory__pb2.ListConsentTemplatesResponse.SerializeToString,
+            ),
+            'ListDocumentTemplates': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListDocumentTemplates,
+                    request_deserializer=medhistory_dot_medhistory__pb2.ListDocumentTemplatesRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.ListDocumentTemplatesResponse.SerializeToString,
+            ),
+            'CreateDocumentTemplateVersion': grpc.unary_unary_rpc_method_handler(
+                    servicer.CreateDocumentTemplateVersion,
+                    request_deserializer=medhistory_dot_medhistory__pb2.CreateDocumentTemplateVersionRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.DocumentTemplateResponse.SerializeToString,
+            ),
+            'PublishDocumentTemplate': grpc.unary_unary_rpc_method_handler(
+                    servicer.PublishDocumentTemplate,
+                    request_deserializer=medhistory_dot_medhistory__pb2.PublishDocumentTemplateRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.DocumentTemplateResponse.SerializeToString,
+            ),
+            'PreviewDocumentTemplate': grpc.unary_unary_rpc_method_handler(
+                    servicer.PreviewDocumentTemplate,
+                    request_deserializer=medhistory_dot_medhistory__pb2.PreviewDocumentTemplateRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.PreviewDocumentTemplateResponse.SerializeToString,
             ),
             'RequestStructuring': grpc.unary_unary_rpc_method_handler(
                     servicer.RequestStructuring,
@@ -1444,6 +1513,114 @@ class MedHistoryService:
             '/medhistory.MedHistoryService/ListConsentTemplates',
             medhistory_dot_medhistory__pb2.ListConsentTemplatesRequest.SerializeToString,
             medhistory_dot_medhistory__pb2.ListConsentTemplatesResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListDocumentTemplates(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/ListDocumentTemplates',
+            medhistory_dot_medhistory__pb2.ListDocumentTemplatesRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.ListDocumentTemplatesResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CreateDocumentTemplateVersion(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/CreateDocumentTemplateVersion',
+            medhistory_dot_medhistory__pb2.CreateDocumentTemplateVersionRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.DocumentTemplateResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PublishDocumentTemplate(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/PublishDocumentTemplate',
+            medhistory_dot_medhistory__pb2.PublishDocumentTemplateRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.DocumentTemplateResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PreviewDocumentTemplate(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/PreviewDocumentTemplate',
+            medhistory_dot_medhistory__pb2.PreviewDocumentTemplateRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.PreviewDocumentTemplateResponse.FromString,
             options,
             channel_credentials,
             insecure,
