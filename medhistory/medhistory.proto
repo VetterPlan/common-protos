@@ -521,6 +521,15 @@ message ConsultationRecord {
   // Resumen amable para el dueño (Fase 2c), derivado del registro finalizado.
   string owner_summary = 26;
   google.protobuf.Timestamp owner_summary_generated_at = 27;
+
+  // Raza y talla del paciente, congeladas al abrir el registro.
+  //
+  // `breed_size` no es cosmético: el peso no dice la etapa de vida ni el rango
+  // normal —8 kg es un gran danés cachorro o un adulto pequeño— y de él salen
+  // los rangos de frecuencia cardiaca por talla y las bandas del vademécum.
+  // Vacío = no consta; nunca se deduce del peso.
+  string breed_name = 28;
+  string breed_size = 29;
 }
 
 // Consentimiento del dueño para el procesamiento con IA de la consulta (Ley 1581).
@@ -691,6 +700,11 @@ message StartConsultationRecordRequest {
   // Se marcan con source = PREFILLED.
   google.protobuf.Struct carnet_prefill = 8;
   AccessContext access = 9;
+
+  // Los manda quien abre el registro con lo que ya recibió de pets-service.
+  // `breed_size`: SMALL / MEDIUM / LARGE / GIANT (catálogo de razas de pets).
+  string breed_name = 12;
+  string breed_size = 13;
 }
 
 message ConsultationRecordResponse {
