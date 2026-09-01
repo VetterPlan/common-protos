@@ -85,6 +85,8 @@ enum NotificationEvent {
   NOTIFICATION_EVENT_VET_PAYOUT_FAILED       = 38;
   NOTIFICATION_EVENT_VET_TAX_THRESHOLD       = 39;
   NOTIFICATION_EVENT_APPOINTMENT_ADJUSTED    = 40; // el vet propone una visita ajustada; el cliente decide
+  NOTIFICATION_EVENT_REFERRAL_PENDING        = 41; // el vet remitió a un servicio y el dueño no ha agendado
+  NOTIFICATION_EVENT_PENDING_RESULT          = 42; // el vet pidió un estudio y el resultado no ha vuelto
   NOTIFICATION_EVENT_SYSTEM_ALERT           = 99;
 }
 

@@ -30,6 +30,7 @@ service AppointmentService {
   rpc GetVetAppointmentsForDate (GetVetAppointmentsForDateRequest) returns (GetVetAppointmentsForDateResponse);
   rpc GetNextAvailableSlots (GetNextAvailableSlotsRequest) returns (GetNextAvailableSlotsResponse);
   rpc GetPetAppointmentHistory (GetPetAppointmentHistoryRequest) returns (GetPetAppointmentHistoryResponse);
+  rpc HasAppointmentSince (HasAppointmentSinceRequest) returns (HasAppointmentSinceResponse);
   rpc GetActivePetEngagements (GetActivePetEngagementsRequest) returns (GetActivePetEngagementsResponse);
   rpc GetActiveClientEngagements (GetActiveClientEngagementsRequest) returns (GetActiveClientEngagementsResponse);
   rpc UpdateVetLocation (UpdateVetLocationRequest) returns (UpdateVetLocationResponse);
@@ -570,6 +571,25 @@ message SlotVetPreview {
 // ═══════════════════════════════════════════════════════════════════════════
 // NEW MESSAGES — Pet Appointment History (for follow-up recommendations)
 // ═══════════════════════════════════════════════════════════════════════════
+
+// ¿La mascota agendó lo que su veterinario le pidió?
+//
+// La pregunta la hace medhistory antes de cada recordatorio de una remisión. No
+// vale mirar el historial: `PetAppointmentSummary` solo trae `completed_at`, y
+// quien agendó hoy para la semana que viene seguiría recibiendo avisos.
+// La autoridad del hecho es appointment; esto le deja preguntarlo.
+message HasAppointmentSinceRequest {
+  string pet_id = 1;
+  repeated string service_types = 2;              // Vacío = cualquiera
+  google.protobuf.Timestamp created_since = 3;    // Se agendó DESPUÉS de esto
+}
+
+message HasAppointmentSinceResponse {
+  bool exists = 1;
+  string appointment_id = 2;
+  string status = 3;
+  google.protobuf.Timestamp scheduled_time_start = 4;
+}
 
 message GetPetAppointmentHistoryRequest {
   string pet_id = 1;

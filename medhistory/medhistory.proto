@@ -101,6 +101,10 @@ service MedHistoryService {
   // nunca listado buscable (guardrail anti-fuga §8).
   rpc GetPetMedicalHistory (GetPetMedicalHistoryRequest) returns (GetPetMedicalHistoryResponse);
 
+  // El dueño dice "ahora no" a una remisión. Apaga los recordatorios y se
+  // registra: que el titular declinara es información clínica, no un fracaso.
+  rpc DeclineReferral (DeclineReferralRequest) returns (ReferralResponse);
+
   // Vista/PDF SOAP generada desde los datos estructurados.
   // SOAP es SOLO exportación, nunca UI de captura.
   rpc ExportConsultationSOAP (ExportConsultationSOAPRequest) returns (ExportConsultationSOAPResponse);
@@ -273,6 +277,9 @@ enum AttachmentType {
   ATTACHMENT_TYPE_AUDIO_CAPTURE = 6;     // Captura cruda Fase 2 (contrato §13.6)
   ATTACHMENT_TYPE_TRANSCRIPT = 7;        // Transcripción cruda Fase 2
   ATTACHMENT_TYPE_OTHER = 8;
+  // La orden de ayudas diagnósticas que firma el vet (Fase 4e). Se adjunta al
+  // registro para que el dueño la vea y la descargue por el camino de siempre.
+  ATTACHMENT_TYPE_DIAGNOSTIC_ORDER = 9;
 }
 
 // Requerimiento de un bloque dentro de una receta (matriz §16.8).
@@ -480,6 +487,31 @@ message Amendment {
   google.protobuf.Timestamp created_at = 5;
 }
 
+// Remisión interna: lo que el vet pide y VetterPlan sabe agendar (Fase 4).
+// Lo que NO podemos hacer va en una orden de exámenes, que es otro documento.
+enum ReferralStatus {
+  REFERRAL_STATUS_UNSPECIFIED = 0;
+  REFERRAL_STATUS_ISSUED = 1;      // Único estado activo; el único que avisa
+  REFERRAL_STATUS_SCHEDULED = 2;
+  REFERRAL_STATUS_DECLINED = 3;    // El dueño dijo "ahora no". Se registra igual
+  REFERRAL_STATUS_EXPIRED = 4;
+}
+
+message Referral {
+  string id = 1;
+  string record_id = 2;
+  string pet_id = 3;
+  ServiceType service_type = 4;    // Solo lo agendable en la plataforma
+  string reason = 5;               // Justificación clínica; es lo que lee el dueño
+  string urgency = 6;              // routine · soon · urgent
+  ReferralStatus status = 7;
+  string issued_by_profile_id = 8;
+  google.protobuf.Timestamp issued_at = 9;
+  google.protobuf.Timestamp expires_at = 10;   // 30 días desde la emisión
+  google.protobuf.Timestamp closed_at = 11;
+  string closed_reason = 12;
+}
+
 message ConsultationRecord {
   string id = 1;
   string appointment_id = 2;
@@ -530,6 +562,9 @@ message ConsultationRecord {
   // Vacío = no consta; nunca se deduce del peso.
   string breed_name = 28;
   string breed_size = 29;
+
+  // Emitidas al finalizar, en la misma transacción que el cierre.
+  repeated Referral referrals = 30;
 }
 
 // Consentimiento del dueño para el procesamiento con IA de la consulta (Ley 1581).
@@ -779,6 +814,16 @@ message GetConsultationRecordRequest {
   string record_id = 1;
   string appointment_id = 2;
   AccessContext access = 3;
+}
+
+message DeclineReferralRequest {
+  string referral_id = 1;
+  string note = 2;              // Opcional, en palabras del dueño
+  AccessContext access = 3;
+}
+
+message ReferralResponse {
+  Referral referral = 1;
 }
 
 message GetPetMedicalHistoryRequest {
