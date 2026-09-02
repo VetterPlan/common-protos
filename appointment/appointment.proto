@@ -238,6 +238,7 @@ enum UnattendedReason {
   UNATTENDED_REASON_PET_AGGRESSIVE = 2;        // sin cobro
   UNATTENDED_REASON_CLIENT_DECLINED_ONSITE = 3; // causa del cliente: se cobra la tarifa de no-show
   UNATTENDED_REASON_CLINIC_NEEDED = 4;         // se remite, sin cobro
+  UNATTENDED_REASON_CONSENT_REFUSED = 5;       // causa del cliente: se cobra la tarifa de no-show
 }
 
 enum UrgencyLevel {
