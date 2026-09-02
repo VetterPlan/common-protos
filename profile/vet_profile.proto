@@ -48,6 +48,8 @@ service VetProfileService {
   }
   rpc SetCancellationStrikes (SetCancellationStrikesRequest) returns (SetCancellationStrikesResponse);
 
+  rpc LiftStrikeSuspension (LiftStrikeSuspensionRequest) returns (LiftStrikeSuspensionResponse);
+
   // ─── Rating (S2-4) — called by Appointment Service on SubmitReview ───
   rpc UpdateVetRating (UpdateVetRatingRequest) returns (UpdateVetRatingResponse);
 
@@ -136,6 +138,9 @@ message VetProfile {
   string address = 27;          // Full address text
   string city = 28;
   string country_code = 29;     // ISO 3166-1 alpha-2
+
+  string suspension_reason = 30;
+  google.protobuf.Timestamp suspended_at = 31;
 }
 
 message CreateVetProfileRequest {
@@ -552,4 +557,15 @@ message ListVetProfilesRequest {
 message ListVetProfilesResponse {
   repeated VetProfile profiles = 1;
   int32 total_count = 2;
+}
+
+message LiftStrikeSuspensionRequest {
+  string vet_profile_id = 1;
+  string reason = 2;
+  string requested_by = 3;
+}
+
+message LiftStrikeSuspensionResponse {
+  VetProfileStatus status = 1;
+  int32 cancellation_strikes = 2;
 }

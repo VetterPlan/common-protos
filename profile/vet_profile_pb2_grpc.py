@@ -153,6 +153,11 @@ class VetProfileServiceStub:
                 request_serializer=profile_dot_vet__profile__pb2.SetCancellationStrikesRequest.SerializeToString,
                 response_deserializer=profile_dot_vet__profile__pb2.SetCancellationStrikesResponse.FromString,
                 _registered_method=True)
+        self.LiftStrikeSuspension = channel.unary_unary(
+                '/profile.VetProfileService/LiftStrikeSuspension',
+                request_serializer=profile_dot_vet__profile__pb2.LiftStrikeSuspensionRequest.SerializeToString,
+                response_deserializer=profile_dot_vet__profile__pb2.LiftStrikeSuspensionResponse.FromString,
+                _registered_method=True)
         self.UpdateVetRating = channel.unary_unary(
                 '/profile.VetProfileService/UpdateVetRating',
                 request_serializer=profile_dot_vet__profile__pb2.UpdateVetRatingRequest.SerializeToString,
@@ -333,6 +338,12 @@ class VetProfileServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def LiftStrikeSuspension(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def UpdateVetRating(self, request, context):
         """─── Rating (S2-4) — called by Appointment Service on SubmitReview ───
         """
@@ -486,6 +497,11 @@ def add_VetProfileServiceServicer_to_server(servicer, server):
                     servicer.SetCancellationStrikes,
                     request_deserializer=profile_dot_vet__profile__pb2.SetCancellationStrikesRequest.FromString,
                     response_serializer=profile_dot_vet__profile__pb2.SetCancellationStrikesResponse.SerializeToString,
+            ),
+            'LiftStrikeSuspension': grpc.unary_unary_rpc_method_handler(
+                    servicer.LiftStrikeSuspension,
+                    request_deserializer=profile_dot_vet__profile__pb2.LiftStrikeSuspensionRequest.FromString,
+                    response_serializer=profile_dot_vet__profile__pb2.LiftStrikeSuspensionResponse.SerializeToString,
             ),
             'UpdateVetRating': grpc.unary_unary_rpc_method_handler(
                     servicer.UpdateVetRating,
@@ -1138,6 +1154,33 @@ class VetProfileService:
             '/profile.VetProfileService/SetCancellationStrikes',
             profile_dot_vet__profile__pb2.SetCancellationStrikesRequest.SerializeToString,
             profile_dot_vet__profile__pb2.SetCancellationStrikesResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def LiftStrikeSuspension(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/profile.VetProfileService/LiftStrikeSuspension',
+            profile_dot_vet__profile__pb2.LiftStrikeSuspensionRequest.SerializeToString,
+            profile_dot_vet__profile__pb2.LiftStrikeSuspensionResponse.FromString,
             options,
             channel_credentials,
             insecure,

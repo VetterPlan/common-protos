@@ -245,6 +245,26 @@ class AppointmentServiceStub:
                 request_serializer=appointment_dot_appointment__pb2.CountAppointmentsByProfilesRequest.SerializeToString,
                 response_deserializer=appointment_dot_appointment__pb2.CountAppointmentsByProfilesResponse.FromString,
                 _registered_method=True)
+        self.GetVetStrikeLedger = channel.unary_unary(
+                '/appointment.AppointmentService/GetVetStrikeLedger',
+                request_serializer=appointment_dot_appointment__pb2.GetVetStrikeLedgerRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.GetVetStrikeLedgerResponse.FromString,
+                _registered_method=True)
+        self.ReconcileVetStrikes = channel.unary_unary(
+                '/appointment.AppointmentService/ReconcileVetStrikes',
+                request_serializer=appointment_dot_appointment__pb2.ReconcileVetStrikesRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.ReconcileVetStrikesResponse.FromString,
+                _registered_method=True)
+        self.ExcludeVetStrike = channel.unary_unary(
+                '/appointment.AppointmentService/ExcludeVetStrike',
+                request_serializer=appointment_dot_appointment__pb2.ExcludeVetStrikeRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.ExcludeVetStrikeResponse.FromString,
+                _registered_method=True)
+        self.RestoreVetStrike = channel.unary_unary(
+                '/appointment.AppointmentService/RestoreVetStrike',
+                request_serializer=appointment_dot_appointment__pb2.RestoreVetStrikeRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.RestoreVetStrikeResponse.FromString,
+                _registered_method=True)
 
 
 class AppointmentServiceServicer:
@@ -501,6 +521,30 @@ class AppointmentServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetVetStrikeLedger(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ReconcileVetStrikes(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ExcludeVetStrike(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RestoreVetStrike(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AppointmentServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -703,6 +747,26 @@ def add_AppointmentServiceServicer_to_server(servicer, server):
                     servicer.CountAppointmentsByProfiles,
                     request_deserializer=appointment_dot_appointment__pb2.CountAppointmentsByProfilesRequest.FromString,
                     response_serializer=appointment_dot_appointment__pb2.CountAppointmentsByProfilesResponse.SerializeToString,
+            ),
+            'GetVetStrikeLedger': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetVetStrikeLedger,
+                    request_deserializer=appointment_dot_appointment__pb2.GetVetStrikeLedgerRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.GetVetStrikeLedgerResponse.SerializeToString,
+            ),
+            'ReconcileVetStrikes': grpc.unary_unary_rpc_method_handler(
+                    servicer.ReconcileVetStrikes,
+                    request_deserializer=appointment_dot_appointment__pb2.ReconcileVetStrikesRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.ReconcileVetStrikesResponse.SerializeToString,
+            ),
+            'ExcludeVetStrike': grpc.unary_unary_rpc_method_handler(
+                    servicer.ExcludeVetStrike,
+                    request_deserializer=appointment_dot_appointment__pb2.ExcludeVetStrikeRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.ExcludeVetStrikeResponse.SerializeToString,
+            ),
+            'RestoreVetStrike': grpc.unary_unary_rpc_method_handler(
+                    servicer.RestoreVetStrike,
+                    request_deserializer=appointment_dot_appointment__pb2.RestoreVetStrikeRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.RestoreVetStrikeResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -1796,6 +1860,114 @@ class AppointmentService:
             '/appointment.AppointmentService/CountAppointmentsByProfiles',
             appointment_dot_appointment__pb2.CountAppointmentsByProfilesRequest.SerializeToString,
             appointment_dot_appointment__pb2.CountAppointmentsByProfilesResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetVetStrikeLedger(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/GetVetStrikeLedger',
+            appointment_dot_appointment__pb2.GetVetStrikeLedgerRequest.SerializeToString,
+            appointment_dot_appointment__pb2.GetVetStrikeLedgerResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ReconcileVetStrikes(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/ReconcileVetStrikes',
+            appointment_dot_appointment__pb2.ReconcileVetStrikesRequest.SerializeToString,
+            appointment_dot_appointment__pb2.ReconcileVetStrikesResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ExcludeVetStrike(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/ExcludeVetStrike',
+            appointment_dot_appointment__pb2.ExcludeVetStrikeRequest.SerializeToString,
+            appointment_dot_appointment__pb2.ExcludeVetStrikeResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RestoreVetStrike(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/RestoreVetStrike',
+            appointment_dot_appointment__pb2.RestoreVetStrikeRequest.SerializeToString,
+            appointment_dot_appointment__pb2.RestoreVetStrikeResponse.FromString,
             options,
             channel_credentials,
             insecure,

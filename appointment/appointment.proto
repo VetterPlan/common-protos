@@ -56,6 +56,10 @@ service AppointmentService {
   rpc AnonymizeClientData (AnonymizeClientDataRequest) returns (AnonymizeClientDataResponse);
   rpc ListAppointments (ListAppointmentsRequest) returns (ListAppointmentsResponse);
   rpc CountAppointmentsByProfiles (CountAppointmentsByProfilesRequest) returns (CountAppointmentsByProfilesResponse);
+  rpc GetVetStrikeLedger (GetVetStrikeLedgerRequest) returns (GetVetStrikeLedgerResponse);
+  rpc ReconcileVetStrikes (ReconcileVetStrikesRequest) returns (ReconcileVetStrikesResponse);
+  rpc ExcludeVetStrike (ExcludeVetStrikeRequest) returns (ExcludeVetStrikeResponse);
+  rpc RestoreVetStrike (RestoreVetStrikeRequest) returns (RestoreVetStrikeResponse);
 }
 
 message ListAppointmentsRequest {
@@ -929,4 +933,63 @@ message AnonymizeClientDataRequest {
 
 message AnonymizeClientDataResponse {
   int32 appointments_anonymized = 1;
+}
+
+message GetVetStrikeLedgerRequest {
+  string vet_profile_id = 1;
+}
+
+message VetStrikeEntry {
+  string group_id = 1;
+  google.protobuf.Timestamp occurred_at = 2;
+  string from_status = 3;
+  repeated string appointment_ids = 4;
+  string cancellation_reason = 5;
+  bool in_current_streak = 6;
+  bool excluded = 7;
+  string exclusion_reason = 8;
+  string excluded_by = 9;
+  google.protobuf.Timestamp excluded_at = 10;
+}
+
+message GetVetStrikeLedgerResponse {
+  repeated VetStrikeEntry entries = 1;
+  int32 computed_strikes = 2;
+  int32 lost_trips_total = 3;
+}
+
+message ReconcileVetStrikesRequest {
+  string vet_profile_id = 1;
+  string reason = 2;
+}
+
+message ReconcileVetStrikesResponse {
+  int32 stored_before = 1;
+  int32 computed = 2;
+  bool changed = 3;
+  bool backed_by_book = 4;
+}
+
+message ExcludeVetStrikeRequest {
+  string group_id = 1;
+  string vet_profile_id = 2;
+  string reason = 3;
+  string decided_by = 4;
+  string case_id = 5;
+}
+
+message ExcludeVetStrikeResponse {
+  int32 computed_strikes = 1;
+  bool already_excluded = 2;
+}
+
+message RestoreVetStrikeRequest {
+  string group_id = 1;
+  string vet_profile_id = 2;
+  string reason = 3;
+  string decided_by = 4;
+}
+
+message RestoreVetStrikeResponse {
+  int32 computed_strikes = 1;
 }
