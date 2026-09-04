@@ -60,6 +60,8 @@ service AppointmentService {
   rpc ReconcileVetStrikes (ReconcileVetStrikesRequest) returns (ReconcileVetStrikesResponse);
   rpc ExcludeVetStrike (ExcludeVetStrikeRequest) returns (ExcludeVetStrikeResponse);
   rpc RestoreVetStrike (RestoreVetStrikeRequest) returns (RestoreVetStrikeResponse);
+  rpc ListNoShowFeeReviews (ListNoShowFeeReviewsRequest) returns (ListNoShowFeeReviewsResponse);
+  rpc ResolveNoShowFeeReview (ResolveNoShowFeeReviewRequest) returns (ResolveNoShowFeeReviewResponse);
 }
 
 message ListAppointmentsRequest {
@@ -299,6 +301,80 @@ message Appointment {
   string proposed_outcome = 42;        // "attend" | "decline" mientras el grupo está en ADJUSTMENT_PROPOSED
   VetDeclineReason vet_decline_reason = 43;
   UnattendedReason unattended_reason = 44;
+  NoShowFeeOutcome no_show_fee_outcome = 45;
+  int32 no_show_fee_radius_m = 46;
+}
+
+enum NoShowFeeOutcome {
+  NO_SHOW_FEE_OUTCOME_UNSPECIFIED = 0;
+  NO_SHOW_FEE_OUTCOME_CHARGED = 1;
+  NO_SHOW_FEE_OUTCOME_WAIVED_CLINICAL = 2;
+  NO_SHOW_FEE_OUTCOME_PENDING_NOT_MEASURED = 3;
+  NO_SHOW_FEE_OUTCOME_PENDING_OUT_OF_RADIUS = 4;
+  NO_SHOW_FEE_OUTCOME_PENDING_UNCLASSIFIED = 5;
+  NO_SHOW_FEE_OUTCOME_NO_PAYMENT = 6;
+}
+
+enum NoShowFeeDecision {
+  NO_SHOW_FEE_DECISION_UNSPECIFIED = 0;
+  NO_SHOW_FEE_DECISION_CHARGE = 1;
+  NO_SHOW_FEE_DECISION_RELEASE = 2;
+}
+
+message NoShowFeeReviewEntry {
+  string appointment_id = 1;
+  string group_id = 2;
+  string client_profile_id = 3;
+  string vet_profile_id = 4;
+  string pet_id = 5;
+  ServiceType service_type = 6;
+  google.protobuf.Timestamp occurred_at = 7;
+  NoShowFeeOutcome outcome = 8;
+  UnattendedReason unattended_reason = 9;
+  bool arrival_distance_measured = 10;
+  int32 arrival_distance_m = 11;
+  int32 radius_m = 12;
+  string payment_preauth_id = 13;
+  bool payment_answered = 14;
+  bool payment_exists = 15;
+  PaymentStatusView payment_status = 16;
+  double amount_total = 17;
+  double wallet_amount_held = 18;
+  string currency = 19;
+}
+
+enum PaymentStatusView {
+  PAYMENT_STATUS_VIEW_UNSPECIFIED = 0;
+  PAYMENT_STATUS_VIEW_AUTHORIZED = 1;
+  PAYMENT_STATUS_VIEW_CAPTURED = 2;
+  PAYMENT_STATUS_VIEW_VOIDED = 3;
+  PAYMENT_STATUS_VIEW_OTHER = 4;
+}
+
+message ListNoShowFeeReviewsRequest {
+  int32 limit = 1;
+  int32 offset = 2;
+  bool include_resolved = 3;
+}
+
+message ListNoShowFeeReviewsResponse {
+  repeated NoShowFeeReviewEntry entries = 1;
+  int32 total_pending = 2;
+  google.protobuf.Timestamp oldest_pending_since = 3;
+}
+
+message ResolveNoShowFeeReviewRequest {
+  string appointment_id = 1;
+  NoShowFeeDecision decision = 2;
+  string reason = 3;
+  string decided_by = 4;
+  string case_id = 5;
+}
+
+message ResolveNoShowFeeReviewResponse {
+  string appointment_id = 1;
+  NoShowFeeDecision decision = 2;
+  bool already_resolved = 3;
 }
 
 message StatusHistoryEntry {
