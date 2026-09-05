@@ -110,6 +110,11 @@ class MedHistoryServiceStub:
                 request_serializer=medhistory_dot_medhistory__pb2.AmendConsultationRecordRequest.SerializeToString,
                 response_deserializer=medhistory_dot_medhistory__pb2.ConsultationRecordResponse.FromString,
                 _registered_method=True)
+        self.ReopenConsultationRecord = channel.unary_unary(
+                '/medhistory.MedHistoryService/ReopenConsultationRecord',
+                request_serializer=medhistory_dot_medhistory__pb2.ReopenConsultationRecordRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.ConsultationRecordResponse.FromString,
+                _registered_method=True)
         self.RemoveRepeatedItem = channel.unary_unary(
                 '/medhistory.MedHistoryService/RemoveRepeatedItem',
                 request_serializer=medhistory_dot_medhistory__pb2.RemoveRepeatedItemRequest.SerializeToString,
@@ -374,8 +379,32 @@ class MedHistoryServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ReopenConsultationRecord(self, request, context):
+        """Le devuelve la escritura a un registro VENCIDO. Sin esto un registro que
+        pasa las 24 h no se puede finalizar, ni enmendar —la enmienda exige un
+        registro cerrado— ni patchear, y se queda en PENDING_FINALIZATION para
+        siempre: un caso colgado sin dueño y un expediente que el dueño nunca ve.
+
+        Reabre también el NÚCLEO, con una hora de gracia nueva: sin eso un registro
+        al que le falte el peso no podría cerrarse jamás, porque finalize lo exige.
+        La vet reabre el suyo UNA vez; a partir de ahí, solo un admin con
+        justificación. `reopen_count` es lo que distingue un registro vencido una
+        vez de uno vencido tres.
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def RemoveRepeatedItem(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """Quita un elemento de un bloque repetido de la receta (un diagnóstico, una
+        prescripción, un estudio solicitado…). Un patch puede vaciar los campos de
+        una fila, pero no quitarla: una fila vacía sigue contando como registro y
+        sigue bloqueando el cierre.
+
+        `anexos` NO se acepta aquí: usa RemoveConsultationAttachment, que además
+        borra el objeto en R2. Dos caminos con distinta completitud dejarían
+        objetos huérfanos según cuál se llamara.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -646,6 +675,11 @@ def add_MedHistoryServiceServicer_to_server(servicer, server):
             'AmendConsultationRecord': grpc.unary_unary_rpc_method_handler(
                     servicer.AmendConsultationRecord,
                     request_deserializer=medhistory_dot_medhistory__pb2.AmendConsultationRecordRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.ConsultationRecordResponse.SerializeToString,
+            ),
+            'ReopenConsultationRecord': grpc.unary_unary_rpc_method_handler(
+                    servicer.ReopenConsultationRecord,
+                    request_deserializer=medhistory_dot_medhistory__pb2.ReopenConsultationRecordRequest.FromString,
                     response_serializer=medhistory_dot_medhistory__pb2.ConsultationRecordResponse.SerializeToString,
             ),
             'RemoveRepeatedItem': grpc.unary_unary_rpc_method_handler(
@@ -1096,6 +1130,33 @@ class MedHistoryService:
             target,
             '/medhistory.MedHistoryService/AmendConsultationRecord',
             medhistory_dot_medhistory__pb2.AmendConsultationRecordRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.ConsultationRecordResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ReopenConsultationRecord(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/ReopenConsultationRecord',
+            medhistory_dot_medhistory__pb2.ReopenConsultationRecordRequest.SerializeToString,
             medhistory_dot_medhistory__pb2.ConsultationRecordResponse.FromString,
             options,
             channel_credentials,

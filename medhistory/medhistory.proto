@@ -91,6 +91,27 @@ service MedHistoryService {
 
   // Corrección post-cierre. Append-only con justificación y traza (legal).
   rpc AmendConsultationRecord (AmendConsultationRecordRequest) returns (ConsultationRecordResponse);
+
+  // Le devuelve la escritura a un registro VENCIDO. Sin esto un registro que
+  // pasa las 24 h no se puede finalizar, ni enmendar —la enmienda exige un
+  // registro cerrado— ni patchear, y se queda en PENDING_FINALIZATION para
+  // siempre: un caso colgado sin dueño y un expediente que el dueño nunca ve.
+  //
+  // Reabre también el NÚCLEO, con una hora de gracia nueva: sin eso un registro
+  // al que le falte el peso no podría cerrarse jamás, porque finalize lo exige.
+  // La vet reabre el suyo UNA vez; a partir de ahí, solo un admin con
+  // justificación. `reopen_count` es lo que distingue un registro vencido una
+  // vez de uno vencido tres.
+  rpc ReopenConsultationRecord (ReopenConsultationRecordRequest) returns (ConsultationRecordResponse);
+
+  // Quita un elemento de un bloque repetido de la receta (un diagnóstico, una
+  // prescripción, un estudio solicitado…). Un patch puede vaciar los campos de
+  // una fila, pero no quitarla: una fila vacía sigue contando como registro y
+  // sigue bloqueando el cierre.
+  //
+  // `anexos` NO se acepta aquí: usa RemoveConsultationAttachment, que además
+  // borra el objeto en R2. Dos caminos con distinta completitud dejarían
+  // objetos huérfanos según cuál se llamara.
   rpc RemoveRepeatedItem (RemoveRepeatedItemRequest) returns (RemoveRepeatedItemResponse);
 
   // ─── LECTURA (control de acceso por engagement) ───
@@ -372,6 +393,11 @@ message TemplateField {
   // de extraer un valor puntual (ej. anamnesis_visita.relato). La app lo
   // renderiza como texto largo revisable, no como control de dato.
   bool synthesize = 13;
+  // Campo del NÚCLEO: solo es cierto con el paciente delante. Deja de admitir
+  // escritura cuando vence la gracia de `core_grace_until`, antes que el resto
+  // del registro. Lo fija la receta, no el bloque: `revision_funcional.onset`
+  // es núcleo y sus vecinos del mismo bloque no.
+  bool core = 14;
 }
 
 message TemplateBlock {
@@ -478,6 +504,10 @@ message HomeObservation {
   repeated string air_quality = 7;     // humo · humedad/moho · ventilación deficiente
   string feeding_setup = 8;            // Opcional
   string surfaces_mobility = 9;        // Opcional
+  // Peligros que el catálogo no cubre, escritos a mano. `hazards` solo admite
+  // códigos de `home_hazards`: un valor libre mezclado ahí se colaría en la
+  // auditoría del vocabulario clínico sin haber pasado por ella.
+  string hazards_other = 10;
 }
 
 message Attachment {
@@ -576,6 +606,18 @@ message ConsultationRecord {
 
   // Emitidas al finalizar, en la misma transacción que el cierre.
   repeated Referral referrals = 30;
+
+  // Sellado del NÚCLEO — lo que solo es cierto con el paciente delante (peso,
+  // temperatura, examen por sistemas, diagnóstico, plan). Se sella al recibir
+  // MarkPendingFinalization y admite una hora de gracia para terminarlo de
+  // memoria; después, corregirlo es una enmienda. El resto del registro sigue
+  // vivo hasta `finalization_deadline`. Ausente = registro sin sellar.
+  google.protobuf.Timestamp core_sealed_at = 31;
+  google.protobuf.Timestamp core_grace_until = 32;
+
+  // Cuántas veces se reabrió tras vencer el plazo. 0 = nunca venció, o venció y
+  // nadie lo rescató. La vet solo puede reabrir el suyo mientras esto sea 0.
+  int32 reopen_count = 33;
 }
 
 // Consentimiento del dueño para el procesamiento con IA de la consulta (Ley 1581).
@@ -780,6 +822,11 @@ message UpdateConsultationRecordResponse {
   google.protobuf.Timestamp updated_at = 5;
 }
 
+message ReopenConsultationRecordRequest {
+  string record_id = 1;
+  AccessContext access = 2;
+}
+
 message MarkPendingFinalizationRequest {
   // Uno de los dos. appointment_id es el que usa appointment-service.
   string record_id = 1;
@@ -885,6 +932,11 @@ message MedicalHistoryEntry {
   string vet_profile_id = 7;
   string vet_name = 8;
   google.protobuf.Timestamp consulted_at = 9;
+  // Certeza del diagnóstico PRINCIPAL — el mismo que alimenta
+  // `primary_diagnosis`, nunca el de otra fila. «Gastritis crónica» presuntiva
+  // y definitiva son dos hechos clínicos distintos y la pantalla los muestra
+  // distinto. UNSPECIFIED = el registro no tiene diagnóstico.
+  DiagnosisType primary_diagnosis_type = 10;
 }
 
 message VitalsTrendPoint {
