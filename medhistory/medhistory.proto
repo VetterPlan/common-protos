@@ -795,6 +795,11 @@ message AbandonConsultationRecordRequest {
 message FinalizeConsultationRecordRequest {
   string record_id = 1;
   AccessContext access = 2;
+  // Comprueba sin cerrar: corre exactamente el mismo camino —backfills,
+  // validación y emisión— y deshace la transacción antes de devolver, así que
+  // no puede divergir de lo que haría el cierre. No cambia el registro ni deja
+  // un `finalize_rejected` en la bitácora.
+  bool dry_run = 3;
 }
 
 // Bloque o campo que impide finalizar.

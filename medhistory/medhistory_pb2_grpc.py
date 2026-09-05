@@ -375,15 +375,7 @@ class MedHistoryServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def RemoveRepeatedItem(self, request, context):
-        """Quita un elemento de un bloque repetido de la receta (un diagnóstico, una
-        prescripción, un estudio solicitado…). Un patch puede vaciar los campos de
-        una fila, pero no quitarla: una fila vacía sigue contando como registro y
-        sigue bloqueando el cierre.
-
-        `anexos` NO se acepta aquí: usa RemoveConsultationAttachment, que además
-        borra el objeto en R2. Dos caminos con distinta completitud dejarían
-        objetos huérfanos según cuál se llamara.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
