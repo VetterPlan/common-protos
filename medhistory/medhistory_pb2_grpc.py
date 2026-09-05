@@ -110,6 +110,11 @@ class MedHistoryServiceStub:
                 request_serializer=medhistory_dot_medhistory__pb2.AmendConsultationRecordRequest.SerializeToString,
                 response_deserializer=medhistory_dot_medhistory__pb2.ConsultationRecordResponse.FromString,
                 _registered_method=True)
+        self.RemoveRepeatedItem = channel.unary_unary(
+                '/medhistory.MedHistoryService/RemoveRepeatedItem',
+                request_serializer=medhistory_dot_medhistory__pb2.RemoveRepeatedItemRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.RemoveRepeatedItemResponse.FromString,
+                _registered_method=True)
         self.GetConsultationRecord = channel.unary_unary(
                 '/medhistory.MedHistoryService/GetConsultationRecord',
                 request_serializer=medhistory_dot_medhistory__pb2.GetConsultationRecordRequest.SerializeToString,
@@ -364,6 +369,20 @@ class MedHistoryServiceServicer:
 
     def AmendConsultationRecord(self, request, context):
         """Corrección post-cierre. Append-only con justificación y traza (legal).
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RemoveRepeatedItem(self, request, context):
+        """Quita un elemento de un bloque repetido de la receta (un diagnóstico, una
+        prescripción, un estudio solicitado…). Un patch puede vaciar los campos de
+        una fila, pero no quitarla: una fila vacía sigue contando como registro y
+        sigue bloqueando el cierre.
+
+        `anexos` NO se acepta aquí: usa RemoveConsultationAttachment, que además
+        borra el objeto en R2. Dos caminos con distinta completitud dejarían
+        objetos huérfanos según cuál se llamara.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -636,6 +655,11 @@ def add_MedHistoryServiceServicer_to_server(servicer, server):
                     servicer.AmendConsultationRecord,
                     request_deserializer=medhistory_dot_medhistory__pb2.AmendConsultationRecordRequest.FromString,
                     response_serializer=medhistory_dot_medhistory__pb2.ConsultationRecordResponse.SerializeToString,
+            ),
+            'RemoveRepeatedItem': grpc.unary_unary_rpc_method_handler(
+                    servicer.RemoveRepeatedItem,
+                    request_deserializer=medhistory_dot_medhistory__pb2.RemoveRepeatedItemRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.RemoveRepeatedItemResponse.SerializeToString,
             ),
             'GetConsultationRecord': grpc.unary_unary_rpc_method_handler(
                     servicer.GetConsultationRecord,
@@ -1081,6 +1105,33 @@ class MedHistoryService:
             '/medhistory.MedHistoryService/AmendConsultationRecord',
             medhistory_dot_medhistory__pb2.AmendConsultationRecordRequest.SerializeToString,
             medhistory_dot_medhistory__pb2.ConsultationRecordResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RemoveRepeatedItem(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/RemoveRepeatedItem',
+            medhistory_dot_medhistory__pb2.RemoveRepeatedItemRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.RemoveRepeatedItemResponse.FromString,
             options,
             channel_credentials,
             insecure,

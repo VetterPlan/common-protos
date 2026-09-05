@@ -91,6 +91,7 @@ service MedHistoryService {
 
   // Corrección post-cierre. Append-only con justificación y traza (legal).
   rpc AmendConsultationRecord (AmendConsultationRecordRequest) returns (ConsultationRecordResponse);
+  rpc RemoveRepeatedItem (RemoveRepeatedItemRequest) returns (RemoveRepeatedItemResponse);
 
   // ─── LECTURA (control de acceso por engagement) ───
 
@@ -817,6 +818,28 @@ message AmendConsultationRecordRequest {
   repeated FieldPatch patches = 2;
   string justification = 3;        // Obligatoria
   AccessContext access = 4;
+}
+
+message RemoveRepeatedItemRequest {
+  string record_id = 1;
+  // Bloque repetido de la receta del registro. `anexos` se rechaza.
+  string block_key = 2;
+  // Posición dentro del bloque, la misma que indexan las rutas de patch
+  // (`diagnostico[2].label`) y las claves de field_meta.
+  int32 index = 3;
+  // Concurrencia optimista, igual que en UpdateConsultationRecord. Aquí importa
+  // más: el índice es posicional, así que borrar con una revisión vieja quita
+  // la fila equivocada en silencio.
+  optional int64 expected_revision = 4;
+  AccessContext access = 5;
+}
+
+message RemoveRepeatedItemResponse {
+  string record_id = 1;
+  int64 revision = 2;
+  string block_key = 3;
+  // Cuántos elementos quedan en el bloque tras quitar el indicado.
+  int32 remaining = 4;
 }
 
 message GetConsultationRecordRequest {
