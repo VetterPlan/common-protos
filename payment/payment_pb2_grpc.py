@@ -353,194 +353,145 @@ class PaymentServiceServicer:
     """
 
     def CreatePayment(self, request, context):
-        """Create a PENDING payment when appointment is requested. No money moves.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def AuthorizePayment(self, request, context):
-        """Pre-authorize payment (Wompi preauth + wallet HOLD). Called when vet accepts.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def CapturePayment(self, request, context):
-        """Capture authorized payment. Called when appointment completes.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def VoidPayment(self, request, context):
-        """Void/release pre-authorization without charging. Called on cancel/expire pre-capture.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def RefundPayment(self, request, context):
-        """Process refund with client-chosen destination (WALLET/GATEWAY/MIXED).
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ChargeNoShowFee(self, request, context):
-        """Charge no-show fee (30% capture + 70% void + partial refund).
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ChargeCancellationFee(self, request, context):
-        """Tarifa por VIAJE PERDIDO. Mismo cálculo que el no-show con otro motivo:
-        el desplazamiento cuesta lo mismo se niegue el cliente a firmar el
-        consentimiento o no abra la puerta. Reemplaza a ChargeNoShowFee, que queda
-        como alias.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ChargeVetCancellationFee(self, request, context):
-        """Charge 10% cancellation fee to vet wallet when vet cancels from ACCEPTED/EN_ROUTE.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def QuoteCancellationFee(self, request, context):
-        """Cuánto costaría cobrar ese motivo, SIN cobrar nada. Existe para que el
-        cliente pueda ver el coste antes de confirmar una cancelación: la política
-        ya cobraba y no había forma de anunciarlo.
-
-        Los porcentajes viven aquí, junto a la base que los aplica (E1-A8), y por
-        eso la cotización también: duplicarlos en appointment los dejaría derivar.
-        No toca ninguna fila y no necesita idempotency_key.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def AddTip(self, request, context):
-        """Add tip post-appointment. Goes to vet wallet.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetPayment(self, request, context):
-        """Get payment by ID.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetPaymentByAppointment(self, request, context):
-        """Get payment by appointment ID.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListPaymentsByAppointment(self, request, context):
-        """Devuelve TODOS los pagos de una cita, no el primero. Sin esto un cobro
-        duplicado es invisible: `GetPaymentByAppointment` devuelve uno solo y quien
-        pregunta "¿le cobramos dos veces?" no tiene cómo saberlo.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetRefunds(self, request, context):
-        """Get refunds for a payment.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetRefundsByClient(self, request, context):
-        """Los reembolsos de un cliente, acotados por su perfil EN EL ORIGEN. Sin
-        esto, enumerarlos exigía recorrer sus pagos uno a uno, y no había forma de
-        partir del cliente — que es de lo único que dispone quien pregunta por qué
-        no le ha llegado su dinero.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetClientCollectionStatus(self, request, context):
-        """Cobros pendientes de un cliente: servicios ya prestados que la pasarela no
-        pudo cobrar. Lo consulta appointment-service antes de aceptar una cita
-        nueva, y la app para avisarle al dueño que tiene un pago pendiente.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListFailedCollections(self, request, context):
-        """Cobros pendientes de todos los clientes. Operación de cobranza (admin).
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListPayments(self, request, context):
-        """Listado global de pagos para el panel de administración. Es la primera
-        consulta de este servicio que NO va acotada por un dueño: los filtros son
-        de búsqueda y ninguno se lee como autoridad. La puerta es @Admin en la
-        gateway; ver authorization-baseline.md §Dinero.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def WriteOffCollection(self, request, context):
-        """Da por perdido un cobro incobrable (admin). Sin esto un CAPTURE_FAILED solo
-        sale con un cobro exitoso: si la pasarela nunca va a aprobarlo, el cliente
-        queda bloqueado para siempre y nadie puede levantarlo.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def CreateWallet(self, request, context):
-        """─── WALLET (7 RPCs) ───
-
-        Create wallet for new user (called by Profile Service on profile creation).
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetWallet(self, request, context):
-        """Get wallet with balance info.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetWalletBalancesByOwners(self, request, context):
-        """B-4 — saldos por lote, solo lectura. Existe para que la tabla de clientes
-        del panel se pinte con UNA llamada por página y no con una por fila.
-        No autoriza: la puerta es la gateway, igual que en `GetWallet`.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetWalletTransactions(self, request, context):
-        """Get wallet transaction history with pagination and filters.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def CreditWallet(self, request, context):
-        """Credit wallet (refund, promo, referral, compensation). Internal/Admin.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -552,22 +503,19 @@ class PaymentServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def GetBalance(self, request, context):
-        """Get balance only (lightweight for UI header).
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def FreezeWallet(self, request, context):
-        """Freeze wallet (fraud prevention).
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def UnfreezeWallet(self, request, context):
-        """Unfreeze wallet.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -575,22 +523,19 @@ class PaymentServiceServicer:
     def AddPaymentMethod(self, request, context):
         """─── PAYMENT METHODS (3 RPCs) ───
 
-        Add tokenized card/Nequi via Wompi.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetPaymentMethods(self, request, context):
-        """List active payment methods for a client.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def RemovePaymentMethod(self, request, context):
-        """Soft-delete a payment method.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -598,15 +543,13 @@ class PaymentServiceServicer:
     def RequestPayout(self, request, context):
         """─── PAYOUTS (2 RPCs) ───
 
-        Vet requests payout. Calculates earnings and transfers via Wompi.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetPayoutHistory(self, request, context):
-        """Get payout history for a vet with pagination.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -614,22 +557,19 @@ class PaymentServiceServicer:
     def AddBankAccount(self, request, context):
         """─── BANK ACCOUNTS & EARNINGS (3 RPCs) ───
 
-        Register vet bank account (encrypted AES-256-GCM).
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetBankAccounts(self, request, context):
-        """List vet bank accounts.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetVetEarnings(self, request, context):
-        """Get vet earnings summary by period.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -637,7 +577,6 @@ class PaymentServiceServicer:
     def SetVetTaxProfile(self, request, context):
         """─── PERFIL TRIBUTARIO Y OUTLOOK (P-3) ───
 
-        El vet declara su régimen. Ver §18.3.2 y §18.3.3 de la Parte III.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -650,44 +589,31 @@ class PaymentServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def ConfirmVetTaxProfile(self, request, context):
-        """Solo admin: confirma el régimen declarado contra el RUT.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListPendingVetTaxProfiles(self, request, context):
-        """Cola de revisión del panel de admin.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetPayoutOutlook(self, request, context):
-        """Cuánto y cuándo cobra. Contrato aparte de GetVetEarnings: ese es de un
-        periodo y se cachea; este es de ahora y cambia con cada captura.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetVetBlockedEarnings(self, request, context):
-        """El dinero del veterinario que está RETENIDO, con el pago concreto que lo
-        retiene. `GetVetEarnings` da el total (`pending_payout`) y con un total no
-        se puede abrir un expediente: `vet.earnings_blocked` identifica su caso por
-        `payment_id`, porque el vet cobra EN LA CAPTURA y es esa captura la que
-        falló.
-
-        No devuelve nada del cliente —ni el total que pagó, ni su medio de pago, ni
-        el estado de la pasarela—: el expediente es del vet.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetClientSpendingHistory(self, request, context):
-        """Get client spending history by period (S2-11).
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -695,29 +621,25 @@ class PaymentServiceServicer:
     def OpenDispute(self, request, context):
         """─── DISPUTES (FASE 3) ───
 
-        Client opens a dispute for a completed appointment.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ResolveDispute(self, request, context):
-        """Admin resolves a dispute (refund or keep payment).
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetDispute(self, request, context):
-        """Get dispute by ID.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListDisputes(self, request, context):
-        """List disputes (admin/client).
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -725,30 +647,19 @@ class PaymentServiceServicer:
     def ValidatePromoCode(self, request, context):
         """─── PROMOTIONS (FASE 3 — disabled until PROMOTIONS_ENABLED=true) ───
 
-        Validate and return discount for a promo code (does not apply it yet).
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetVetCommissionTier(self, request, context):
-        """Get vet commission tier based on completed appointment count.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def GetCommissionTiersByVets(self, request, context):
-        """B-4 — el tier de comisión por lote, SOLO LECTURA.
-
-        A diferencia de `GetVetCommissionTier`, este NO consulta a rating-service ni
-        persiste nada: pintar una tabla de cincuenta filas no puede disparar
-        cincuenta llamadas a otro servicio ni cincuenta escrituras. **Un listado no
-        tiene efectos.**
-
-        El precio de eso es que puede devolver un tier distinto del que decidiría un
-        cobro real, y por eso cada fila dice de dónde salió el suyo en `source`.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -756,22 +667,19 @@ class PaymentServiceServicer:
     def GetReconciliationReport(self, request, context):
         """─── RECONCILIATION (P4) ───
 
-        Get reconciliation report for a specific date.
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def ListReconciliationReports(self, request, context):
-        """List reconciliation reports (paginated).
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def TriggerReconciliation(self, request, context):
-        """Manually trigger reconciliation for a specific date.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -779,29 +687,25 @@ class PaymentServiceServicer:
     def AdminReportIncome(self, request, context):
         """─── ADMIN REPORTS ───
 
-        Income report by period (global, by vet, by service).
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def AdminTopVetsByIncome(self, request, context):
-        """Top vets by earnings in period.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def AdminDisputeStats(self, request, context):
-        """Dispute stats: total payments, total disputes, dispute rate.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
     def AdminCommissionByTier(self, request, context):
-        """Commission summary grouped by tier (Bronze/Silver/Gold/Platinum).
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')

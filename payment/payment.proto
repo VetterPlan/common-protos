@@ -340,6 +340,9 @@ message ClientPaymentMethod {
   bool is_default = 10;
   bool is_active = 11;
   google.protobuf.Timestamp created_at = 12;
+
+  // Que pasarela emitio el medio. Un medio solo se puede cobrar por la suya.
+  string gateway = 13;
 }
 
 message VetBankAccount {
@@ -371,6 +374,12 @@ message VetPayout {
   google.protobuf.Timestamp processed_at = 13;
   string failed_reason = 14;
   google.protobuf.Timestamp created_at = 15;
+
+  // Etapa 4 de la pasarela agnostica. `wompi_transfer_ref` queda deprecado: un
+  // identificador externo no significa nada sin la pasarela que lo emitio.
+  string gateway = 16;
+  string id_lote_externo = 17;
+  string ref_transferencia = 18;
 }
 
 message Refund {
@@ -389,6 +398,10 @@ message Refund {
   google.protobuf.Timestamp created_at = 13;
   google.protobuf.Timestamp completed_at = 14;
   string client_profile_id = 15;
+
+  // Etapa 4. `wompi_refund_id` queda deprecado; el par es (gateway, id_externo).
+  string gateway = 16;
+  string id_externo = 17;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -654,6 +667,14 @@ message AddPaymentMethodRequest {
   string customer_email = 8;
   int32 card_expiry_month = 9;
   int32 card_expiry_year = 10;
+
+  // Etapa 4. `wompi_token` queda deprecado: lo sigue mandando la app publicada
+  // y por eso no se puede quitar. `datos_del_medio` es el sobre opaco de cada
+  // pasarela —`acceptance_token` y `accept_personal_auth` son de Wompi—: el
+  // dominio no lee su contenido, lo valida el adaptador, que declara que claves
+  // exige.
+  string gateway_token = 11;
+  map<string, string> datos_del_medio = 12;
 }
 
 message GetPaymentMethodsRequest {
@@ -1183,6 +1204,10 @@ message ReconciliationDiscrepancyProto {
   string severity = 8;          // LOW | MEDIUM | HIGH | CRITICAL
   bool auto_resolved = 9;
   string resolution_action = 10;
+
+  // Etapa 4. `wompi_status`/`wompi_amount` quedan deprecados.
+  string estado_pasarela = 11;
+  double monto_pasarela = 12;
 }
 
 message ReconciliationReportResponse {
@@ -1214,6 +1239,15 @@ message ReconciliationReportResponse {
   // "cuadra": la ausencia de una transaccion no es prueba de que no exista.
   // Ausente = informe anterior a esta version, donde no se registro.
   optional bool wompi_query_complete = 11;
+
+  // Etapa 4. Sustituyen a `wompi_total_cop` y `wompi_query_complete`, y ademas
+  // dicen COMO se leyo el lado de la pasarela: hay pasarelas sin listado por
+  // fechas, donde solo se puede preguntar por las referencias que ya se conocen
+  // y el lado "lo tiene la pasarela y nosotros no" es invisible.
+  optional double total_pasarela_cop = 12;
+  optional bool cobertura_completa = 13;
+  string cobertura_estrategia = 14;
+  string cobertura_motivo = 15;
 }
 
 message ListReconciliationReportsResponse {
