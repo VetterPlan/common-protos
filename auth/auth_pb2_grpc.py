@@ -94,6 +94,11 @@ class AuthServiceStub:
                 request_serializer=auth_dot_auth__pb2.ResendVerificationEmailRequest.SerializeToString,
                 response_deserializer=auth_dot_auth__pb2.ResendVerificationEmailResponse.FromString,
                 _registered_method=True)
+        self.UpdateUnverifiedEmail = channel.unary_unary(
+                '/auth.AuthService/UpdateUnverifiedEmail',
+                request_serializer=auth_dot_auth__pb2.UpdateUnverifiedEmailRequest.SerializeToString,
+                response_deserializer=auth_dot_auth__pb2.UpdateUnverifiedEmailResponse.FromString,
+                _registered_method=True)
         self.GetAccountVerification = channel.unary_unary(
                 '/auth.AuthService/GetAccountVerification',
                 request_serializer=auth_dot_auth__pb2.GetAccountVerificationRequest.SerializeToString,
@@ -302,6 +307,16 @@ class AuthServiceServicer:
 
     def ResendVerificationEmail(self, request, context):
         """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def UpdateUnverifiedEmail(self, request, context):
+        """Corregir el correo de una cuenta que aun no lo ha verificado, y reenviar
+        el enlace a la direccion nueva. El dueno viaja en la peticion (user_id).
+        Bloqueada si is_email_verified: cambiar un correo ya verificado es otra
+        operacion, con otras garantias.
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -532,6 +547,11 @@ def add_AuthServiceServicer_to_server(servicer, server):
                     servicer.ResendVerificationEmail,
                     request_deserializer=auth_dot_auth__pb2.ResendVerificationEmailRequest.FromString,
                     response_serializer=auth_dot_auth__pb2.ResendVerificationEmailResponse.SerializeToString,
+            ),
+            'UpdateUnverifiedEmail': grpc.unary_unary_rpc_method_handler(
+                    servicer.UpdateUnverifiedEmail,
+                    request_deserializer=auth_dot_auth__pb2.UpdateUnverifiedEmailRequest.FromString,
+                    response_serializer=auth_dot_auth__pb2.UpdateUnverifiedEmailResponse.SerializeToString,
             ),
             'GetAccountVerification': grpc.unary_unary_rpc_method_handler(
                     servicer.GetAccountVerification,
@@ -993,6 +1013,33 @@ class AuthService:
             '/auth.AuthService/ResendVerificationEmail',
             auth_dot_auth__pb2.ResendVerificationEmailRequest.SerializeToString,
             auth_dot_auth__pb2.ResendVerificationEmailResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def UpdateUnverifiedEmail(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/auth.AuthService/UpdateUnverifiedEmail',
+            auth_dot_auth__pb2.UpdateUnverifiedEmailRequest.SerializeToString,
+            auth_dot_auth__pb2.UpdateUnverifiedEmailResponse.FromString,
             options,
             channel_credentials,
             insecure,

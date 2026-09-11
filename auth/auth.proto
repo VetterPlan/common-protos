@@ -15,6 +15,11 @@ service AuthService {
   rpc ResetPassword (ResetPasswordRequest) returns (ResetPasswordResponse);
   rpc ChangePassword (ChangePasswordRequest) returns (ChangePasswordResponse);
   rpc ResendVerificationEmail (ResendVerificationEmailRequest) returns (ResendVerificationEmailResponse);
+  // Corregir el correo de una cuenta que aun no lo ha verificado, y reenviar
+  // el enlace a la direccion nueva. El dueno viaja en la peticion (user_id).
+  // Bloqueada si is_email_verified: cambiar un correo ya verificado es otra
+  // operacion, con otras garantias.
+  rpc UpdateUnverifiedEmail (UpdateUnverifiedEmailRequest) returns (UpdateUnverifiedEmailResponse);
   rpc GetAccountVerification (GetAccountVerificationRequest) returns (GetAccountVerificationResponse);
   rpc AssignRole (AssignRoleRequest) returns (AssignRoleResponse);
   rpc GetUserRoles (GetUserRolesRequest) returns (GetUserRolesResponse);
@@ -124,6 +129,16 @@ message ResendVerificationEmailRequest {
 }
 
 message ResendVerificationEmailResponse {
+  bool sent = 1;
+  string message = 2;
+}
+
+message UpdateUnverifiedEmailRequest {
+  string user_id = 1;
+  string new_email = 2;
+}
+
+message UpdateUnverifiedEmailResponse {
   bool sent = 1;
   string message = 2;
 }
