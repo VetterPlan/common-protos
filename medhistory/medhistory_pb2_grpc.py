@@ -185,6 +185,11 @@ class MedHistoryServiceStub:
                 request_serializer=medhistory_dot_medhistory__pb2.GetConsentStatusRequest.SerializeToString,
                 response_deserializer=medhistory_dot_medhistory__pb2.GetConsentStatusResponse.FromString,
                 _registered_method=True)
+        self.DeclareConsentCoverage = channel.unary_unary(
+                '/medhistory.MedHistoryService/DeclareConsentCoverage',
+                request_serializer=medhistory_dot_medhistory__pb2.DeclareConsentCoverageRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.DeclareConsentCoverageResponse.FromString,
+                _registered_method=True)
         self.RevokeConsent = channel.unary_unary(
                 '/medhistory.MedHistoryService/RevokeConsent',
                 request_serializer=medhistory_dot_medhistory__pb2.RevokeConsentRequest.SerializeToString,
@@ -521,6 +526,12 @@ class MedHistoryServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def DeclareConsentCoverage(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def RevokeConsent(self, request, context):
         """Revocación. No es retroactiva sobre lo ya ejecutado.
         """
@@ -751,6 +762,11 @@ def add_MedHistoryServiceServicer_to_server(servicer, server):
                     servicer.GetConsentStatus,
                     request_deserializer=medhistory_dot_medhistory__pb2.GetConsentStatusRequest.FromString,
                     response_serializer=medhistory_dot_medhistory__pb2.GetConsentStatusResponse.SerializeToString,
+            ),
+            'DeclareConsentCoverage': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeclareConsentCoverage,
+                    request_deserializer=medhistory_dot_medhistory__pb2.DeclareConsentCoverageRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.DeclareConsentCoverageResponse.SerializeToString,
             ),
             'RevokeConsent': grpc.unary_unary_rpc_method_handler(
                     servicer.RevokeConsent,
@@ -1536,6 +1552,33 @@ class MedHistoryService:
             '/medhistory.MedHistoryService/GetConsentStatus',
             medhistory_dot_medhistory__pb2.GetConsentStatusRequest.SerializeToString,
             medhistory_dot_medhistory__pb2.GetConsentStatusResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DeclareConsentCoverage(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/DeclareConsentCoverage',
+            medhistory_dot_medhistory__pb2.DeclareConsentCoverageRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.DeclareConsentCoverageResponse.FromString,
             options,
             channel_credentials,
             insecure,
