@@ -333,6 +333,21 @@ class PaymentServiceStub:
                 request_serializer=payment_dot_payment__pb2.AdminCommissionByTierRequest.SerializeToString,
                 response_deserializer=payment_dot_payment__pb2.AdminCommissionByTierResponse.FromString,
                 _registered_method=True)
+        self.IniciarCobroInteractivo = channel.unary_unary(
+                '/payment.PaymentService/IniciarCobroInteractivo',
+                request_serializer=payment_dot_payment__pb2.IniciarCobroInteractivoRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.CobroInteractivoResponse.FromString,
+                _registered_method=True)
+        self.ConsultarCobroInteractivo = channel.unary_unary(
+                '/payment.PaymentService/ConsultarCobroInteractivo',
+                request_serializer=payment_dot_payment__pb2.ConsultarCobroInteractivoRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.CobroInteractivoResponse.FromString,
+                _registered_method=True)
+        self.ListarBancosPse = channel.unary_unary(
+                '/payment.PaymentService/ListarBancosPse',
+                request_serializer=payment_dot_payment__pb2.ListarBancosPseRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.ListarBancosPseResponse.FromString,
+                _registered_method=True)
 
 
 class PaymentServiceServicer:
@@ -710,6 +725,26 @@ class PaymentServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def IniciarCobroInteractivo(self, request, context):
+        """─── COBRO INTERACTIVO (el cliente paga en la visita) ───
+
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ConsultarCobroInteractivo(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListarBancosPse(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_PaymentServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -997,6 +1032,21 @@ def add_PaymentServiceServicer_to_server(servicer, server):
                     servicer.AdminCommissionByTier,
                     request_deserializer=payment_dot_payment__pb2.AdminCommissionByTierRequest.FromString,
                     response_serializer=payment_dot_payment__pb2.AdminCommissionByTierResponse.SerializeToString,
+            ),
+            'IniciarCobroInteractivo': grpc.unary_unary_rpc_method_handler(
+                    servicer.IniciarCobroInteractivo,
+                    request_deserializer=payment_dot_payment__pb2.IniciarCobroInteractivoRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.CobroInteractivoResponse.SerializeToString,
+            ),
+            'ConsultarCobroInteractivo': grpc.unary_unary_rpc_method_handler(
+                    servicer.ConsultarCobroInteractivo,
+                    request_deserializer=payment_dot_payment__pb2.ConsultarCobroInteractivoRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.CobroInteractivoResponse.SerializeToString,
+            ),
+            'ListarBancosPse': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListarBancosPse,
+                    request_deserializer=payment_dot_payment__pb2.ListarBancosPseRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.ListarBancosPseResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -2552,6 +2602,87 @@ class PaymentService:
             '/payment.PaymentService/AdminCommissionByTier',
             payment_dot_payment__pb2.AdminCommissionByTierRequest.SerializeToString,
             payment_dot_payment__pb2.AdminCommissionByTierResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def IniciarCobroInteractivo(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/IniciarCobroInteractivo',
+            payment_dot_payment__pb2.IniciarCobroInteractivoRequest.SerializeToString,
+            payment_dot_payment__pb2.CobroInteractivoResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ConsultarCobroInteractivo(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/ConsultarCobroInteractivo',
+            payment_dot_payment__pb2.ConsultarCobroInteractivoRequest.SerializeToString,
+            payment_dot_payment__pb2.CobroInteractivoResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListarBancosPse(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/ListarBancosPse',
+            payment_dot_payment__pb2.ListarBancosPseRequest.SerializeToString,
+            payment_dot_payment__pb2.ListarBancosPseResponse.FromString,
             options,
             channel_credentials,
             insecure,

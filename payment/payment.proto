@@ -101,6 +101,12 @@ service PaymentService {
   rpc AdminTopVetsByIncome (AdminTopVetsByIncomeRequest) returns (AdminTopVetsByIncomeResponse);
   rpc AdminDisputeStats (AdminDisputeStatsRequest) returns (AdminDisputeStatsResponse);
   rpc AdminCommissionByTier (AdminCommissionByTierRequest) returns (AdminCommissionByTierResponse);
+
+  // ─── COBRO INTERACTIVO (el cliente paga en la visita) ───
+
+  rpc IniciarCobroInteractivo (IniciarCobroInteractivoRequest) returns (CobroInteractivoResponse);
+  rpc ConsultarCobroInteractivo (ConsultarCobroInteractivoRequest) returns (CobroInteractivoResponse);
+  rpc ListarBancosPse (ListarBancosPseRequest) returns (ListarBancosPseResponse);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -124,6 +130,20 @@ enum PaymentGateway {
   PAYMENT_GATEWAY_WOMPI = 1;
   PAYMENT_GATEWAY_WALLET_ONLY = 2;
   PAYMENT_GATEWAY_MERCADOPAGO = 3;
+}
+
+enum RielDeCobro {
+  RIEL_DE_COBRO_UNSPECIFIED = 0;
+  RIEL_DE_COBRO_NEQUI = 1;
+  RIEL_DE_COBRO_PSE = 2;
+  RIEL_DE_COBRO_QR = 3;
+}
+
+enum TipoDeAccionSiguiente {
+  TIPO_DE_ACCION_SIGUIENTE_UNSPECIFIED = 0;
+  TIPO_DE_ACCION_SIGUIENTE_ESPERA = 1;
+  TIPO_DE_ACCION_SIGUIENTE_REDIRECCION = 2;
+  TIPO_DE_ACCION_SIGUIENTE_QR = 3;
 }
 
 enum WalletOwnerType {
@@ -1272,4 +1292,98 @@ message ReconciliationReportResponse {
 message ListReconciliationReportsResponse {
   repeated ReconciliationReportResponse reports = 1;
   int32 total = 2;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// COBRO INTERACTIVO
+//
+// El cliente paga con el vet en la puerta: cuatro rieles que arrancan distinto
+// y convergen en la misma consulta por referencia. `participants` viaja en la
+// respuesta para que quien autorice no tenga que deducir de quien es el cobro.
+// ═══════════════════════════════════════════════════════════════════════════
+
+message DireccionDeFacturacion {
+  string calle = 1;
+  string ciudad = 2;
+  string codigo_postal = 3;
+  string departamento = 4;
+  string pais = 5;
+  string telefono = 6;
+}
+
+message CompradorDelCobro {
+  string email = 1;
+  string telefono = 2;
+  string tipo_de_persona = 3;
+  string nombre = 4;
+  string tipo_de_documento = 5;
+  string numero_de_documento = 6;
+  DireccionDeFacturacion direccion_de_facturacion = 7;
+}
+
+// Datos reales del aparato del cliente: de aqui sale el renderizado del 3DS y
+// sin ellos Bold rechaza tambien el QR. Solo la app puede producirlos.
+message HuellaDelDispositivo {
+  string idioma = 1;
+  int32 zona_horaria_en_minutos = 2;
+  int32 alto_de_pantalla = 3;
+  int32 ancho_de_pantalla = 4;
+  int32 profundidad_de_color = 5;
+  bool java_habilitado = 6;
+  string tipo = 7;
+  string sistema = 8;
+  string navegador = 9;
+  string modelo = 10;
+}
+
+message AccionSiguiente {
+  TipoDeAccionSiguiente tipo = 1;
+  string valor = 2;
+}
+
+message ParticipanteDelCobro {
+  string profile_id = 1;
+  string role = 2;
+}
+
+message CobroInteractivo {
+  string reference = 1;
+  string payment_id = 2;
+  RielDeCobro riel = 3;
+  string estado = 4;
+  AccionSiguiente accion_siguiente = 5;
+  google.protobuf.Timestamp expires_at = 6;
+  string provider_collection_id = 7;
+  repeated ParticipanteDelCobro participants = 8;
+}
+
+message IniciarCobroInteractivoRequest {
+  string payment_id = 1;
+  RielDeCobro riel = 2;
+  CompradorDelCobro comprador = 3;
+  HuellaDelDispositivo huella_del_dispositivo = 4;
+  string bank_code = 5;
+  string bank_name = 6;
+}
+
+message ConsultarCobroInteractivoRequest {
+  string payment_id = 1;
+}
+
+message CobroInteractivoResponse {
+  bool success = 1;
+  string message = 2;
+  CobroInteractivo cobro = 3;
+}
+
+message ListarBancosPseRequest {}
+
+message BancoPse {
+  string bank_code = 1;
+  string bank_name = 2;
+}
+
+message ListarBancosPseResponse {
+  bool success = 1;
+  repeated BancoPse banks = 2;
 }
