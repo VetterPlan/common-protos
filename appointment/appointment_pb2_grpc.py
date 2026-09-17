@@ -556,10 +556,7 @@ class AppointmentServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def ListNoShowFeeReviews(self, request, context):
-        """Las retenciones que un no-show dejó esperando a una persona, y la decisión
-        sobre ellas. Sin esto la tarifa no cobrada solo existía como un contador de
-        Prometheus y una línea de log: nadie podía encontrar la cita concreta.
-        """
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')

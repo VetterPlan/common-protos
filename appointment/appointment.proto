@@ -313,6 +313,11 @@ enum NoShowFeeOutcome {
   NO_SHOW_FEE_OUTCOME_PENDING_OUT_OF_RADIUS = 4;
   NO_SHOW_FEE_OUTCOME_PENDING_UNCLASSIFIED = 5;
   NO_SHOW_FEE_OUTCOME_NO_PAYMENT = 6;
+  // Cobrando en la llegada no hay preautorización que cobrar, así que la tarifa
+  // no se pierde: queda como deuda del cliente y al veterinario se le compensa
+  // cuando la pague. NO_PAYMENT significa «no se cobra»; esto significa «se
+  // cobra después», y confundirlos hace que el vet se coma el viaje siempre.
+  NO_SHOW_FEE_OUTCOME_DEUDA = 7;
 }
 
 enum NoShowFeeDecision {
