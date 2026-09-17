@@ -107,6 +107,11 @@ service PaymentService {
   rpc IniciarCobroInteractivo (IniciarCobroInteractivoRequest) returns (CobroInteractivoResponse);
   rpc ConsultarCobroInteractivo (ConsultarCobroInteractivoRequest) returns (CobroInteractivoResponse);
   rpc ListarBancosPse (ListarBancosPseRequest) returns (ListarBancosPseResponse);
+
+  // ─── TARIFAS DE PASARELA (administración) ───
+
+  rpc ListGatewayTariffs (ListGatewayTariffsRequest) returns (ListGatewayTariffsResponse);
+  rpc SetGatewayTariff (SetGatewayTariffRequest) returns (GatewayTariffResponse);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1392,4 +1397,52 @@ message BancoPse {
 message ListarBancosPseResponse {
   bool success = 1;
   repeated BancoPse banks = 2;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TARIFAS DE PASARELA
+//
+// Lo que cobra una pasarela por un riel. Append-only: fijar una tarifa nueva NO
+// edita la anterior, crea otra con su fecha de vigencia. La de antes no es un
+// error corregido, es el hecho que aplicó hasta entonces — y sin él no se puede
+// explicar el estimado de un cobro viejo.
+// ═══════════════════════════════════════════════════════════════════════════
+
+message GatewayTariff {
+  string id = 1;
+  string pasarela = 2;
+  string riel = 3;
+  double porcentaje = 4;
+  double fijo = 5;
+  google.protobuf.Timestamp vigente_desde = 6;
+  string fijada_por = 7;
+  string motivo = 8;
+  bool vigente = 9;
+  string origen = 10;
+}
+
+message ListGatewayTariffsRequest {
+  string pasarela = 1;
+  bool solo_vigentes = 2;
+}
+
+message ListGatewayTariffsResponse {
+  bool success = 1;
+  repeated GatewayTariff tariffs = 2;
+}
+
+message SetGatewayTariffRequest {
+  string pasarela = 1;
+  string riel = 2;
+  double porcentaje = 3;
+  double fijo = 4;
+  google.protobuf.Timestamp vigente_desde = 5;
+  string fijada_por = 6;
+  string motivo = 7;
+}
+
+message GatewayTariffResponse {
+  bool success = 1;
+  string message = 2;
+  GatewayTariff tariff = 3;
 }

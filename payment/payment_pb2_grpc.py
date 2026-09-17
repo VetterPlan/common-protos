@@ -348,6 +348,16 @@ class PaymentServiceStub:
                 request_serializer=payment_dot_payment__pb2.ListarBancosPseRequest.SerializeToString,
                 response_deserializer=payment_dot_payment__pb2.ListarBancosPseResponse.FromString,
                 _registered_method=True)
+        self.ListGatewayTariffs = channel.unary_unary(
+                '/payment.PaymentService/ListGatewayTariffs',
+                request_serializer=payment_dot_payment__pb2.ListGatewayTariffsRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.ListGatewayTariffsResponse.FromString,
+                _registered_method=True)
+        self.SetGatewayTariff = channel.unary_unary(
+                '/payment.PaymentService/SetGatewayTariff',
+                request_serializer=payment_dot_payment__pb2.SetGatewayTariffRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.GatewayTariffResponse.FromString,
+                _registered_method=True)
 
 
 class PaymentServiceServicer:
@@ -745,6 +755,20 @@ class PaymentServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ListGatewayTariffs(self, request, context):
+        """─── TARIFAS DE PASARELA (administración) ───
+
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetGatewayTariff(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_PaymentServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -1047,6 +1071,16 @@ def add_PaymentServiceServicer_to_server(servicer, server):
                     servicer.ListarBancosPse,
                     request_deserializer=payment_dot_payment__pb2.ListarBancosPseRequest.FromString,
                     response_serializer=payment_dot_payment__pb2.ListarBancosPseResponse.SerializeToString,
+            ),
+            'ListGatewayTariffs': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListGatewayTariffs,
+                    request_deserializer=payment_dot_payment__pb2.ListGatewayTariffsRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.ListGatewayTariffsResponse.SerializeToString,
+            ),
+            'SetGatewayTariff': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetGatewayTariff,
+                    request_deserializer=payment_dot_payment__pb2.SetGatewayTariffRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.GatewayTariffResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -2683,6 +2717,60 @@ class PaymentService:
             '/payment.PaymentService/ListarBancosPse',
             payment_dot_payment__pb2.ListarBancosPseRequest.SerializeToString,
             payment_dot_payment__pb2.ListarBancosPseResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListGatewayTariffs(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/ListGatewayTariffs',
+            payment_dot_payment__pb2.ListGatewayTariffsRequest.SerializeToString,
+            payment_dot_payment__pb2.ListGatewayTariffsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SetGatewayTariff(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/SetGatewayTariff',
+            payment_dot_payment__pb2.SetGatewayTariffRequest.SerializeToString,
+            payment_dot_payment__pb2.GatewayTariffResponse.FromString,
             options,
             channel_credentials,
             insecure,
