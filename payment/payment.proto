@@ -317,6 +317,11 @@ message Payment {
   string gateway_status = 31;
   string gateway_status_detail = 32;
   string card_last4 = 33;
+  // Cuándo entró el dinero del cliente. NO es `captured_at`: cobrado y
+  // liquidado son dos momentos distintos cuando se cobra en la llegada — el
+  // cliente paga al empezar la visita y el reparto al veterinario ocurre al
+  // cerrarla. Vacío mientras no haya entrado.
+  google.protobuf.Timestamp collected_at = 34;
 }
 
 message Wallet {
