@@ -1419,6 +1419,9 @@ message GatewayTariff {
   string motivo = 8;
   bool vigente = 9;
   string origen = 10;
+  // Wompi publica sin IVA y Bold con IVA incluido. Sin esto hay que recordar
+  // cuál es cuál, y sumarlo dos veces no da error: da un 19 % de más.
+  bool iva_incluido = 11;
 }
 
 message ListGatewayTariffsRequest {
@@ -1439,6 +1442,7 @@ message SetGatewayTariffRequest {
   google.protobuf.Timestamp vigente_desde = 5;
   string fijada_por = 6;
   string motivo = 7;
+  bool iva_incluido = 8;
 }
 
 message GatewayTariffResponse {
