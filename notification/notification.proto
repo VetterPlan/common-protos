@@ -87,6 +87,10 @@ enum NotificationEvent {
   NOTIFICATION_EVENT_APPOINTMENT_ADJUSTED    = 40; // el vet propone una visita ajustada; el cliente decide
   NOTIFICATION_EVENT_REFERRAL_PENDING        = 41; // el vet remitió a un servicio y el dueño no ha agendado
   NOTIFICATION_EVENT_PENDING_RESULT          = 42; // el vet pidió un estudio y el resultado no ha vuelto
+  // Cobrando en la llegada: el dinero del cliente entró y el veterinario aún no
+  // lo tiene. No es PAYMENT_AUTHORIZED —nada está preautorizado, ninguna
+  // pasarela en Colombia reserva fondos— ni PAYMENT_CAPTURED, que es el cierre.
+  NOTIFICATION_EVENT_PAYMENT_COLLECTED       = 43;
   NOTIFICATION_EVENT_SYSTEM_ALERT           = 99;
 }
 
