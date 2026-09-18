@@ -403,7 +403,7 @@ message VetPayout {
   double net_payout = 9;
   PayoutStatus status = 10;
   string bank_account_id = 11;
-  string wompi_transfer_ref = 12;
+  string wompi_transfer_ref = 12 [deprecated = true];
   google.protobuf.Timestamp processed_at = 13;
   string failed_reason = 14;
   google.protobuf.Timestamp created_at = 15;
@@ -425,7 +425,7 @@ message Refund {
   RefundReason reason = 7;
   string reason_details = 8;
   RefundStatus status = 9;
-  string wompi_refund_id = 10;
+  string wompi_refund_id = 10 [deprecated = true];
   string initiated_by = 11;
   string idempotency_key = 12;
   google.protobuf.Timestamp created_at = 13;
@@ -1244,14 +1244,20 @@ message ListReconciliationReportsRequest {
   int32 offset = 2;
 }
 
+// Los campos `wompi_*` de este fichero estan DEPRECADOS desde el 2026-09-18 y
+// **no se eliminan**: protobuf aqui es solo aditivo y las apps publicadas los
+// siguen leyendo. Quien escriba codigo nuevo usa el par neutral; quien lea uno
+// viejo sabe por que sigue ahi. La ventana y el orden de retirada estan en
+// `docs/DESIGN_PASARELA_AGNOSTICA.md` §13.
+
 message ReconciliationDiscrepancyProto {
   string type = 1;              // STATUS_MISMATCH | AMOUNT_MISMATCH | MISSING_LOCAL | MISSING_WOMPI
   string payment_id = 2;
   string appointment_id = 3;
   string local_status = 4;
-  string wompi_status = 5;
+  string wompi_status = 5 [deprecated = true];
   double local_amount = 6;
-  double wompi_amount = 7;
+  double wompi_amount = 7 [deprecated = true];
   string severity = 8;          // LOW | MEDIUM | HIGH | CRITICAL
   bool auto_resolved = 9;
   string resolution_action = 10;
@@ -1281,7 +1287,7 @@ message ReconciliationReportResponse {
   //
   // Los tres son `optional` porque un informe anterior a esta version no los
   // tiene, y un cero afirmaria "ese dia no se movio dinero".
-  optional double wompi_total_cop = 9;
+  optional double wompi_total_cop = 9 [deprecated = true];
   optional double local_total_cop = 10;
 
   // Falso = la consulta a Wompi se corto a medias (error de la API o de red) y
@@ -1289,7 +1295,7 @@ message ReconciliationReportResponse {
   // lo que se leyo, pero no se puede restar contra el local ni presentar como
   // "cuadra": la ausencia de una transaccion no es prueba de que no exista.
   // Ausente = informe anterior a esta version, donde no se registro.
-  optional bool wompi_query_complete = 11;
+  optional bool wompi_query_complete = 11 [deprecated = true];
 
   // Etapa 4. Sustituyen a `wompi_total_cop` y `wompi_query_complete`, y ademas
   // dicen COMO se leyo el lado de la pasarela: hay pasarelas sin listado por
