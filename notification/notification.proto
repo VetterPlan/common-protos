@@ -91,6 +91,11 @@ enum NotificationEvent {
   // lo tiene. No es PAYMENT_AUTHORIZED —nada está preautorizado, ninguna
   // pasarela en Colombia reserva fondos— ni PAYMENT_CAPTURED, que es el cierre.
   NOTIFICATION_EVENT_PAYMENT_COLLECTED       = 43;
+  // El vet está en la puerta, el PIN ya se confirmó y falta el dinero. Sin este
+  // aviso el cliente se entera solo si abre la app, con alguien esperando
+  // fuera: la visita no arranca hasta que pague, así que el silencio lo paga el
+  // veterinario en minutos de pie.
+  NOTIFICATION_EVENT_PAYMENT_REQUESTED_AT_DOOR = 44;
   NOTIFICATION_EVENT_SYSTEM_ALERT           = 99;
 }
 
