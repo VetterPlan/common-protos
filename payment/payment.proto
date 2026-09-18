@@ -111,6 +111,7 @@ service PaymentService {
   // ─── TARIFAS DE PASARELA (administración) ───
 
   rpc ListGatewayTariffs (ListGatewayTariffsRequest) returns (ListGatewayTariffsResponse);
+  rpc GetWebhookHealth (GetWebhookHealthRequest) returns (GetWebhookHealthResponse);
   rpc SetGatewayTariff (SetGatewayTariffRequest) returns (GatewayTariffResponse);
 }
 
@@ -1422,6 +1423,31 @@ message GatewayTariff {
   // Wompi publica sin IVA y Bold con IVA incluido. Sin esto hay que recordar
   // cuál es cuál, y sumarlo dos veces no da error: da un 19 % de más.
   bool iva_incluido = 11;
+}
+
+// Salud del webhook de cada pasarela: lo que llegó, cuándo y qué se hizo con
+// ello. Solo lectura y agregado — no hay forma de fabricar un evento desde aquí:
+// un botón que "pruebe el webhook" mandándose un cobro aprobado a sí mismo daría
+// por cobrada una visita que nadie pagó.
+message GetWebhookHealthRequest {
+  int32 dias = 1;  // ventana para las cuentas; 0 = 7 días
+}
+
+message GatewayWebhookHealth {
+  string pasarela = 1;
+  google.protobuf.Timestamp ultimo_recibido_en = 2;
+  string ultimo_estado = 3;
+  string ultimo_tipo = 4;
+  int32 procesados = 5;
+  int32 sin_consumidor = 6;
+  int32 fallidos = 7;
+  int32 recibidos_sin_procesar = 8;
+}
+
+message GetWebhookHealthResponse {
+  bool success = 1;
+  repeated GatewayWebhookHealth pasarelas = 2;
+  int32 dias = 3;
 }
 
 message ListGatewayTariffsRequest {

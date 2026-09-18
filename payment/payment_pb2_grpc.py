@@ -353,6 +353,11 @@ class PaymentServiceStub:
                 request_serializer=payment_dot_payment__pb2.ListGatewayTariffsRequest.SerializeToString,
                 response_deserializer=payment_dot_payment__pb2.ListGatewayTariffsResponse.FromString,
                 _registered_method=True)
+        self.GetWebhookHealth = channel.unary_unary(
+                '/payment.PaymentService/GetWebhookHealth',
+                request_serializer=payment_dot_payment__pb2.GetWebhookHealthRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.GetWebhookHealthResponse.FromString,
+                _registered_method=True)
         self.SetGatewayTariff = channel.unary_unary(
                 '/payment.PaymentService/SetGatewayTariff',
                 request_serializer=payment_dot_payment__pb2.SetGatewayTariffRequest.SerializeToString,
@@ -763,6 +768,12 @@ class PaymentServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetWebhookHealth(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def SetGatewayTariff(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -1076,6 +1087,11 @@ def add_PaymentServiceServicer_to_server(servicer, server):
                     servicer.ListGatewayTariffs,
                     request_deserializer=payment_dot_payment__pb2.ListGatewayTariffsRequest.FromString,
                     response_serializer=payment_dot_payment__pb2.ListGatewayTariffsResponse.SerializeToString,
+            ),
+            'GetWebhookHealth': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetWebhookHealth,
+                    request_deserializer=payment_dot_payment__pb2.GetWebhookHealthRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.GetWebhookHealthResponse.SerializeToString,
             ),
             'SetGatewayTariff': grpc.unary_unary_rpc_method_handler(
                     servicer.SetGatewayTariff,
@@ -2744,6 +2760,33 @@ class PaymentService:
             '/payment.PaymentService/ListGatewayTariffs',
             payment_dot_payment__pb2.ListGatewayTariffsRequest.SerializeToString,
             payment_dot_payment__pb2.ListGatewayTariffsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetWebhookHealth(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/GetWebhookHealth',
+            payment_dot_payment__pb2.GetWebhookHealthRequest.SerializeToString,
+            payment_dot_payment__pb2.GetWebhookHealthResponse.FromString,
             options,
             channel_credentials,
             insecure,
