@@ -143,6 +143,11 @@ class PaymentServiceStub:
                 request_serializer=payment_dot_payment__pb2.WriteOffCollectionRequest.SerializeToString,
                 response_deserializer=payment_dot_payment__pb2.PaymentResponse.FromString,
                 _registered_method=True)
+        self.ResolverCobroIncierto = channel.unary_unary(
+                '/payment.PaymentService/ResolverCobroIncierto',
+                request_serializer=payment_dot_payment__pb2.ResolverCobroInciertoRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.ResolverCobroInciertoResponse.FromString,
+                _registered_method=True)
         self.CreateWallet = channel.unary_unary(
                 '/payment.PaymentService/CreateWallet',
                 request_serializer=payment_dot_payment__pb2.CreateWalletRequest.SerializeToString,
@@ -491,6 +496,12 @@ class PaymentServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def WriteOffCollection(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ResolverCobroIncierto(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -877,6 +888,11 @@ def add_PaymentServiceServicer_to_server(servicer, server):
                     servicer.WriteOffCollection,
                     request_deserializer=payment_dot_payment__pb2.WriteOffCollectionRequest.FromString,
                     response_serializer=payment_dot_payment__pb2.PaymentResponse.SerializeToString,
+            ),
+            'ResolverCobroIncierto': grpc.unary_unary_rpc_method_handler(
+                    servicer.ResolverCobroIncierto,
+                    request_deserializer=payment_dot_payment__pb2.ResolverCobroInciertoRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.ResolverCobroInciertoResponse.SerializeToString,
             ),
             'CreateWallet': grpc.unary_unary_rpc_method_handler(
                     servicer.CreateWallet,
@@ -1626,6 +1642,33 @@ class PaymentService:
             '/payment.PaymentService/WriteOffCollection',
             payment_dot_payment__pb2.WriteOffCollectionRequest.SerializeToString,
             payment_dot_payment__pb2.PaymentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ResolverCobroIncierto(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/ResolverCobroIncierto',
+            payment_dot_payment__pb2.ResolverCobroInciertoRequest.SerializeToString,
+            payment_dot_payment__pb2.ResolverCobroInciertoResponse.FromString,
             options,
             channel_credentials,
             insecure,

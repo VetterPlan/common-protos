@@ -39,6 +39,7 @@ service PaymentService {
   rpc ListFailedCollections (ListFailedCollectionsRequest) returns (ListFailedCollectionsResponse);
   rpc ListPayments (ListPaymentsRequest) returns (ListPaymentsResponse);
   rpc WriteOffCollection (WriteOffCollectionRequest) returns (PaymentResponse);
+  rpc ResolverCobroIncierto (ResolverCobroInciertoRequest) returns (ResolverCobroInciertoResponse);
   rpc CreateWallet (CreateWalletRequest) returns (WalletResponse);
   rpc GetWallet (GetWalletRequest) returns (WalletResponse);
   rpc GetWalletBalancesByOwners (GetWalletBalancesByOwnersRequest) returns (GetWalletBalancesByOwnersResponse);
@@ -603,6 +604,24 @@ message ListPaymentsRequest {
 message ListPaymentsResponse {
   repeated Payment payments = 1;
   int32 total_count = 2;
+}
+
+enum DesenlaceDelCobroIncierto {
+  DESENLACE_DEL_COBRO_INCIERTO_UNSPECIFIED = 0;
+  DESENLACE_DEL_COBRO_INCIERTO_COBRADO = 1;
+  DESENLACE_DEL_COBRO_INCIERTO_NO_COBRADO = 2;
+  DESENLACE_DEL_COBRO_INCIERTO_SIGUE_INCIERTO = 3;
+  DESENLACE_DEL_COBRO_INCIERTO_NO_HAY_COBRO_INCIERTO = 4;
+}
+
+message ResolverCobroInciertoRequest {
+  string payment_id = 1;
+}
+
+message ResolverCobroInciertoResponse {
+  DesenlaceDelCobroIncierto desenlace = 1;
+  Payment payment = 2;
+  string referencia = 3;
 }
 
 message WriteOffCollectionRequest {
