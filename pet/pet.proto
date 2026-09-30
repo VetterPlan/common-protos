@@ -221,6 +221,11 @@ message Pet {
   string variety_name = 21;      // Denormalized: "Americano"
   string breed_size = 22;        // e.g. "LARGE"
   string breed_group = 23;       // e.g. "SPORTING"
+  optional double declared_weight_kg = 24;
+  VaccinationStatus vaccination_status = 25;
+  string next_vaccination_due = 26;
+  int32 vaccines_overdue_count = 27;
+  int32 vaccines_due_soon_count = 28;
 }
 
 message Vaccination {

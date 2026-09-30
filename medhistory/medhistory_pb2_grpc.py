@@ -130,6 +130,11 @@ class MedHistoryServiceStub:
                 request_serializer=medhistory_dot_medhistory__pb2.GetPetMedicalHistoryRequest.SerializeToString,
                 response_deserializer=medhistory_dot_medhistory__pb2.GetPetMedicalHistoryResponse.FromString,
                 _registered_method=True)
+        self.ExportPetPassport = channel.unary_unary(
+                '/medhistory.MedHistoryService/ExportPetPassport',
+                request_serializer=medhistory_dot_medhistory__pb2.ExportPetPassportRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.ExportPetPassportResponse.FromString,
+                _registered_method=True)
         self.DeclineReferral = channel.unary_unary(
                 '/medhistory.MedHistoryService/DeclineReferral',
                 request_serializer=medhistory_dot_medhistory__pb2.DeclineReferralRequest.SerializeToString,
@@ -431,6 +436,12 @@ class MedHistoryServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ExportPetPassport(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def DeclineReferral(self, request, context):
         """El dueño dice "ahora no" a una remisión. Apaga los recordatorios y se
         registra: que el titular declinara es información clínica, no un fracaso.
@@ -707,6 +718,11 @@ def add_MedHistoryServiceServicer_to_server(servicer, server):
                     servicer.GetPetMedicalHistory,
                     request_deserializer=medhistory_dot_medhistory__pb2.GetPetMedicalHistoryRequest.FromString,
                     response_serializer=medhistory_dot_medhistory__pb2.GetPetMedicalHistoryResponse.SerializeToString,
+            ),
+            'ExportPetPassport': grpc.unary_unary_rpc_method_handler(
+                    servicer.ExportPetPassport,
+                    request_deserializer=medhistory_dot_medhistory__pb2.ExportPetPassportRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.ExportPetPassportResponse.SerializeToString,
             ),
             'DeclineReferral': grpc.unary_unary_rpc_method_handler(
                     servicer.DeclineReferral,
@@ -1255,6 +1271,33 @@ class MedHistoryService:
             '/medhistory.MedHistoryService/GetPetMedicalHistory',
             medhistory_dot_medhistory__pb2.GetPetMedicalHistoryRequest.SerializeToString,
             medhistory_dot_medhistory__pb2.GetPetMedicalHistoryResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ExportPetPassport(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/ExportPetPassport',
+            medhistory_dot_medhistory__pb2.ExportPetPassportRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.ExportPetPassportResponse.FromString,
             options,
             channel_credentials,
             insecure,
