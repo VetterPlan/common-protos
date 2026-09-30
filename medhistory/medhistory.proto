@@ -639,6 +639,7 @@ enum OwnerSummaryOrigin {
   OWNER_SUMMARY_ORIGIN_UNSPECIFIED = 0;
   OWNER_SUMMARY_ORIGIN_MODEL = 1;
   OWNER_SUMMARY_ORIGIN_TEMPLATE = 2;
+  OWNER_SUMMARY_ORIGIN_PENDING = 3;
 }
 
 // Consentimiento del dueño para el procesamiento con IA de la consulta (Ley 1581).
