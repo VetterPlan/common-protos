@@ -1177,6 +1177,33 @@ message IncomeGlobalSummary {
   double total_revenue = 1;
   double platform_fees = 2;
   double vet_payouts = 3;
+  ChargeBreakdown breakdown = 4;
+}
+
+message ChargeBreakdown {
+  int32 charges = 1;
+  int32 charges_without_breakdown = 2;
+  double charged_to_client = 3;
+  double vet_price = 4;
+  double service_fee = 5;
+  double vet_commission = 6;
+  double vet_net = 7;
+  double tips = 8;
+  double platform_discounts = 9;
+  double vet_commission_base = 10;
+  double vet_commission_vat = 11;
+  double client_fee_base = 12;
+  double client_fee_vat = 13;
+  double passed_gateway_cost_base = 14;
+  double passed_gateway_cost_vat = 15;
+  double vat_generated = 16;
+  double gateway_cost = 17;
+  double gateway_vat_deductible = 18;
+  double vat_payable = 19;
+  int32 charges_with_reported_gateway_cost = 20;
+  int32 charges_with_estimated_gateway_cost = 21;
+  double refunded = 22;
+  double platform_net_margin = 23;
 }
 
 message IncomeByVet {
@@ -1198,6 +1225,7 @@ message IncomeBucket {
   double platform_fees = 3;
   double vet_payouts = 4;
   int32 payment_count = 5;
+  ChargeBreakdown breakdown = 6;
 }
 
 message AdminReportIncomeResponse {
@@ -1325,6 +1353,8 @@ message ReconciliationReportResponse {
   optional bool cobertura_completa = 13;
   string cobertura_estrategia = 14;
   string cobertura_motivo = 15;
+
+  ChargeBreakdown breakdown = 16;
 }
 
 message ListReconciliationReportsResponse {
