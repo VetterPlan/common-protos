@@ -822,16 +822,26 @@ message VetTaxProfile {
   string confirmed_by = 10;
   double renta_rate = 11;
   bool is_valid_now = 12;
-  string razon_social = 13;
-  DocumentType tipo_de_documento = 14;
-  bool tiene_documento_fiscal = 15;
-  string digito_de_verificacion = 16;
-  string direccion = 17;
-  string municipio_dane = 18;
-  string contrato_de_mandato = 19;
-  google.protobuf.Timestamp contrato_de_mandato_aceptado_at = 20;
-  bool listo_para_facturar = 21;
-  repeated string le_falta_para_facturar = 22;
+  string razon_social = 13 [deprecated = true];
+  DocumentType tipo_de_documento = 14 [deprecated = true];
+  bool tiene_documento_fiscal = 15 [deprecated = true];
+  string digito_de_verificacion = 16 [deprecated = true];
+  string direccion = 17 [deprecated = true];
+  string municipio_dane = 18 [deprecated = true];
+  string contrato_de_mandato = 19 [deprecated = true];
+  google.protobuf.Timestamp contrato_de_mandato_aceptado_at = 20 [deprecated = true];
+  bool listo_para_facturar = 21 [deprecated = true];
+  repeated string le_falta_para_facturar = 22 [deprecated = true];
+  string legal_name = 23;
+  DocumentType document_type = 24;
+  bool has_fiscal_document = 25;
+  string check_digit = 26;
+  string address = 27;
+  string dane_municipality_code = 28;
+  string mandate_contract = 29;
+  google.protobuf.Timestamp mandate_contract_accepted_at = 30;
+  bool ready_to_invoice = 31;
+  repeated string missing_to_invoice = 32;
 }
 
 message SetVetTaxProfileRequest {
@@ -842,13 +852,20 @@ message SetVetTaxProfileRequest {
   bool art_383_election = 5;
   string art_383_acceptance_id = 6;
   string rut_document_key = 7;
-  string razon_social = 8;
-  DocumentType tipo_de_documento = 9;
-  string numero_de_documento = 10;
-  string digito_de_verificacion = 11;
-  string direccion = 12;
-  string municipio_dane = 13;
-  string contrato_de_mandato = 14;
+  string razon_social = 8 [deprecated = true];
+  DocumentType tipo_de_documento = 9 [deprecated = true];
+  string numero_de_documento = 10 [deprecated = true];
+  string digito_de_verificacion = 11 [deprecated = true];
+  string direccion = 12 [deprecated = true];
+  string municipio_dane = 13 [deprecated = true];
+  string contrato_de_mandato = 14 [deprecated = true];
+  string legal_name = 15;
+  DocumentType document_type = 16;
+  string document_number = 17;
+  string check_digit = 18;
+  string address = 19;
+  string dane_municipality_code = 20;
+  string mandate_contract = 21;
 }
 
 message GetVetTaxProfileRequest {
