@@ -29,6 +29,7 @@ service PaymentService {
   rpc ChargeCancellationFee (ChargeCancellationFeeRequest) returns (PaymentResponse);
   rpc ChargeVetCancellationFee (ChargeVetCancellationFeeRequest) returns (PaymentResponse);
   rpc QuoteCancellationFee (QuoteCancellationFeeRequest) returns (QuoteCancellationFeeResponse);
+  rpc QuoteServiceFees (QuoteServiceFeesRequest) returns (QuoteServiceFeesResponse);
   rpc AddTip (AddTipRequest) returns (PaymentResponse);
   rpc GetPayment (GetPaymentRequest) returns (PaymentResponse);
   rpc GetPaymentByAppointment (GetPaymentByAppointmentRequest) returns (PaymentResponse);
@@ -330,6 +331,12 @@ message Payment {
   // cliente paga al empezar la visita y el reparto al veterinario ocurre al
   // cerrarla. Vacío mientras no haya entrado.
   google.protobuf.Timestamp collected_at = 34;
+  optional double vet_price = 35;
+  optional double service_fee_amount = 36;
+  optional double vet_commission_percent = 37;
+  optional double iva_amount = 38;
+  optional double discount_amount = 39;
+  optional string fee_model = 40;
 }
 
 message Wallet {
@@ -1147,6 +1154,7 @@ message GetVetCommissionTierResponse {
   int32 platform_fee_percent = 2;
   int32 completed_appointments = 3;
   int32 next_tier_threshold = 4; // 0 if already at top tier
+  double vet_commission_percent = 5;
 }
 
 message GetCommissionTiersByVetsRequest {
@@ -1167,6 +1175,7 @@ message VetCommissionTierSummary {
   // calidad persistida) o "volume" (el escalón por número de pagos). Nunca
   // "quality": este RPC no consulta a rating.
   string source = 5;
+  double vet_commission_percent = 6;
 }
 
 message GetCommissionTiersByVetsResponse {
@@ -1548,4 +1557,25 @@ message GatewayTariffResponse {
   bool success = 1;
   string message = 2;
   GatewayTariff tariff = 3;
+}
+
+message QuoteItem {
+  string vet_profile_id = 1;
+  double vet_price = 2;
+  string key = 3;
+}
+
+message QuoteServiceFeesRequest {
+  repeated QuoteItem items = 1;
+}
+
+message Quoted {
+  string key = 1;
+  double vet_price = 2;
+  double service_fee = 3;
+  double client_total = 4;
+}
+
+message QuoteServiceFeesResponse {
+  repeated Quoted items = 1;
 }

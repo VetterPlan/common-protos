@@ -93,6 +93,11 @@ class PaymentServiceStub:
                 request_serializer=payment_dot_payment__pb2.QuoteCancellationFeeRequest.SerializeToString,
                 response_deserializer=payment_dot_payment__pb2.QuoteCancellationFeeResponse.FromString,
                 _registered_method=True)
+        self.QuoteServiceFees = channel.unary_unary(
+                '/payment.PaymentService/QuoteServiceFees',
+                request_serializer=payment_dot_payment__pb2.QuoteServiceFeesRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.QuoteServiceFeesResponse.FromString,
+                _registered_method=True)
         self.AddTip = channel.unary_unary(
                 '/payment.PaymentService/AddTip',
                 request_serializer=payment_dot_payment__pb2.AddTipRequest.SerializeToString,
@@ -436,6 +441,12 @@ class PaymentServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def QuoteCancellationFee(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def QuoteServiceFees(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -838,6 +849,11 @@ def add_PaymentServiceServicer_to_server(servicer, server):
                     servicer.QuoteCancellationFee,
                     request_deserializer=payment_dot_payment__pb2.QuoteCancellationFeeRequest.FromString,
                     response_serializer=payment_dot_payment__pb2.QuoteCancellationFeeResponse.SerializeToString,
+            ),
+            'QuoteServiceFees': grpc.unary_unary_rpc_method_handler(
+                    servicer.QuoteServiceFees,
+                    request_deserializer=payment_dot_payment__pb2.QuoteServiceFeesRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.QuoteServiceFeesResponse.SerializeToString,
             ),
             'AddTip': grpc.unary_unary_rpc_method_handler(
                     servicer.AddTip,
@@ -1372,6 +1388,33 @@ class PaymentService:
             '/payment.PaymentService/QuoteCancellationFee',
             payment_dot_payment__pb2.QuoteCancellationFeeRequest.SerializeToString,
             payment_dot_payment__pb2.QuoteCancellationFeeResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def QuoteServiceFees(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/QuoteServiceFees',
+            payment_dot_payment__pb2.QuoteServiceFeesRequest.SerializeToString,
+            payment_dot_payment__pb2.QuoteServiceFeesResponse.FromString,
             options,
             channel_credentials,
             insecure,
