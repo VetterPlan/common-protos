@@ -373,6 +373,36 @@ class PaymentServiceStub:
                 request_serializer=payment_dot_payment__pb2.SetGatewayTariffRequest.SerializeToString,
                 response_deserializer=payment_dot_payment__pb2.GatewayTariffResponse.FromString,
                 _registered_method=True)
+        self.OpenPayoutBatch = channel.unary_unary(
+                '/payment.PaymentService/OpenPayoutBatch',
+                request_serializer=payment_dot_payment__pb2.OpenPayoutBatchRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.PayoutBatchResponse.FromString,
+                _registered_method=True)
+        self.ListPayoutBatches = channel.unary_unary(
+                '/payment.PaymentService/ListPayoutBatches',
+                request_serializer=payment_dot_payment__pb2.ListPayoutBatchesRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.ListPayoutBatchesResponse.FromString,
+                _registered_method=True)
+        self.GetPayoutBatch = channel.unary_unary(
+                '/payment.PaymentService/GetPayoutBatch',
+                request_serializer=payment_dot_payment__pb2.GetPayoutBatchRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.PayoutBatchResponse.FromString,
+                _registered_method=True)
+        self.GetPayoutBatchFile = channel.unary_unary(
+                '/payment.PaymentService/GetPayoutBatchFile',
+                request_serializer=payment_dot_payment__pb2.GetPayoutBatchFileRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.PayoutBatchFileResponse.FromString,
+                _registered_method=True)
+        self.ConfirmPayoutTransfer = channel.unary_unary(
+                '/payment.PaymentService/ConfirmPayoutTransfer',
+                request_serializer=payment_dot_payment__pb2.ConfirmPayoutTransferRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.PayoutResponse.FromString,
+                _registered_method=True)
+        self.SetPayoutSchedule = channel.unary_unary(
+                '/payment.PaymentService/SetPayoutSchedule',
+                request_serializer=payment_dot_payment__pb2.SetPayoutScheduleRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.PayoutScheduleResponse.FromString,
+                _registered_method=True)
 
 
 class PaymentServiceServicer:
@@ -802,6 +832,42 @@ class PaymentServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def OpenPayoutBatch(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListPayoutBatches(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetPayoutBatch(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetPayoutBatchFile(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ConfirmPayoutTransfer(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetPayoutSchedule(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_PaymentServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -1129,6 +1195,36 @@ def add_PaymentServiceServicer_to_server(servicer, server):
                     servicer.SetGatewayTariff,
                     request_deserializer=payment_dot_payment__pb2.SetGatewayTariffRequest.FromString,
                     response_serializer=payment_dot_payment__pb2.GatewayTariffResponse.SerializeToString,
+            ),
+            'OpenPayoutBatch': grpc.unary_unary_rpc_method_handler(
+                    servicer.OpenPayoutBatch,
+                    request_deserializer=payment_dot_payment__pb2.OpenPayoutBatchRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.PayoutBatchResponse.SerializeToString,
+            ),
+            'ListPayoutBatches': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListPayoutBatches,
+                    request_deserializer=payment_dot_payment__pb2.ListPayoutBatchesRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.ListPayoutBatchesResponse.SerializeToString,
+            ),
+            'GetPayoutBatch': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetPayoutBatch,
+                    request_deserializer=payment_dot_payment__pb2.GetPayoutBatchRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.PayoutBatchResponse.SerializeToString,
+            ),
+            'GetPayoutBatchFile': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetPayoutBatchFile,
+                    request_deserializer=payment_dot_payment__pb2.GetPayoutBatchFileRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.PayoutBatchFileResponse.SerializeToString,
+            ),
+            'ConfirmPayoutTransfer': grpc.unary_unary_rpc_method_handler(
+                    servicer.ConfirmPayoutTransfer,
+                    request_deserializer=payment_dot_payment__pb2.ConfirmPayoutTransferRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.PayoutResponse.SerializeToString,
+            ),
+            'SetPayoutSchedule': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetPayoutSchedule,
+                    request_deserializer=payment_dot_payment__pb2.SetPayoutScheduleRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.PayoutScheduleResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -2900,6 +2996,168 @@ class PaymentService:
             '/payment.PaymentService/SetGatewayTariff',
             payment_dot_payment__pb2.SetGatewayTariffRequest.SerializeToString,
             payment_dot_payment__pb2.GatewayTariffResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def OpenPayoutBatch(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/OpenPayoutBatch',
+            payment_dot_payment__pb2.OpenPayoutBatchRequest.SerializeToString,
+            payment_dot_payment__pb2.PayoutBatchResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListPayoutBatches(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/ListPayoutBatches',
+            payment_dot_payment__pb2.ListPayoutBatchesRequest.SerializeToString,
+            payment_dot_payment__pb2.ListPayoutBatchesResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetPayoutBatch(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/GetPayoutBatch',
+            payment_dot_payment__pb2.GetPayoutBatchRequest.SerializeToString,
+            payment_dot_payment__pb2.PayoutBatchResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetPayoutBatchFile(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/GetPayoutBatchFile',
+            payment_dot_payment__pb2.GetPayoutBatchFileRequest.SerializeToString,
+            payment_dot_payment__pb2.PayoutBatchFileResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ConfirmPayoutTransfer(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/ConfirmPayoutTransfer',
+            payment_dot_payment__pb2.ConfirmPayoutTransferRequest.SerializeToString,
+            payment_dot_payment__pb2.PayoutResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SetPayoutSchedule(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/SetPayoutSchedule',
+            payment_dot_payment__pb2.SetPayoutScheduleRequest.SerializeToString,
+            payment_dot_payment__pb2.PayoutScheduleResponse.FromString,
             options,
             channel_credentials,
             insecure,
