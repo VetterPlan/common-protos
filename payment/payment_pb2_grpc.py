@@ -213,6 +213,11 @@ class PaymentServiceStub:
                 request_serializer=payment_dot_payment__pb2.RemovePaymentMethodRequest.SerializeToString,
                 response_deserializer=payment_dot_payment__pb2.PaymentMethodResponse.FromString,
                 _registered_method=True)
+        self.SetDefaultPaymentMethod = channel.unary_unary(
+                '/payment.PaymentService/SetDefaultPaymentMethod',
+                request_serializer=payment_dot_payment__pb2.SetDefaultPaymentMethodRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.PaymentMethodResponse.FromString,
+                _registered_method=True)
         self.RequestPayout = channel.unary_unary(
                 '/payment.PaymentService/RequestPayout',
                 request_serializer=payment_dot_payment__pb2.RequestPayoutRequest.SerializeToString,
@@ -617,6 +622,12 @@ class PaymentServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def RemovePaymentMethod(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetDefaultPaymentMethod(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -1034,6 +1045,11 @@ def add_PaymentServiceServicer_to_server(servicer, server):
             'RemovePaymentMethod': grpc.unary_unary_rpc_method_handler(
                     servicer.RemovePaymentMethod,
                     request_deserializer=payment_dot_payment__pb2.RemovePaymentMethodRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.PaymentMethodResponse.SerializeToString,
+            ),
+            'SetDefaultPaymentMethod': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetDefaultPaymentMethod,
+                    request_deserializer=payment_dot_payment__pb2.SetDefaultPaymentMethodRequest.FromString,
                     response_serializer=payment_dot_payment__pb2.PaymentMethodResponse.SerializeToString,
             ),
             'RequestPayout': grpc.unary_unary_rpc_method_handler(
@@ -2131,6 +2147,33 @@ class PaymentService:
             target,
             '/payment.PaymentService/RemovePaymentMethod',
             payment_dot_payment__pb2.RemovePaymentMethodRequest.SerializeToString,
+            payment_dot_payment__pb2.PaymentMethodResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SetDefaultPaymentMethod(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/SetDefaultPaymentMethod',
+            payment_dot_payment__pb2.SetDefaultPaymentMethodRequest.SerializeToString,
             payment_dot_payment__pb2.PaymentMethodResponse.FromString,
             options,
             channel_credentials,

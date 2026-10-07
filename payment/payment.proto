@@ -56,6 +56,7 @@ service PaymentService {
   rpc AddPaymentMethod (AddPaymentMethodRequest) returns (PaymentMethodResponse);
   rpc GetPaymentMethods (GetPaymentMethodsRequest) returns (PaymentMethodsResponse);
   rpc RemovePaymentMethod (RemovePaymentMethodRequest) returns (PaymentMethodResponse);
+  rpc SetDefaultPaymentMethod (SetDefaultPaymentMethodRequest) returns (PaymentMethodResponse);
 
   // ─── PAYOUTS (2 RPCs) ───
 
@@ -753,6 +754,11 @@ message GetPaymentMethodsRequest {
 }
 
 message RemovePaymentMethodRequest {
+  string payment_method_id = 1;
+  string client_profile_id = 2;
+}
+
+message SetDefaultPaymentMethodRequest {
   string payment_method_id = 1;
   string client_profile_id = 2;
 }
