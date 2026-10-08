@@ -511,6 +511,8 @@ message GetCancellationQuoteResponse {
   string not_chargeable_reason = 7;
   google.protobuf.Timestamp free_until = 8;
   int32 appointments_affected = 9;
+  bool fines_enabled = 10;
+  google.protobuf.Timestamp policy_free_until = 11;
 }
 
 message AbortAppointmentRequest {

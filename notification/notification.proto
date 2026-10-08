@@ -96,6 +96,8 @@ enum NotificationEvent {
   // fuera: la visita no arranca hasta que pague, así que el silencio lo paga el
   // veterinario en minutos de pie.
   NOTIFICATION_EVENT_PAYMENT_REQUESTED_AT_DOOR = 44;
+  NOTIFICATION_EVENT_CANCELLATION_FEE_CHARGED = 45;
+  NOTIFICATION_EVENT_WALLET_CREDITED = 46;
   NOTIFICATION_EVENT_SYSTEM_ALERT           = 99;
 }
 

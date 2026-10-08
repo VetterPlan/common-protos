@@ -528,6 +528,7 @@ message QuoteCancellationFeeResponse {
   double fee_amount_cop = 3;
   double amount_total_cop = 4;
   string not_chargeable_reason = 5;
+  double fee_base_amount_cop = 6;
 }
 
 message AddTipRequest {
