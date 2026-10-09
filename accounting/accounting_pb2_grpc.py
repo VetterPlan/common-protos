@@ -249,6 +249,21 @@ class AccountingServiceStub:
                 request_serializer=accounting_dot_accounting__pb2.DateRangeRequest.SerializeToString,
                 response_deserializer=accounting_dot_accounting__pb2.CsvExport.FromString,
                 _registered_method=True)
+        self.GetPlatformImportStatus = channel.unary_unary(
+                '/accounting.AccountingService/GetPlatformImportStatus',
+                request_serializer=accounting_dot_accounting__pb2.Empty.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.PlatformImportStatus.FromString,
+                _registered_method=True)
+        self.ListAccountMappings = channel.unary_unary(
+                '/accounting.AccountingService/ListAccountMappings',
+                request_serializer=accounting_dot_accounting__pb2.Empty.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.ListAccountMappingsResponse.FromString,
+                _registered_method=True)
+        self.SetAccountMapping = channel.unary_unary(
+                '/accounting.AccountingService/SetAccountMapping',
+                request_serializer=accounting_dot_accounting__pb2.SetAccountMappingRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.AccountMapping.FromString,
+                _registered_method=True)
 
 
 class AccountingServiceServicer:
@@ -512,6 +527,24 @@ class AccountingServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetPlatformImportStatus(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListAccountMappings(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetAccountMapping(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AccountingServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -729,6 +762,21 @@ def add_AccountingServiceServicer_to_server(servicer, server):
                     servicer.ExportTrialBalance,
                     request_deserializer=accounting_dot_accounting__pb2.DateRangeRequest.FromString,
                     response_serializer=accounting_dot_accounting__pb2.CsvExport.SerializeToString,
+            ),
+            'GetPlatformImportStatus': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetPlatformImportStatus,
+                    request_deserializer=accounting_dot_accounting__pb2.Empty.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.PlatformImportStatus.SerializeToString,
+            ),
+            'ListAccountMappings': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListAccountMappings,
+                    request_deserializer=accounting_dot_accounting__pb2.Empty.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.ListAccountMappingsResponse.SerializeToString,
+            ),
+            'SetAccountMapping': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetAccountMapping,
+                    request_deserializer=accounting_dot_accounting__pb2.SetAccountMappingRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.AccountMapping.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -1892,6 +1940,87 @@ class AccountingService:
             '/accounting.AccountingService/ExportTrialBalance',
             accounting_dot_accounting__pb2.DateRangeRequest.SerializeToString,
             accounting_dot_accounting__pb2.CsvExport.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetPlatformImportStatus(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/GetPlatformImportStatus',
+            accounting_dot_accounting__pb2.Empty.SerializeToString,
+            accounting_dot_accounting__pb2.PlatformImportStatus.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListAccountMappings(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/ListAccountMappings',
+            accounting_dot_accounting__pb2.Empty.SerializeToString,
+            accounting_dot_accounting__pb2.ListAccountMappingsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SetAccountMapping(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/SetAccountMapping',
+            accounting_dot_accounting__pb2.SetAccountMappingRequest.SerializeToString,
+            accounting_dot_accounting__pb2.AccountMapping.FromString,
             options,
             channel_credentials,
             insecure,

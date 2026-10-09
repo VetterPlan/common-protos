@@ -55,6 +55,10 @@ service AccountingService {
   rpc GetAccountLedger(GetAccountLedgerRequest) returns (AccountLedger);
   rpc ExportJournal(DateRangeRequest) returns (CsvExport);
   rpc ExportTrialBalance(DateRangeRequest) returns (CsvExport);
+
+  rpc GetPlatformImportStatus(Empty) returns (PlatformImportStatus);
+  rpc ListAccountMappings(Empty) returns (ListAccountMappingsResponse);
+  rpc SetAccountMapping(SetAccountMappingRequest) returns (AccountMapping);
 }
 
 message Empty {}
@@ -615,4 +619,43 @@ message AccountLedger {
 message CsvExport {
   string filename = 1;
   string content = 2;
+}
+
+message PlatformImportStatus {
+  bool enabled = 1;
+  string converged_through = 2;
+  string last_attempt_at = 3;
+  string last_success_at = 4;
+  string last_error = 5;
+  string blocked_reason = 6;
+  bool payment_reachable = 7;
+  bool ledger_shadow_mode = 8;
+  bool ledger_mechanism_ready = 9;
+  repeated string ledger_gate_reasons = 10;
+  int32 ledger_green_streak_days = 11;
+  int32 ledger_required_days = 12;
+}
+
+message AccountMapping {
+  string id = 1;
+  string payment_kind = 2;
+  string account_code = 3;
+  string account_name = 4;
+  string effective_from = 5;
+  string reason = 6;
+  string actor_user_id = 7;
+  string created_at = 8;
+  bool current = 9;
+}
+
+message ListAccountMappingsResponse {
+  repeated AccountMapping mappings = 1;
+}
+
+message SetAccountMappingRequest {
+  string actor_user_id = 1;
+  string payment_kind = 2;
+  string account_code = 3;
+  string effective_from = 4;
+  string reason = 5;
 }
