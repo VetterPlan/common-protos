@@ -408,6 +408,21 @@ class PaymentServiceStub:
                 request_serializer=payment_dot_payment__pb2.SetPayoutScheduleRequest.SerializeToString,
                 response_deserializer=payment_dot_payment__pb2.PayoutScheduleResponse.FromString,
                 _registered_method=True)
+        self.ListLedgerEntries = channel.unary_unary(
+                '/payment.PaymentService/ListLedgerEntries',
+                request_serializer=payment_dot_payment__pb2.ListLedgerEntriesRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.ListLedgerEntriesResponse.FromString,
+                _registered_method=True)
+        self.GetLedgerTotals = channel.unary_unary(
+                '/payment.PaymentService/GetLedgerTotals',
+                request_serializer=payment_dot_payment__pb2.GetLedgerTotalsRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.GetLedgerTotalsResponse.FromString,
+                _registered_method=True)
+        self.GetLedgerGateStatus = channel.unary_unary(
+                '/payment.PaymentService/GetLedgerGateStatus',
+                request_serializer=payment_dot_payment__pb2.GetLedgerGateStatusRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.GetLedgerGateStatusResponse.FromString,
+                _registered_method=True)
 
 
 class PaymentServiceServicer:
@@ -879,6 +894,24 @@ class PaymentServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ListLedgerEntries(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetLedgerTotals(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetLedgerGateStatus(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_PaymentServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -1241,6 +1274,21 @@ def add_PaymentServiceServicer_to_server(servicer, server):
                     servicer.SetPayoutSchedule,
                     request_deserializer=payment_dot_payment__pb2.SetPayoutScheduleRequest.FromString,
                     response_serializer=payment_dot_payment__pb2.PayoutScheduleResponse.SerializeToString,
+            ),
+            'ListLedgerEntries': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListLedgerEntries,
+                    request_deserializer=payment_dot_payment__pb2.ListLedgerEntriesRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.ListLedgerEntriesResponse.SerializeToString,
+            ),
+            'GetLedgerTotals': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetLedgerTotals,
+                    request_deserializer=payment_dot_payment__pb2.GetLedgerTotalsRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.GetLedgerTotalsResponse.SerializeToString,
+            ),
+            'GetLedgerGateStatus': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetLedgerGateStatus,
+                    request_deserializer=payment_dot_payment__pb2.GetLedgerGateStatusRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.GetLedgerGateStatusResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -3201,6 +3249,87 @@ class PaymentService:
             '/payment.PaymentService/SetPayoutSchedule',
             payment_dot_payment__pb2.SetPayoutScheduleRequest.SerializeToString,
             payment_dot_payment__pb2.PayoutScheduleResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListLedgerEntries(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/ListLedgerEntries',
+            payment_dot_payment__pb2.ListLedgerEntriesRequest.SerializeToString,
+            payment_dot_payment__pb2.ListLedgerEntriesResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetLedgerTotals(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/GetLedgerTotals',
+            payment_dot_payment__pb2.GetLedgerTotalsRequest.SerializeToString,
+            payment_dot_payment__pb2.GetLedgerTotalsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetLedgerGateStatus(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/GetLedgerGateStatus',
+            payment_dot_payment__pb2.GetLedgerGateStatusRequest.SerializeToString,
+            payment_dot_payment__pb2.GetLedgerGateStatusResponse.FromString,
             options,
             channel_credentials,
             insecure,

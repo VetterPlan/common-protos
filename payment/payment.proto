@@ -123,6 +123,10 @@ service PaymentService {
   rpc GetPayoutBatchFile (GetPayoutBatchFileRequest) returns (PayoutBatchFileResponse);
   rpc ConfirmPayoutTransfer (ConfirmPayoutTransferRequest) returns (PayoutResponse);
   rpc SetPayoutSchedule (SetPayoutScheduleRequest) returns (PayoutScheduleResponse);
+
+  rpc ListLedgerEntries (ListLedgerEntriesRequest) returns (ListLedgerEntriesResponse);
+  rpc GetLedgerTotals (GetLedgerTotalsRequest) returns (GetLedgerTotalsResponse);
+  rpc GetLedgerGateStatus (GetLedgerGateStatusRequest) returns (GetLedgerGateStatusResponse);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1678,4 +1682,53 @@ message PayoutScheduleResponse {
   string vet_profile_id = 1;
   PayoutSchedule schedule = 2;
   string next_payout_date = 3;
+}
+
+message ListLedgerEntriesRequest {
+  string after_id = 1;
+  int32 limit = 2;
+  string business_day = 3;
+}
+
+message LedgerLine {
+  string id = 1;
+  string txn_id = 2;
+  string account_kind = 3;
+  string account_suffix = 4;
+  string amount = 5;
+  string payment_id = 6;
+  string vet_profile_id = 7;
+  string rail = 8;
+  google.protobuf.Timestamp posted_at = 9;
+  string business_day = 10;
+}
+
+message ListLedgerEntriesResponse {
+  repeated LedgerLine lines = 1;
+  string next_after_id = 2;
+}
+
+message GetLedgerTotalsRequest {
+  string business_day = 1;
+}
+
+message LedgerKindTotal {
+  string account_kind = 1;
+  string amount = 2;
+}
+
+message GetLedgerTotalsResponse {
+  string business_day = 1;
+  repeated LedgerKindTotal totals = 2;
+  int32 line_count = 3;
+}
+
+message GetLedgerGateStatusRequest {}
+
+message GetLedgerGateStatusResponse {
+  bool shadow_mode = 1;
+  bool mechanism_ready = 2;
+  repeated string reasons = 3;
+  int32 green_streak_days = 4;
+  int32 required_days = 5;
 }
