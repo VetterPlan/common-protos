@@ -1,0 +1,618 @@
+syntax = "proto3";
+
+package accounting;
+
+service AccountingService {
+  rpc GetLedgerSettings(Empty) returns (LedgerSettings);
+  rpc SetLedgerSettings(SetLedgerSettingsRequest) returns (LedgerSettings);
+
+  rpc ListAccounts(ListAccountsRequest) returns (ListAccountsResponse);
+  rpc CreateAccount(CreateAccountRequest) returns (Account);
+
+  rpc ListThirdParties(ListThirdPartiesRequest) returns (ListThirdPartiesResponse);
+  rpc UpsertThirdParty(UpsertThirdPartyRequest) returns (ThirdParty);
+
+  rpc ListPartners(Empty) returns (ListPartnersResponse);
+  rpc RegisterPartner(RegisterPartnerRequest) returns (Partner);
+
+  rpc IssueEntryToken(ActorRequest) returns (EntryToken);
+  rpc RecordAuthorizedCapital(RecordAuthorizedCapitalRequest) returns (JournalEntry);
+  rpc RecordCapitalSubscription(RecordCapitalSubscriptionRequest) returns (JournalEntry);
+  rpc RecordCapitalPayment(RecordCapitalPaymentRequest) returns (JournalEntry);
+  rpc RecordPartnerLoan(RecordPartnerLoanRequest) returns (JournalEntry);
+  rpc RecordDebtCapitalization(RecordDebtCapitalizationRequest) returns (JournalEntry);
+  rpc RecordExpense(RecordExpenseRequest) returns (JournalEntry);
+  rpc RecordSupplierPayment(RecordSupplierPaymentRequest) returns (JournalEntry);
+  rpc RecordAssetPurchase(RecordAssetPurchaseRequest) returns (JournalEntry);
+  rpc RecordDebtDisbursement(RecordDebtDisbursementRequest) returns (JournalEntry);
+  rpc RecordDebtPayment(RecordDebtPaymentRequest) returns (JournalEntry);
+  rpc PostManualEntry(PostManualEntryRequest) returns (JournalEntry);
+  rpc ReverseEntry(ReverseEntryRequest) returns (JournalEntry);
+
+  rpc GetJournalEntry(GetJournalEntryRequest) returns (JournalEntry);
+  rpc ListJournalEntries(ListJournalEntriesRequest) returns (ListJournalEntriesResponse);
+
+  rpc ListPeriods(ListPeriodsRequest) returns (ListPeriodsResponse);
+  rpc GetPeriodChecklist(PeriodRequest) returns (PeriodChecklist);
+  rpc ClosePeriod(ChangePeriodRequest) returns (Period);
+  rpc ReopenPeriod(ChangePeriodRequest) returns (Period);
+
+  rpc GenerateAttachmentUploadUrl(GenerateAttachmentUploadUrlRequest) returns (AttachmentUploadUrl);
+  rpc RegisterAttachment(RegisterAttachmentRequest) returns (Attachment);
+  rpc GetAttachmentUrl(GetAttachmentUrlRequest) returns (AttachmentDownloadUrl);
+
+  rpc ListFixedAssets(Empty) returns (ListFixedAssetsResponse);
+  rpc ListDebts(DateRequest) returns (ListDebtsResponse);
+  rpc ListRecurringExpenses(Empty) returns (ListRecurringExpensesResponse);
+  rpc CreateRecurringExpense(CreateRecurringExpenseRequest) returns (RecurringExpense);
+  rpc DeactivateRecurringExpense(DeactivateRecurringExpenseRequest) returns (RecurringExpense);
+
+  rpc GetTrialBalance(DateRangeRequest) returns (TrialBalance);
+  rpc GetIncomeStatement(DateRangeRequest) returns (IncomeStatement);
+  rpc GetBalanceSheet(DateRequest) returns (BalanceSheet);
+  rpc GetEquity(DateRequest) returns (Equity);
+  rpc GetIndicators(PeriodRequest) returns (Indicators);
+  rpc GetAccountLedger(GetAccountLedgerRequest) returns (AccountLedger);
+  rpc ExportJournal(DateRangeRequest) returns (CsvExport);
+  rpc ExportTrialBalance(DateRangeRequest) returns (CsvExport);
+}
+
+message Empty {}
+
+message ActorRequest {
+  string actor_user_id = 1;
+}
+
+message DateRequest {
+  string as_of = 1;
+}
+
+message DateRangeRequest {
+  string from_date = 1;
+  string to_date = 2;
+}
+
+message PeriodRequest {
+  string period = 1;
+}
+
+message LedgerSettings {
+  string company_name = 1;
+  string tax_id = 2;
+  string start_date = 3;
+  bool has_entries = 4;
+  bool configured = 5;
+}
+
+message SetLedgerSettingsRequest {
+  string actor_user_id = 1;
+  string company_name = 2;
+  string tax_id = 3;
+  string start_date = 4;
+}
+
+message Account {
+  string code = 1;
+  string name = 2;
+  string parent_code = 3;
+  string nature = 4;
+  bool postable = 5;
+  int32 level = 6;
+  string account_class = 7;
+}
+
+message ListAccountsRequest {
+  bool postable_only = 1;
+  string prefix = 2;
+}
+
+message ListAccountsResponse {
+  repeated Account accounts = 1;
+}
+
+message CreateAccountRequest {
+  string actor_user_id = 1;
+  string code = 2;
+  string name = 3;
+  string parent_code = 4;
+}
+
+message ThirdParty {
+  string id = 1;
+  string document_type = 2;
+  string document_number = 3;
+  string name = 4;
+  string last_expense_account_code = 5;
+}
+
+message ListThirdPartiesRequest {
+  string search = 1;
+}
+
+message ListThirdPartiesResponse {
+  repeated ThirdParty third_parties = 1;
+}
+
+message UpsertThirdPartyRequest {
+  string actor_user_id = 1;
+  string document_type = 2;
+  string document_number = 3;
+  string name = 4;
+}
+
+message Partner {
+  string id = 1;
+  ThirdParty third_party = 2;
+  int64 shares = 3;
+  string ownership_percent = 4;
+  string subscribed = 5;
+  string paid = 6;
+  string pending = 7;
+}
+
+message ListPartnersResponse {
+  repeated Partner partners = 1;
+}
+
+message RegisterPartnerRequest {
+  string actor_user_id = 1;
+  string third_party_id = 2;
+}
+
+message EntryToken {
+  string token = 1;
+}
+
+message RecordAuthorizedCapitalRequest {
+  string actor_user_id = 1;
+  string token = 2;
+  string entry_date = 3;
+  string amount = 4;
+  string description = 5;
+}
+
+message RecordCapitalSubscriptionRequest {
+  string actor_user_id = 1;
+  string token = 2;
+  string entry_date = 3;
+  string partner_id = 4;
+  int64 shares = 5;
+  string amount = 6;
+  string description = 7;
+}
+
+message RecordCapitalPaymentRequest {
+  string actor_user_id = 1;
+  string token = 2;
+  string entry_date = 3;
+  string partner_id = 4;
+  string amount = 5;
+  string bank_account_code = 6;
+  string description = 7;
+}
+
+message RecordPartnerLoanRequest {
+  string actor_user_id = 1;
+  string token = 2;
+  string entry_date = 3;
+  string partner_id = 4;
+  string amount = 5;
+  string bank_account_code = 6;
+  string description = 7;
+}
+
+message RecordDebtCapitalizationRequest {
+  string actor_user_id = 1;
+  string token = 2;
+  string entry_date = 3;
+  string partner_id = 4;
+  string amount = 5;
+  string description = 6;
+}
+
+message ForeignCurrency {
+  string currency = 1;
+  string original_amount = 2;
+  string exchange_rate = 3;
+}
+
+message RecordExpenseRequest {
+  string actor_user_id = 1;
+  string token = 2;
+  string entry_date = 3;
+  string supplier_id = 4;
+  string expense_account_code = 5;
+  string base_amount = 6;
+  string vat_amount = 7;
+  bool vat_deductible = 8;
+  string withholding_amount = 9;
+  string withholding_account_code = 10;
+  string paid_by = 11;
+  string bank_account_code = 12;
+  string partner_id = 13;
+  string description = 14;
+  string recurring_expense_id = 15;
+  ForeignCurrency foreign_currency = 16;
+}
+
+message RecordSupplierPaymentRequest {
+  string actor_user_id = 1;
+  string token = 2;
+  string entry_date = 3;
+  string supplier_id = 4;
+  string amount = 5;
+  string bank_account_code = 6;
+  string description = 7;
+}
+
+message RecordAssetPurchaseRequest {
+  string actor_user_id = 1;
+  string token = 2;
+  string entry_date = 3;
+  string supplier_id = 4;
+  string asset_name = 5;
+  string asset_account_code = 6;
+  string cost = 7;
+  string vat_amount = 8;
+  bool vat_deductible = 9;
+  int32 useful_life_months = 10;
+  string salvage_value = 11;
+  string paid_by = 12;
+  string bank_account_code = 13;
+  string partner_id = 14;
+  string description = 15;
+}
+
+message RecordDebtDisbursementRequest {
+  string actor_user_id = 1;
+  string token = 2;
+  string entry_date = 3;
+  string creditor_id = 4;
+  string creditor_kind = 5;
+  string principal = 6;
+  string annual_rate_percent = 7;
+  int32 term_months = 8;
+  string bank_account_code = 9;
+  string description = 10;
+}
+
+message RecordDebtPaymentRequest {
+  string actor_user_id = 1;
+  string token = 2;
+  string entry_date = 3;
+  string debt_id = 4;
+  string principal_amount = 5;
+  string interest_amount = 6;
+  string bank_account_code = 7;
+  string description = 8;
+}
+
+message ManualLine {
+  string account_code = 1;
+  string debit = 2;
+  string credit = 3;
+  string third_party_id = 4;
+  string description = 5;
+}
+
+message PostManualEntryRequest {
+  string actor_user_id = 1;
+  string token = 2;
+  string entry_date = 3;
+  string description = 4;
+  repeated ManualLine lines = 5;
+  bool opening_balance = 6;
+  string corrects_period = 7;
+}
+
+message ReverseEntryRequest {
+  string actor_user_id = 1;
+  string token = 2;
+  string entry_id = 3;
+  string reason = 4;
+  string entry_date = 5;
+}
+
+message JournalLine {
+  string id = 1;
+  string account_code = 2;
+  string account_name = 3;
+  string debit = 4;
+  string credit = 5;
+  ThirdParty third_party = 6;
+  string description = 7;
+}
+
+message JournalEntry {
+  string id = 1;
+  int64 number = 2;
+  string entry_date = 3;
+  string source = 4;
+  string template = 5;
+  string description = 6;
+  string actor_user_id = 7;
+  string reverses_entry_id = 8;
+  string reversed_by_entry_id = 9;
+  string corrects_period = 10;
+  string created_at = 11;
+  repeated JournalLine lines = 12;
+  repeated Attachment attachments = 13;
+  string total = 14;
+  ForeignCurrency foreign_currency = 15;
+}
+
+message GetJournalEntryRequest {
+  string entry_id = 1;
+}
+
+message ListJournalEntriesRequest {
+  string from_date = 1;
+  string to_date = 2;
+  string template = 3;
+  string account_code = 4;
+  string third_party_id = 5;
+  bool missing_support_only = 6;
+  int32 page_size = 7;
+  string page_token = 8;
+}
+
+message ListJournalEntriesResponse {
+  repeated JournalEntry entries = 1;
+  string next_page_token = 2;
+}
+
+message Period {
+  string period = 1;
+  string status = 2;
+  string closed_at = 3;
+  string closed_by = 4;
+  string reason = 5;
+}
+
+message ListPeriodsRequest {
+  int32 year = 1;
+}
+
+message ListPeriodsResponse {
+  repeated Period periods = 1;
+}
+
+message ChangePeriodRequest {
+  string actor_user_id = 1;
+  string period = 2;
+  string reason = 3;
+}
+
+message ChecklistItem {
+  string kind = 1;
+  string message = 2;
+  string entry_id = 3;
+  string recurring_expense_id = 4;
+  string amount = 5;
+}
+
+message PeriodChecklist {
+  string period = 1;
+  string status = 2;
+  repeated ChecklistItem items = 3;
+}
+
+message Attachment {
+  string id = 1;
+  string entry_id = 2;
+  string filename = 3;
+  string content_type = 4;
+  string sha256 = 5;
+  string uploaded_by = 6;
+  string created_at = 7;
+}
+
+message GenerateAttachmentUploadUrlRequest {
+  string actor_user_id = 1;
+  string filename = 2;
+  string content_type = 3;
+}
+
+message AttachmentUploadUrl {
+  string upload_url = 1;
+  string object_key = 2;
+  int32 expires_in_seconds = 3;
+}
+
+message RegisterAttachmentRequest {
+  string actor_user_id = 1;
+  string entry_id = 2;
+  string object_key = 3;
+  string sha256 = 4;
+}
+
+message GetAttachmentUrlRequest {
+  string attachment_id = 1;
+}
+
+message AttachmentDownloadUrl {
+  string url = 1;
+  int32 expires_in_seconds = 2;
+}
+
+message FixedAsset {
+  string id = 1;
+  string name = 2;
+  string account_code = 3;
+  string acquired_on = 4;
+  string cost = 5;
+  string salvage_value = 6;
+  int32 useful_life_months = 7;
+  string accumulated_depreciation = 8;
+  string book_value = 9;
+  string acquisition_entry_id = 10;
+}
+
+message ListFixedAssetsResponse {
+  repeated FixedAsset assets = 1;
+}
+
+message Debt {
+  string id = 1;
+  ThirdParty creditor = 2;
+  string creditor_kind = 3;
+  string principal = 4;
+  string annual_rate_percent = 5;
+  int32 term_months = 6;
+  string disbursed_on = 7;
+  string outstanding = 8;
+  string principal_paid = 9;
+  string interest_paid = 10;
+}
+
+message ListDebtsResponse {
+  repeated Debt debts = 1;
+  string total_outstanding = 2;
+}
+
+message RecurringExpense {
+  string id = 1;
+  ThirdParty supplier = 2;
+  string expense_account_code = 3;
+  string expected_amount = 4;
+  string currency = 5;
+  int32 day_of_month = 6;
+  string description = 7;
+  bool active = 8;
+}
+
+message ListRecurringExpensesResponse {
+  repeated RecurringExpense recurring_expenses = 1;
+}
+
+message CreateRecurringExpenseRequest {
+  string actor_user_id = 1;
+  string supplier_id = 2;
+  string expense_account_code = 3;
+  string expected_amount = 4;
+  string currency = 5;
+  int32 day_of_month = 6;
+  string description = 7;
+}
+
+message DeactivateRecurringExpenseRequest {
+  string actor_user_id = 1;
+  string recurring_expense_id = 2;
+}
+
+message TrialBalanceRow {
+  string account_code = 1;
+  string account_name = 2;
+  int32 level = 3;
+  string nature = 4;
+  string opening_balance = 5;
+  string debits = 6;
+  string credits = 7;
+  string closing_balance = 8;
+}
+
+message TrialBalance {
+  string from_date = 1;
+  string to_date = 2;
+  repeated TrialBalanceRow rows = 3;
+  string total_debits = 4;
+  string total_credits = 5;
+  bool balanced = 6;
+}
+
+message StatementLine {
+  string account_code = 1;
+  string account_name = 2;
+  int32 level = 3;
+  string amount = 4;
+}
+
+message IncomeStatement {
+  string from_date = 1;
+  string to_date = 2;
+  repeated StatementLine revenue = 3;
+  repeated StatementLine expenses = 4;
+  string total_revenue = 5;
+  string total_expenses = 6;
+  string net_result = 7;
+  string operating_result = 8;
+}
+
+message BalanceSheet {
+  string as_of = 1;
+  repeated StatementLine assets = 2;
+  repeated StatementLine liabilities = 3;
+  repeated StatementLine equity = 4;
+  string total_assets = 5;
+  string total_liabilities = 6;
+  string total_equity_accounts = 7;
+  string current_year_result = 8;
+  string prior_years_unclosed_result = 9;
+  string total_equity = 10;
+  bool balanced = 11;
+}
+
+message Equity {
+  string as_of = 1;
+  string authorized_capital = 2;
+  string subscribed_capital = 3;
+  string paid_capital = 4;
+  string pending_capital = 5;
+  string share_premium = 6;
+  string accumulated_results = 7;
+  string current_year_result = 8;
+  string total_equity = 9;
+  int64 total_shares = 10;
+  string book_value_per_share = 11;
+  repeated Partner partners = 12;
+  string partner_loans = 13;
+}
+
+message Indicators {
+  string period = 1;
+  string month_revenue = 2;
+  string month_expenses = 3;
+  string month_result = 4;
+  string year_to_date_result = 5;
+  string cash = 6;
+  string average_monthly_burn = 7;
+  string months_of_cash = 8;
+  bool burning_cash = 9;
+  string return_on_paid_capital_percent = 10;
+  string total_equity = 11;
+  string paid_capital = 12;
+  string total_debt = 13;
+  string previous_month_result = 14;
+}
+
+message GetAccountLedgerRequest {
+  string account_code = 1;
+  string third_party_id = 2;
+  string from_date = 3;
+  string to_date = 4;
+}
+
+message AccountLedgerRow {
+  string entry_id = 1;
+  int64 entry_number = 2;
+  string entry_date = 3;
+  string description = 4;
+  string account_code = 5;
+  ThirdParty third_party = 6;
+  string debit = 7;
+  string credit = 8;
+  string running_balance = 9;
+  bool has_support = 10;
+}
+
+message AccountLedger {
+  Account account = 1;
+  string opening_balance = 2;
+  repeated AccountLedgerRow rows = 3;
+  string closing_balance = 4;
+}
+
+message CsvExport {
+  string filename = 1;
+  string content = 2;
+}
