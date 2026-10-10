@@ -265,6 +265,7 @@ message RecordAssetPurchaseRequest {
   string bank_account_code = 13;
   string partner_id = 14;
   string description = 15;
+  ForeignCurrency foreign_currency = 16;
 }
 
 message RecordDebtDisbursementRequest {
