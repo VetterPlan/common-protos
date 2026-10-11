@@ -350,6 +350,7 @@ message Payment {
   optional double iva_amount = 38;
   optional double discount_amount = 39;
   optional string fee_model = 40;
+  optional string gateway_decline_reason = 41;
 }
 
 message Wallet {
