@@ -180,6 +180,11 @@ class AppointmentServiceStub:
                 request_serializer=appointment_dot_appointment__pb2.AdvanceFromPendingPaymentAuthRequest.SerializeToString,
                 response_deserializer=appointment_dot_appointment__pb2.AppointmentResponse.FromString,
                 _registered_method=True)
+        self.RetryUpfrontCharge = channel.unary_unary(
+                '/appointment.AppointmentService/RetryUpfrontCharge',
+                request_serializer=appointment_dot_appointment__pb2.RetryUpfrontChargeRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+                _registered_method=True)
         self.GetSupplyHealthMetrics = channel.unary_unary(
                 '/appointment.AppointmentService/GetSupplyHealthMetrics',
                 request_serializer=appointment_dot_appointment__pb2.SupplyHealthMetricsRequest.SerializeToString,
@@ -458,6 +463,12 @@ class AppointmentServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def RetryUpfrontCharge(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def GetSupplyHealthMetrics(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -714,6 +725,11 @@ def add_AppointmentServiceServicer_to_server(servicer, server):
             'AdvanceFromPendingPaymentAuth': grpc.unary_unary_rpc_method_handler(
                     servicer.AdvanceFromPendingPaymentAuth,
                     request_deserializer=appointment_dot_appointment__pb2.AdvanceFromPendingPaymentAuthRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.AppointmentResponse.SerializeToString,
+            ),
+            'RetryUpfrontCharge': grpc.unary_unary_rpc_method_handler(
+                    servicer.RetryUpfrontCharge,
+                    request_deserializer=appointment_dot_appointment__pb2.RetryUpfrontChargeRequest.FromString,
                     response_serializer=appointment_dot_appointment__pb2.AppointmentResponse.SerializeToString,
             ),
             'GetSupplyHealthMetrics': grpc.unary_unary_rpc_method_handler(
@@ -1556,6 +1572,33 @@ class AppointmentService:
             target,
             '/appointment.AppointmentService/AdvanceFromPendingPaymentAuth',
             appointment_dot_appointment__pb2.AdvanceFromPendingPaymentAuthRequest.SerializeToString,
+            appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RetryUpfrontCharge(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/RetryUpfrontCharge',
+            appointment_dot_appointment__pb2.RetryUpfrontChargeRequest.SerializeToString,
             appointment_dot_appointment__pb2.AppointmentResponse.FromString,
             options,
             channel_credentials,

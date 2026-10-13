@@ -43,6 +43,7 @@ service AppointmentService {
   rpc GetVetRatingSummary (GetVetRatingSummaryRequest) returns (VetRatingSummaryResponse);
   rpc AdminReportAppointments (AdminReportAppointmentsRequest) returns (AdminReportAppointmentsResponse);
   rpc AdvanceFromPendingPaymentAuth (AdvanceFromPendingPaymentAuthRequest) returns (AppointmentResponse);
+  rpc RetryUpfrontCharge (RetryUpfrontChargeRequest) returns (AppointmentResponse);
   rpc GetSupplyHealthMetrics (SupplyHealthMetricsRequest) returns (SupplyHealthMetricsResponse);
   rpc RescheduleAppointment (RescheduleAppointmentRequest) returns (AppointmentResponse);
   rpc SuspendBookingBlock (SuspendBookingBlockRequest) returns (SuspendBookingBlockResponse);
@@ -922,6 +923,11 @@ message VetRatingSummaryResponse {
 // ═══════════════════════════════════════════════════════════════════════════
 // P2 — Nequi PENDING_PAYMENT_AUTH
 // ═══════════════════════════════════════════════════════════════════════════
+
+message RetryUpfrontChargeRequest {
+  string appointment_id = 1;
+  string payment_method_id = 2;
+}
 
 message AdvanceFromPendingPaymentAuthRequest {
   string appointment_id = 1;  // Triggered by payment-service when Nequi AUTHORIZED
