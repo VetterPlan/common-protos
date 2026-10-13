@@ -351,6 +351,7 @@ message Payment {
   optional double discount_amount = 39;
   optional string fee_model = 40;
   optional string gateway_decline_reason = 41;
+  google.protobuf.Timestamp capture_pending_since = 42;
 }
 
 message Wallet {
@@ -584,6 +585,7 @@ message OutstandingCollection {
   google.protobuf.Timestamp next_retry_at = 8;
   string last_error = 9;
   string vet_profile_id = 10;
+  google.protobuf.Timestamp pending_since = 11;
 }
 
 message GetClientCollectionStatusResponse {
@@ -592,6 +594,7 @@ message GetClientCollectionStatusResponse {
   string currency = 3;
   int32 count = 4;
   repeated OutstandingCollection collections = 5;
+  repeated OutstandingCollection awaiting_gateway = 6;
 }
 
 message ListFailedCollectionsRequest {
