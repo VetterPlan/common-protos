@@ -41,6 +41,7 @@ service PaymentService {
   rpc ListPayments (ListPaymentsRequest) returns (ListPaymentsResponse);
   rpc WriteOffCollection (WriteOffCollectionRequest) returns (PaymentResponse);
   rpc ResolverCobroIncierto (ResolverCobroInciertoRequest) returns (ResolverCobroInciertoResponse);
+  rpc CollectUpfrontCharge (CollectUpfrontChargeRequest) returns (CollectUpfrontChargeResponse);
   rpc CreateWallet (CreateWalletRequest) returns (WalletResponse);
   rpc GetWallet (GetWalletRequest) returns (WalletResponse);
   rpc GetWalletBalancesByOwners (GetWalletBalancesByOwnersRequest) returns (GetWalletBalancesByOwnersResponse);
@@ -639,6 +640,25 @@ enum DesenlaceDelCobroIncierto {
   DESENLACE_DEL_COBRO_INCIERTO_NO_COBRADO = 2;
   DESENLACE_DEL_COBRO_INCIERTO_SIGUE_INCIERTO = 3;
   DESENLACE_DEL_COBRO_INCIERTO_NO_HAY_COBRO_INCIERTO = 4;
+}
+
+enum UpfrontChargeOutcome {
+  UPFRONT_CHARGE_OUTCOME_UNSPECIFIED = 0;
+  UPFRONT_CHARGE_OUTCOME_NOT_REQUIRED = 1;
+  UPFRONT_CHARGE_OUTCOME_COLLECTED = 2;
+  UPFRONT_CHARGE_OUTCOME_DECLINED = 3;
+  UPFRONT_CHARGE_OUTCOME_PENDING = 4;
+  UPFRONT_CHARGE_OUTCOME_UNCERTAIN = 5;
+}
+
+message CollectUpfrontChargeRequest {
+  string payment_id = 1;
+  string payment_method_id = 2;
+}
+
+message CollectUpfrontChargeResponse {
+  UpfrontChargeOutcome outcome = 1;
+  Payment payment = 2;
 }
 
 message ResolverCobroInciertoRequest {

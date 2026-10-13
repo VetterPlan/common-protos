@@ -153,6 +153,11 @@ class PaymentServiceStub:
                 request_serializer=payment_dot_payment__pb2.ResolverCobroInciertoRequest.SerializeToString,
                 response_deserializer=payment_dot_payment__pb2.ResolverCobroInciertoResponse.FromString,
                 _registered_method=True)
+        self.CollectUpfrontCharge = channel.unary_unary(
+                '/payment.PaymentService/CollectUpfrontCharge',
+                request_serializer=payment_dot_payment__pb2.CollectUpfrontChargeRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.CollectUpfrontChargeResponse.FromString,
+                _registered_method=True)
         self.CreateWallet = channel.unary_unary(
                 '/payment.PaymentService/CreateWallet',
                 request_serializer=payment_dot_payment__pb2.CreateWalletRequest.SerializeToString,
@@ -563,6 +568,12 @@ class PaymentServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def ResolverCobroIncierto(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CollectUpfrontCharge(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -1019,6 +1030,11 @@ def add_PaymentServiceServicer_to_server(servicer, server):
                     servicer.ResolverCobroIncierto,
                     request_deserializer=payment_dot_payment__pb2.ResolverCobroInciertoRequest.FromString,
                     response_serializer=payment_dot_payment__pb2.ResolverCobroInciertoResponse.SerializeToString,
+            ),
+            'CollectUpfrontCharge': grpc.unary_unary_rpc_method_handler(
+                    servicer.CollectUpfrontCharge,
+                    request_deserializer=payment_dot_payment__pb2.CollectUpfrontChargeRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.CollectUpfrontChargeResponse.SerializeToString,
             ),
             'CreateWallet': grpc.unary_unary_rpc_method_handler(
                     servicer.CreateWallet,
@@ -1872,6 +1888,33 @@ class PaymentService:
             '/payment.PaymentService/ResolverCobroIncierto',
             payment_dot_payment__pb2.ResolverCobroInciertoRequest.SerializeToString,
             payment_dot_payment__pb2.ResolverCobroInciertoResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CollectUpfrontCharge(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/CollectUpfrontCharge',
+            payment_dot_payment__pb2.CollectUpfrontChargeRequest.SerializeToString,
+            payment_dot_payment__pb2.CollectUpfrontChargeResponse.FromString,
             options,
             channel_credentials,
             insecure,
