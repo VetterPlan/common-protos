@@ -23,6 +23,7 @@ service AppointmentService {
   rpc CancelAppointment (CancelAppointmentRequest) returns (AppointmentResponse);
   rpc AbortAppointment (AbortAppointmentRequest) returns (AppointmentResponse);
   rpc GetCancellationQuote (GetCancellationQuoteRequest) returns (GetCancellationQuoteResponse);
+  rpc GetCancellationFeeAcknowledgement (GetCancellationFeeAcknowledgementRequest) returns (CancellationFeeAcknowledgement);
   rpc GetAppointment (GetAppointmentRequest) returns (AppointmentResponse);
   rpc GetClientAppointments (GetClientAppointmentsRequest) returns (AppointmentsResponse);
   rpc GetVetAppointments (GetVetAppointmentsRequest) returns (AppointmentsResponse);
@@ -494,6 +495,7 @@ message CancelAppointmentRequest {
   CancellationReason reason = 2;
   string reason_details = 3;
   string cancelled_by = 4;            // user_id or "SYSTEM"
+  optional double acknowledged_fee_amount_cop = 5;
 }
 
 message GetCancellationQuoteRequest {
@@ -513,6 +515,19 @@ message GetCancellationQuoteResponse {
   int32 appointments_affected = 9;
   bool fines_enabled = 10;
   google.protobuf.Timestamp policy_free_until = 11;
+}
+
+message GetCancellationFeeAcknowledgementRequest {
+  string appointment_id = 1;
+}
+
+message CancellationFeeAcknowledgement {
+  string appointment_id = 1;
+  bool settled = 2;
+  double quoted_fee_cop = 3;
+  optional double acknowledged_fee_cop = 4;
+  google.protobuf.Timestamp acknowledged_at = 5;
+  bool charged = 6;
 }
 
 message AbortAppointmentRequest {
@@ -566,6 +581,7 @@ message GetAvailableVetsRequest {
 message AppointmentResponse {
   Appointment appointment = 1;
   repeated Appointment group_appointments = 2;
+  string cancellation_fee_waived_reason = 3;
 }
 
 message AppointmentsResponse {

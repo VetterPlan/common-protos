@@ -80,6 +80,11 @@ class AppointmentServiceStub:
                 request_serializer=appointment_dot_appointment__pb2.GetCancellationQuoteRequest.SerializeToString,
                 response_deserializer=appointment_dot_appointment__pb2.GetCancellationQuoteResponse.FromString,
                 _registered_method=True)
+        self.GetCancellationFeeAcknowledgement = channel.unary_unary(
+                '/appointment.AppointmentService/GetCancellationFeeAcknowledgement',
+                request_serializer=appointment_dot_appointment__pb2.GetCancellationFeeAcknowledgementRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.CancellationFeeAcknowledgement.FromString,
+                _registered_method=True)
         self.GetAppointment = channel.unary_unary(
                 '/appointment.AppointmentService/GetAppointment',
                 request_serializer=appointment_dot_appointment__pb2.GetAppointmentRequest.SerializeToString,
@@ -328,6 +333,12 @@ class AppointmentServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def GetCancellationQuote(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetCancellationFeeAcknowledgement(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -604,6 +615,11 @@ def add_AppointmentServiceServicer_to_server(servicer, server):
                     servicer.GetCancellationQuote,
                     request_deserializer=appointment_dot_appointment__pb2.GetCancellationQuoteRequest.FromString,
                     response_serializer=appointment_dot_appointment__pb2.GetCancellationQuoteResponse.SerializeToString,
+            ),
+            'GetCancellationFeeAcknowledgement': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetCancellationFeeAcknowledgement,
+                    request_deserializer=appointment_dot_appointment__pb2.GetCancellationFeeAcknowledgementRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.CancellationFeeAcknowledgement.SerializeToString,
             ),
             'GetAppointment': grpc.unary_unary_rpc_method_handler(
                     servicer.GetAppointment,
@@ -1001,6 +1017,33 @@ class AppointmentService:
             '/appointment.AppointmentService/GetCancellationQuote',
             appointment_dot_appointment__pb2.GetCancellationQuoteRequest.SerializeToString,
             appointment_dot_appointment__pb2.GetCancellationQuoteResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetCancellationFeeAcknowledgement(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/GetCancellationFeeAcknowledgement',
+            appointment_dot_appointment__pb2.GetCancellationFeeAcknowledgementRequest.SerializeToString,
+            appointment_dot_appointment__pb2.CancellationFeeAcknowledgement.FromString,
             options,
             channel_credentials,
             insecure,
