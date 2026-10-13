@@ -353,6 +353,7 @@ message Payment {
   optional string fee_model = 40;
   optional string gateway_decline_reason = 41;
   google.protobuf.Timestamp capture_pending_since = 42;
+  google.protobuf.Timestamp upfront_charge_requested_at = 43;
 }
 
 message Wallet {
