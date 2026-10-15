@@ -120,6 +120,26 @@ class NotificationServiceStub:
                 request_serializer=notification_dot_notification__pb2.RevertNotificationCopyRequest.SerializeToString,
                 response_deserializer=notification_dot_notification__pb2.NotificationCopyEntry.FromString,
                 _registered_method=True)
+        self.ConfirmLaunchWaitlist = channel.unary_unary(
+                '/notification.NotificationService/ConfirmLaunchWaitlist',
+                request_serializer=notification_dot_notification__pb2.LaunchWaitlistTokenRequest.SerializeToString,
+                response_deserializer=notification_dot_notification__pb2.LaunchWaitlistTokenResponse.FromString,
+                _registered_method=True)
+        self.UnsubscribeLaunchWaitlist = channel.unary_unary(
+                '/notification.NotificationService/UnsubscribeLaunchWaitlist',
+                request_serializer=notification_dot_notification__pb2.LaunchWaitlistTokenRequest.SerializeToString,
+                response_deserializer=notification_dot_notification__pb2.LaunchWaitlistTokenResponse.FromString,
+                _registered_method=True)
+        self.ListLaunchWaitlist = channel.unary_unary(
+                '/notification.NotificationService/ListLaunchWaitlist',
+                request_serializer=notification_dot_notification__pb2.ListLaunchWaitlistRequest.SerializeToString,
+                response_deserializer=notification_dot_notification__pb2.ListLaunchWaitlistResponse.FromString,
+                _registered_method=True)
+        self.NotifyLaunchWaitlist = channel.unary_unary(
+                '/notification.NotificationService/NotifyLaunchWaitlist',
+                request_serializer=notification_dot_notification__pb2.NotifyLaunchWaitlistRequest.SerializeToString,
+                response_deserializer=notification_dot_notification__pb2.NotifyLaunchWaitlistResponse.FromString,
+                _registered_method=True)
 
 
 class NotificationServiceServicer:
@@ -225,6 +245,30 @@ class NotificationServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ConfirmLaunchWaitlist(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def UnsubscribeLaunchWaitlist(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListLaunchWaitlist(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def NotifyLaunchWaitlist(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_NotificationServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -297,6 +341,26 @@ def add_NotificationServiceServicer_to_server(servicer, server):
                     servicer.RevertNotificationCopy,
                     request_deserializer=notification_dot_notification__pb2.RevertNotificationCopyRequest.FromString,
                     response_serializer=notification_dot_notification__pb2.NotificationCopyEntry.SerializeToString,
+            ),
+            'ConfirmLaunchWaitlist': grpc.unary_unary_rpc_method_handler(
+                    servicer.ConfirmLaunchWaitlist,
+                    request_deserializer=notification_dot_notification__pb2.LaunchWaitlistTokenRequest.FromString,
+                    response_serializer=notification_dot_notification__pb2.LaunchWaitlistTokenResponse.SerializeToString,
+            ),
+            'UnsubscribeLaunchWaitlist': grpc.unary_unary_rpc_method_handler(
+                    servicer.UnsubscribeLaunchWaitlist,
+                    request_deserializer=notification_dot_notification__pb2.LaunchWaitlistTokenRequest.FromString,
+                    response_serializer=notification_dot_notification__pb2.LaunchWaitlistTokenResponse.SerializeToString,
+            ),
+            'ListLaunchWaitlist': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListLaunchWaitlist,
+                    request_deserializer=notification_dot_notification__pb2.ListLaunchWaitlistRequest.FromString,
+                    response_serializer=notification_dot_notification__pb2.ListLaunchWaitlistResponse.SerializeToString,
+            ),
+            'NotifyLaunchWaitlist': grpc.unary_unary_rpc_method_handler(
+                    servicer.NotifyLaunchWaitlist,
+                    request_deserializer=notification_dot_notification__pb2.NotifyLaunchWaitlistRequest.FromString,
+                    response_serializer=notification_dot_notification__pb2.NotifyLaunchWaitlistResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -693,6 +757,114 @@ class NotificationService:
             '/notification.NotificationService/RevertNotificationCopy',
             notification_dot_notification__pb2.RevertNotificationCopyRequest.SerializeToString,
             notification_dot_notification__pb2.NotificationCopyEntry.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ConfirmLaunchWaitlist(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/notification.NotificationService/ConfirmLaunchWaitlist',
+            notification_dot_notification__pb2.LaunchWaitlistTokenRequest.SerializeToString,
+            notification_dot_notification__pb2.LaunchWaitlistTokenResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def UnsubscribeLaunchWaitlist(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/notification.NotificationService/UnsubscribeLaunchWaitlist',
+            notification_dot_notification__pb2.LaunchWaitlistTokenRequest.SerializeToString,
+            notification_dot_notification__pb2.LaunchWaitlistTokenResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListLaunchWaitlist(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/notification.NotificationService/ListLaunchWaitlist',
+            notification_dot_notification__pb2.ListLaunchWaitlistRequest.SerializeToString,
+            notification_dot_notification__pb2.ListLaunchWaitlistResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def NotifyLaunchWaitlist(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/notification.NotificationService/NotifyLaunchWaitlist',
+            notification_dot_notification__pb2.NotifyLaunchWaitlistRequest.SerializeToString,
+            notification_dot_notification__pb2.NotifyLaunchWaitlistResponse.FromString,
             options,
             channel_credentials,
             insecure,

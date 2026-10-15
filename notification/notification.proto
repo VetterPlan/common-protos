@@ -36,6 +36,10 @@ service NotificationService {
   rpc UpdateNotificationCopy (UpdateNotificationCopyRequest) returns (NotificationCopyEntry);
   rpc PreviewNotificationCopy (PreviewNotificationCopyRequest) returns (PreviewNotificationCopyResponse);
   rpc RevertNotificationCopy (RevertNotificationCopyRequest) returns (NotificationCopyEntry);
+  rpc ConfirmLaunchWaitlist (LaunchWaitlistTokenRequest) returns (LaunchWaitlistTokenResponse);
+  rpc UnsubscribeLaunchWaitlist (LaunchWaitlistTokenRequest) returns (LaunchWaitlistTokenResponse);
+  rpc ListLaunchWaitlist (ListLaunchWaitlistRequest) returns (ListLaunchWaitlistResponse);
+  rpc NotifyLaunchWaitlist (NotifyLaunchWaitlistRequest) returns (NotifyLaunchWaitlistResponse);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -370,4 +374,88 @@ message PreviewNotificationCopyResponse {
 message RevertNotificationCopyRequest {
   string copy_key   = 1;
   string updated_by = 2;
+}
+
+enum LaunchWaitlistRole {
+  LAUNCH_WAITLIST_ROLE_UNSPECIFIED = 0;
+  LAUNCH_WAITLIST_ROLE_OWNER       = 1;
+  LAUNCH_WAITLIST_ROLE_VET         = 2;
+}
+
+enum LaunchWaitlistPlatform {
+  LAUNCH_WAITLIST_PLATFORM_UNSPECIFIED = 0;
+  LAUNCH_WAITLIST_PLATFORM_ANDROID     = 1;
+  LAUNCH_WAITLIST_PLATFORM_IOS         = 2;
+}
+
+enum LaunchWaitlistStatus {
+  LAUNCH_WAITLIST_STATUS_UNSPECIFIED          = 0;
+  LAUNCH_WAITLIST_STATUS_PENDING_CONFIRMATION = 1;
+  LAUNCH_WAITLIST_STATUS_CONFIRMED            = 2;
+  LAUNCH_WAITLIST_STATUS_UNSUBSCRIBED         = 3;
+}
+
+enum LaunchWaitlistTokenOutcome {
+  LAUNCH_WAITLIST_TOKEN_OUTCOME_UNSPECIFIED  = 0;
+  LAUNCH_WAITLIST_TOKEN_OUTCOME_DONE         = 1;
+  LAUNCH_WAITLIST_TOKEN_OUTCOME_ALREADY_DONE = 2;
+  LAUNCH_WAITLIST_TOKEN_OUTCOME_INVALID      = 3;
+  LAUNCH_WAITLIST_TOKEN_OUTCOME_EXPIRED      = 4;
+}
+
+message LaunchWaitlistTokenRequest {
+  string token = 1;
+}
+
+message LaunchWaitlistTokenResponse {
+  LaunchWaitlistTokenOutcome outcome = 1;
+  LaunchWaitlistRole         role    = 2;
+}
+
+message LaunchWaitlistEntry {
+  string                    id                = 1;
+  string                    email             = 2;
+  LaunchWaitlistRole        role              = 3;
+  LaunchWaitlistPlatform    platform          = 4;
+  LaunchWaitlistStatus      status            = 5;
+  int32                     consent_version   = 6;
+  google.protobuf.Timestamp created_at        = 7;
+  google.protobuf.Timestamp confirmed_at      = 8;
+  google.protobuf.Timestamp unsubscribed_at   = 9;
+  repeated string           notified_launches = 10;
+}
+
+message LaunchWaitlistCount {
+  LaunchWaitlistRole     role     = 1;
+  LaunchWaitlistPlatform platform = 2;
+  LaunchWaitlistStatus   status   = 3;
+  int32                  count    = 4;
+}
+
+message ListLaunchWaitlistRequest {
+  LaunchWaitlistRole     role           = 1;
+  LaunchWaitlistPlatform platform       = 2;
+  LaunchWaitlistStatus   status         = 3;
+  string                 email_contains = 4;
+  int32                  page           = 5;
+  int32                  page_size      = 6;
+}
+
+message ListLaunchWaitlistResponse {
+  repeated LaunchWaitlistEntry entries = 1;
+  int32                        total   = 2;
+  repeated LaunchWaitlistCount counts  = 3;
+}
+
+message NotifyLaunchWaitlistRequest {
+  LaunchWaitlistRole     role                 = 1;
+  LaunchWaitlistPlatform platform             = 2;
+  string                 requested_by_user_id = 3;
+}
+
+message NotifyLaunchWaitlistResponse {
+  int32                     enqueued     = 1;
+  int32                     remaining    = 2;
+  string                    store_url    = 3;
+  google.protobuf.Timestamp deliver_from = 4;
 }
