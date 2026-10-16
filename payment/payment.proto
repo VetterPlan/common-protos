@@ -36,6 +36,8 @@ service PaymentService {
   rpc ListPaymentsByAppointment (ListPaymentsByAppointmentRequest) returns (ListPaymentsByAppointmentResponse);
   rpc GetRefunds (GetRefundsRequest) returns (RefundsResponse);
   rpc GetRefundsByClient (GetRefundsByClientRequest) returns (RefundsResponse);
+  rpc ListRefundsAwaitingDelivery (ListRefundsAwaitingDeliveryRequest) returns (RefundsResponse);
+  rpc ConfirmRefundDelivered (ConfirmRefundDeliveredRequest) returns (RefundResponse);
   rpc GetClientCollectionStatus (GetClientCollectionStatusRequest) returns (GetClientCollectionStatusResponse);
   rpc ListFailedCollections (ListFailedCollectionsRequest) returns (ListFailedCollectionsResponse);
   rpc ListPayments (ListPaymentsRequest) returns (ListPaymentsResponse);
@@ -463,6 +465,10 @@ message Refund {
   // Etapa 4. `wompi_refund_id` queda deprecado; el par es (gateway, id_externo).
   string gateway = 16;
   string id_externo = 17;
+
+  google.protobuf.Timestamp manual_transfer_required_at = 18;
+  string delivery_reference = 19;
+  string delivery_confirmed_by = 20;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -512,6 +518,17 @@ message RefundPaymentRequest {
   string reason_details = 5;
   string initiated_by = 6;
   string idempotency_key = 7;
+  bool original_payment_method_only = 8;
+}
+
+message ListRefundsAwaitingDeliveryRequest {
+  int32 limit = 1;
+}
+
+message ConfirmRefundDeliveredRequest {
+  string refund_id = 1;
+  string delivery_reference = 2;
+  string actor_user_id = 3;
 }
 
 message ChargeNoShowFeeRequest {

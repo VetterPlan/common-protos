@@ -128,6 +128,16 @@ class PaymentServiceStub:
                 request_serializer=payment_dot_payment__pb2.GetRefundsByClientRequest.SerializeToString,
                 response_deserializer=payment_dot_payment__pb2.RefundsResponse.FromString,
                 _registered_method=True)
+        self.ListRefundsAwaitingDelivery = channel.unary_unary(
+                '/payment.PaymentService/ListRefundsAwaitingDelivery',
+                request_serializer=payment_dot_payment__pb2.ListRefundsAwaitingDeliveryRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.RefundsResponse.FromString,
+                _registered_method=True)
+        self.ConfirmRefundDelivered = channel.unary_unary(
+                '/payment.PaymentService/ConfirmRefundDelivered',
+                request_serializer=payment_dot_payment__pb2.ConfirmRefundDeliveredRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.RefundResponse.FromString,
+                _registered_method=True)
         self.GetClientCollectionStatus = channel.unary_unary(
                 '/payment.PaymentService/GetClientCollectionStatus',
                 request_serializer=payment_dot_payment__pb2.GetClientCollectionStatusRequest.SerializeToString,
@@ -538,6 +548,18 @@ class PaymentServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def GetRefundsByClient(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListRefundsAwaitingDelivery(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ConfirmRefundDelivered(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -1005,6 +1027,16 @@ def add_PaymentServiceServicer_to_server(servicer, server):
                     servicer.GetRefundsByClient,
                     request_deserializer=payment_dot_payment__pb2.GetRefundsByClientRequest.FromString,
                     response_serializer=payment_dot_payment__pb2.RefundsResponse.SerializeToString,
+            ),
+            'ListRefundsAwaitingDelivery': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListRefundsAwaitingDelivery,
+                    request_deserializer=payment_dot_payment__pb2.ListRefundsAwaitingDeliveryRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.RefundsResponse.SerializeToString,
+            ),
+            'ConfirmRefundDelivered': grpc.unary_unary_rpc_method_handler(
+                    servicer.ConfirmRefundDelivered,
+                    request_deserializer=payment_dot_payment__pb2.ConfirmRefundDeliveredRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.RefundResponse.SerializeToString,
             ),
             'GetClientCollectionStatus': grpc.unary_unary_rpc_method_handler(
                     servicer.GetClientCollectionStatus,
@@ -1753,6 +1785,60 @@ class PaymentService:
             '/payment.PaymentService/GetRefundsByClient',
             payment_dot_payment__pb2.GetRefundsByClientRequest.SerializeToString,
             payment_dot_payment__pb2.RefundsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListRefundsAwaitingDelivery(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/ListRefundsAwaitingDelivery',
+            payment_dot_payment__pb2.ListRefundsAwaitingDeliveryRequest.SerializeToString,
+            payment_dot_payment__pb2.RefundsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ConfirmRefundDelivered(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/ConfirmRefundDelivered',
+            payment_dot_payment__pb2.ConfirmRefundDeliveredRequest.SerializeToString,
+            payment_dot_payment__pb2.RefundResponse.FromString,
             options,
             channel_credentials,
             insecure,
