@@ -182,6 +182,15 @@ enum VaccinationStatus {
   VACCINATION_STATUS_OVERDUE = 4;       // Alguna venció y sigue sin ponerse.
 }
 
+enum VaccineDoseStatus {
+  VACCINE_DOSE_STATUS_UNSPECIFIED = 0;
+  VACCINE_DOSE_STATUS_CURRENT = 1;
+  VACCINE_DOSE_STATUS_DUE_SOON = 2;
+  VACCINE_DOSE_STATUS_OVERDUE = 3;
+  VACCINE_DOSE_STATUS_FULFILLED = 4;
+  VACCINE_DOSE_STATUS_NEEDS_UPDATE = 5;
+}
+
 enum AllergySeverity {
   ALLERGY_SEVERITY_UNSPECIFIED = 0;
   ALLERGY_SEVERITY_MILD = 1;
@@ -226,6 +235,7 @@ message Pet {
   string next_vaccination_due = 26;
   int32 vaccines_overdue_count = 27;
   int32 vaccines_due_soon_count = 28;
+  int32 vaccines_needing_update_count = 29;
 }
 
 message Vaccination {
@@ -241,6 +251,8 @@ message Vaccination {
   int32 days_until_due = 10;
   google.protobuf.Timestamp created_at = 11;
   google.protobuf.Timestamp updated_at = 12;
+  VaccineDoseStatus dose_status = 13;
+  repeated string protections = 14;
 }
 
 message Deworming {
