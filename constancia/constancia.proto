@@ -51,6 +51,7 @@ service ConstanciaService {
   rpc MarkCaseMessagesRead (MarkCaseMessagesReadRequest) returns (CaseReadState);
   rpc ProposeRepair (ProposeRepairRequest) returns (CaseResponse);
   rpc GetActionCatalog (GetActionCatalogRequest) returns (ActionCatalogResponse);
+  rpc GetHelpOptions (GetHelpOptionsRequest) returns (HelpOptions);
 }
 
 // ─── Contexto de acceso ────────────────────────────────────────────────────
@@ -396,6 +397,7 @@ message OpenCaseRequest {
   string                 user_text    = 5;
   google.protobuf.Struct payload      = 6;
   AccessContext          access       = 7;
+  CaseParty              side         = 8;
 }
 
 message GetCaseRequest       { string case_id = 1; AccessContext access = 2; }
@@ -554,4 +556,34 @@ message IngestSignalResponse {
   bool   accepted = 1;
   string case_id  = 2;
   string reason   = 3;
+}
+
+message GetHelpOptionsRequest {
+  string        user_id        = 1;
+  string        appointment_id = 2;
+  AccessContext access         = 3;
+  CaseParty     side           = 4;
+  string        topic          = 5;
+}
+
+message HelpOption {
+  string key          = 1;
+  string label        = 2;
+  string placeholder  = 3;
+  string subject_type = 4;
+}
+
+message SeenFinding {
+  string trigger  = 1;
+  string headline = 2;
+}
+
+message HelpOptions {
+  repeated HelpOption  options            = 1;
+  string               appointment_status = 2;
+  repeated SeenFinding already_seen       = 3;
+  string               open_case_id       = 4;
+  string               open_filing_number = 5;
+  bool                 already_seen_complete = 6;
+  repeated SeenFinding account = 7;
 }

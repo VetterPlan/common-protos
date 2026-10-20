@@ -167,6 +167,11 @@ class ConstanciaServiceStub:
                 request_serializer=constancia_dot_constancia__pb2.GetActionCatalogRequest.SerializeToString,
                 response_deserializer=constancia_dot_constancia__pb2.ActionCatalogResponse.FromString,
                 _registered_method=True)
+        self.GetHelpOptions = channel.unary_unary(
+                '/constancia.ConstanciaService/GetHelpOptions',
+                request_serializer=constancia_dot_constancia__pb2.GetHelpOptionsRequest.SerializeToString,
+                response_deserializer=constancia_dot_constancia__pb2.HelpOptions.FromString,
+                _registered_method=True)
 
 
 class ConstanciaServiceServicer:
@@ -327,6 +332,12 @@ class ConstanciaServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetHelpOptions(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ConstanciaServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -439,6 +450,11 @@ def add_ConstanciaServiceServicer_to_server(servicer, server):
                     servicer.GetActionCatalog,
                     request_deserializer=constancia_dot_constancia__pb2.GetActionCatalogRequest.FromString,
                     response_serializer=constancia_dot_constancia__pb2.ActionCatalogResponse.SerializeToString,
+            ),
+            'GetHelpOptions': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetHelpOptions,
+                    request_deserializer=constancia_dot_constancia__pb2.GetHelpOptionsRequest.FromString,
+                    response_serializer=constancia_dot_constancia__pb2.HelpOptions.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -1058,6 +1074,33 @@ class ConstanciaService:
             '/constancia.ConstanciaService/GetActionCatalog',
             constancia_dot_constancia__pb2.GetActionCatalogRequest.SerializeToString,
             constancia_dot_constancia__pb2.ActionCatalogResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetHelpOptions(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/constancia.ConstanciaService/GetHelpOptions',
+            constancia_dot_constancia__pb2.GetHelpOptionsRequest.SerializeToString,
+            constancia_dot_constancia__pb2.HelpOptions.FromString,
             options,
             channel_credentials,
             insecure,
