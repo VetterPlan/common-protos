@@ -357,6 +357,9 @@ message Case {
   repeated CheckedFinding    checked           = 30;
   string                     subject_actor     = 31;
   string                     resolution_summary = 32;
+  string                     filing_number      = 33;
+  google.protobuf.Timestamp  filed_at           = 34;
+  string                     response_due_date  = 35;
 }
 
 enum CaseParty {
