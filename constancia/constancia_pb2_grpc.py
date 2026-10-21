@@ -192,6 +192,71 @@ class ConstanciaServiceStub:
                 request_serializer=constancia_dot_constancia__pb2.ListOnCallTeamRequest.SerializeToString,
                 response_deserializer=constancia_dot_constancia__pb2.OnCallTeam.FromString,
                 _registered_method=True)
+        self.OpenSupportThread = channel.unary_unary(
+                '/constancia.ConstanciaService/OpenSupportThread',
+                request_serializer=constancia_dot_constancia__pb2.OpenSupportThreadRequest.SerializeToString,
+                response_deserializer=constancia_dot_constancia__pb2.SupportThreadResponse.FromString,
+                _registered_method=True)
+        self.TeamOpenSupportThread = channel.unary_unary(
+                '/constancia.ConstanciaService/TeamOpenSupportThread',
+                request_serializer=constancia_dot_constancia__pb2.TeamOpenSupportThreadRequest.SerializeToString,
+                response_deserializer=constancia_dot_constancia__pb2.SupportThreadResponse.FromString,
+                _registered_method=True)
+        self.GetSupportThread = channel.unary_unary(
+                '/constancia.ConstanciaService/GetSupportThread',
+                request_serializer=constancia_dot_constancia__pb2.GetSupportThreadRequest.SerializeToString,
+                response_deserializer=constancia_dot_constancia__pb2.SupportThreadResponse.FromString,
+                _registered_method=True)
+        self.SendSupportThreadMessage = channel.unary_unary(
+                '/constancia.ConstanciaService/SendSupportThreadMessage',
+                request_serializer=constancia_dot_constancia__pb2.SendSupportThreadMessageRequest.SerializeToString,
+                response_deserializer=constancia_dot_constancia__pb2.SupportThreadResponse.FromString,
+                _registered_method=True)
+        self.ListSupportThreadMessages = channel.unary_unary(
+                '/constancia.ConstanciaService/ListSupportThreadMessages',
+                request_serializer=constancia_dot_constancia__pb2.ListSupportThreadMessagesRequest.SerializeToString,
+                response_deserializer=constancia_dot_constancia__pb2.CaseMessageList.FromString,
+                _registered_method=True)
+        self.MarkSupportThreadRead = channel.unary_unary(
+                '/constancia.ConstanciaService/MarkSupportThreadRead',
+                request_serializer=constancia_dot_constancia__pb2.MarkSupportThreadReadRequest.SerializeToString,
+                response_deserializer=constancia_dot_constancia__pb2.SupportThreadReadState.FromString,
+                _registered_method=True)
+        self.ListMySupportThreads = channel.unary_unary(
+                '/constancia.ConstanciaService/ListMySupportThreads',
+                request_serializer=constancia_dot_constancia__pb2.ListMySupportThreadsRequest.SerializeToString,
+                response_deserializer=constancia_dot_constancia__pb2.SupportThreadList.FromString,
+                _registered_method=True)
+        self.AdminListSupportThreads = channel.unary_unary(
+                '/constancia.ConstanciaService/AdminListSupportThreads',
+                request_serializer=constancia_dot_constancia__pb2.AdminListSupportThreadsRequest.SerializeToString,
+                response_deserializer=constancia_dot_constancia__pb2.SupportThreadList.FromString,
+                _registered_method=True)
+        self.FileSupportThread = channel.unary_unary(
+                '/constancia.ConstanciaService/FileSupportThread',
+                request_serializer=constancia_dot_constancia__pb2.FileSupportThreadRequest.SerializeToString,
+                response_deserializer=constancia_dot_constancia__pb2.SupportThreadResponse.FromString,
+                _registered_method=True)
+        self.CloseSupportThread = channel.unary_unary(
+                '/constancia.ConstanciaService/CloseSupportThread',
+                request_serializer=constancia_dot_constancia__pb2.CloseSupportThreadRequest.SerializeToString,
+                response_deserializer=constancia_dot_constancia__pb2.SupportThreadResponse.FromString,
+                _registered_method=True)
+        self.TakeSupportThread = channel.unary_unary(
+                '/constancia.ConstanciaService/TakeSupportThread',
+                request_serializer=constancia_dot_constancia__pb2.TakeSupportThreadRequest.SerializeToString,
+                response_deserializer=constancia_dot_constancia__pb2.SupportThreadResponse.FromString,
+                _registered_method=True)
+        self.AddSupportThreadNote = channel.unary_unary(
+                '/constancia.ConstanciaService/AddSupportThreadNote',
+                request_serializer=constancia_dot_constancia__pb2.AddSupportThreadNoteRequest.SerializeToString,
+                response_deserializer=constancia_dot_constancia__pb2.SupportThreadResponse.FromString,
+                _registered_method=True)
+        self.DeleteUserSupportThreads = channel.unary_unary(
+                '/constancia.ConstanciaService/DeleteUserSupportThreads',
+                request_serializer=constancia_dot_constancia__pb2.DeleteUserSupportThreadsRequest.SerializeToString,
+                response_deserializer=constancia_dot_constancia__pb2.DeleteUserSupportThreadsResponse.FromString,
+                _registered_method=True)
 
 
 class ConstanciaServiceServicer:
@@ -382,6 +447,84 @@ class ConstanciaServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def OpenSupportThread(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def TeamOpenSupportThread(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetSupportThread(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SendSupportThreadMessage(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListSupportThreadMessages(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def MarkSupportThreadRead(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListMySupportThreads(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def AdminListSupportThreads(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def FileSupportThread(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CloseSupportThread(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def TakeSupportThread(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def AddSupportThreadNote(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DeleteUserSupportThreads(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ConstanciaServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -519,6 +662,71 @@ def add_ConstanciaServiceServicer_to_server(servicer, server):
                     servicer.ListOnCallTeam,
                     request_deserializer=constancia_dot_constancia__pb2.ListOnCallTeamRequest.FromString,
                     response_serializer=constancia_dot_constancia__pb2.OnCallTeam.SerializeToString,
+            ),
+            'OpenSupportThread': grpc.unary_unary_rpc_method_handler(
+                    servicer.OpenSupportThread,
+                    request_deserializer=constancia_dot_constancia__pb2.OpenSupportThreadRequest.FromString,
+                    response_serializer=constancia_dot_constancia__pb2.SupportThreadResponse.SerializeToString,
+            ),
+            'TeamOpenSupportThread': grpc.unary_unary_rpc_method_handler(
+                    servicer.TeamOpenSupportThread,
+                    request_deserializer=constancia_dot_constancia__pb2.TeamOpenSupportThreadRequest.FromString,
+                    response_serializer=constancia_dot_constancia__pb2.SupportThreadResponse.SerializeToString,
+            ),
+            'GetSupportThread': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetSupportThread,
+                    request_deserializer=constancia_dot_constancia__pb2.GetSupportThreadRequest.FromString,
+                    response_serializer=constancia_dot_constancia__pb2.SupportThreadResponse.SerializeToString,
+            ),
+            'SendSupportThreadMessage': grpc.unary_unary_rpc_method_handler(
+                    servicer.SendSupportThreadMessage,
+                    request_deserializer=constancia_dot_constancia__pb2.SendSupportThreadMessageRequest.FromString,
+                    response_serializer=constancia_dot_constancia__pb2.SupportThreadResponse.SerializeToString,
+            ),
+            'ListSupportThreadMessages': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListSupportThreadMessages,
+                    request_deserializer=constancia_dot_constancia__pb2.ListSupportThreadMessagesRequest.FromString,
+                    response_serializer=constancia_dot_constancia__pb2.CaseMessageList.SerializeToString,
+            ),
+            'MarkSupportThreadRead': grpc.unary_unary_rpc_method_handler(
+                    servicer.MarkSupportThreadRead,
+                    request_deserializer=constancia_dot_constancia__pb2.MarkSupportThreadReadRequest.FromString,
+                    response_serializer=constancia_dot_constancia__pb2.SupportThreadReadState.SerializeToString,
+            ),
+            'ListMySupportThreads': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListMySupportThreads,
+                    request_deserializer=constancia_dot_constancia__pb2.ListMySupportThreadsRequest.FromString,
+                    response_serializer=constancia_dot_constancia__pb2.SupportThreadList.SerializeToString,
+            ),
+            'AdminListSupportThreads': grpc.unary_unary_rpc_method_handler(
+                    servicer.AdminListSupportThreads,
+                    request_deserializer=constancia_dot_constancia__pb2.AdminListSupportThreadsRequest.FromString,
+                    response_serializer=constancia_dot_constancia__pb2.SupportThreadList.SerializeToString,
+            ),
+            'FileSupportThread': grpc.unary_unary_rpc_method_handler(
+                    servicer.FileSupportThread,
+                    request_deserializer=constancia_dot_constancia__pb2.FileSupportThreadRequest.FromString,
+                    response_serializer=constancia_dot_constancia__pb2.SupportThreadResponse.SerializeToString,
+            ),
+            'CloseSupportThread': grpc.unary_unary_rpc_method_handler(
+                    servicer.CloseSupportThread,
+                    request_deserializer=constancia_dot_constancia__pb2.CloseSupportThreadRequest.FromString,
+                    response_serializer=constancia_dot_constancia__pb2.SupportThreadResponse.SerializeToString,
+            ),
+            'TakeSupportThread': grpc.unary_unary_rpc_method_handler(
+                    servicer.TakeSupportThread,
+                    request_deserializer=constancia_dot_constancia__pb2.TakeSupportThreadRequest.FromString,
+                    response_serializer=constancia_dot_constancia__pb2.SupportThreadResponse.SerializeToString,
+            ),
+            'AddSupportThreadNote': grpc.unary_unary_rpc_method_handler(
+                    servicer.AddSupportThreadNote,
+                    request_deserializer=constancia_dot_constancia__pb2.AddSupportThreadNoteRequest.FromString,
+                    response_serializer=constancia_dot_constancia__pb2.SupportThreadResponse.SerializeToString,
+            ),
+            'DeleteUserSupportThreads': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeleteUserSupportThreads,
+                    request_deserializer=constancia_dot_constancia__pb2.DeleteUserSupportThreadsRequest.FromString,
+                    response_serializer=constancia_dot_constancia__pb2.DeleteUserSupportThreadsResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -1273,6 +1481,357 @@ class ConstanciaService:
             '/constancia.ConstanciaService/ListOnCallTeam',
             constancia_dot_constancia__pb2.ListOnCallTeamRequest.SerializeToString,
             constancia_dot_constancia__pb2.OnCallTeam.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def OpenSupportThread(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/constancia.ConstanciaService/OpenSupportThread',
+            constancia_dot_constancia__pb2.OpenSupportThreadRequest.SerializeToString,
+            constancia_dot_constancia__pb2.SupportThreadResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def TeamOpenSupportThread(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/constancia.ConstanciaService/TeamOpenSupportThread',
+            constancia_dot_constancia__pb2.TeamOpenSupportThreadRequest.SerializeToString,
+            constancia_dot_constancia__pb2.SupportThreadResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetSupportThread(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/constancia.ConstanciaService/GetSupportThread',
+            constancia_dot_constancia__pb2.GetSupportThreadRequest.SerializeToString,
+            constancia_dot_constancia__pb2.SupportThreadResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SendSupportThreadMessage(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/constancia.ConstanciaService/SendSupportThreadMessage',
+            constancia_dot_constancia__pb2.SendSupportThreadMessageRequest.SerializeToString,
+            constancia_dot_constancia__pb2.SupportThreadResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListSupportThreadMessages(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/constancia.ConstanciaService/ListSupportThreadMessages',
+            constancia_dot_constancia__pb2.ListSupportThreadMessagesRequest.SerializeToString,
+            constancia_dot_constancia__pb2.CaseMessageList.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def MarkSupportThreadRead(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/constancia.ConstanciaService/MarkSupportThreadRead',
+            constancia_dot_constancia__pb2.MarkSupportThreadReadRequest.SerializeToString,
+            constancia_dot_constancia__pb2.SupportThreadReadState.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListMySupportThreads(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/constancia.ConstanciaService/ListMySupportThreads',
+            constancia_dot_constancia__pb2.ListMySupportThreadsRequest.SerializeToString,
+            constancia_dot_constancia__pb2.SupportThreadList.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def AdminListSupportThreads(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/constancia.ConstanciaService/AdminListSupportThreads',
+            constancia_dot_constancia__pb2.AdminListSupportThreadsRequest.SerializeToString,
+            constancia_dot_constancia__pb2.SupportThreadList.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def FileSupportThread(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/constancia.ConstanciaService/FileSupportThread',
+            constancia_dot_constancia__pb2.FileSupportThreadRequest.SerializeToString,
+            constancia_dot_constancia__pb2.SupportThreadResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CloseSupportThread(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/constancia.ConstanciaService/CloseSupportThread',
+            constancia_dot_constancia__pb2.CloseSupportThreadRequest.SerializeToString,
+            constancia_dot_constancia__pb2.SupportThreadResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def TakeSupportThread(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/constancia.ConstanciaService/TakeSupportThread',
+            constancia_dot_constancia__pb2.TakeSupportThreadRequest.SerializeToString,
+            constancia_dot_constancia__pb2.SupportThreadResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def AddSupportThreadNote(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/constancia.ConstanciaService/AddSupportThreadNote',
+            constancia_dot_constancia__pb2.AddSupportThreadNoteRequest.SerializeToString,
+            constancia_dot_constancia__pb2.SupportThreadResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DeleteUserSupportThreads(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/constancia.ConstanciaService/DeleteUserSupportThreads',
+            constancia_dot_constancia__pb2.DeleteUserSupportThreadsRequest.SerializeToString,
+            constancia_dot_constancia__pb2.DeleteUserSupportThreadsResponse.FromString,
             options,
             channel_credentials,
             insecure,

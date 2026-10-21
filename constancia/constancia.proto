@@ -56,6 +56,19 @@ service ConstanciaService {
   rpc ReassignCase (ReassignCaseRequest) returns (CaseResponse);
   rpc AddTeamNote (AddTeamNoteRequest) returns (CaseResponse);
   rpc ListOnCallTeam (ListOnCallTeamRequest) returns (OnCallTeam);
+  rpc OpenSupportThread (OpenSupportThreadRequest) returns (SupportThreadResponse);
+  rpc TeamOpenSupportThread (TeamOpenSupportThreadRequest) returns (SupportThreadResponse);
+  rpc GetSupportThread (GetSupportThreadRequest) returns (SupportThreadResponse);
+  rpc SendSupportThreadMessage (SendSupportThreadMessageRequest) returns (SupportThreadResponse);
+  rpc ListSupportThreadMessages (ListSupportThreadMessagesRequest) returns (CaseMessageList);
+  rpc MarkSupportThreadRead (MarkSupportThreadReadRequest) returns (SupportThreadReadState);
+  rpc ListMySupportThreads (ListMySupportThreadsRequest) returns (SupportThreadList);
+  rpc AdminListSupportThreads (AdminListSupportThreadsRequest) returns (SupportThreadList);
+  rpc FileSupportThread (FileSupportThreadRequest) returns (SupportThreadResponse);
+  rpc CloseSupportThread (CloseSupportThreadRequest) returns (SupportThreadResponse);
+  rpc TakeSupportThread (TakeSupportThreadRequest) returns (SupportThreadResponse);
+  rpc AddSupportThreadNote (AddSupportThreadNoteRequest) returns (SupportThreadResponse);
+  rpc DeleteUserSupportThreads (DeleteUserSupportThreadsRequest) returns (DeleteUserSupportThreadsResponse);
 }
 
 // ─── Contexto de acceso ────────────────────────────────────────────────────
@@ -640,4 +653,147 @@ message OnCallMember {
 
 message OnCallTeam {
   repeated OnCallMember members = 1;
+}
+
+enum SupportThreadState {
+  SUPPORT_THREAD_STATE_UNSPECIFIED      = 0;
+  SUPPORT_THREAD_STATE_OPEN             = 1;
+  SUPPORT_THREAD_STATE_WAITING_FOR_TEAM = 2;
+  SUPPORT_THREAD_STATE_ANSWERED         = 3;
+  SUPPORT_THREAD_STATE_CLOSED           = 4;
+}
+
+enum SupportThreadOpener {
+  SUPPORT_THREAD_OPENER_UNSPECIFIED = 0;
+  SUPPORT_THREAD_OPENER_OWNER       = 1;
+  SUPPORT_THREAD_OPENER_TEAM        = 2;
+}
+
+message SupportThread {
+  string                    id                    = 1;
+  string                    user_id               = 2;
+  CaseParty                 side                  = 3;
+  SupportThreadState        state                 = 4;
+  SupportThreadOpener       opened_by             = 5;
+  string                    handoff_reason        = 6;
+  string                    handoff_reason_label  = 7;
+  string                    first_message         = 8;
+  string                    assigned_to_user_id   = 9;
+  bool                      assigned_to_requester = 10;
+  string                    opening_reason        = 11;
+  string                    filed_case_id         = 12;
+  string                    filed_filing_number   = 13;
+  google.protobuf.Timestamp opened_at             = 14;
+  google.protobuf.Timestamp last_message_at       = 15;
+  google.protobuf.Timestamp closed_at             = 16;
+  string                    closed_reason         = 17;
+  int32                     team_unread           = 18;
+  int32                     owner_unread          = 19;
+  google.protobuf.Timestamp waiting_since         = 20;
+  google.protobuf.Timestamp first_response_due_at = 21;
+  int32                     owner_message_count   = 22;
+  string                    help_option_key       = 23;
+  string                    help_option_label     = 24;
+  repeated HelpOption       file_options          = 25;
+  int64                     last_seq              = 26;
+  string                    client_profile_id     = 27;
+  string                    vet_profile_id        = 28;
+}
+
+message SupportThreadResponse { SupportThread thread = 1; }
+
+message OpenSupportThreadRequest {
+  CaseParty     side            = 1;
+  string        text            = 2;
+  string        help_option_key = 3;
+  AccessContext access          = 4;
+}
+
+message TeamOpenSupportThreadRequest {
+  string        user_id = 1;
+  CaseParty     side    = 2;
+  string        text    = 3;
+  string        reason  = 4;
+  AccessContext access  = 5;
+}
+
+message GetSupportThreadRequest {
+  string        thread_id = 1;
+  AccessContext access    = 2;
+}
+
+message SendSupportThreadMessageRequest {
+  string        thread_id = 1;
+  string        text      = 2;
+  AccessContext access    = 3;
+}
+
+message ListSupportThreadMessagesRequest {
+  string        thread_id = 1;
+  int64         after_seq = 2;
+  int32         limit     = 3;
+  AccessContext access    = 4;
+}
+
+message MarkSupportThreadReadRequest {
+  string        thread_id = 1;
+  int64         up_to_seq = 2;
+  AccessContext access    = 3;
+}
+
+message SupportThreadReadState {
+  string thread_id                 = 1;
+  int64  read_up_to_seq            = 2;
+  int64  other_side_read_up_to_seq = 3;
+}
+
+message ListMySupportThreadsRequest {
+  CaseParty     side           = 1;
+  bool          include_closed = 2;
+  int32         limit          = 3;
+  AccessContext access         = 4;
+}
+
+message AdminListSupportThreadsRequest {
+  repeated SupportThreadState states = 1;
+  bool          assigned_to_requester = 2;
+  bool          unassigned            = 3;
+  int32         limit                 = 4;
+  int32         offset                = 5;
+  AccessContext access                = 6;
+}
+
+message SupportThreadList {
+  repeated SupportThread threads     = 1;
+  int32                  total_count = 2;
+}
+
+message FileSupportThreadRequest {
+  string        thread_id  = 1;
+  string        option_key = 2;
+  AccessContext access     = 3;
+}
+
+message CloseSupportThreadRequest {
+  string        thread_id = 1;
+  AccessContext access    = 2;
+}
+
+message TakeSupportThreadRequest {
+  string        thread_id = 1;
+  AccessContext access    = 2;
+}
+
+message AddSupportThreadNoteRequest {
+  string        thread_id = 1;
+  string        text      = 2;
+  AccessContext access    = 3;
+}
+
+message DeleteUserSupportThreadsRequest {
+  string user_id = 1;
+}
+
+message DeleteUserSupportThreadsResponse {
+  int32 deleted_count = 1;
 }
