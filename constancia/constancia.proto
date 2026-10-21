@@ -69,6 +69,8 @@ service ConstanciaService {
   rpc TakeSupportThread (TakeSupportThreadRequest) returns (SupportThreadResponse);
   rpc AddSupportThreadNote (AddSupportThreadNoteRequest) returns (SupportThreadResponse);
   rpc DeleteUserSupportThreads (DeleteUserSupportThreadsRequest) returns (DeleteUserSupportThreadsResponse);
+  rpc ReassignSupportThread (ReassignSupportThreadRequest) returns (SupportThreadResponse);
+  rpc HandSupportThreadToPerson (HandSupportThreadToPersonRequest) returns (SupportThreadResponse);
 }
 
 // ─── Contexto de acceso ────────────────────────────────────────────────────
@@ -303,6 +305,7 @@ enum CaseMessageAuthorKind {
   CASE_MESSAGE_AUTHOR_KIND_TEAM_PERSON = 2;
   CASE_MESSAGE_AUTHOR_KIND_CONSTANCIA  = 3;
   CASE_MESSAGE_AUTHOR_KIND_TEAM_NOTE   = 4;
+  CASE_MESSAGE_AUTHOR_KIND_ASSISTANT   = 5;
 }
 
 message CaseMessage {
@@ -698,6 +701,7 @@ message SupportThread {
   int64                     last_seq              = 26;
   string                    client_profile_id     = 27;
   string                    vet_profile_id        = 28;
+  string                    assistant_reply       = 29;
 }
 
 message SupportThreadResponse { SupportThread thread = 1; }
@@ -707,6 +711,7 @@ message OpenSupportThreadRequest {
   string        text            = 2;
   string        help_option_key = 3;
   AccessContext access          = 4;
+  bool          with_assistant  = 5;
 }
 
 message TeamOpenSupportThreadRequest {
@@ -796,4 +801,15 @@ message DeleteUserSupportThreadsRequest {
 
 message DeleteUserSupportThreadsResponse {
   int32 deleted_count = 1;
+}
+
+message ReassignSupportThreadRequest {
+  string        thread_id  = 1;
+  string        to_user_id = 2;
+  AccessContext access     = 3;
+}
+
+message HandSupportThreadToPersonRequest {
+  string        thread_id = 1;
+  AccessContext access    = 2;
 }
