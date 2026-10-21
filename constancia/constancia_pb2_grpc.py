@@ -172,6 +172,26 @@ class ConstanciaServiceStub:
                 request_serializer=constancia_dot_constancia__pb2.GetHelpOptionsRequest.SerializeToString,
                 response_deserializer=constancia_dot_constancia__pb2.HelpOptions.FromString,
                 _registered_method=True)
+        self.TakeCase = channel.unary_unary(
+                '/constancia.ConstanciaService/TakeCase',
+                request_serializer=constancia_dot_constancia__pb2.TakeCaseRequest.SerializeToString,
+                response_deserializer=constancia_dot_constancia__pb2.CaseResponse.FromString,
+                _registered_method=True)
+        self.ReassignCase = channel.unary_unary(
+                '/constancia.ConstanciaService/ReassignCase',
+                request_serializer=constancia_dot_constancia__pb2.ReassignCaseRequest.SerializeToString,
+                response_deserializer=constancia_dot_constancia__pb2.CaseResponse.FromString,
+                _registered_method=True)
+        self.AddTeamNote = channel.unary_unary(
+                '/constancia.ConstanciaService/AddTeamNote',
+                request_serializer=constancia_dot_constancia__pb2.AddTeamNoteRequest.SerializeToString,
+                response_deserializer=constancia_dot_constancia__pb2.CaseResponse.FromString,
+                _registered_method=True)
+        self.ListOnCallTeam = channel.unary_unary(
+                '/constancia.ConstanciaService/ListOnCallTeam',
+                request_serializer=constancia_dot_constancia__pb2.ListOnCallTeamRequest.SerializeToString,
+                response_deserializer=constancia_dot_constancia__pb2.OnCallTeam.FromString,
+                _registered_method=True)
 
 
 class ConstanciaServiceServicer:
@@ -338,6 +358,30 @@ class ConstanciaServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def TakeCase(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ReassignCase(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def AddTeamNote(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListOnCallTeam(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ConstanciaServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -455,6 +499,26 @@ def add_ConstanciaServiceServicer_to_server(servicer, server):
                     servicer.GetHelpOptions,
                     request_deserializer=constancia_dot_constancia__pb2.GetHelpOptionsRequest.FromString,
                     response_serializer=constancia_dot_constancia__pb2.HelpOptions.SerializeToString,
+            ),
+            'TakeCase': grpc.unary_unary_rpc_method_handler(
+                    servicer.TakeCase,
+                    request_deserializer=constancia_dot_constancia__pb2.TakeCaseRequest.FromString,
+                    response_serializer=constancia_dot_constancia__pb2.CaseResponse.SerializeToString,
+            ),
+            'ReassignCase': grpc.unary_unary_rpc_method_handler(
+                    servicer.ReassignCase,
+                    request_deserializer=constancia_dot_constancia__pb2.ReassignCaseRequest.FromString,
+                    response_serializer=constancia_dot_constancia__pb2.CaseResponse.SerializeToString,
+            ),
+            'AddTeamNote': grpc.unary_unary_rpc_method_handler(
+                    servicer.AddTeamNote,
+                    request_deserializer=constancia_dot_constancia__pb2.AddTeamNoteRequest.FromString,
+                    response_serializer=constancia_dot_constancia__pb2.CaseResponse.SerializeToString,
+            ),
+            'ListOnCallTeam': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListOnCallTeam,
+                    request_deserializer=constancia_dot_constancia__pb2.ListOnCallTeamRequest.FromString,
+                    response_serializer=constancia_dot_constancia__pb2.OnCallTeam.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -1101,6 +1165,114 @@ class ConstanciaService:
             '/constancia.ConstanciaService/GetHelpOptions',
             constancia_dot_constancia__pb2.GetHelpOptionsRequest.SerializeToString,
             constancia_dot_constancia__pb2.HelpOptions.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def TakeCase(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/constancia.ConstanciaService/TakeCase',
+            constancia_dot_constancia__pb2.TakeCaseRequest.SerializeToString,
+            constancia_dot_constancia__pb2.CaseResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ReassignCase(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/constancia.ConstanciaService/ReassignCase',
+            constancia_dot_constancia__pb2.ReassignCaseRequest.SerializeToString,
+            constancia_dot_constancia__pb2.CaseResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def AddTeamNote(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/constancia.ConstanciaService/AddTeamNote',
+            constancia_dot_constancia__pb2.AddTeamNoteRequest.SerializeToString,
+            constancia_dot_constancia__pb2.CaseResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListOnCallTeam(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/constancia.ConstanciaService/ListOnCallTeam',
+            constancia_dot_constancia__pb2.ListOnCallTeamRequest.SerializeToString,
+            constancia_dot_constancia__pb2.OnCallTeam.FromString,
             options,
             channel_credentials,
             insecure,

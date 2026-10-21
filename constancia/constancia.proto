@@ -52,6 +52,10 @@ service ConstanciaService {
   rpc ProposeRepair (ProposeRepairRequest) returns (CaseResponse);
   rpc GetActionCatalog (GetActionCatalogRequest) returns (ActionCatalogResponse);
   rpc GetHelpOptions (GetHelpOptionsRequest) returns (HelpOptions);
+  rpc TakeCase (TakeCaseRequest) returns (CaseResponse);
+  rpc ReassignCase (ReassignCaseRequest) returns (CaseResponse);
+  rpc AddTeamNote (AddTeamNoteRequest) returns (CaseResponse);
+  rpc ListOnCallTeam (ListOnCallTeamRequest) returns (OnCallTeam);
 }
 
 // ─── Contexto de acceso ────────────────────────────────────────────────────
@@ -280,11 +284,21 @@ enum CaseMessageAuthor {
   CASE_MESSAGE_AUTHOR_TEAM        = 2;
 }
 
+enum CaseMessageAuthorKind {
+  CASE_MESSAGE_AUTHOR_KIND_UNSPECIFIED = 0;
+  CASE_MESSAGE_AUTHOR_KIND_OWNER       = 1;
+  CASE_MESSAGE_AUTHOR_KIND_TEAM_PERSON = 2;
+  CASE_MESSAGE_AUTHOR_KIND_CONSTANCIA  = 3;
+  CASE_MESSAGE_AUTHOR_KIND_TEAM_NOTE   = 4;
+}
+
 message CaseMessage {
   int64                     seq     = 1;
   CaseMessageAuthor         author  = 2;
   string                    text    = 3;
   google.protobuf.Timestamp sent_at = 4;
+  CaseMessageAuthorKind     author_kind       = 5;
+  string                    team_author_email = 6;
 }
 
 message ListCaseMessagesRequest {
@@ -361,6 +375,13 @@ message Case {
   string                     filing_number      = 33;
   google.protobuf.Timestamp  filed_at           = 34;
   string                     response_due_date  = 35;
+  string                     opened_with_key    = 36;
+  string                     opened_with_label  = 37;
+  int32                      team_unread        = 38;
+  google.protobuf.Timestamp  waiting_since      = 39;
+  google.protobuf.Timestamp  first_response_due_at = 40;
+  google.protobuf.Timestamp  last_message_at    = 41;
+  bool                       assigned_to_requester = 42;
 }
 
 enum CaseParty {
@@ -415,6 +436,8 @@ message AdminListCasesRequest {
   int32         limit       = 3;
   int32         offset      = 4;
   AccessContext access      = 5;
+  bool          assigned_to_requester = 6;
+  bool          unassigned  = 7;
 }
 
 message TrustMetricsRequest {
@@ -586,4 +609,35 @@ message HelpOptions {
   string               open_filing_number = 5;
   bool                 already_seen_complete = 6;
   repeated SeenFinding account = 7;
+}
+
+message TakeCaseRequest {
+  string        case_id = 1;
+  AccessContext access  = 2;
+}
+
+message ReassignCaseRequest {
+  string        case_id    = 1;
+  string        to_user_id = 2;
+  AccessContext access     = 3;
+}
+
+message AddTeamNoteRequest {
+  string        case_id = 1;
+  string        text    = 2;
+  AccessContext access  = 3;
+}
+
+message ListOnCallTeamRequest {
+  AccessContext access = 1;
+}
+
+message OnCallMember {
+  string user_id     = 1;
+  string email       = 2;
+  int32  open_cases  = 3;
+}
+
+message OnCallTeam {
+  repeated OnCallMember members = 1;
 }
