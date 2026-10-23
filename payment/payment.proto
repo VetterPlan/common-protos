@@ -444,6 +444,7 @@ message VetPayout {
   string batch_id = 19;
   string period_key = 20;
   optional double renta_amount_withheld = 21;
+  double transfer_fee_deducted = 22;
 }
 
 message Refund {
@@ -1000,6 +1001,7 @@ message PayoutOutlookResponse {
   bool uvt_alert = 15;
   VetPayout last_payout = 16;
   PayoutSchedule payout_schedule = 17;
+  double transfer_fee_deducted = 18;
 }
 
 message GetClientSpendingHistoryRequest {
