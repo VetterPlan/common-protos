@@ -522,6 +522,7 @@ message GetCancellationQuoteResponse {
   int32 appointments_affected = 9;
   bool fines_enabled = 10;
   google.protobuf.Timestamp policy_free_until = 11;
+  google.protobuf.Timestamp retraction_until = 12;
 }
 
 message GetCancellationFeeAcknowledgementRequest {
