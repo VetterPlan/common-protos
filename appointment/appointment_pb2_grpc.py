@@ -65,6 +65,11 @@ class AppointmentServiceStub:
                 request_serializer=appointment_dot_appointment__pb2.ConfirmArrivalRequest.SerializeToString,
                 response_deserializer=appointment_dot_appointment__pb2.AppointmentResponse.FromString,
                 _registered_method=True)
+        self.StartConsentedVisit = channel.unary_unary(
+                '/appointment.AppointmentService/StartConsentedVisit',
+                request_serializer=appointment_dot_appointment__pb2.StartConsentedVisitRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+                _registered_method=True)
         self.CancelAppointment = channel.unary_unary(
                 '/appointment.AppointmentService/CancelAppointment',
                 request_serializer=appointment_dot_appointment__pb2.CancelAppointmentRequest.SerializeToString,
@@ -320,6 +325,12 @@ class AppointmentServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def ConfirmArrival(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def StartConsentedVisit(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -610,6 +621,11 @@ def add_AppointmentServiceServicer_to_server(servicer, server):
             'ConfirmArrival': grpc.unary_unary_rpc_method_handler(
                     servicer.ConfirmArrival,
                     request_deserializer=appointment_dot_appointment__pb2.ConfirmArrivalRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.AppointmentResponse.SerializeToString,
+            ),
+            'StartConsentedVisit': grpc.unary_unary_rpc_method_handler(
+                    servicer.StartConsentedVisit,
+                    request_deserializer=appointment_dot_appointment__pb2.StartConsentedVisitRequest.FromString,
                     response_serializer=appointment_dot_appointment__pb2.AppointmentResponse.SerializeToString,
             ),
             'CancelAppointment': grpc.unary_unary_rpc_method_handler(
@@ -951,6 +967,33 @@ class AppointmentService:
             target,
             '/appointment.AppointmentService/ConfirmArrival',
             appointment_dot_appointment__pb2.ConfirmArrivalRequest.SerializeToString,
+            appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def StartConsentedVisit(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/StartConsentedVisit',
+            appointment_dot_appointment__pb2.StartConsentedVisitRequest.SerializeToString,
             appointment_dot_appointment__pb2.AppointmentResponse.FromString,
             options,
             channel_credentials,

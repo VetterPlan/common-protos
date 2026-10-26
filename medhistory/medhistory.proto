@@ -627,6 +627,8 @@ message ConsultationRecord {
   string vet_license_number = 34;
   OwnerSummaryOrigin owner_summary_origin = 35;
   OwnerSections owner_sections = 36;
+  bool closed_at_deadline = 37;
+  repeated string discarded_ai_suggestions = 38;
 }
 
 message OwnerSections {

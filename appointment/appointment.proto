@@ -20,6 +20,7 @@ service AppointmentService {
   rpc AcceptAppointment (AcceptAppointmentRequest) returns (AppointmentResponse);
   rpc UpdateAppointmentStatus (UpdateAppointmentStatusRequest) returns (AppointmentResponse);
   rpc ConfirmArrival (ConfirmArrivalRequest) returns (AppointmentResponse);
+  rpc StartConsentedVisit (StartConsentedVisitRequest) returns (AppointmentResponse);
   rpc CancelAppointment (CancelAppointmentRequest) returns (AppointmentResponse);
   rpc AbortAppointment (AbortAppointmentRequest) returns (AppointmentResponse);
   rpc GetCancellationQuote (GetCancellationQuoteRequest) returns (GetCancellationQuoteResponse);
@@ -305,6 +306,7 @@ message Appointment {
   UnattendedReason unattended_reason = 44;
   NoShowFeeOutcome no_show_fee_outcome = 45;
   int32 no_show_fee_radius_m = 46;
+  google.protobuf.Timestamp arrival_confirmed_at = 47;
 }
 
 enum NoShowFeeOutcome {
@@ -489,6 +491,10 @@ message UpdateAppointmentStatusRequest {
 message ConfirmArrivalRequest {
   string appointment_id = 1;
   string confirmation_code = 2;       // 6-digit PIN
+}
+
+message StartConsentedVisitRequest {
+  string appointment_id = 1;
 }
 
 message CancelAppointmentRequest {
