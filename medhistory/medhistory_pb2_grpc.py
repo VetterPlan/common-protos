@@ -70,6 +70,21 @@ class MedHistoryServiceStub:
                 request_serializer=medhistory_dot_medhistory__pb2.CountFinalizedRecordsRequest.SerializeToString,
                 response_deserializer=medhistory_dot_medhistory__pb2.CountFinalizedRecordsResponse.FromString,
                 _registered_method=True)
+        self.GetRecommendedDewormingDemand = channel.unary_unary(
+                '/medhistory.MedHistoryService/GetRecommendedDewormingDemand',
+                request_serializer=medhistory_dot_medhistory__pb2.RecommendedDewormingDemandRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.RecommendedDewormingDemandResponse.FromString,
+                _registered_method=True)
+        self.ResolveDewormer = channel.unary_unary(
+                '/medhistory.MedHistoryService/ResolveDewormer',
+                request_serializer=medhistory_dot_medhistory__pb2.ResolveDewormerRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.ResolveDewormerResponse.FromString,
+                _registered_method=True)
+        self.GetDewormingCalendar = channel.unary_unary(
+                '/medhistory.MedHistoryService/GetDewormingCalendar',
+                request_serializer=medhistory_dot_medhistory__pb2.GetDewormingCalendarRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.DewormingCalendarResponse.FromString,
+                _registered_method=True)
         self.UpsertReferenceItem = channel.unary_unary(
                 '/medhistory.MedHistoryService/UpsertReferenceItem',
                 request_serializer=medhistory_dot_medhistory__pb2.UpsertReferenceItemRequest.SerializeToString,
@@ -318,6 +333,24 @@ class MedHistoryServiceServicer:
         Se audita igual que una lectura, con `granted_aggregate`: la bitácora no
         deja de anotar solo porque el resultado sea un número.
         """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetRecommendedDewormingDemand(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ResolveDewormer(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetDewormingCalendar(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -659,6 +692,21 @@ def add_MedHistoryServiceServicer_to_server(servicer, server):
                     request_deserializer=medhistory_dot_medhistory__pb2.CountFinalizedRecordsRequest.FromString,
                     response_serializer=medhistory_dot_medhistory__pb2.CountFinalizedRecordsResponse.SerializeToString,
             ),
+            'GetRecommendedDewormingDemand': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetRecommendedDewormingDemand,
+                    request_deserializer=medhistory_dot_medhistory__pb2.RecommendedDewormingDemandRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.RecommendedDewormingDemandResponse.SerializeToString,
+            ),
+            'ResolveDewormer': grpc.unary_unary_rpc_method_handler(
+                    servicer.ResolveDewormer,
+                    request_deserializer=medhistory_dot_medhistory__pb2.ResolveDewormerRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.ResolveDewormerResponse.SerializeToString,
+            ),
+            'GetDewormingCalendar': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetDewormingCalendar,
+                    request_deserializer=medhistory_dot_medhistory__pb2.GetDewormingCalendarRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.DewormingCalendarResponse.SerializeToString,
+            ),
             'UpsertReferenceItem': grpc.unary_unary_rpc_method_handler(
                     servicer.UpsertReferenceItem,
                     request_deserializer=medhistory_dot_medhistory__pb2.UpsertReferenceItemRequest.FromString,
@@ -947,6 +995,87 @@ class MedHistoryService:
             '/medhistory.MedHistoryService/CountFinalizedRecords',
             medhistory_dot_medhistory__pb2.CountFinalizedRecordsRequest.SerializeToString,
             medhistory_dot_medhistory__pb2.CountFinalizedRecordsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetRecommendedDewormingDemand(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/GetRecommendedDewormingDemand',
+            medhistory_dot_medhistory__pb2.RecommendedDewormingDemandRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.RecommendedDewormingDemandResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ResolveDewormer(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/ResolveDewormer',
+            medhistory_dot_medhistory__pb2.ResolveDewormerRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.ResolveDewormerResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetDewormingCalendar(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/GetDewormingCalendar',
+            medhistory_dot_medhistory__pb2.GetDewormingCalendarRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.DewormingCalendarResponse.FromString,
             options,
             channel_credentials,
             insecure,

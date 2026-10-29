@@ -273,6 +273,7 @@ message Deworming {
   int32 days_until_due = 15;
   google.protobuf.Timestamp created_at = 16;
   google.protobuf.Timestamp updated_at = 17;
+  DewormingSource source = 18;
 }
 
 message Allergy {
@@ -395,6 +396,14 @@ message AddDewormingRequest {
   string administered_by = 10;
   string batch_number = 11;
   string notes = 12;
+  DewormingSource source = 13;
+}
+
+enum DewormingSource {
+  DEWORMING_SOURCE_UNSPECIFIED = 0;
+  DEWORMING_SOURCE_VET_VISIT = 1;
+  DEWORMING_SOURCE_VACCINATION_CARD = 2;
+  DEWORMING_SOURCE_OWNER_REPORTED = 3;
 }
 
 message GetDewormingsRequest {

@@ -635,6 +635,13 @@ message GetNextAvailableSlotsRequest {
   int32 hours_ahead = 4;              // How many hours ahead to search (default 48)
   string service_metadata = 5;        // JSON string with subtype info (passthrough, does not affect slot logic)
   bool prefer_vet_directory = 6;
+  SlotMode mode = 7;
+  int32 pet_count = 8;
+}
+
+enum SlotMode {
+  SLOT_MODE_EXACT = 0;
+  SLOT_MODE_PRODUCT_WINDOW = 1;
 }
 
 message GetNextAvailableSlotsResponse {
@@ -645,6 +652,8 @@ message GetNextAvailableSlotsResponse {
   // H23.1. Cada veterinario una sola vez. Vacio salvo que el llamante haya
   // pedido `prefer_vet_directory`.
   repeated SlotVetPreview vet_directory = 5;
+  int32 total_duration_minutes = 6;
+  string first_sellable_window_start_utc = 7;
 }
 
 message DaySlots {

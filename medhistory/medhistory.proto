@@ -57,6 +57,12 @@ service MedHistoryService {
   // deja de anotar solo porque el resultado sea un número.
   rpc CountFinalizedRecords (CountFinalizedRecordsRequest) returns (CountFinalizedRecordsResponse);
 
+  rpc GetRecommendedDewormingDemand (RecommendedDewormingDemandRequest) returns (RecommendedDewormingDemandResponse);
+
+  rpc ResolveDewormer (ResolveDewormerRequest) returns (ResolveDewormerResponse);
+
+  rpc GetDewormingCalendar (GetDewormingCalendarRequest) returns (DewormingCalendarResponse);
+
   // Crea o edita una fila de vocabulario. Solo admin (se enforza en la gateway).
   // Editar el contenido clínico REVIERTE is_validated_by_vet a false: si cambió
   // el dato, la aprobación anterior ya no aplica.
@@ -789,6 +795,75 @@ message CountFinalizedRecordsResponse {
   // Abiertos en el periodo y todavía sin cerrar hoy. No es `started - finalized`:
   // un registro abierto en junio pudo cerrarse en julio.
   int32 still_open = 3;
+}
+
+message RecommendedDewormingDemandRequest {
+  int32 days_ahead = 1;
+  AccessContext access = 2;
+}
+
+message RecommendedDewormingDemand {
+  string product_code = 1;
+  string species_profile = 2;
+  int32 recommendations = 3;
+  repeated double weights_kg = 4;
+  int32 without_weight = 5;
+}
+
+message ResolveDewormerRequest {
+  Species species = 1;
+  string product_code = 2;
+  string date_administered = 3;
+  optional int32 pet_age_months = 4;
+}
+
+message GetDewormingCalendarRequest {
+  string pet_id = 1;
+  AccessContext access = 2;
+}
+
+enum DewormingDoseStatus {
+  DEWORMING_DOSE_STATUS_UNSPECIFIED = 0;
+  DEWORMING_DOSE_STATUS_GIVEN = 1;
+  DEWORMING_DOSE_STATUS_UPCOMING = 2;
+  DEWORMING_DOSE_STATUS_DUE_SOON = 3;
+  DEWORMING_DOSE_STATUS_OVERDUE = 4;
+}
+
+message DewormingDose {
+  string date = 1;
+  DewormingDoseStatus status = 2;
+  string given_on = 3;
+}
+
+message DewormingPlanLine {
+  string product_code = 1;
+  string product_name = 2;
+  string parasite_target = 3;
+  int32 interval_days = 4;
+  int32 doses = 5;
+  double weight_kg = 6;
+  repeated DewormingDose schedule = 7;
+  repeated string protects_against = 8;
+}
+
+message DewormingCalendarResponse {
+  bool has_plan = 1;
+  string planned_at = 2;
+  string as_of = 3;
+  repeated DewormingPlanLine lines = 4;
+}
+
+message ResolveDewormerResponse {
+  string product_name = 1;
+  string parasite_target = 2;
+  string next_due_date = 3;
+}
+
+message RecommendedDewormingDemandResponse {
+  repeated RecommendedDewormingDemand items = 1;
+  string window_start = 2;
+  string window_end = 3;
 }
 
 message SetReferenceValidationResponse {
