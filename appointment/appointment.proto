@@ -677,6 +677,8 @@ message CalculatedSlot {
   // EN EL MISMO ORDEN en que irian los previews de `vets`. El orden es
   // significativo: los veterinarios de un hueco van por precio ascendente.
   repeated int32 vet_indices = 10;
+  // Solo en SLOT_MODE_PRODUCT_WINDOW: la hora limite de llegada del producto (T&C 20.7).
+  string product_arrives_by_utc = 11;
 }
 
 message SlotVetPreview {

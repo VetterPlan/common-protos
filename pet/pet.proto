@@ -424,6 +424,7 @@ message GetUpcomingDewormingsRequest {
 
 message RemoveDewormingRequest {
   string deworming_id = 1;
+  string pet_id = 2;
 }
 
 message RemoveDewormingResponse {

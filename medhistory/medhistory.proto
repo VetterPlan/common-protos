@@ -871,6 +871,9 @@ message DewormingDose {
   string date = 1;
   DewormingDoseStatus status = 2;
   string given_on = 3;
+  string given_source = 4;
+  string given_deworming_id = 5;
+  string given_by_vet_profile_id = 6;
 }
 
 message DewormingPlanLine {
@@ -882,6 +885,7 @@ message DewormingPlanLine {
   double weight_kg = 6;
   repeated DewormingDose schedule = 7;
   repeated string protects_against = 8;
+  string presentation = 9;
 }
 
 message DewormingCalendarResponse {
@@ -889,6 +893,7 @@ message DewormingCalendarResponse {
   string planned_at = 2;
   string as_of = 3;
   repeated DewormingPlanLine lines = 4;
+  string planned_by_vet_profile_id = 5;
 }
 
 message ResolveDewormerResponse {
