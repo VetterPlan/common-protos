@@ -225,6 +225,10 @@ service MedHistoryService {
   // jerga. Solo el vet (o admin) genera; el dueño lo lee del registro.
   rpc GenerateOwnerSummary (GenerateOwnerSummaryRequest) returns (GenerateOwnerSummaryResponse);
 
+  rpc RequestOwnerAiConsent (RequestOwnerAiConsentRequest) returns (OwnerAiDictationResponse);
+  rpc RespondToAiConsentRequest (RespondToAiConsentRequestRequest) returns (OwnerAiDictationResponse);
+  rpc GetOwnerAiDictation (GetOwnerAiDictationRequest) returns (OwnerAiDictationResponse);
+
   // Baja de cuenta (P-4a): desvincula al titular y CONSERVA el acto medico.
   // Ley 576 de 2000: la historia clinica es obligatoria y confidencial, y es
   // la evidencia del veterinario sobre su propia conducta profesional.
@@ -657,6 +661,39 @@ message AiConsent {
   string captured_by_profile_id = 3;   // quién lo registró (vet que lo capturó o el dueño)
   google.protobuf.Timestamp granted_at = 4;
   google.protobuf.Timestamp revoked_at = 5;  // presente si se revocó
+  string origin = 6;
+  google.protobuf.Timestamp confirmed_at = 7;
+}
+
+enum OwnerAiDictationStatus {
+  OWNER_AI_DICTATION_STATUS_UNSPECIFIED = 0;
+  OWNER_AI_DICTATION_STATUS_ALLOWED = 1;
+  OWNER_AI_DICTATION_STATUS_DECLINED = 2;
+  OWNER_AI_DICTATION_STATUS_NOT_ASKED = 3;
+  OWNER_AI_DICTATION_STATUS_PENDING_REQUEST = 4;
+}
+
+message RequestOwnerAiConsentRequest {
+  string appointment_id = 1;
+  AccessContext access = 2;
+}
+
+message RespondToAiConsentRequestRequest {
+  string appointment_id = 1;
+  bool accept = 2;
+  string consent_version = 3;
+  AccessContext access = 4;
+}
+
+message GetOwnerAiDictationRequest {
+  string appointment_id = 1;
+  AccessContext access = 2;
+}
+
+message OwnerAiDictationResponse {
+  string appointment_id = 1;
+  OwnerAiDictationStatus status = 2;
+  google.protobuf.Timestamp request_expires_at = 3;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════

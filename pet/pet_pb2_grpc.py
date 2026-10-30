@@ -183,6 +183,26 @@ class PetServiceStub:
                 request_serializer=pet_dot_pet__pb2.RevokeVaccinationCardAiConsentRequest.SerializeToString,
                 response_deserializer=pet_dot_pet__pb2.VaccinationCardAiConsentResponse.FromString,
                 _registered_method=True)
+        self.GrantOwnerAiConsent = channel.unary_unary(
+                '/pet.PetService/GrantOwnerAiConsent',
+                request_serializer=pet_dot_pet__pb2.GrantOwnerAiConsentRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.OwnerAiConsentResponse.FromString,
+                _registered_method=True)
+        self.RevokeOwnerAiConsent = channel.unary_unary(
+                '/pet.PetService/RevokeOwnerAiConsent',
+                request_serializer=pet_dot_pet__pb2.RevokeOwnerAiConsentRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.OwnerAiConsentResponse.FromString,
+                _registered_method=True)
+        self.GetOwnerAiConsent = channel.unary_unary(
+                '/pet.PetService/GetOwnerAiConsent',
+                request_serializer=pet_dot_pet__pb2.GetOwnerAiConsentRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.OwnerAiConsentResponse.FromString,
+                _registered_method=True)
+        self.ListOwnerAiConsents = channel.unary_unary(
+                '/pet.PetService/ListOwnerAiConsents',
+                request_serializer=pet_dot_pet__pb2.ListOwnerAiConsentsRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.ListOwnerAiConsentsResponse.FromString,
+                _registered_method=True)
 
 
 class PetServiceServicer:
@@ -436,6 +456,30 @@ class PetServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GrantOwnerAiConsent(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RevokeOwnerAiConsent(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetOwnerAiConsent(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListOwnerAiConsents(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_PetServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -578,6 +622,26 @@ def add_PetServiceServicer_to_server(servicer, server):
                     servicer.RevokeVaccinationCardAiConsent,
                     request_deserializer=pet_dot_pet__pb2.RevokeVaccinationCardAiConsentRequest.FromString,
                     response_serializer=pet_dot_pet__pb2.VaccinationCardAiConsentResponse.SerializeToString,
+            ),
+            'GrantOwnerAiConsent': grpc.unary_unary_rpc_method_handler(
+                    servicer.GrantOwnerAiConsent,
+                    request_deserializer=pet_dot_pet__pb2.GrantOwnerAiConsentRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.OwnerAiConsentResponse.SerializeToString,
+            ),
+            'RevokeOwnerAiConsent': grpc.unary_unary_rpc_method_handler(
+                    servicer.RevokeOwnerAiConsent,
+                    request_deserializer=pet_dot_pet__pb2.RevokeOwnerAiConsentRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.OwnerAiConsentResponse.SerializeToString,
+            ),
+            'GetOwnerAiConsent': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetOwnerAiConsent,
+                    request_deserializer=pet_dot_pet__pb2.GetOwnerAiConsentRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.OwnerAiConsentResponse.SerializeToString,
+            ),
+            'ListOwnerAiConsents': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListOwnerAiConsents,
+                    request_deserializer=pet_dot_pet__pb2.ListOwnerAiConsentsRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.ListOwnerAiConsentsResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -1345,6 +1409,114 @@ class PetService:
             '/pet.PetService/RevokeVaccinationCardAiConsent',
             pet_dot_pet__pb2.RevokeVaccinationCardAiConsentRequest.SerializeToString,
             pet_dot_pet__pb2.VaccinationCardAiConsentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GrantOwnerAiConsent(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/pet.PetService/GrantOwnerAiConsent',
+            pet_dot_pet__pb2.GrantOwnerAiConsentRequest.SerializeToString,
+            pet_dot_pet__pb2.OwnerAiConsentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RevokeOwnerAiConsent(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/pet.PetService/RevokeOwnerAiConsent',
+            pet_dot_pet__pb2.RevokeOwnerAiConsentRequest.SerializeToString,
+            pet_dot_pet__pb2.OwnerAiConsentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetOwnerAiConsent(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/pet.PetService/GetOwnerAiConsent',
+            pet_dot_pet__pb2.GetOwnerAiConsentRequest.SerializeToString,
+            pet_dot_pet__pb2.OwnerAiConsentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListOwnerAiConsents(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/pet.PetService/ListOwnerAiConsents',
+            pet_dot_pet__pb2.ListOwnerAiConsentsRequest.SerializeToString,
+            pet_dot_pet__pb2.ListOwnerAiConsentsResponse.FromString,
             options,
             channel_credentials,
             insecure,

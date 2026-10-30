@@ -139,6 +139,11 @@ service PetService {
   rpc GrantVaccinationCardAiConsent (GrantVaccinationCardAiConsentRequest) returns (VaccinationCardAiConsentResponse);
   rpc GetVaccinationCardAiConsent (GetVaccinationCardAiConsentRequest) returns (VaccinationCardAiConsentResponse);
   rpc RevokeVaccinationCardAiConsent (RevokeVaccinationCardAiConsentRequest) returns (VaccinationCardAiConsentResponse);
+
+  rpc GrantOwnerAiConsent (GrantOwnerAiConsentRequest) returns (OwnerAiConsentResponse);
+  rpc RevokeOwnerAiConsent (RevokeOwnerAiConsentRequest) returns (OwnerAiConsentResponse);
+  rpc GetOwnerAiConsent (GetOwnerAiConsentRequest) returns (OwnerAiConsentResponse);
+  rpc ListOwnerAiConsents (ListOwnerAiConsentsRequest) returns (ListOwnerAiConsentsResponse);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -656,6 +661,51 @@ message OwnerAiConsent {
   string consent_version = 3;
   string granted_at = 4;
   string revoked_at = 5;
+  AiConsentPurpose purpose = 6;
+  AiConsentOrigin origin = 7;
+  string appointment_id = 8;
+}
+
+enum AiConsentPurpose {
+  AI_CONSENT_PURPOSE_UNSPECIFIED = 0;
+  AI_CONSENT_PURPOSE_VISIT_AI = 1;
+  AI_CONSENT_PURPOSE_VACCINATION_CARD = 2;
+}
+
+enum AiConsentOrigin {
+  AI_CONSENT_ORIGIN_UNSPECIFIED = 0;
+  AI_CONSENT_ORIGIN_OWNER_APP = 1;
+  AI_CONSENT_ORIGIN_OWNER_REQUEST_FROM_VET = 2;
+}
+
+message GrantOwnerAiConsentRequest {
+  string client_profile_id = 1;
+  AiConsentPurpose purpose = 2;
+  string consent_version = 3;
+  AiConsentOrigin origin = 4;
+  string appointment_id = 5;
+}
+
+message RevokeOwnerAiConsentRequest {
+  string client_profile_id = 1;
+  AiConsentPurpose purpose = 2;
+}
+
+message GetOwnerAiConsentRequest {
+  string client_profile_id = 1;
+  AiConsentPurpose purpose = 2;
+}
+
+message OwnerAiConsentResponse {
+  OwnerAiConsent consent = 1;
+}
+
+message ListOwnerAiConsentsRequest {
+  string client_profile_id = 1;
+}
+
+message ListOwnerAiConsentsResponse {
+  repeated OwnerAiConsent consents = 1;
 }
 
 message GrantVaccinationCardAiConsentRequest {

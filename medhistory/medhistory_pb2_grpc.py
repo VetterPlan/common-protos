@@ -265,6 +265,21 @@ class MedHistoryServiceStub:
                 request_serializer=medhistory_dot_medhistory__pb2.GenerateOwnerSummaryRequest.SerializeToString,
                 response_deserializer=medhistory_dot_medhistory__pb2.GenerateOwnerSummaryResponse.FromString,
                 _registered_method=True)
+        self.RequestOwnerAiConsent = channel.unary_unary(
+                '/medhistory.MedHistoryService/RequestOwnerAiConsent',
+                request_serializer=medhistory_dot_medhistory__pb2.RequestOwnerAiConsentRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.OwnerAiDictationResponse.FromString,
+                _registered_method=True)
+        self.RespondToAiConsentRequest = channel.unary_unary(
+                '/medhistory.MedHistoryService/RespondToAiConsentRequest',
+                request_serializer=medhistory_dot_medhistory__pb2.RespondToAiConsentRequestRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.OwnerAiDictationResponse.FromString,
+                _registered_method=True)
+        self.GetOwnerAiDictation = channel.unary_unary(
+                '/medhistory.MedHistoryService/GetOwnerAiDictation',
+                request_serializer=medhistory_dot_medhistory__pb2.GetOwnerAiDictationRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.OwnerAiDictationResponse.FromString,
+                _registered_method=True)
         self.AnonymizeClientData = channel.unary_unary(
                 '/medhistory.MedHistoryService/AnonymizeClientData',
                 request_serializer=medhistory_dot_medhistory__pb2.AnonymizeClientDataRequest.SerializeToString,
@@ -665,6 +680,24 @@ class MedHistoryServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def RequestOwnerAiConsent(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RespondToAiConsentRequest(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetOwnerAiDictation(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def AnonymizeClientData(self, request, context):
         """Baja de cuenta (P-4a): desvincula al titular y CONSERVA el acto medico.
         Ley 576 de 2000: la historia clinica es obligatoria y confidencial, y es
@@ -886,6 +919,21 @@ def add_MedHistoryServiceServicer_to_server(servicer, server):
                     servicer.GenerateOwnerSummary,
                     request_deserializer=medhistory_dot_medhistory__pb2.GenerateOwnerSummaryRequest.FromString,
                     response_serializer=medhistory_dot_medhistory__pb2.GenerateOwnerSummaryResponse.SerializeToString,
+            ),
+            'RequestOwnerAiConsent': grpc.unary_unary_rpc_method_handler(
+                    servicer.RequestOwnerAiConsent,
+                    request_deserializer=medhistory_dot_medhistory__pb2.RequestOwnerAiConsentRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.OwnerAiDictationResponse.SerializeToString,
+            ),
+            'RespondToAiConsentRequest': grpc.unary_unary_rpc_method_handler(
+                    servicer.RespondToAiConsentRequest,
+                    request_deserializer=medhistory_dot_medhistory__pb2.RespondToAiConsentRequestRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.OwnerAiDictationResponse.SerializeToString,
+            ),
+            'GetOwnerAiDictation': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetOwnerAiDictation,
+                    request_deserializer=medhistory_dot_medhistory__pb2.GetOwnerAiDictationRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.OwnerAiDictationResponse.SerializeToString,
             ),
             'AnonymizeClientData': grpc.unary_unary_rpc_method_handler(
                     servicer.AnonymizeClientData,
@@ -2048,6 +2096,87 @@ class MedHistoryService:
             '/medhistory.MedHistoryService/GenerateOwnerSummary',
             medhistory_dot_medhistory__pb2.GenerateOwnerSummaryRequest.SerializeToString,
             medhistory_dot_medhistory__pb2.GenerateOwnerSummaryResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RequestOwnerAiConsent(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/RequestOwnerAiConsent',
+            medhistory_dot_medhistory__pb2.RequestOwnerAiConsentRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.OwnerAiDictationResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RespondToAiConsentRequest(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/RespondToAiConsentRequest',
+            medhistory_dot_medhistory__pb2.RespondToAiConsentRequestRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.OwnerAiDictationResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetOwnerAiDictation(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/GetOwnerAiDictation',
+            medhistory_dot_medhistory__pb2.GetOwnerAiDictationRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.OwnerAiDictationResponse.FromString,
             options,
             channel_credentials,
             insecure,
