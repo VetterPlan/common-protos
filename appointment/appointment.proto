@@ -25,6 +25,7 @@ service AppointmentService {
   rpc AbortAppointment (AbortAppointmentRequest) returns (AppointmentResponse);
   rpc GetCancellationQuote (GetCancellationQuoteRequest) returns (GetCancellationQuoteResponse);
   rpc GetCancellationFeeAcknowledgement (GetCancellationFeeAcknowledgementRequest) returns (CancellationFeeAcknowledgement);
+  rpc SetAppointmentProductCharge (SetAppointmentProductChargeRequest) returns (SetAppointmentProductChargeResponse);
   rpc GetAppointment (GetAppointmentRequest) returns (AppointmentResponse);
   rpc GetClientAppointments (GetClientAppointmentsRequest) returns (AppointmentsResponse);
   rpc GetVetAppointments (GetVetAppointmentsRequest) returns (AppointmentsResponse);
@@ -435,6 +436,17 @@ message PetRequestItem {
   string pet_id = 1;
   ServiceType service_type = 2;
   string service_metadata = 3;         // JSON string con info del subtipo
+  repeated string product_ids = 4;
+}
+
+message SetAppointmentProductChargeRequest {
+  string appointment_id = 1;
+  bool chargeable = 2;
+  string idempotency_key = 3;
+}
+
+message SetAppointmentProductChargeResponse {
+  bool applied = 1;
 }
 
 message RequestAppointmentRequest {
@@ -460,6 +472,7 @@ message RequestAppointmentRequest {
   double slot_price = 20;              // P1: price seen by client in slot listing (locks price for 90 min, 0 = not provided)
   repeated PetRequestItem pets = 21;
   string promo_id = 22;
+  string expected_product_total = 23;
 }
 
 message AppointmentPrice {

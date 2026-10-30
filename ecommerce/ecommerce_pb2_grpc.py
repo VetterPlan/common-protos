@@ -34,6 +34,61 @@ class EcommerceServiceStub:
         Args:
             channel: A grpc.Channel.
         """
+        self.GetVisitPlan = channel.unary_unary(
+                '/ecommerce.EcommerceService/GetVisitPlan',
+                request_serializer=ecommerce_dot_ecommerce__pb2.GetVisitPlanRequest.SerializeToString,
+                response_deserializer=ecommerce_dot_ecommerce__pb2.VisitPlan.FromString,
+                _registered_method=True)
+        self.GetVisitPlanSettings = channel.unary_unary(
+                '/ecommerce.EcommerceService/GetVisitPlanSettings',
+                request_serializer=ecommerce_dot_ecommerce__pb2.GetVisitPlanSettingsRequest.SerializeToString,
+                response_deserializer=ecommerce_dot_ecommerce__pb2.VisitPlanSettings.FromString,
+                _registered_method=True)
+        self.SetVisitPlanSettings = channel.unary_unary(
+                '/ecommerce.EcommerceService/SetVisitPlanSettings',
+                request_serializer=ecommerce_dot_ecommerce__pb2.SetVisitPlanSettingsRequest.SerializeToString,
+                response_deserializer=ecommerce_dot_ecommerce__pb2.VisitPlanSettings.FromString,
+                _registered_method=True)
+        self.QuoteVisitProducts = channel.unary_unary(
+                '/ecommerce.EcommerceService/QuoteVisitProducts',
+                request_serializer=ecommerce_dot_ecommerce__pb2.QuoteVisitProductsRequest.SerializeToString,
+                response_deserializer=ecommerce_dot_ecommerce__pb2.QuoteVisitProductsResponse.FromString,
+                _registered_method=True)
+        self.HoldAppointmentProducts = channel.unary_unary(
+                '/ecommerce.EcommerceService/HoldAppointmentProducts',
+                request_serializer=ecommerce_dot_ecommerce__pb2.HoldAppointmentProductsRequest.SerializeToString,
+                response_deserializer=ecommerce_dot_ecommerce__pb2.HoldAppointmentProductsResponse.FromString,
+                _registered_method=True)
+        self.GetAppointmentOrders = channel.unary_unary(
+                '/ecommerce.EcommerceService/GetAppointmentOrders',
+                request_serializer=ecommerce_dot_ecommerce__pb2.GetAppointmentOrdersRequest.SerializeToString,
+                response_deserializer=ecommerce_dot_ecommerce__pb2.OrdersResponse.FromString,
+                _registered_method=True)
+        self.NotifyWhenBackInStock = channel.unary_unary(
+                '/ecommerce.EcommerceService/NotifyWhenBackInStock',
+                request_serializer=ecommerce_dot_ecommerce__pb2.NotifyWhenBackInStockRequest.SerializeToString,
+                response_deserializer=ecommerce_dot_ecommerce__pb2.NotifyWhenBackInStockResponse.FromString,
+                _registered_method=True)
+        self.ListDeliveries = channel.unary_unary(
+                '/ecommerce.EcommerceService/ListDeliveries',
+                request_serializer=ecommerce_dot_ecommerce__pb2.ListDeliveriesRequest.SerializeToString,
+                response_deserializer=ecommerce_dot_ecommerce__pb2.OrdersResponse.FromString,
+                _registered_method=True)
+        self.DispatchOrder = channel.unary_unary(
+                '/ecommerce.EcommerceService/DispatchOrder',
+                request_serializer=ecommerce_dot_ecommerce__pb2.OrderActionRequest.SerializeToString,
+                response_deserializer=ecommerce_dot_ecommerce__pb2.Order.FromString,
+                _registered_method=True)
+        self.MarkOrderDelivered = channel.unary_unary(
+                '/ecommerce.EcommerceService/MarkOrderDelivered',
+                request_serializer=ecommerce_dot_ecommerce__pb2.OrderActionRequest.SerializeToString,
+                response_deserializer=ecommerce_dot_ecommerce__pb2.Order.FromString,
+                _registered_method=True)
+        self.RecordOrderNotApplied = channel.unary_unary(
+                '/ecommerce.EcommerceService/RecordOrderNotApplied',
+                request_serializer=ecommerce_dot_ecommerce__pb2.RecordOrderNotAppliedRequest.SerializeToString,
+                response_deserializer=ecommerce_dot_ecommerce__pb2.Order.FromString,
+                _registered_method=True)
         self.CreateProduct = channel.unary_unary(
                 '/ecommerce.EcommerceService/CreateProduct',
                 request_serializer=ecommerce_dot_ecommerce__pb2.CreateProductRequest.SerializeToString,
@@ -93,6 +148,72 @@ class EcommerceServiceStub:
 
 class EcommerceServiceServicer:
     """Missing associated documentation comment in .proto file."""
+
+    def GetVisitPlan(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetVisitPlanSettings(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetVisitPlanSettings(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def QuoteVisitProducts(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def HoldAppointmentProducts(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetAppointmentOrders(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def NotifyWhenBackInStock(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListDeliveries(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DispatchOrder(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def MarkOrderDelivered(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RecordOrderNotApplied(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
 
     def CreateProduct(self, request, context):
         """Missing associated documentation comment in .proto file."""
@@ -163,6 +284,61 @@ class EcommerceServiceServicer:
 
 def add_EcommerceServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
+            'GetVisitPlan': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetVisitPlan,
+                    request_deserializer=ecommerce_dot_ecommerce__pb2.GetVisitPlanRequest.FromString,
+                    response_serializer=ecommerce_dot_ecommerce__pb2.VisitPlan.SerializeToString,
+            ),
+            'GetVisitPlanSettings': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetVisitPlanSettings,
+                    request_deserializer=ecommerce_dot_ecommerce__pb2.GetVisitPlanSettingsRequest.FromString,
+                    response_serializer=ecommerce_dot_ecommerce__pb2.VisitPlanSettings.SerializeToString,
+            ),
+            'SetVisitPlanSettings': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetVisitPlanSettings,
+                    request_deserializer=ecommerce_dot_ecommerce__pb2.SetVisitPlanSettingsRequest.FromString,
+                    response_serializer=ecommerce_dot_ecommerce__pb2.VisitPlanSettings.SerializeToString,
+            ),
+            'QuoteVisitProducts': grpc.unary_unary_rpc_method_handler(
+                    servicer.QuoteVisitProducts,
+                    request_deserializer=ecommerce_dot_ecommerce__pb2.QuoteVisitProductsRequest.FromString,
+                    response_serializer=ecommerce_dot_ecommerce__pb2.QuoteVisitProductsResponse.SerializeToString,
+            ),
+            'HoldAppointmentProducts': grpc.unary_unary_rpc_method_handler(
+                    servicer.HoldAppointmentProducts,
+                    request_deserializer=ecommerce_dot_ecommerce__pb2.HoldAppointmentProductsRequest.FromString,
+                    response_serializer=ecommerce_dot_ecommerce__pb2.HoldAppointmentProductsResponse.SerializeToString,
+            ),
+            'GetAppointmentOrders': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetAppointmentOrders,
+                    request_deserializer=ecommerce_dot_ecommerce__pb2.GetAppointmentOrdersRequest.FromString,
+                    response_serializer=ecommerce_dot_ecommerce__pb2.OrdersResponse.SerializeToString,
+            ),
+            'NotifyWhenBackInStock': grpc.unary_unary_rpc_method_handler(
+                    servicer.NotifyWhenBackInStock,
+                    request_deserializer=ecommerce_dot_ecommerce__pb2.NotifyWhenBackInStockRequest.FromString,
+                    response_serializer=ecommerce_dot_ecommerce__pb2.NotifyWhenBackInStockResponse.SerializeToString,
+            ),
+            'ListDeliveries': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListDeliveries,
+                    request_deserializer=ecommerce_dot_ecommerce__pb2.ListDeliveriesRequest.FromString,
+                    response_serializer=ecommerce_dot_ecommerce__pb2.OrdersResponse.SerializeToString,
+            ),
+            'DispatchOrder': grpc.unary_unary_rpc_method_handler(
+                    servicer.DispatchOrder,
+                    request_deserializer=ecommerce_dot_ecommerce__pb2.OrderActionRequest.FromString,
+                    response_serializer=ecommerce_dot_ecommerce__pb2.Order.SerializeToString,
+            ),
+            'MarkOrderDelivered': grpc.unary_unary_rpc_method_handler(
+                    servicer.MarkOrderDelivered,
+                    request_deserializer=ecommerce_dot_ecommerce__pb2.OrderActionRequest.FromString,
+                    response_serializer=ecommerce_dot_ecommerce__pb2.Order.SerializeToString,
+            ),
+            'RecordOrderNotApplied': grpc.unary_unary_rpc_method_handler(
+                    servicer.RecordOrderNotApplied,
+                    request_deserializer=ecommerce_dot_ecommerce__pb2.RecordOrderNotAppliedRequest.FromString,
+                    response_serializer=ecommerce_dot_ecommerce__pb2.Order.SerializeToString,
+            ),
             'CreateProduct': grpc.unary_unary_rpc_method_handler(
                     servicer.CreateProduct,
                     request_deserializer=ecommerce_dot_ecommerce__pb2.CreateProductRequest.FromString,
@@ -228,6 +404,303 @@ def add_EcommerceServiceServicer_to_server(servicer, server):
  # This class is part of an EXPERIMENTAL API.
 class EcommerceService:
     """Missing associated documentation comment in .proto file."""
+
+    @staticmethod
+    def GetVisitPlan(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ecommerce.EcommerceService/GetVisitPlan',
+            ecommerce_dot_ecommerce__pb2.GetVisitPlanRequest.SerializeToString,
+            ecommerce_dot_ecommerce__pb2.VisitPlan.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetVisitPlanSettings(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ecommerce.EcommerceService/GetVisitPlanSettings',
+            ecommerce_dot_ecommerce__pb2.GetVisitPlanSettingsRequest.SerializeToString,
+            ecommerce_dot_ecommerce__pb2.VisitPlanSettings.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SetVisitPlanSettings(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ecommerce.EcommerceService/SetVisitPlanSettings',
+            ecommerce_dot_ecommerce__pb2.SetVisitPlanSettingsRequest.SerializeToString,
+            ecommerce_dot_ecommerce__pb2.VisitPlanSettings.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def QuoteVisitProducts(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ecommerce.EcommerceService/QuoteVisitProducts',
+            ecommerce_dot_ecommerce__pb2.QuoteVisitProductsRequest.SerializeToString,
+            ecommerce_dot_ecommerce__pb2.QuoteVisitProductsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def HoldAppointmentProducts(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ecommerce.EcommerceService/HoldAppointmentProducts',
+            ecommerce_dot_ecommerce__pb2.HoldAppointmentProductsRequest.SerializeToString,
+            ecommerce_dot_ecommerce__pb2.HoldAppointmentProductsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetAppointmentOrders(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ecommerce.EcommerceService/GetAppointmentOrders',
+            ecommerce_dot_ecommerce__pb2.GetAppointmentOrdersRequest.SerializeToString,
+            ecommerce_dot_ecommerce__pb2.OrdersResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def NotifyWhenBackInStock(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ecommerce.EcommerceService/NotifyWhenBackInStock',
+            ecommerce_dot_ecommerce__pb2.NotifyWhenBackInStockRequest.SerializeToString,
+            ecommerce_dot_ecommerce__pb2.NotifyWhenBackInStockResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListDeliveries(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ecommerce.EcommerceService/ListDeliveries',
+            ecommerce_dot_ecommerce__pb2.ListDeliveriesRequest.SerializeToString,
+            ecommerce_dot_ecommerce__pb2.OrdersResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DispatchOrder(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ecommerce.EcommerceService/DispatchOrder',
+            ecommerce_dot_ecommerce__pb2.OrderActionRequest.SerializeToString,
+            ecommerce_dot_ecommerce__pb2.Order.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def MarkOrderDelivered(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ecommerce.EcommerceService/MarkOrderDelivered',
+            ecommerce_dot_ecommerce__pb2.OrderActionRequest.SerializeToString,
+            ecommerce_dot_ecommerce__pb2.Order.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RecordOrderNotApplied(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ecommerce.EcommerceService/RecordOrderNotApplied',
+            ecommerce_dot_ecommerce__pb2.RecordOrderNotAppliedRequest.SerializeToString,
+            ecommerce_dot_ecommerce__pb2.Order.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
 
     @staticmethod
     def CreateProduct(request,

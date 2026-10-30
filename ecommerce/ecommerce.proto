@@ -3,6 +3,18 @@ syntax = "proto3";
 package ecommerce;
 
 service EcommerceService {
+  rpc GetVisitPlan(GetVisitPlanRequest) returns (VisitPlan);
+  rpc GetVisitPlanSettings(GetVisitPlanSettingsRequest) returns (VisitPlanSettings);
+  rpc SetVisitPlanSettings(SetVisitPlanSettingsRequest) returns (VisitPlanSettings);
+  rpc QuoteVisitProducts(QuoteVisitProductsRequest) returns (QuoteVisitProductsResponse);
+  rpc HoldAppointmentProducts(HoldAppointmentProductsRequest) returns (HoldAppointmentProductsResponse);
+  rpc GetAppointmentOrders(GetAppointmentOrdersRequest) returns (OrdersResponse);
+  rpc NotifyWhenBackInStock(NotifyWhenBackInStockRequest) returns (NotifyWhenBackInStockResponse);
+  rpc ListDeliveries(ListDeliveriesRequest) returns (OrdersResponse);
+  rpc DispatchOrder(OrderActionRequest) returns (Order);
+  rpc MarkOrderDelivered(OrderActionRequest) returns (Order);
+  rpc RecordOrderNotApplied(RecordOrderNotAppliedRequest) returns (Order);
+
   rpc CreateProduct(CreateProductRequest) returns (Product);
   rpc UpdateProduct(UpdateProductRequest) returns (Product);
   rpc SetProductActive(SetProductActiveRequest) returns (Product);
@@ -189,4 +201,188 @@ message InventoryAlerts {
   repeated ProductAlert products = 1;
   repeated LotAlert lots = 2;
   string as_of = 3;
+}
+
+message GetVisitPlanRequest {
+  string client_profile_id = 1;
+  repeated string pet_ids = 2;
+}
+
+message PlanProduct {
+  string product_id = 1;
+  string name = 2;
+  string presentation = 3;
+  string description = 4;
+  string photo_url = 5;
+  string ica_registration = 6;
+  string price = 7;
+  bool requires_cold_chain = 8;
+  string protection = 9;
+}
+
+message PlanRecommendation {
+  PlanProduct product = 1;
+  string dose_label = 2;
+  string source = 3;
+  string reason = 4;
+}
+
+message PlanMissingProduct {
+  string protection = 1;
+  string product_id = 2;
+  string product_name = 3;
+}
+
+message PlanAppliedDose {
+  string vaccine_name = 1;
+  string date_administered = 2;
+}
+
+message PetVisitPlan {
+  string pet_id = 1;
+  string pet_name = 2;
+  string outcome = 3;
+  string reason = 4;
+  repeated PlanRecommendation recommendations = 5;
+  repeated PlanMissingProduct missing = 6;
+  repeated PlanAppliedDose applied = 7;
+  string next_vaccine_name = 8;
+  string next_due_date = 9;
+  repeated PlanProduct complementary = 10;
+}
+
+message VisitPlan {
+  repeated PetVisitPlan pets = 1;
+  string estimated_product_total = 2;
+  string as_of = 3;
+}
+
+message GetVisitPlanSettingsRequest {}
+
+message VisitPlanSettings {
+  int32 young_max_age_months = 1;
+  string dog_first_dose_protection = 2;
+  string cat_first_dose_protection = 3;
+}
+
+message SetVisitPlanSettingsRequest {
+  VisitPlanSettings settings = 1;
+  string actor_user_id = 2;
+}
+
+message VisitProductsItem {
+  string pet_id = 1;
+  repeated string product_ids = 2;
+}
+
+message QuoteVisitProductsRequest {
+  string client_profile_id = 1;
+  repeated VisitProductsItem items = 2;
+}
+
+message QuotedLine {
+  string product_id = 1;
+  string product_name = 2;
+  string presentation = 3;
+  string unit_price = 4;
+}
+
+message PetProductsQuote {
+  string pet_id = 1;
+  repeated QuotedLine lines = 2;
+  string total = 3;
+}
+
+message QuoteVisitProductsResponse {
+  repeated PetProductsQuote pets = 1;
+  string total = 2;
+}
+
+message HoldItem {
+  string appointment_id = 1;
+  string pet_id = 2;
+  repeated string product_ids = 3;
+}
+
+message HoldAppointmentProductsRequest {
+  string client_profile_id = 1;
+  string group_id = 2;
+  repeated HoldItem items = 3;
+  string expected_product_total = 4;
+  string window_start_utc = 5;
+  string window_end_utc = 6;
+  string arrives_by_utc = 7;
+  string address_text = 8;
+  string address_lat = 9;
+  string address_lng = 10;
+}
+
+message OrderLine {
+  string product_id = 1;
+  string product_name = 2;
+  string presentation = 3;
+  string lot_id = 4;
+  string lot_number = 5;
+  string expires_on = 6;
+  int32 quantity = 7;
+  string unit_price = 8;
+  bool requires_cold_chain = 9;
+}
+
+message Order {
+  string id = 1;
+  string client_profile_id = 2;
+  string appointment_id = 3;
+  string group_id = 4;
+  string pet_id = 5;
+  string status = 6;
+  repeated OrderLine lines = 7;
+  string total = 8;
+  string window_start_utc = 9;
+  string window_end_utc = 10;
+  string arrives_by_utc = 11;
+  string address_text = 12;
+  string dispatched_at = 13;
+  string delivered_at = 14;
+  string closed_at = 15;
+  string closed_reason = 16;
+  bool chargeable = 17;
+}
+
+message HoldAppointmentProductsResponse {
+  repeated Order orders = 1;
+  string total = 2;
+}
+
+message GetAppointmentOrdersRequest {
+  repeated string appointment_ids = 1;
+}
+
+message OrdersResponse {
+  repeated Order orders = 1;
+}
+
+message NotifyWhenBackInStockRequest {
+  string client_profile_id = 1;
+  string product_id = 2;
+}
+
+message NotifyWhenBackInStockResponse {
+  bool subscribed = 1;
+}
+
+message ListDeliveriesRequest {
+  string date = 1;
+}
+
+message OrderActionRequest {
+  string order_id = 1;
+  string actor_user_id = 2;
+}
+
+message RecordOrderNotAppliedRequest {
+  string order_id = 1;
+  string actor_user_id = 2;
+  string reason = 3;
+  string note = 4;
 }
