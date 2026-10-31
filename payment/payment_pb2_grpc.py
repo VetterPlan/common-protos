@@ -168,6 +168,16 @@ class PaymentServiceStub:
                 request_serializer=payment_dot_payment__pb2.CollectUpfrontChargeRequest.SerializeToString,
                 response_deserializer=payment_dot_payment__pb2.CollectUpfrontChargeResponse.FromString,
                 _registered_method=True)
+        self.CreateOrderPayment = channel.unary_unary(
+                '/payment.PaymentService/CreateOrderPayment',
+                request_serializer=payment_dot_payment__pb2.CreateOrderPaymentRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.PaymentResponse.FromString,
+                _registered_method=True)
+        self.GetPaymentByOrder = channel.unary_unary(
+                '/payment.PaymentService/GetPaymentByOrder',
+                request_serializer=payment_dot_payment__pb2.GetPaymentByOrderRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.PaymentResponse.FromString,
+                _registered_method=True)
         self.CreateWallet = channel.unary_unary(
                 '/payment.PaymentService/CreateWallet',
                 request_serializer=payment_dot_payment__pb2.CreateWalletRequest.SerializeToString,
@@ -596,6 +606,18 @@ class PaymentServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def CollectUpfrontCharge(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CreateOrderPayment(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetPaymentByOrder(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -1067,6 +1089,16 @@ def add_PaymentServiceServicer_to_server(servicer, server):
                     servicer.CollectUpfrontCharge,
                     request_deserializer=payment_dot_payment__pb2.CollectUpfrontChargeRequest.FromString,
                     response_serializer=payment_dot_payment__pb2.CollectUpfrontChargeResponse.SerializeToString,
+            ),
+            'CreateOrderPayment': grpc.unary_unary_rpc_method_handler(
+                    servicer.CreateOrderPayment,
+                    request_deserializer=payment_dot_payment__pb2.CreateOrderPaymentRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.PaymentResponse.SerializeToString,
+            ),
+            'GetPaymentByOrder': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetPaymentByOrder,
+                    request_deserializer=payment_dot_payment__pb2.GetPaymentByOrderRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.PaymentResponse.SerializeToString,
             ),
             'CreateWallet': grpc.unary_unary_rpc_method_handler(
                     servicer.CreateWallet,
@@ -2001,6 +2033,60 @@ class PaymentService:
             '/payment.PaymentService/CollectUpfrontCharge',
             payment_dot_payment__pb2.CollectUpfrontChargeRequest.SerializeToString,
             payment_dot_payment__pb2.CollectUpfrontChargeResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CreateOrderPayment(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/CreateOrderPayment',
+            payment_dot_payment__pb2.CreateOrderPaymentRequest.SerializeToString,
+            payment_dot_payment__pb2.PaymentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetPaymentByOrder(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/GetPaymentByOrder',
+            payment_dot_payment__pb2.GetPaymentByOrderRequest.SerializeToString,
+            payment_dot_payment__pb2.PaymentResponse.FromString,
             options,
             channel_credentials,
             insecure,

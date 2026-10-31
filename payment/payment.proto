@@ -44,6 +44,8 @@ service PaymentService {
   rpc WriteOffCollection (WriteOffCollectionRequest) returns (PaymentResponse);
   rpc ResolverCobroIncierto (ResolverCobroInciertoRequest) returns (ResolverCobroInciertoResponse);
   rpc CollectUpfrontCharge (CollectUpfrontChargeRequest) returns (CollectUpfrontChargeResponse);
+  rpc CreateOrderPayment (CreateOrderPaymentRequest) returns (PaymentResponse);
+  rpc GetPaymentByOrder (GetPaymentByOrderRequest) returns (PaymentResponse);
   rpc CreateWallet (CreateWalletRequest) returns (WalletResponse);
   rpc GetWallet (GetWalletRequest) returns (WalletResponse);
   rpc GetWalletBalancesByOwners (GetWalletBalancesByOwnersRequest) returns (GetWalletBalancesByOwnersResponse);
@@ -356,6 +358,7 @@ message Payment {
   optional string gateway_decline_reason = 41;
   google.protobuf.Timestamp capture_pending_since = 42;
   google.protobuf.Timestamp upfront_charge_requested_at = 43;
+  string order_id = 44;
 }
 
 message Wallet {
@@ -478,6 +481,25 @@ message Refund {
 // ═══════════════════════════════════════════════════════════════════════════
 
 // ─── Payment Lifecycle ───
+
+message OrderPaymentLine {
+  string description = 1;
+  int32 quantity = 2;
+  string unit_price = 3;
+  string vat_treatment = 4;
+}
+
+message CreateOrderPaymentRequest {
+  string order_id = 1;
+  string client_profile_id = 2;
+  string total = 3;
+  repeated OrderPaymentLine lines = 4;
+  string payment_method_id = 5;
+}
+
+message GetPaymentByOrderRequest {
+  string order_id = 1;
+}
 
 message CreatePaymentRequest {
   string appointment_id = 1;

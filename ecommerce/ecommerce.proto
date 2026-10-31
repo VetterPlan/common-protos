@@ -14,6 +14,18 @@ service EcommerceService {
   rpc DispatchOrder(OrderActionRequest) returns (Order);
   rpc MarkOrderDelivered(OrderActionRequest) returns (Order);
   rpc RecordOrderNotApplied(RecordOrderNotAppliedRequest) returns (Order);
+  rpc ListStoreProducts(ListStoreProductsRequest) returns (ListProductsResponse);
+  rpc QuoteHomeOrder(QuoteHomeOrderRequest) returns (HomeOrderQuote);
+  rpc CreateHomeOrder(CreateHomeOrderRequest) returns (Order);
+  rpc GetOrder(GetOrderRequest) returns (Order);
+  rpc GetOrderOwner(GetOrderRequest) returns (GetOrderOwnerResponse);
+  rpc ListClientOrders(ListClientOrdersRequest) returns (OrdersResponse);
+  rpc CancelHomeOrder(CancelHomeOrderRequest) returns (Order);
+  rpc RefundDefectiveOrder(RefundDefectiveOrderRequest) returns (Order);
+  rpc ListHomeOrdersToDispatch(ListHomeOrdersToDispatchRequest) returns (OrdersResponse);
+  rpc GetShippingSettings(GetShippingSettingsRequest) returns (ShippingSettings);
+  rpc SetShippingSettings(SetShippingSettingsRequest) returns (ShippingSettings);
+  rpc SuggestHomeProduct(SuggestHomeProductRequest) returns (HomeProductSuggestion);
 
   rpc CreateProduct(CreateProductRequest) returns (Product);
   rpc UpdateProduct(UpdateProductRequest) returns (Product);
@@ -285,6 +297,7 @@ message QuotedLine {
   string product_name = 2;
   string presentation = 3;
   string unit_price = 4;
+  int32 quantity = 5;
 }
 
 message PetProductsQuote {
@@ -347,6 +360,90 @@ message Order {
   string closed_at = 15;
   string closed_reason = 16;
   bool chargeable = 17;
+  string kind = 18;
+  string shipping_fee = 19;
+  string paid_at = 20;
+}
+
+message ListStoreProductsRequest {}
+
+message CartItem {
+  string product_id = 1;
+  int32 quantity = 2;
+}
+
+message QuoteHomeOrderRequest {
+  string client_profile_id = 1;
+  string address_id = 2;
+  repeated CartItem items = 3;
+}
+
+message HomeOrderQuote {
+  string subtotal = 1;
+  string shipping_fee = 2;
+  string total = 3;
+  string address_text = 4;
+  repeated QuotedLine lines = 5;
+}
+
+message CreateHomeOrderRequest {
+  string client_profile_id = 1;
+  string address_id = 2;
+  repeated CartItem items = 3;
+  string expected_total = 4;
+  string payment_method_id = 5;
+}
+
+message GetOrderRequest {
+  string order_id = 1;
+}
+
+message GetOrderOwnerResponse {
+  string client_profile_id = 1;
+}
+
+message ListClientOrdersRequest {
+  string client_profile_id = 1;
+}
+
+message CancelHomeOrderRequest {
+  string client_profile_id = 1;
+  string order_id = 2;
+}
+
+message RefundDefectiveOrderRequest {
+  string order_id = 1;
+  string actor_user_id = 2;
+  string note = 3;
+}
+
+message ListHomeOrdersToDispatchRequest {}
+
+message GetShippingSettingsRequest {}
+
+message ShippingSettings {
+  bool configured = 1;
+  string base_fee = 2;
+  string fee_per_km = 3;
+  string free_from_value = 4;
+}
+
+message SetShippingSettingsRequest {
+  string actor_user_id = 1;
+  ShippingSettings settings = 2;
+}
+
+message SuggestHomeProductRequest {
+  string client_profile_id = 1;
+  string pet_id = 2;
+  string symptoms = 3;
+  repeated string vet_plan_clinical_ids = 4;
+}
+
+message HomeProductSuggestion {
+  string outcome = 1;
+  string reason = 2;
+  Product product = 3;
 }
 
 message HoldAppointmentProductsResponse {

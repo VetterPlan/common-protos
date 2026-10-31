@@ -89,6 +89,66 @@ class EcommerceServiceStub:
                 request_serializer=ecommerce_dot_ecommerce__pb2.RecordOrderNotAppliedRequest.SerializeToString,
                 response_deserializer=ecommerce_dot_ecommerce__pb2.Order.FromString,
                 _registered_method=True)
+        self.ListStoreProducts = channel.unary_unary(
+                '/ecommerce.EcommerceService/ListStoreProducts',
+                request_serializer=ecommerce_dot_ecommerce__pb2.ListStoreProductsRequest.SerializeToString,
+                response_deserializer=ecommerce_dot_ecommerce__pb2.ListProductsResponse.FromString,
+                _registered_method=True)
+        self.QuoteHomeOrder = channel.unary_unary(
+                '/ecommerce.EcommerceService/QuoteHomeOrder',
+                request_serializer=ecommerce_dot_ecommerce__pb2.QuoteHomeOrderRequest.SerializeToString,
+                response_deserializer=ecommerce_dot_ecommerce__pb2.HomeOrderQuote.FromString,
+                _registered_method=True)
+        self.CreateHomeOrder = channel.unary_unary(
+                '/ecommerce.EcommerceService/CreateHomeOrder',
+                request_serializer=ecommerce_dot_ecommerce__pb2.CreateHomeOrderRequest.SerializeToString,
+                response_deserializer=ecommerce_dot_ecommerce__pb2.Order.FromString,
+                _registered_method=True)
+        self.GetOrder = channel.unary_unary(
+                '/ecommerce.EcommerceService/GetOrder',
+                request_serializer=ecommerce_dot_ecommerce__pb2.GetOrderRequest.SerializeToString,
+                response_deserializer=ecommerce_dot_ecommerce__pb2.Order.FromString,
+                _registered_method=True)
+        self.GetOrderOwner = channel.unary_unary(
+                '/ecommerce.EcommerceService/GetOrderOwner',
+                request_serializer=ecommerce_dot_ecommerce__pb2.GetOrderRequest.SerializeToString,
+                response_deserializer=ecommerce_dot_ecommerce__pb2.GetOrderOwnerResponse.FromString,
+                _registered_method=True)
+        self.ListClientOrders = channel.unary_unary(
+                '/ecommerce.EcommerceService/ListClientOrders',
+                request_serializer=ecommerce_dot_ecommerce__pb2.ListClientOrdersRequest.SerializeToString,
+                response_deserializer=ecommerce_dot_ecommerce__pb2.OrdersResponse.FromString,
+                _registered_method=True)
+        self.CancelHomeOrder = channel.unary_unary(
+                '/ecommerce.EcommerceService/CancelHomeOrder',
+                request_serializer=ecommerce_dot_ecommerce__pb2.CancelHomeOrderRequest.SerializeToString,
+                response_deserializer=ecommerce_dot_ecommerce__pb2.Order.FromString,
+                _registered_method=True)
+        self.RefundDefectiveOrder = channel.unary_unary(
+                '/ecommerce.EcommerceService/RefundDefectiveOrder',
+                request_serializer=ecommerce_dot_ecommerce__pb2.RefundDefectiveOrderRequest.SerializeToString,
+                response_deserializer=ecommerce_dot_ecommerce__pb2.Order.FromString,
+                _registered_method=True)
+        self.ListHomeOrdersToDispatch = channel.unary_unary(
+                '/ecommerce.EcommerceService/ListHomeOrdersToDispatch',
+                request_serializer=ecommerce_dot_ecommerce__pb2.ListHomeOrdersToDispatchRequest.SerializeToString,
+                response_deserializer=ecommerce_dot_ecommerce__pb2.OrdersResponse.FromString,
+                _registered_method=True)
+        self.GetShippingSettings = channel.unary_unary(
+                '/ecommerce.EcommerceService/GetShippingSettings',
+                request_serializer=ecommerce_dot_ecommerce__pb2.GetShippingSettingsRequest.SerializeToString,
+                response_deserializer=ecommerce_dot_ecommerce__pb2.ShippingSettings.FromString,
+                _registered_method=True)
+        self.SetShippingSettings = channel.unary_unary(
+                '/ecommerce.EcommerceService/SetShippingSettings',
+                request_serializer=ecommerce_dot_ecommerce__pb2.SetShippingSettingsRequest.SerializeToString,
+                response_deserializer=ecommerce_dot_ecommerce__pb2.ShippingSettings.FromString,
+                _registered_method=True)
+        self.SuggestHomeProduct = channel.unary_unary(
+                '/ecommerce.EcommerceService/SuggestHomeProduct',
+                request_serializer=ecommerce_dot_ecommerce__pb2.SuggestHomeProductRequest.SerializeToString,
+                response_deserializer=ecommerce_dot_ecommerce__pb2.HomeProductSuggestion.FromString,
+                _registered_method=True)
         self.CreateProduct = channel.unary_unary(
                 '/ecommerce.EcommerceService/CreateProduct',
                 request_serializer=ecommerce_dot_ecommerce__pb2.CreateProductRequest.SerializeToString,
@@ -210,6 +270,78 @@ class EcommerceServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def RecordOrderNotApplied(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListStoreProducts(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def QuoteHomeOrder(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CreateHomeOrder(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetOrder(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetOrderOwner(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListClientOrders(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CancelHomeOrder(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RefundDefectiveOrder(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListHomeOrdersToDispatch(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetShippingSettings(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetShippingSettings(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SuggestHomeProduct(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -338,6 +470,66 @@ def add_EcommerceServiceServicer_to_server(servicer, server):
                     servicer.RecordOrderNotApplied,
                     request_deserializer=ecommerce_dot_ecommerce__pb2.RecordOrderNotAppliedRequest.FromString,
                     response_serializer=ecommerce_dot_ecommerce__pb2.Order.SerializeToString,
+            ),
+            'ListStoreProducts': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListStoreProducts,
+                    request_deserializer=ecommerce_dot_ecommerce__pb2.ListStoreProductsRequest.FromString,
+                    response_serializer=ecommerce_dot_ecommerce__pb2.ListProductsResponse.SerializeToString,
+            ),
+            'QuoteHomeOrder': grpc.unary_unary_rpc_method_handler(
+                    servicer.QuoteHomeOrder,
+                    request_deserializer=ecommerce_dot_ecommerce__pb2.QuoteHomeOrderRequest.FromString,
+                    response_serializer=ecommerce_dot_ecommerce__pb2.HomeOrderQuote.SerializeToString,
+            ),
+            'CreateHomeOrder': grpc.unary_unary_rpc_method_handler(
+                    servicer.CreateHomeOrder,
+                    request_deserializer=ecommerce_dot_ecommerce__pb2.CreateHomeOrderRequest.FromString,
+                    response_serializer=ecommerce_dot_ecommerce__pb2.Order.SerializeToString,
+            ),
+            'GetOrder': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetOrder,
+                    request_deserializer=ecommerce_dot_ecommerce__pb2.GetOrderRequest.FromString,
+                    response_serializer=ecommerce_dot_ecommerce__pb2.Order.SerializeToString,
+            ),
+            'GetOrderOwner': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetOrderOwner,
+                    request_deserializer=ecommerce_dot_ecommerce__pb2.GetOrderRequest.FromString,
+                    response_serializer=ecommerce_dot_ecommerce__pb2.GetOrderOwnerResponse.SerializeToString,
+            ),
+            'ListClientOrders': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListClientOrders,
+                    request_deserializer=ecommerce_dot_ecommerce__pb2.ListClientOrdersRequest.FromString,
+                    response_serializer=ecommerce_dot_ecommerce__pb2.OrdersResponse.SerializeToString,
+            ),
+            'CancelHomeOrder': grpc.unary_unary_rpc_method_handler(
+                    servicer.CancelHomeOrder,
+                    request_deserializer=ecommerce_dot_ecommerce__pb2.CancelHomeOrderRequest.FromString,
+                    response_serializer=ecommerce_dot_ecommerce__pb2.Order.SerializeToString,
+            ),
+            'RefundDefectiveOrder': grpc.unary_unary_rpc_method_handler(
+                    servicer.RefundDefectiveOrder,
+                    request_deserializer=ecommerce_dot_ecommerce__pb2.RefundDefectiveOrderRequest.FromString,
+                    response_serializer=ecommerce_dot_ecommerce__pb2.Order.SerializeToString,
+            ),
+            'ListHomeOrdersToDispatch': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListHomeOrdersToDispatch,
+                    request_deserializer=ecommerce_dot_ecommerce__pb2.ListHomeOrdersToDispatchRequest.FromString,
+                    response_serializer=ecommerce_dot_ecommerce__pb2.OrdersResponse.SerializeToString,
+            ),
+            'GetShippingSettings': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetShippingSettings,
+                    request_deserializer=ecommerce_dot_ecommerce__pb2.GetShippingSettingsRequest.FromString,
+                    response_serializer=ecommerce_dot_ecommerce__pb2.ShippingSettings.SerializeToString,
+            ),
+            'SetShippingSettings': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetShippingSettings,
+                    request_deserializer=ecommerce_dot_ecommerce__pb2.SetShippingSettingsRequest.FromString,
+                    response_serializer=ecommerce_dot_ecommerce__pb2.ShippingSettings.SerializeToString,
+            ),
+            'SuggestHomeProduct': grpc.unary_unary_rpc_method_handler(
+                    servicer.SuggestHomeProduct,
+                    request_deserializer=ecommerce_dot_ecommerce__pb2.SuggestHomeProductRequest.FromString,
+                    response_serializer=ecommerce_dot_ecommerce__pb2.HomeProductSuggestion.SerializeToString,
             ),
             'CreateProduct': grpc.unary_unary_rpc_method_handler(
                     servicer.CreateProduct,
@@ -692,6 +884,330 @@ class EcommerceService:
             '/ecommerce.EcommerceService/RecordOrderNotApplied',
             ecommerce_dot_ecommerce__pb2.RecordOrderNotAppliedRequest.SerializeToString,
             ecommerce_dot_ecommerce__pb2.Order.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListStoreProducts(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ecommerce.EcommerceService/ListStoreProducts',
+            ecommerce_dot_ecommerce__pb2.ListStoreProductsRequest.SerializeToString,
+            ecommerce_dot_ecommerce__pb2.ListProductsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def QuoteHomeOrder(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ecommerce.EcommerceService/QuoteHomeOrder',
+            ecommerce_dot_ecommerce__pb2.QuoteHomeOrderRequest.SerializeToString,
+            ecommerce_dot_ecommerce__pb2.HomeOrderQuote.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CreateHomeOrder(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ecommerce.EcommerceService/CreateHomeOrder',
+            ecommerce_dot_ecommerce__pb2.CreateHomeOrderRequest.SerializeToString,
+            ecommerce_dot_ecommerce__pb2.Order.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetOrder(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ecommerce.EcommerceService/GetOrder',
+            ecommerce_dot_ecommerce__pb2.GetOrderRequest.SerializeToString,
+            ecommerce_dot_ecommerce__pb2.Order.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetOrderOwner(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ecommerce.EcommerceService/GetOrderOwner',
+            ecommerce_dot_ecommerce__pb2.GetOrderRequest.SerializeToString,
+            ecommerce_dot_ecommerce__pb2.GetOrderOwnerResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListClientOrders(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ecommerce.EcommerceService/ListClientOrders',
+            ecommerce_dot_ecommerce__pb2.ListClientOrdersRequest.SerializeToString,
+            ecommerce_dot_ecommerce__pb2.OrdersResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CancelHomeOrder(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ecommerce.EcommerceService/CancelHomeOrder',
+            ecommerce_dot_ecommerce__pb2.CancelHomeOrderRequest.SerializeToString,
+            ecommerce_dot_ecommerce__pb2.Order.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RefundDefectiveOrder(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ecommerce.EcommerceService/RefundDefectiveOrder',
+            ecommerce_dot_ecommerce__pb2.RefundDefectiveOrderRequest.SerializeToString,
+            ecommerce_dot_ecommerce__pb2.Order.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListHomeOrdersToDispatch(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ecommerce.EcommerceService/ListHomeOrdersToDispatch',
+            ecommerce_dot_ecommerce__pb2.ListHomeOrdersToDispatchRequest.SerializeToString,
+            ecommerce_dot_ecommerce__pb2.OrdersResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetShippingSettings(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ecommerce.EcommerceService/GetShippingSettings',
+            ecommerce_dot_ecommerce__pb2.GetShippingSettingsRequest.SerializeToString,
+            ecommerce_dot_ecommerce__pb2.ShippingSettings.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SetShippingSettings(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ecommerce.EcommerceService/SetShippingSettings',
+            ecommerce_dot_ecommerce__pb2.SetShippingSettingsRequest.SerializeToString,
+            ecommerce_dot_ecommerce__pb2.ShippingSettings.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SuggestHomeProduct(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ecommerce.EcommerceService/SuggestHomeProduct',
+            ecommerce_dot_ecommerce__pb2.SuggestHomeProductRequest.SerializeToString,
+            ecommerce_dot_ecommerce__pb2.HomeProductSuggestion.FromString,
             options,
             channel_credentials,
             insecure,
