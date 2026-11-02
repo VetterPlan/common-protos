@@ -665,6 +665,15 @@ message OwnerAiConsent {
   AiConsentPurpose purpose = 6;
   AiConsentOrigin origin = 7;
   string appointment_id = 8;
+  string consent_text_hash = 9;
+}
+
+message ConsentEvidence {
+  string consent_version = 1;
+  string consent_text_hash = 2;
+  string requested_by_user_id = 3;
+  string ip = 4;
+  string user_agent = 5;
 }
 
 enum AiConsentPurpose {
@@ -685,11 +694,13 @@ message GrantOwnerAiConsentRequest {
   string consent_version = 3;
   AiConsentOrigin origin = 4;
   string appointment_id = 5;
+  ConsentEvidence evidence = 6;
 }
 
 message RevokeOwnerAiConsentRequest {
   string client_profile_id = 1;
   AiConsentPurpose purpose = 2;
+  ConsentEvidence evidence = 3;
 }
 
 message GetOwnerAiConsentRequest {
@@ -712,6 +723,7 @@ message ListOwnerAiConsentsResponse {
 message GrantVaccinationCardAiConsentRequest {
   string client_profile_id = 1;
   string consent_version = 2;
+  ConsentEvidence evidence = 3;
 }
 
 message GetVaccinationCardAiConsentRequest {
@@ -720,6 +732,7 @@ message GetVaccinationCardAiConsentRequest {
 
 message RevokeVaccinationCardAiConsentRequest {
   string client_profile_id = 1;
+  ConsentEvidence evidence = 2;
 }
 
 message VaccinationCardAiConsentResponse {

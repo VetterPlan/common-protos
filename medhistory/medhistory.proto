@@ -229,6 +229,10 @@ service MedHistoryService {
   rpc RespondToAiConsentRequest (RespondToAiConsentRequestRequest) returns (OwnerAiDictationResponse);
   rpc GetOwnerAiDictation (GetOwnerAiDictationRequest) returns (OwnerAiDictationResponse);
 
+  rpc GetVetAiConsent (VetAiConsentRequest) returns (VetAiConsentResponse);
+  rpc GrantVetAiConsent (VetAiConsentRequest) returns (VetAiConsentResponse);
+  rpc RevokeVetAiConsent (VetAiConsentRequest) returns (VetAiConsentResponse);
+
   // Baja de cuenta (P-4a): desvincula al titular y CONSERVA el acto medico.
   // Ley 576 de 2000: la historia clinica es obligatoria y confidencial, y es
   // la evidencia del veterinario sobre su propia conducta profesional.
@@ -683,6 +687,7 @@ message RespondToAiConsentRequestRequest {
   bool accept = 2;
   string consent_version = 3;
   AccessContext access = 4;
+  ConsentEvidence evidence = 5;
 }
 
 message GetOwnerAiDictationRequest {
@@ -694,6 +699,33 @@ message OwnerAiDictationResponse {
   string appointment_id = 1;
   OwnerAiDictationStatus status = 2;
   google.protobuf.Timestamp request_expires_at = 3;
+}
+
+message ConsentEvidence {
+  string consent_version = 1;
+  string consent_text_hash = 2;
+  string requested_by_user_id = 3;
+  string ip = 4;
+  string user_agent = 5;
+}
+
+message VetAiConsentRequest {
+  AccessContext access = 1;
+  ConsentEvidence evidence = 2;
+}
+
+message VetAiConsent {
+  string vet_profile_id = 1;
+  bool granted = 2;
+  string consent_version = 3;
+  google.protobuf.Timestamp granted_at = 4;
+  google.protobuf.Timestamp revoked_at = 5;
+  string current_version = 6;
+  string consent_text_hash = 7;
+}
+
+message VetAiConsentResponse {
+  VetAiConsent consent = 1;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -961,6 +993,13 @@ message UpdateConsultationRecordResponse {
   repeated string applied_paths = 3;
   repeated string rejected_paths = 4;  // Rutas inválidas para la receta
   google.protobuf.Timestamp updated_at = 5;
+  repeated PatchRejection rejections = 6;
+}
+
+message PatchRejection {
+  string path = 1;
+  string code = 2;
+  string message = 3;
 }
 
 message ReopenConsultationRecordRequest {
@@ -1292,6 +1331,7 @@ message GrantAiConsentRequest {
   bool granted = 2;                // true = otorga · false = revoca
   string consent_version = 3;      // versión del texto de consentimiento mostrado
   AccessContext access = 4;
+  ConsentEvidence evidence = 5;
 }
 
 message GrantAiConsentResponse {
