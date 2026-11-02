@@ -149,6 +149,16 @@ class EcommerceServiceStub:
                 request_serializer=ecommerce_dot_ecommerce__pb2.SuggestHomeProductRequest.SerializeToString,
                 response_deserializer=ecommerce_dot_ecommerce__pb2.HomeProductSuggestion.FromString,
                 _registered_method=True)
+        self.IssueOrderPrescription = channel.unary_unary(
+                '/ecommerce.EcommerceService/IssueOrderPrescription',
+                request_serializer=ecommerce_dot_ecommerce__pb2.IssueOrderPrescriptionRequest.SerializeToString,
+                response_deserializer=ecommerce_dot_ecommerce__pb2.Order.FromString,
+                _registered_method=True)
+        self.DeclineOrderPrescription = channel.unary_unary(
+                '/ecommerce.EcommerceService/DeclineOrderPrescription',
+                request_serializer=ecommerce_dot_ecommerce__pb2.DeclineOrderPrescriptionRequest.SerializeToString,
+                response_deserializer=ecommerce_dot_ecommerce__pb2.Order.FromString,
+                _registered_method=True)
         self.CreateProduct = channel.unary_unary(
                 '/ecommerce.EcommerceService/CreateProduct',
                 request_serializer=ecommerce_dot_ecommerce__pb2.CreateProductRequest.SerializeToString,
@@ -347,6 +357,18 @@ class EcommerceServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def IssueOrderPrescription(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DeclineOrderPrescription(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def CreateProduct(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -530,6 +552,16 @@ def add_EcommerceServiceServicer_to_server(servicer, server):
                     servicer.SuggestHomeProduct,
                     request_deserializer=ecommerce_dot_ecommerce__pb2.SuggestHomeProductRequest.FromString,
                     response_serializer=ecommerce_dot_ecommerce__pb2.HomeProductSuggestion.SerializeToString,
+            ),
+            'IssueOrderPrescription': grpc.unary_unary_rpc_method_handler(
+                    servicer.IssueOrderPrescription,
+                    request_deserializer=ecommerce_dot_ecommerce__pb2.IssueOrderPrescriptionRequest.FromString,
+                    response_serializer=ecommerce_dot_ecommerce__pb2.Order.SerializeToString,
+            ),
+            'DeclineOrderPrescription': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeclineOrderPrescription,
+                    request_deserializer=ecommerce_dot_ecommerce__pb2.DeclineOrderPrescriptionRequest.FromString,
+                    response_serializer=ecommerce_dot_ecommerce__pb2.Order.SerializeToString,
             ),
             'CreateProduct': grpc.unary_unary_rpc_method_handler(
                     servicer.CreateProduct,
@@ -1208,6 +1240,60 @@ class EcommerceService:
             '/ecommerce.EcommerceService/SuggestHomeProduct',
             ecommerce_dot_ecommerce__pb2.SuggestHomeProductRequest.SerializeToString,
             ecommerce_dot_ecommerce__pb2.HomeProductSuggestion.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def IssueOrderPrescription(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ecommerce.EcommerceService/IssueOrderPrescription',
+            ecommerce_dot_ecommerce__pb2.IssueOrderPrescriptionRequest.SerializeToString,
+            ecommerce_dot_ecommerce__pb2.Order.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DeclineOrderPrescription(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/ecommerce.EcommerceService/DeclineOrderPrescription',
+            ecommerce_dot_ecommerce__pb2.DeclineOrderPrescriptionRequest.SerializeToString,
+            ecommerce_dot_ecommerce__pb2.Order.FromString,
             options,
             channel_credentials,
             insecure,

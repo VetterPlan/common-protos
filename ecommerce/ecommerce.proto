@@ -26,6 +26,8 @@ service EcommerceService {
   rpc GetShippingSettings(GetShippingSettingsRequest) returns (ShippingSettings);
   rpc SetShippingSettings(SetShippingSettingsRequest) returns (ShippingSettings);
   rpc SuggestHomeProduct(SuggestHomeProductRequest) returns (HomeProductSuggestion);
+  rpc IssueOrderPrescription(IssueOrderPrescriptionRequest) returns (Order);
+  rpc DeclineOrderPrescription(DeclineOrderPrescriptionRequest) returns (Order);
 
   rpc CreateProduct(CreateProductRequest) returns (Product);
   rpc UpdateProduct(UpdateProductRequest) returns (Product);
@@ -66,6 +68,7 @@ message ProductFields {
   string weight_max_kg = 16;
   string protection = 17;
   bool complementary = 18;
+  string sale_condition = 19;
 }
 
 message StockSummary {
@@ -363,6 +366,20 @@ message Order {
   string kind = 18;
   string shipping_fee = 19;
   string paid_at = 20;
+  bool prescription_required = 21;
+  string prescription_issued_at = 22;
+  string prescription_vet_profile_id = 23;
+}
+
+message IssueOrderPrescriptionRequest {
+  string appointment_id = 1;
+  string vet_profile_id = 2;
+}
+
+message DeclineOrderPrescriptionRequest {
+  string appointment_id = 1;
+  string vet_profile_id = 2;
+  string reason = 3;
 }
 
 message ListStoreProductsRequest {}
