@@ -69,6 +69,8 @@ message ProductFields {
   string protection = 17;
   bool complementary = 18;
   string sale_condition = 19;
+  string storage_instructions = 20;
+  string application_instructions = 21;
 }
 
 message StockSummary {
@@ -343,6 +345,8 @@ message OrderLine {
   int32 quantity = 7;
   string unit_price = 8;
   bool requires_cold_chain = 9;
+  string storage_instructions = 10;
+  string application_instructions = 11;
 }
 
 message Order {
@@ -409,6 +413,7 @@ message CreateHomeOrderRequest {
   repeated CartItem items = 3;
   string expected_total = 4;
   string payment_method_id = 5;
+  string signs_of_illness = 6;
 }
 
 message GetOrderRequest {
@@ -455,6 +460,7 @@ message SuggestHomeProductRequest {
   string pet_id = 2;
   string symptoms = 3;
   repeated string vet_plan_clinical_ids = 4;
+  string signs_of_illness = 5;
 }
 
 message HomeProductSuggestion {
@@ -470,6 +476,7 @@ message HoldAppointmentProductsResponse {
 
 message GetAppointmentOrdersRequest {
   repeated string appointment_ids = 1;
+  string group_id = 2;
 }
 
 message OrdersResponse {

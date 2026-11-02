@@ -45,6 +45,7 @@ service PaymentService {
   rpc ResolverCobroIncierto (ResolverCobroInciertoRequest) returns (ResolverCobroInciertoResponse);
   rpc CollectUpfrontCharge (CollectUpfrontChargeRequest) returns (CollectUpfrontChargeResponse);
   rpc CreateOrderPayment (CreateOrderPaymentRequest) returns (PaymentResponse);
+  rpc GetUpfrontChargeRequirement (GetUpfrontChargeRequirementRequest) returns (UpfrontChargeRequirement);
   rpc GetPaymentByOrder (GetPaymentByOrderRequest) returns (PaymentResponse);
   rpc CreateWallet (CreateWalletRequest) returns (WalletResponse);
   rpc GetWallet (GetWalletRequest) returns (WalletResponse);
@@ -499,6 +500,15 @@ message CreateOrderPaymentRequest {
 
 message GetPaymentByOrderRequest {
   string order_id = 1;
+}
+
+message GetUpfrontChargeRequirementRequest {
+  string client_profile_id = 1;
+}
+
+message UpfrontChargeRequirement {
+  bool required = 1;
+  string reason = 2;
 }
 
 message CreatePaymentRequest {

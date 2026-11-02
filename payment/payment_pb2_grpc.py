@@ -173,6 +173,11 @@ class PaymentServiceStub:
                 request_serializer=payment_dot_payment__pb2.CreateOrderPaymentRequest.SerializeToString,
                 response_deserializer=payment_dot_payment__pb2.PaymentResponse.FromString,
                 _registered_method=True)
+        self.GetUpfrontChargeRequirement = channel.unary_unary(
+                '/payment.PaymentService/GetUpfrontChargeRequirement',
+                request_serializer=payment_dot_payment__pb2.GetUpfrontChargeRequirementRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.UpfrontChargeRequirement.FromString,
+                _registered_method=True)
         self.GetPaymentByOrder = channel.unary_unary(
                 '/payment.PaymentService/GetPaymentByOrder',
                 request_serializer=payment_dot_payment__pb2.GetPaymentByOrderRequest.SerializeToString,
@@ -612,6 +617,12 @@ class PaymentServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def CreateOrderPayment(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetUpfrontChargeRequirement(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -1094,6 +1105,11 @@ def add_PaymentServiceServicer_to_server(servicer, server):
                     servicer.CreateOrderPayment,
                     request_deserializer=payment_dot_payment__pb2.CreateOrderPaymentRequest.FromString,
                     response_serializer=payment_dot_payment__pb2.PaymentResponse.SerializeToString,
+            ),
+            'GetUpfrontChargeRequirement': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetUpfrontChargeRequirement,
+                    request_deserializer=payment_dot_payment__pb2.GetUpfrontChargeRequirementRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.UpfrontChargeRequirement.SerializeToString,
             ),
             'GetPaymentByOrder': grpc.unary_unary_rpc_method_handler(
                     servicer.GetPaymentByOrder,
@@ -2060,6 +2076,33 @@ class PaymentService:
             '/payment.PaymentService/CreateOrderPayment',
             payment_dot_payment__pb2.CreateOrderPaymentRequest.SerializeToString,
             payment_dot_payment__pb2.PaymentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetUpfrontChargeRequirement(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/GetUpfrontChargeRequirement',
+            payment_dot_payment__pb2.GetUpfrontChargeRequirementRequest.SerializeToString,
+            payment_dot_payment__pb2.UpfrontChargeRequirement.FromString,
             options,
             channel_credentials,
             insecure,
