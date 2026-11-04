@@ -516,6 +516,7 @@ message CancelAppointmentRequest {
   string reason_details = 3;
   string cancelled_by = 4;            // user_id or "SYSTEM"
   optional double acknowledged_fee_amount_cop = 5;
+  optional double acknowledged_product_amount_cop = 6;
 }
 
 message GetCancellationQuoteRequest {
@@ -536,6 +537,7 @@ message GetCancellationQuoteResponse {
   bool fines_enabled = 10;
   google.protobuf.Timestamp policy_free_until = 11;
   google.protobuf.Timestamp retraction_until = 12;
+  bool carries_product = 13;
 }
 
 message GetCancellationFeeAcknowledgementRequest {
@@ -549,6 +551,8 @@ message CancellationFeeAcknowledgement {
   optional double acknowledged_fee_cop = 4;
   google.protobuf.Timestamp acknowledged_at = 5;
   bool charged = 6;
+  optional double acknowledged_product_cop = 7;
+  google.protobuf.Timestamp product_acknowledged_at = 8;
 }
 
 message AbortAppointmentRequest {
