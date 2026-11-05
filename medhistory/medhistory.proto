@@ -32,6 +32,10 @@ service MedHistoryService {
   // La app arma el formulario con esto. Exportable como JSON Schema para
   // alimentar a la IA de Fase 2 como definición de herramienta.
   rpc GetConsultationTemplate (GetConsultationTemplateRequest) returns (ConsultationTemplateResponse);
+  rpc GetIntakeStatus (GetIntakeStatusRequest) returns (GetIntakeStatusResponse);
+  rpc GetIntakeSuggestions (GetIntakeSuggestionsRequest) returns (GetIntakeSuggestionsResponse);
+  rpc GetClosureGate (GetClosureGateRequest) returns (ClosureGateResponse);
+  rpc GetVisitBaseline (GetVisitBaselineRequest) returns (VisitBaselineResponse);
 
   // Devuelve el contenido de una tabla de referencia (catálogo de vacunas,
   // rangos de vitales, hallazgos por sistema, etc.). Es lo que llena los
@@ -436,6 +440,7 @@ message ConsultationTemplate {
   // El mismo template serializado como JSON Schema — insumo directo de la IA
   // de Fase 2 como definición de herramienta (contrato §13.1).
   google.protobuf.Struct json_schema = 5;
+  bool intake = 6;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -643,6 +648,9 @@ message ConsultationRecord {
   OwnerSections owner_sections = 36;
   bool closed_at_deadline = 37;
   repeated string discarded_ai_suggestions = 38;
+  bool intake = 39;
+  LifeStage life_stage = 40;
+  google.protobuf.Timestamp passport_valid_until = 41;
 }
 
 message OwnerSections {
@@ -753,6 +761,168 @@ message GetConsultationTemplateRequest {
   int32 pet_age_months = 3;        // Resuelve predicados applies_to por edad
   // Versión específica de la receta. Vacío = versión vigente.
   string template_version = 4;
+  bool intake = 5;
+}
+
+enum LifeStage {
+  LIFE_STAGE_UNSPECIFIED = 0;
+  LIFE_STAGE_YOUNG = 1;
+  LIFE_STAGE_ADULT = 2;
+  LIFE_STAGE_SENIOR = 3;
+}
+
+enum PassportValidityStatus {
+  PASSPORT_VALIDITY_STATUS_UNSPECIFIED = 0;
+  PASSPORT_VALIDITY_STATUS_NONE = 1;
+  PASSPORT_VALIDITY_STATUS_CURRENT = 2;
+  PASSPORT_VALIDITY_STATUS_EXPIRED = 3;
+  PASSPORT_VALIDITY_STATUS_EXPIRED_EARLY = 4;
+}
+
+enum PassportExpiryReason {
+  PASSPORT_EXPIRY_REASON_UNSPECIFIED = 0;
+  PASSPORT_EXPIRY_REASON_WEIGHT_CHANGE = 1;
+  PASSPORT_EXPIRY_REASON_NEW_CONDITION = 2;
+  PASSPORT_EXPIRY_REASON_POSITIVE_SCREENING = 3;
+  PASSPORT_EXPIRY_REASON_VACCINE_REACTION = 4;
+}
+
+message PassportValidity {
+  PassportValidityStatus status = 1;
+  google.protobuf.Timestamp valid_until = 2;
+  repeated PassportExpiryReason reasons = 3;
+  string based_on_record_id = 4;
+  optional double weight_change_pct = 5;
+  LifeStage life_stage = 6;
+}
+
+enum EvidenceLevel {
+  EVIDENCE_LEVEL_UNSPECIFIED = 0;
+  EVIDENCE_LEVEL_NORM = 1;
+  EVIDENCE_LEVEL_CONSENSUS = 2;
+  EVIDENCE_LEVEL_RECOMMENDATION = 3;
+  EVIDENCE_LEVEL_EXPERT_OPINION = 4;
+}
+
+message SuggestedValue {
+  string value = 1;
+  string reason = 2;
+  string source = 3;
+  EvidenceLevel evidence = 4;
+}
+
+message SuggestedVaccination {
+  string vaccine_code = 1;
+  int32 dose_number = 2;
+  int32 dose_total = 3;
+  string due_date = 4;
+  string reason = 5;
+  string source = 6;
+  EvidenceLevel evidence = 7;
+  string condition = 8;
+}
+
+message GetIntakeSuggestionsRequest {
+  string record_id = 1;
+  AccessContext access = 2;
+}
+
+message GetIntakeSuggestionsResponse {
+  repeated SuggestedValue screenings = 1;
+  SuggestedValue parasite_status = 2;
+  SuggestedValue vaccine_scheme = 3;
+  LifeStage life_stage = 4;
+  bool vaccine_history_unavailable = 5;
+  repeated SuggestedVaccination vaccination_plan = 6;
+  bool birthdate_unknown = 7;
+}
+
+enum RecordTab {
+  RECORD_TAB_UNSPECIFIED = 0;
+  RECORD_TAB_KNOW = 1;
+  RECORD_TAB_HISTORY = 2;
+  RECORD_TAB_EXAM = 3;
+  RECORD_TAB_PLAN = 4;
+  RECORD_TAB_CLOSE = 5;
+}
+
+message GateIssue {
+  string field_path = 1;
+  string message = 2;
+}
+
+message GateLock {
+  string key = 1;
+  string label = 2;
+  RecordTab tab = 3;
+  bool ok = 4;
+  repeated GateIssue issues = 5;
+}
+
+message GetClosureGateRequest {
+  string record_id = 1;
+  AccessContext access = 2;
+}
+
+message ClosureGateResponse {
+  repeated GateLock locks = 1;
+  int32 ok_count = 2;
+  int32 total = 3;
+  bool open = 4;
+  string first_missing_key = 5;
+}
+
+message HouseholdBaseline {
+  optional int32 dogs_at_home = 1;
+  optional int32 cats_at_home = 2;
+  optional int32 other_animals_at_home = 3;
+  repeated string outings = 4;
+  string climate = 5;
+  google.protobuf.Timestamp recorded_at = 6;
+  string record_id = 7;
+  optional bool cohabits_with_outdoor_cats = 8;
+}
+
+message DietBaseline {
+  string diet_type = 1;
+  optional int32 meals_per_day = 2;
+  optional bool treats = 3;
+  google.protobuf.Timestamp recorded_at = 4;
+  string record_id = 5;
+}
+
+message GetVisitBaselineRequest {
+  string record_id = 1;
+  AccessContext access = 2;
+}
+
+message VisitBaselineResponse {
+  HouseholdBaseline household = 1;
+  DietBaseline diet = 2;
+  optional double last_vet_weight_kg = 3;
+  google.protobuf.Timestamp last_vet_weight_at = 4;
+  double weight_change_alert_pct = 5;
+}
+
+enum IntakeReason {
+  INTAKE_REASON_UNSPECIFIED = 0;
+  INTAKE_REASON_NOT_REQUIRED = 1;
+  INTAKE_REASON_NEW_PATIENT = 2;
+  INTAKE_REASON_LAPSED = 3;
+}
+
+message GetIntakeStatusRequest {
+  repeated string pet_ids = 1;
+}
+
+message PetIntakeStatus {
+  string pet_id = 1;
+  bool requires_intake = 2;
+  IntakeReason reason = 3;
+}
+
+message GetIntakeStatusResponse {
+  repeated PetIntakeStatus statuses = 1;
 }
 
 message ConsultationTemplateResponse {
@@ -966,6 +1136,7 @@ message StartConsultationRecordRequest {
   // `breed_size`: SMALL / MEDIUM / LARGE / GIANT (catálogo de razas de pets).
   string breed_name = 12;
   string breed_size = 13;
+  IntakeReason intake_reason = 14;
 }
 
 message ConsultationRecordResponse {
@@ -1163,6 +1334,7 @@ message GetPetMedicalHistoryResponse {
   PetNextSteps next_steps = 9;
   repeated PetProblem problems = 10;
   OwnerNarrative owner_narrative = 11;
+  PassportValidity passport_validity = 12;
 }
 
 message ExportPetPassportRequest {

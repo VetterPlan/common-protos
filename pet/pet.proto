@@ -39,6 +39,13 @@ service PetService {
   // Soft delete a pet (sets is_active = false)
   rpc DeletePet (DeletePetRequest) returns (DeletePetResponse);
 
+  rpc SetPetProfileFacts (SetPetProfileFactsRequest) returns (PetResponse);
+  rpc ProposePetCorrections (ProposePetCorrectionsRequest) returns (PetCorrectionsResponse);
+  rpc ListPetCorrections (ListPetCorrectionsRequest) returns (PetCorrectionsResponse);
+  rpc RespondToPetCorrection (RespondToPetCorrectionRequest) returns (RespondToPetCorrectionResponse);
+  rpc ListVaccinationCardRows (ListVaccinationCardRowsRequest) returns (VaccinationCardRowsResponse);
+  rpc VerifyVaccinationCardRows (VerifyVaccinationCardRowsRequest) returns (VaccinationCardRowsResponse);
+
   // ─── VACCINATIONS ───
 
   // Register a vaccination for a pet
@@ -144,6 +151,7 @@ service PetService {
   rpc RevokeOwnerAiConsent (RevokeOwnerAiConsentRequest) returns (OwnerAiConsentResponse);
   rpc GetOwnerAiConsent (GetOwnerAiConsentRequest) returns (OwnerAiConsentResponse);
   rpc ListOwnerAiConsents (ListOwnerAiConsentsRequest) returns (ListOwnerAiConsentsResponse);
+  rpc GetVisitAiAllowed (GetVisitAiAllowedRequest) returns (GetVisitAiAllowedResponse);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -241,6 +249,107 @@ message Pet {
   int32 vaccines_overdue_count = 27;
   int32 vaccines_due_soon_count = 28;
   int32 vaccines_needing_update_count = 29;
+  repeated PetProfileFact profile_facts = 30;
+  int32 prefilled_field_count = 31;
+}
+
+enum PetProfileFactKey {
+  PET_PROFILE_FACT_KEY_UNSPECIFIED = 0;
+  PET_PROFILE_FACT_KEY_REPRODUCTIVE_STATUS = 1;
+  PET_PROFILE_FACT_KEY_BIRTHDATE_PRECISION = 2;
+  PET_PROFILE_FACT_KEY_MICROCHIP_STATUS = 3;
+  PET_PROFILE_FACT_KEY_TEMPERAMENT = 4;
+  PET_PROFILE_FACT_KEY_HANDLING = 5;
+  PET_PROFILE_FACT_KEY_ORIGIN = 6;
+  PET_PROFILE_FACT_KEY_TIME_IN_HOME = 7;
+}
+
+enum PetProfileFactSource {
+  PET_PROFILE_FACT_SOURCE_UNSPECIFIED = 0;
+  PET_PROFILE_FACT_SOURCE_OWNER = 1;
+  PET_PROFILE_FACT_SOURCE_VET = 2;
+}
+
+message PetProfileFact {
+  PetProfileFactKey key = 1;
+  repeated string values = 2;
+  PetProfileFactSource source = 3;
+  google.protobuf.Timestamp confirmed_at = 4;
+  string vet_profile_id = 5;
+  string consultation_record_id = 6;
+}
+
+message PetProfileFactWrite {
+  PetProfileFactKey key = 1;
+  repeated string values = 2;
+}
+
+enum PetCorrectionField {
+  PET_CORRECTION_FIELD_UNSPECIFIED = 0;
+  PET_CORRECTION_FIELD_GENDER = 1;
+  PET_CORRECTION_FIELD_BIRTHDATE = 2;
+  PET_CORRECTION_FIELD_COLOR = 3;
+  PET_CORRECTION_FIELD_BREED_ID = 4;
+}
+
+enum PetCorrectionStatus {
+  PET_CORRECTION_STATUS_UNSPECIFIED = 0;
+  PET_CORRECTION_STATUS_PENDING = 1;
+  PET_CORRECTION_STATUS_ACCEPTED = 2;
+  PET_CORRECTION_STATUS_DECLINED = 3;
+}
+
+message PetCorrection {
+  string id = 1;
+  string pet_id = 2;
+  PetCorrectionField field = 3;
+  string current_value = 4;
+  string proposed_value = 5;
+  string proposed_label = 6;
+  string vet_profile_id = 7;
+  string consultation_record_id = 8;
+  PetCorrectionStatus status = 9;
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp expires_at = 11;
+}
+
+message PetCorrectionProposal {
+  PetCorrectionField field = 1;
+  string proposed_value = 2;
+}
+
+message ProposePetCorrectionsRequest {
+  string pet_id = 1;
+  string vet_profile_id = 2;
+  string consultation_record_id = 3;
+  repeated PetCorrectionProposal proposals = 4;
+}
+
+message ListPetCorrectionsRequest {
+  string pet_id = 1;
+}
+
+message PetCorrectionsResponse {
+  repeated PetCorrection corrections = 1;
+}
+
+message RespondToPetCorrectionRequest {
+  string pet_id = 1;
+  string correction_id = 2;
+  bool accept = 3;
+}
+
+message RespondToPetCorrectionResponse {
+  PetCorrection correction = 1;
+  Pet pet = 2;
+}
+
+message SetPetProfileFactsRequest {
+  string pet_id = 1;
+  repeated PetProfileFactWrite facts = 2;
+  string vet_profile_id = 3;
+  string consultation_record_id = 4;
+  string microchip_id = 5;
 }
 
 message Vaccination {
@@ -668,6 +777,14 @@ message OwnerAiConsent {
   string consent_text_hash = 9;
 }
 
+message GetVisitAiAllowedRequest {
+  repeated string client_profile_ids = 1;
+}
+
+message GetVisitAiAllowedResponse {
+  repeated string allowed_client_profile_ids = 1;
+}
+
 message ConsentEvidence {
   string consent_version = 1;
   string consent_text_hash = 2;
@@ -741,6 +858,61 @@ message VaccinationCardAiConsentResponse {
 
 // Extracted fields matching the PetVaccination model.
 // Empty string means the field was not found or was illegible.
+enum CardRowConfidence {
+  CARD_ROW_CONFIDENCE_UNSPECIFIED = 0;
+  CARD_ROW_CONFIDENCE_HIGH = 1;
+  CARD_ROW_CONFIDENCE_LOW = 2;
+}
+
+enum CardRowStatus {
+  CARD_ROW_STATUS_UNSPECIFIED = 0;
+  CARD_ROW_STATUS_PENDING = 1;
+  CARD_ROW_STATUS_VERIFIED = 2;
+}
+
+message VaccinationCardRow {
+  string id = 1;
+  string vaccine_name = 2;
+  string date_administered = 3;
+  string next_due_date = 4;
+  string batch_number = 5;
+  string administered_by = 6;
+  string notes = 7;
+  CardRowConfidence confidence = 8;
+  repeated string low_confidence_reasons = 9;
+  int32 dose_number = 10;
+  CardRowStatus status = 11;
+  bool corrected = 12;
+  string verified_by_vet_profile_id = 13;
+  google.protobuf.Timestamp verified_at = 14;
+}
+
+message ListVaccinationCardRowsRequest {
+  string pet_id = 1;
+}
+
+message VaccinationCardRowsResponse {
+  string scan_id = 1;
+  google.protobuf.Timestamp scanned_at = 2;
+  repeated VaccinationCardRow rows = 3;
+  int32 pending_count = 4;
+  int32 low_confidence_count = 5;
+  int32 verified_count = 6;
+}
+
+message CardRowVerification {
+  string row_id = 1;
+  string vaccine_name = 2;
+  string date_administered = 3;
+  string batch_number = 4;
+}
+
+message VerifyVaccinationCardRowsRequest {
+  string pet_id = 1;
+  string vet_profile_id = 2;
+  repeated CardRowVerification rows = 3;
+}
+
 message ExtractedVaccinationData {
   string vaccine_name = 1;       // e.g. "Rabia", "Múltiple", "Quíntuple"
   string date_administered = 2;  // ISO 8601 YYYY-MM-DD or empty string
@@ -748,6 +920,9 @@ message ExtractedVaccinationData {
   string administered_by = 4;    // Vet name or clinic name
   string batch_number = 5;       // Lot / batch number
   string notes = 6;              // Any other visible relevant info
+  CardRowConfidence confidence = 7;
+  repeated string low_confidence_reasons = 8;
+  int32 dose_number = 9;
 }
 
 message ExtractVaccinationCardResponse {
@@ -756,4 +931,5 @@ message ExtractVaccinationCardResponse {
   float confidence = 3;          // 0.0–1.0: overall extraction confidence
   repeated string warnings = 4;  // Specific uncertainties, e.g. "date format unclear"
   string error_message = 5;      // Populated only when success=false
+  string scan_id = 6;
 }

@@ -308,6 +308,9 @@ message Appointment {
   NoShowFeeOutcome no_show_fee_outcome = 45;
   int32 no_show_fee_radius_m = 46;
   google.protobuf.Timestamp arrival_confirmed_at = 47;
+  string intake_reason = 48;
+  optional double distance_km = 49;
+  optional int32 travel_minutes = 50;
 }
 
 enum NoShowFeeOutcome {

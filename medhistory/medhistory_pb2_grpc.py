@@ -60,6 +60,26 @@ class MedHistoryServiceStub:
                 request_serializer=medhistory_dot_medhistory__pb2.GetConsultationTemplateRequest.SerializeToString,
                 response_deserializer=medhistory_dot_medhistory__pb2.ConsultationTemplateResponse.FromString,
                 _registered_method=True)
+        self.GetIntakeStatus = channel.unary_unary(
+                '/medhistory.MedHistoryService/GetIntakeStatus',
+                request_serializer=medhistory_dot_medhistory__pb2.GetIntakeStatusRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.GetIntakeStatusResponse.FromString,
+                _registered_method=True)
+        self.GetIntakeSuggestions = channel.unary_unary(
+                '/medhistory.MedHistoryService/GetIntakeSuggestions',
+                request_serializer=medhistory_dot_medhistory__pb2.GetIntakeSuggestionsRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.GetIntakeSuggestionsResponse.FromString,
+                _registered_method=True)
+        self.GetClosureGate = channel.unary_unary(
+                '/medhistory.MedHistoryService/GetClosureGate',
+                request_serializer=medhistory_dot_medhistory__pb2.GetClosureGateRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.ClosureGateResponse.FromString,
+                _registered_method=True)
+        self.GetVisitBaseline = channel.unary_unary(
+                '/medhistory.MedHistoryService/GetVisitBaseline',
+                request_serializer=medhistory_dot_medhistory__pb2.GetVisitBaselineRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.VisitBaselineResponse.FromString,
+                _registered_method=True)
         self.GetReferenceData = channel.unary_unary(
                 '/medhistory.MedHistoryService/GetReferenceData',
                 request_serializer=medhistory_dot_medhistory__pb2.GetReferenceDataRequest.SerializeToString,
@@ -331,6 +351,30 @@ class MedHistoryServiceServicer:
         La app arma el formulario con esto. Exportable como JSON Schema para
         alimentar a la IA de Fase 2 como definición de herramienta.
         """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetIntakeStatus(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetIntakeSuggestions(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetClosureGate(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetVisitBaseline(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -748,6 +792,26 @@ def add_MedHistoryServiceServicer_to_server(servicer, server):
                     request_deserializer=medhistory_dot_medhistory__pb2.GetConsultationTemplateRequest.FromString,
                     response_serializer=medhistory_dot_medhistory__pb2.ConsultationTemplateResponse.SerializeToString,
             ),
+            'GetIntakeStatus': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetIntakeStatus,
+                    request_deserializer=medhistory_dot_medhistory__pb2.GetIntakeStatusRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.GetIntakeStatusResponse.SerializeToString,
+            ),
+            'GetIntakeSuggestions': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetIntakeSuggestions,
+                    request_deserializer=medhistory_dot_medhistory__pb2.GetIntakeSuggestionsRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.GetIntakeSuggestionsResponse.SerializeToString,
+            ),
+            'GetClosureGate': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetClosureGate,
+                    request_deserializer=medhistory_dot_medhistory__pb2.GetClosureGateRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.ClosureGateResponse.SerializeToString,
+            ),
+            'GetVisitBaseline': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetVisitBaseline,
+                    request_deserializer=medhistory_dot_medhistory__pb2.GetVisitBaselineRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.VisitBaselineResponse.SerializeToString,
+            ),
             'GetReferenceData': grpc.unary_unary_rpc_method_handler(
                     servicer.GetReferenceData,
                     request_deserializer=medhistory_dot_medhistory__pb2.GetReferenceDataRequest.FromString,
@@ -1037,6 +1101,114 @@ class MedHistoryService:
             '/medhistory.MedHistoryService/GetConsultationTemplate',
             medhistory_dot_medhistory__pb2.GetConsultationTemplateRequest.SerializeToString,
             medhistory_dot_medhistory__pb2.ConsultationTemplateResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetIntakeStatus(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/GetIntakeStatus',
+            medhistory_dot_medhistory__pb2.GetIntakeStatusRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.GetIntakeStatusResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetIntakeSuggestions(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/GetIntakeSuggestions',
+            medhistory_dot_medhistory__pb2.GetIntakeSuggestionsRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.GetIntakeSuggestionsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetClosureGate(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/GetClosureGate',
+            medhistory_dot_medhistory__pb2.GetClosureGateRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.ClosureGateResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetVisitBaseline(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/GetVisitBaseline',
+            medhistory_dot_medhistory__pb2.GetVisitBaselineRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.VisitBaselineResponse.FromString,
             options,
             channel_credentials,
             insecure,
