@@ -10,6 +10,8 @@ service VaccineFridgeService {
   rpc SetVaccineOffer (SetVaccineOfferRequest) returns (VaccineFridge);
   rpc RemoveVaccineOffer (RemoveVaccineOfferRequest) returns (VaccineFridge);
   rpc GetVaccineOffersOfVets (GetVaccineOffersOfVetsRequest) returns (GetVaccineOffersOfVetsResponse);
+  rpc GetVaccinationRequirements (GetVaccinationRequirementsRequest) returns (VaccinationRequirements);
+  rpc OpenVaccineFridge (OpenVaccineFridgeRequest) returns (VaccineFridge);
 }
 
 message VaccineType {
@@ -37,6 +39,10 @@ message VaccineFridge {
   repeated VaccineOffer offers = 5;
   repeated VaccineType catalog = 6;
   string current_declaration_version = 7;
+  string visit_price = 8;
+  bool opened = 9;
+  google.protobuf.Timestamp opened_at = 10;
+  bool active = 11;
 }
 
 message GetVaccineFridgeRequest {
@@ -74,4 +80,33 @@ message VetVaccineOffers {
 
 message GetVaccineOffersOfVetsResponse {
   repeated VetVaccineOffers vets = 1;
+}
+
+message GetVaccinationRequirementsRequest {
+  string vet_profile_id = 1;
+}
+
+message VaccinationRequirement {
+  string key = 1;
+  bool met = 2;
+  string detail = 3;
+}
+
+message VaccinationRequirements {
+  string vet_profile_id = 1;
+  repeated VaccinationRequirement requirements = 2;
+  bool all_met = 3;
+  bool tax_profile_declared = 4;
+  bool iva_responsible = 5;
+}
+
+message VaccinePrice {
+  string vaccine_type = 1;
+  string price = 2;
+}
+
+message OpenVaccineFridgeRequest {
+  string vet_profile_id = 1;
+  string visit_price = 2;
+  repeated VaccinePrice offers = 3;
 }

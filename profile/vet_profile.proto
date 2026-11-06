@@ -311,6 +311,7 @@ message ServiceTypePriceRange {
   double min_price = 2;          // Lowest price across active vets (COP)
   double max_price = 3;          // Highest price across active vets (COP)
   int32 vet_count = 4;           // Number of active vets offering this service
+  bool price_range_withheld = 5;
 }
 
 message ServiceTypePriceRangesResponse {

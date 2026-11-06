@@ -951,6 +951,8 @@ message VetTaxProfile {
   google.protobuf.Timestamp mandate_contract_accepted_at = 30;
   bool ready_to_invoice = 31;
   repeated string missing_to_invoice = 32;
+  repeated string rut_activity_codes = 33;
+  bool has_veterinary_activity = 34;
 }
 
 message SetVetTaxProfileRequest {
@@ -984,6 +986,7 @@ message GetVetTaxProfileRequest {
 message ConfirmVetTaxProfileRequest {
   string vet_profile_id = 1;
   string confirmed_by_user_id = 2;
+  repeated string rut_activity_codes = 3;
 }
 
 message ListPendingVetTaxProfilesRequest {

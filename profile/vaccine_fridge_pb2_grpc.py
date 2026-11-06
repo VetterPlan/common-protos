@@ -59,6 +59,16 @@ class VaccineFridgeServiceStub:
                 request_serializer=profile_dot_vaccine__fridge__pb2.GetVaccineOffersOfVetsRequest.SerializeToString,
                 response_deserializer=profile_dot_vaccine__fridge__pb2.GetVaccineOffersOfVetsResponse.FromString,
                 _registered_method=True)
+        self.GetVaccinationRequirements = channel.unary_unary(
+                '/profile.VaccineFridgeService/GetVaccinationRequirements',
+                request_serializer=profile_dot_vaccine__fridge__pb2.GetVaccinationRequirementsRequest.SerializeToString,
+                response_deserializer=profile_dot_vaccine__fridge__pb2.VaccinationRequirements.FromString,
+                _registered_method=True)
+        self.OpenVaccineFridge = channel.unary_unary(
+                '/profile.VaccineFridgeService/OpenVaccineFridge',
+                request_serializer=profile_dot_vaccine__fridge__pb2.OpenVaccineFridgeRequest.SerializeToString,
+                response_deserializer=profile_dot_vaccine__fridge__pb2.VaccineFridge.FromString,
+                _registered_method=True)
 
 
 class VaccineFridgeServiceServicer:
@@ -94,6 +104,18 @@ class VaccineFridgeServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetVaccinationRequirements(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def OpenVaccineFridge(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_VaccineFridgeServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -121,6 +143,16 @@ def add_VaccineFridgeServiceServicer_to_server(servicer, server):
                     servicer.GetVaccineOffersOfVets,
                     request_deserializer=profile_dot_vaccine__fridge__pb2.GetVaccineOffersOfVetsRequest.FromString,
                     response_serializer=profile_dot_vaccine__fridge__pb2.GetVaccineOffersOfVetsResponse.SerializeToString,
+            ),
+            'GetVaccinationRequirements': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetVaccinationRequirements,
+                    request_deserializer=profile_dot_vaccine__fridge__pb2.GetVaccinationRequirementsRequest.FromString,
+                    response_serializer=profile_dot_vaccine__fridge__pb2.VaccinationRequirements.SerializeToString,
+            ),
+            'OpenVaccineFridge': grpc.unary_unary_rpc_method_handler(
+                    servicer.OpenVaccineFridge,
+                    request_deserializer=profile_dot_vaccine__fridge__pb2.OpenVaccineFridgeRequest.FromString,
+                    response_serializer=profile_dot_vaccine__fridge__pb2.VaccineFridge.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -258,6 +290,60 @@ class VaccineFridgeService:
             '/profile.VaccineFridgeService/GetVaccineOffersOfVets',
             profile_dot_vaccine__fridge__pb2.GetVaccineOffersOfVetsRequest.SerializeToString,
             profile_dot_vaccine__fridge__pb2.GetVaccineOffersOfVetsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetVaccinationRequirements(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/profile.VaccineFridgeService/GetVaccinationRequirements',
+            profile_dot_vaccine__fridge__pb2.GetVaccinationRequirementsRequest.SerializeToString,
+            profile_dot_vaccine__fridge__pb2.VaccinationRequirements.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def OpenVaccineFridge(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/profile.VaccineFridgeService/OpenVaccineFridge',
+            profile_dot_vaccine__fridge__pb2.OpenVaccineFridgeRequest.SerializeToString,
+            profile_dot_vaccine__fridge__pb2.VaccineFridge.FromString,
             options,
             channel_credentials,
             insecure,

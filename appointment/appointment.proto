@@ -60,6 +60,7 @@ service AppointmentService {
   rpc AnswerVaccinesNotBrought (AnswerVaccinesNotBroughtRequest) returns (AppointmentResponse);
   rpc ProposeVaccineSwap (ProposeVaccineSwapRequest) returns (AppointmentResponse);
   rpc AnswerVaccineSwap (AnswerVaccineSwapRequest) returns (AppointmentResponse);
+  rpc CountConfirmedVaccineAppointments (CountConfirmedVaccineAppointmentsRequest) returns (CountConfirmedVaccineAppointmentsResponse);
   rpc ListCompletedAppointments (ListCompletedAppointmentsRequest) returns (ListCompletedAppointmentsResponse);
   rpc ListVetCancellations (ListVetCancellationsRequest) returns (ListVetCancellationsResponse);
   rpc AnonymizeClientData (AnonymizeClientDataRequest) returns (AnonymizeClientDataResponse);
@@ -349,6 +350,20 @@ message AnswerVaccineSwapRequest {
   string appointment_id = 1;
   string line_id = 2;
   bool accept = 3;
+}
+
+message CountConfirmedVaccineAppointmentsRequest {
+  string vet_profile_id = 1;
+}
+
+message ConfirmedVaccineAppointmentCount {
+  string vaccine_type = 1;
+  int32 appointments = 2;
+}
+
+message CountConfirmedVaccineAppointmentsResponse {
+  string vet_profile_id = 1;
+  repeated ConfirmedVaccineAppointmentCount counts = 2;
 }
 
 message AppointmentVaccineLine {

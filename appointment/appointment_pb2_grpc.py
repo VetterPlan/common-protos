@@ -265,6 +265,11 @@ class AppointmentServiceStub:
                 request_serializer=appointment_dot_appointment__pb2.AnswerVaccineSwapRequest.SerializeToString,
                 response_deserializer=appointment_dot_appointment__pb2.AppointmentResponse.FromString,
                 _registered_method=True)
+        self.CountConfirmedVaccineAppointments = channel.unary_unary(
+                '/appointment.AppointmentService/CountConfirmedVaccineAppointments',
+                request_serializer=appointment_dot_appointment__pb2.CountConfirmedVaccineAppointmentsRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.CountConfirmedVaccineAppointmentsResponse.FromString,
+                _registered_method=True)
         self.ListCompletedAppointments = channel.unary_unary(
                 '/appointment.AppointmentService/ListCompletedAppointments',
                 request_serializer=appointment_dot_appointment__pb2.ListCompletedAppointmentsRequest.SerializeToString,
@@ -600,6 +605,12 @@ class AppointmentServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def CountConfirmedVaccineAppointments(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def ListCompletedAppointments(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -888,6 +899,11 @@ def add_AppointmentServiceServicer_to_server(servicer, server):
                     servicer.AnswerVaccineSwap,
                     request_deserializer=appointment_dot_appointment__pb2.AnswerVaccineSwapRequest.FromString,
                     response_serializer=appointment_dot_appointment__pb2.AppointmentResponse.SerializeToString,
+            ),
+            'CountConfirmedVaccineAppointments': grpc.unary_unary_rpc_method_handler(
+                    servicer.CountConfirmedVaccineAppointments,
+                    request_deserializer=appointment_dot_appointment__pb2.CountConfirmedVaccineAppointmentsRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.CountConfirmedVaccineAppointmentsResponse.SerializeToString,
             ),
             'ListCompletedAppointments': grpc.unary_unary_rpc_method_handler(
                     servicer.ListCompletedAppointments,
@@ -2144,6 +2160,33 @@ class AppointmentService:
             '/appointment.AppointmentService/AnswerVaccineSwap',
             appointment_dot_appointment__pb2.AnswerVaccineSwapRequest.SerializeToString,
             appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CountConfirmedVaccineAppointments(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/CountConfirmedVaccineAppointments',
+            appointment_dot_appointment__pb2.CountConfirmedVaccineAppointmentsRequest.SerializeToString,
+            appointment_dot_appointment__pb2.CountConfirmedVaccineAppointmentsResponse.FromString,
             options,
             channel_credentials,
             insecure,
