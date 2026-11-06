@@ -69,6 +69,7 @@ service MedHistoryService {
   rpc GetVaccinationCalendar (GetVaccinationCalendarRequest) returns (VaccinationCalendarResponse);
   rpc GetAppliedVaccines (GetAppliedVaccinesRequest) returns (GetAppliedVaccinesResponse);
   rpc SetVaccinationReminders (SetVaccinationRemindersRequest) returns (SetVaccinationRemindersResponse);
+  rpc GetMutedVaccinationReminders (GetMutedVaccinationRemindersRequest) returns (GetMutedVaccinationRemindersResponse);
   rpc ReportVaccineReaction (ReportVaccineReactionRequest) returns (VaccineReactionReport);
   rpc ListVaccineReactionReports (ListVaccineReactionReportsRequest) returns (ListVaccineReactionReportsResponse);
   rpc MarkVaccineReactionReportedToIca (MarkVaccineReactionReportedToIcaRequest) returns (VaccineReactionReport);
@@ -1248,6 +1249,14 @@ message MarkVaccineReactionReportedToIcaRequest {
   string report_id = 1;
   string ica_reference = 2;
   AccessContext access = 3;
+}
+
+message GetMutedVaccinationRemindersRequest {
+  repeated string pet_ids = 1;
+}
+
+message GetMutedVaccinationRemindersResponse {
+  repeated string muted_pet_ids = 1;
 }
 
 message SetVaccinationRemindersRequest {
