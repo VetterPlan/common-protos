@@ -915,12 +915,22 @@ enum IntakeReason {
 
 message GetIntakeStatusRequest {
   repeated string pet_ids = 1;
+  bool include_vaccination_eligibility = 2;
+}
+
+enum VaccinationEligibility {
+  VACCINATION_ELIGIBILITY_UNSPECIFIED = 0;
+  VACCINATION_ELIGIBILITY_ELIGIBLE = 1;
+  VACCINATION_ELIGIBILITY_NO_RECORD = 2;
+  VACCINATION_ELIGIBILITY_RECORD_EXPIRED = 3;
+  VACCINATION_ELIGIBILITY_NO_VACCINE_PLAN = 4;
 }
 
 message PetIntakeStatus {
   string pet_id = 1;
   bool requires_intake = 2;
   IntakeReason reason = 3;
+  VaccinationEligibility vaccination_eligibility = 4;
 }
 
 message GetIntakeStatusResponse {
