@@ -326,9 +326,17 @@ message DeclareVaccinesNotBroughtRequest {
   repeated string vaccine_types = 2;
 }
 
+enum VaccinesDecision {
+  VACCINES_DECISION_UNSPECIFIED = 0;
+  VACCINES_DECISION_CONTINUE_WITH_REST = 1;
+  VACCINES_DECISION_CONSULTATION_ONLY = 2;
+  VACCINES_DECISION_CANCEL = 3;
+}
+
 message AnswerVaccinesNotBroughtRequest {
   string appointment_id = 1;
   bool continue_visit = 2;
+  VaccinesDecision decision = 3;
 }
 
 message ProposeVaccineSwapRequest {
@@ -463,6 +471,8 @@ message AvailableVet {
   double lng = 15;
   string vaccine_total = 16;
   repeated AppointmentVaccineLine vaccine_lines = 17;
+  repeated string missing_vaccine_types = 18;
+  bool made_the_plan = 19;
 }
 
 message ServiceCatalogItem {

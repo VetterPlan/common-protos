@@ -68,6 +68,10 @@ service MedHistoryService {
   rpc GetDewormingCalendar (GetDewormingCalendarRequest) returns (DewormingCalendarResponse);
   rpc GetVaccinationCalendar (GetVaccinationCalendarRequest) returns (VaccinationCalendarResponse);
   rpc GetAppliedVaccines (GetAppliedVaccinesRequest) returns (GetAppliedVaccinesResponse);
+  rpc SetVaccinationReminders (SetVaccinationRemindersRequest) returns (SetVaccinationRemindersResponse);
+  rpc ReportVaccineReaction (ReportVaccineReactionRequest) returns (VaccineReactionReport);
+  rpc ListVaccineReactionReports (ListVaccineReactionReportsRequest) returns (ListVaccineReactionReportsResponse);
+  rpc MarkVaccineReactionReportedToIca (MarkVaccineReactionReportedToIcaRequest) returns (VaccineReactionReport);
 
   // Crea o edita una fila de vocabulario. Solo admin (se enforza en la gateway).
   // Editar el contenido clínico REVIERTE is_validated_by_vet a false: si cambió
@@ -797,6 +801,10 @@ message PassportValidity {
   string based_on_record_id = 4;
   optional double weight_change_pct = 5;
   LifeStage life_stage = 6;
+  VaccinationEligibility vaccination_eligibility = 7;
+  optional double last_measured_weight_kg = 8;
+  optional double declared_weight_kg = 9;
+  optional double declared_weight_change_pct = 10;
 }
 
 enum EvidenceLevel {
@@ -934,6 +942,7 @@ enum VaccinationEligibility {
   VACCINATION_ELIGIBILITY_NO_RECORD = 2;
   VACCINATION_ELIGIBILITY_RECORD_EXPIRED = 3;
   VACCINATION_ELIGIBILITY_NO_VACCINE_PLAN = 4;
+  VACCINATION_ELIGIBILITY_WEIGHT_CHANGED = 5;
 }
 
 message PetIntakeStatus {
@@ -942,6 +951,7 @@ message PetIntakeStatus {
   IntakeReason reason = 3;
   VaccinationEligibility vaccination_eligibility = 4;
   repeated BookableVaccineDose due_vaccines = 5;
+  string vaccine_plan_vet_profile_id = 6;
 }
 
 message GetIntakeStatusResponse {
@@ -1197,6 +1207,57 @@ message VaccinationCalendarResponse {
   repeated RecommendedTest tests = 11;
   bool no_vaccine_indicated = 12;
   string no_vaccine_reason = 13;
+  bool reminders_enabled = 14;
+}
+
+message ReportVaccineReactionRequest {
+  string record_id = 1;
+  string vaccine_name = 2;
+  repeated string symptoms = 3;
+  string onset = 4;
+  AccessContext access = 5;
+}
+
+message VaccineReactionReport {
+  string id = 1;
+  string pet_id = 2;
+  string record_id = 3;
+  string appointment_id = 4;
+  string vet_profile_id = 5;
+  string vaccine_name = 6;
+  string lot = 7;
+  repeated string symptoms = 8;
+  string onset = 9;
+  bool urgent = 10;
+  google.protobuf.Timestamp created_at = 11;
+  google.protobuf.Timestamp ica_reported_at = 12;
+  string ica_reference = 13;
+}
+
+message ListVaccineReactionReportsRequest {
+  bool pending_ica_only = 1;
+  int32 limit = 2;
+  AccessContext access = 3;
+}
+
+message ListVaccineReactionReportsResponse {
+  repeated VaccineReactionReport reports = 1;
+}
+
+message MarkVaccineReactionReportedToIcaRequest {
+  string report_id = 1;
+  string ica_reference = 2;
+  AccessContext access = 3;
+}
+
+message SetVaccinationRemindersRequest {
+  string pet_id = 1;
+  bool enabled = 2;
+  AccessContext access = 3;
+}
+
+message SetVaccinationRemindersResponse {
+  bool enabled = 1;
 }
 
 message ResolveDewormerResponse {

@@ -115,6 +115,26 @@ class MedHistoryServiceStub:
                 request_serializer=medhistory_dot_medhistory__pb2.GetAppliedVaccinesRequest.SerializeToString,
                 response_deserializer=medhistory_dot_medhistory__pb2.GetAppliedVaccinesResponse.FromString,
                 _registered_method=True)
+        self.SetVaccinationReminders = channel.unary_unary(
+                '/medhistory.MedHistoryService/SetVaccinationReminders',
+                request_serializer=medhistory_dot_medhistory__pb2.SetVaccinationRemindersRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.SetVaccinationRemindersResponse.FromString,
+                _registered_method=True)
+        self.ReportVaccineReaction = channel.unary_unary(
+                '/medhistory.MedHistoryService/ReportVaccineReaction',
+                request_serializer=medhistory_dot_medhistory__pb2.ReportVaccineReactionRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.VaccineReactionReport.FromString,
+                _registered_method=True)
+        self.ListVaccineReactionReports = channel.unary_unary(
+                '/medhistory.MedHistoryService/ListVaccineReactionReports',
+                request_serializer=medhistory_dot_medhistory__pb2.ListVaccineReactionReportsRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.ListVaccineReactionReportsResponse.FromString,
+                _registered_method=True)
+        self.MarkVaccineReactionReportedToIca = channel.unary_unary(
+                '/medhistory.MedHistoryService/MarkVaccineReactionReportedToIca',
+                request_serializer=medhistory_dot_medhistory__pb2.MarkVaccineReactionReportedToIcaRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.VaccineReactionReport.FromString,
+                _registered_method=True)
         self.UpsertReferenceItem = channel.unary_unary(
                 '/medhistory.MedHistoryService/UpsertReferenceItem',
                 request_serializer=medhistory_dot_medhistory__pb2.UpsertReferenceItemRequest.SerializeToString,
@@ -451,6 +471,30 @@ class MedHistoryServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def GetAppliedVaccines(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetVaccinationReminders(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ReportVaccineReaction(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListVaccineReactionReports(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def MarkVaccineReactionReportedToIca(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -879,6 +923,26 @@ def add_MedHistoryServiceServicer_to_server(servicer, server):
                     servicer.GetAppliedVaccines,
                     request_deserializer=medhistory_dot_medhistory__pb2.GetAppliedVaccinesRequest.FromString,
                     response_serializer=medhistory_dot_medhistory__pb2.GetAppliedVaccinesResponse.SerializeToString,
+            ),
+            'SetVaccinationReminders': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetVaccinationReminders,
+                    request_deserializer=medhistory_dot_medhistory__pb2.SetVaccinationRemindersRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.SetVaccinationRemindersResponse.SerializeToString,
+            ),
+            'ReportVaccineReaction': grpc.unary_unary_rpc_method_handler(
+                    servicer.ReportVaccineReaction,
+                    request_deserializer=medhistory_dot_medhistory__pb2.ReportVaccineReactionRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.VaccineReactionReport.SerializeToString,
+            ),
+            'ListVaccineReactionReports': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListVaccineReactionReports,
+                    request_deserializer=medhistory_dot_medhistory__pb2.ListVaccineReactionReportsRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.ListVaccineReactionReportsResponse.SerializeToString,
+            ),
+            'MarkVaccineReactionReportedToIca': grpc.unary_unary_rpc_method_handler(
+                    servicer.MarkVaccineReactionReportedToIca,
+                    request_deserializer=medhistory_dot_medhistory__pb2.MarkVaccineReactionReportedToIcaRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.VaccineReactionReport.SerializeToString,
             ),
             'UpsertReferenceItem': grpc.unary_unary_rpc_method_handler(
                     servicer.UpsertReferenceItem,
@@ -1446,6 +1510,114 @@ class MedHistoryService:
             '/medhistory.MedHistoryService/GetAppliedVaccines',
             medhistory_dot_medhistory__pb2.GetAppliedVaccinesRequest.SerializeToString,
             medhistory_dot_medhistory__pb2.GetAppliedVaccinesResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SetVaccinationReminders(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/SetVaccinationReminders',
+            medhistory_dot_medhistory__pb2.SetVaccinationRemindersRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.SetVaccinationRemindersResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ReportVaccineReaction(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/ReportVaccineReaction',
+            medhistory_dot_medhistory__pb2.ReportVaccineReactionRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.VaccineReactionReport.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListVaccineReactionReports(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/ListVaccineReactionReports',
+            medhistory_dot_medhistory__pb2.ListVaccineReactionReportsRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.ListVaccineReactionReportsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def MarkVaccineReactionReportedToIca(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/MarkVaccineReactionReportedToIca',
+            medhistory_dot_medhistory__pb2.MarkVaccineReactionReportedToIcaRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.VaccineReactionReport.FromString,
             options,
             channel_credentials,
             insecure,

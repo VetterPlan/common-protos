@@ -254,6 +254,7 @@ message Pet {
   repeated PetProfileFact profile_facts = 30;
   int32 prefilled_field_count = 31;
   IdentityConfirmation identity_confirmation = 32;
+  google.protobuf.Timestamp declared_weight_at = 33;
 }
 
 message IdentityConfirmation {
