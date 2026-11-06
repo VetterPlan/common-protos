@@ -103,6 +103,11 @@ class PetServiceStub:
                 request_serializer=pet_dot_pet__pb2.VerifyVaccinationCardRowsRequest.SerializeToString,
                 response_deserializer=pet_dot_pet__pb2.VaccinationCardRowsResponse.FromString,
                 _registered_method=True)
+        self.ReviseVaccinationCardRows = channel.unary_unary(
+                '/pet.PetService/ReviseVaccinationCardRows',
+                request_serializer=pet_dot_pet__pb2.ReviseVaccinationCardRowsRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.VaccinationCardRowsResponse.FromString,
+                _registered_method=True)
         self.AddVaccination = channel.unary_unary(
                 '/pet.PetService/AddVaccination',
                 request_serializer=pet_dot_pet__pb2.AddVaccinationRequest.SerializeToString,
@@ -172,6 +177,11 @@ class PetServiceStub:
                 '/pet.PetService/GetBreedCatalog',
                 request_serializer=pet_dot_pet__pb2.GetBreedCatalogRequest.SerializeToString,
                 response_deserializer=pet_dot_pet__pb2.GetBreedCatalogResponse.FromString,
+                _registered_method=True)
+        self.GetPopularBreeds = channel.unary_unary(
+                '/pet.PetService/GetPopularBreeds',
+                request_serializer=pet_dot_pet__pb2.GetPopularBreedsRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.GetPopularBreedsResponse.FromString,
                 _registered_method=True)
         self.SearchBreeds = channel.unary_unary(
                 '/pet.PetService/SearchBreeds',
@@ -336,6 +346,12 @@ class PetServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ReviseVaccinationCardRows(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def AddVaccination(self, request, context):
         """─── VACCINATIONS ───
 
@@ -444,6 +460,12 @@ class PetServiceServicer:
 
         Get breed catalog filtered by species (reads from in-memory domain constants)
         """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetPopularBreeds(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -620,6 +642,11 @@ def add_PetServiceServicer_to_server(servicer, server):
                     request_deserializer=pet_dot_pet__pb2.VerifyVaccinationCardRowsRequest.FromString,
                     response_serializer=pet_dot_pet__pb2.VaccinationCardRowsResponse.SerializeToString,
             ),
+            'ReviseVaccinationCardRows': grpc.unary_unary_rpc_method_handler(
+                    servicer.ReviseVaccinationCardRows,
+                    request_deserializer=pet_dot_pet__pb2.ReviseVaccinationCardRowsRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.VaccinationCardRowsResponse.SerializeToString,
+            ),
             'AddVaccination': grpc.unary_unary_rpc_method_handler(
                     servicer.AddVaccination,
                     request_deserializer=pet_dot_pet__pb2.AddVaccinationRequest.FromString,
@@ -689,6 +716,11 @@ def add_PetServiceServicer_to_server(servicer, server):
                     servicer.GetBreedCatalog,
                     request_deserializer=pet_dot_pet__pb2.GetBreedCatalogRequest.FromString,
                     response_serializer=pet_dot_pet__pb2.GetBreedCatalogResponse.SerializeToString,
+            ),
+            'GetPopularBreeds': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetPopularBreeds,
+                    request_deserializer=pet_dot_pet__pb2.GetPopularBreedsRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.GetPopularBreedsResponse.SerializeToString,
             ),
             'SearchBreeds': grpc.unary_unary_rpc_method_handler(
                     servicer.SearchBreeds,
@@ -1100,6 +1132,33 @@ class PetService:
             _registered_method=True)
 
     @staticmethod
+    def ReviseVaccinationCardRows(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/pet.PetService/ReviseVaccinationCardRows',
+            pet_dot_pet__pb2.ReviseVaccinationCardRowsRequest.SerializeToString,
+            pet_dot_pet__pb2.VaccinationCardRowsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
     def AddVaccination(request,
             target,
             options=(),
@@ -1467,6 +1526,33 @@ class PetService:
             '/pet.PetService/GetBreedCatalog',
             pet_dot_pet__pb2.GetBreedCatalogRequest.SerializeToString,
             pet_dot_pet__pb2.GetBreedCatalogResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetPopularBreeds(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/pet.PetService/GetPopularBreeds',
+            pet_dot_pet__pb2.GetPopularBreedsRequest.SerializeToString,
+            pet_dot_pet__pb2.GetPopularBreedsResponse.FromString,
             options,
             channel_credentials,
             insecure,

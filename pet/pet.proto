@@ -45,6 +45,7 @@ service PetService {
   rpc RespondToPetCorrection (RespondToPetCorrectionRequest) returns (RespondToPetCorrectionResponse);
   rpc ListVaccinationCardRows (ListVaccinationCardRowsRequest) returns (VaccinationCardRowsResponse);
   rpc VerifyVaccinationCardRows (VerifyVaccinationCardRowsRequest) returns (VaccinationCardRowsResponse);
+  rpc ReviseVaccinationCardRows (ReviseVaccinationCardRowsRequest) returns (VaccinationCardRowsResponse);
 
   // ─── VACCINATIONS ───
 
@@ -101,6 +102,7 @@ service PetService {
 
   // Get breed catalog filtered by species (reads from in-memory domain constants)
   rpc GetBreedCatalog (GetBreedCatalogRequest) returns (GetBreedCatalogResponse);
+  rpc GetPopularBreeds (GetPopularBreedsRequest) returns (GetPopularBreedsResponse);
 
   // Search breeds by name for autocomplete (min 2 chars)
   rpc SearchBreeds (SearchBreedsRequest) returns (SearchBreedsResponse);
@@ -251,6 +253,13 @@ message Pet {
   int32 vaccines_needing_update_count = 29;
   repeated PetProfileFact profile_facts = 30;
   int32 prefilled_field_count = 31;
+  IdentityConfirmation identity_confirmation = 32;
+}
+
+message IdentityConfirmation {
+  google.protobuf.Timestamp confirmed_at = 1;
+  string vet_profile_id = 2;
+  string consultation_record_id = 3;
 }
 
 enum PetProfileFactKey {
@@ -262,6 +271,7 @@ enum PetProfileFactKey {
   PET_PROFILE_FACT_KEY_HANDLING = 5;
   PET_PROFILE_FACT_KEY_ORIGIN = 6;
   PET_PROFILE_FACT_KEY_TIME_IN_HOME = 7;
+  PET_PROFILE_FACT_KEY_ALLERGY_STATUS = 8;
 }
 
 enum PetProfileFactSource {
@@ -350,6 +360,7 @@ message SetPetProfileFactsRequest {
   string vet_profile_id = 3;
   string consultation_record_id = 4;
   string microchip_id = 5;
+  bool identity_confirmed = 6;
 }
 
 message Vaccination {
@@ -367,6 +378,13 @@ message Vaccination {
   google.protobuf.Timestamp updated_at = 12;
   VaccineDoseStatus dose_status = 13;
   repeated string protections = 14;
+  VaccinationSource source = 15;
+}
+
+enum VaccinationSource {
+  VACCINATION_SOURCE_UNSPECIFIED = 0;
+  VACCINATION_SOURCE_VET_VISIT = 1;
+  VACCINATION_SOURCE_OWNER_REPORTED = 2;
 }
 
 message Deworming {
@@ -689,6 +707,18 @@ message RemoveAllergyResponse {
 message GetBreedCatalogRequest {
   string species = 1;            // "DOG" or "CAT"
   string group = 2;              // Optional: filter by group (e.g. "TERRIER", "LONGHAIR")
+  string size = 3;
+  string coat = 4;
+}
+
+message GetPopularBreedsRequest {
+  string species = 1;
+  int32 limit = 2;
+}
+
+message GetPopularBreedsResponse {
+  repeated BreedEntry breeds = 1;
+  bool from_data = 2;
 }
 
 message BreedEntry {
@@ -699,6 +729,7 @@ message BreedEntry {
   string group = 5;              // "SPORTING"
   string size = 6;               // "LARGE"
   repeated BreedVariety varieties = 7;
+  repeated string coats = 8;
 }
 
 message BreedVariety {
@@ -763,6 +794,7 @@ message ExtractVaccinationCardRequest {
   // Lo resuelve la gateway desde el JWT, nunca lo manda el cliente. Sin el no
   // se puede saber si el titular autorizo la transferencia internacional.
   string client_profile_id = 4;
+  string append_to_scan_id = 5;
 }
 
 message OwnerAiConsent {
@@ -885,10 +917,14 @@ message VaccinationCardRow {
   bool corrected = 12;
   string verified_by_vet_profile_id = 13;
   google.protobuf.Timestamp verified_at = 14;
+  repeated string protections = 15;
+  CardRowOrigin origin = 16;
+  bool owner_edited = 17;
 }
 
 message ListVaccinationCardRowsRequest {
   string pet_id = 1;
+  bool verified_from_every_scan = 2;
 }
 
 message VaccinationCardRowsResponse {
@@ -898,6 +934,37 @@ message VaccinationCardRowsResponse {
   int32 pending_count = 4;
   int32 low_confidence_count = 5;
   int32 verified_count = 6;
+  google.protobuf.Timestamp owner_confirmed_at = 7;
+}
+
+enum CardRowOrigin {
+  CARD_ROW_ORIGIN_UNSPECIFIED = 0;
+  CARD_ROW_ORIGIN_OCR = 1;
+  CARD_ROW_ORIGIN_OWNER = 2;
+}
+
+message CardRowRevision {
+  string row_id = 1;
+  string vaccine_name = 2;
+  string date_administered = 3;
+  string batch_number = 4;
+  string administered_by = 5;
+  bool remove = 6;
+}
+
+message CardRowAddition {
+  string vaccine_name = 1;
+  string date_administered = 2;
+  string batch_number = 3;
+  string administered_by = 4;
+}
+
+message ReviseVaccinationCardRowsRequest {
+  string pet_id = 1;
+  string scan_id = 2;
+  repeated CardRowRevision revisions = 3;
+  repeated CardRowAddition additions = 4;
+  bool confirm = 5;
 }
 
 message CardRowVerification {

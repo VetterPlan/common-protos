@@ -66,6 +66,7 @@ service MedHistoryService {
   rpc ResolveDewormer (ResolveDewormerRequest) returns (ResolveDewormerResponse);
 
   rpc GetDewormingCalendar (GetDewormingCalendarRequest) returns (DewormingCalendarResponse);
+  rpc GetVaccinationCalendar (GetVaccinationCalendarRequest) returns (VaccinationCalendarResponse);
 
   // Crea o edita una fila de vocabulario. Solo admin (se enforza en la gateway).
   // Editar el contenido clínico REVIERTE is_validated_by_vet a false: si cambió
@@ -132,6 +133,7 @@ service MedHistoryService {
   // Timeline longitudinal del pet + tendencia de vitales. Un pet a la vez,
   // nunca listado buscable (guardrail anti-fuga §8).
   rpc GetPetMedicalHistory (GetPetMedicalHistoryRequest) returns (GetPetMedicalHistoryResponse);
+  rpc GetPassportValidity (GetPassportValidityRequest) returns (PassportValidity);
   rpc ExportPetPassport (ExportPetPassportRequest) returns (ExportPetPassportResponse);
 
   // El dueño dice "ahora no" a una remisión. Apaga los recordatorios y se
@@ -1098,6 +1100,68 @@ message DewormingCalendarResponse {
   string planned_by_vet_profile_id = 5;
 }
 
+message GetVaccinationCalendarRequest {
+  string pet_id = 1;
+  AccessContext access = 2;
+}
+
+enum VaccinationDoseStatus {
+  VACCINATION_DOSE_STATUS_UNSPECIFIED = 0;
+  VACCINATION_DOSE_STATUS_GIVEN = 1;
+  VACCINATION_DOSE_STATUS_OVERDUE = 2;
+  VACCINATION_DOSE_STATUS_NEXT = 3;
+  VACCINATION_DOSE_STATUS_PLANNED = 4;
+  VACCINATION_DOSE_STATUS_CONDITIONAL = 5;
+}
+
+message VaccinationCalendarDose {
+  string vaccine_code = 1;
+  string type_label = 2;
+  int32 dose_number = 3;
+  int32 dose_total = 4;
+  string due_date = 5;
+  VaccinationDoseStatus status = 6;
+  bool essential = 7;
+  bool from_plan = 8;
+  string reason = 9;
+  string condition = 10;
+  string given_on = 11;
+  string given_source = 12;
+}
+
+enum RecommendedTestStatus {
+  RECOMMENDED_TEST_STATUS_UNSPECIFIED = 0;
+  RECOMMENDED_TEST_STATUS_DONE = 1;
+  RECOMMENDED_TEST_STATUS_ORDERED = 2;
+  RECOMMENDED_TEST_STATUS_DECLINED = 3;
+  RECOMMENDED_TEST_STATUS_NOT_INDICATED = 4;
+  RECOMMENDED_TEST_STATUS_LATER = 5;
+}
+
+message RecommendedTest {
+  string test = 1;
+  RecommendedTestStatus status = 2;
+  string result = 3;
+  string available_from = 4;
+  string record_id = 5;
+}
+
+message VaccinationCalendarResponse {
+  bool has_plan = 1;
+  string planned_at = 2;
+  string planned_by_vet_profile_id = 3;
+  string plan_record_id = 4;
+  string as_of = 5;
+  bool paused = 6;
+  repeated VaccinationCalendarDose doses = 7;
+  int32 given_count = 8;
+  int32 total_count = 9;
+  string next_due_date = 10;
+  repeated RecommendedTest tests = 11;
+  bool no_vaccine_indicated = 12;
+  string no_vaccine_reason = 13;
+}
+
 message ResolveDewormerResponse {
   string product_name = 1;
   string parasite_target = 2;
@@ -1294,6 +1358,15 @@ message MedicalHistoryEntry {
   repeated string out_of_range_fields = 14;
   int32 attachment_count = 15;
   OwnerSummaryOrigin owner_summary_origin = 16;
+  bool intake = 17;
+  IntakeConfirmation intake_confirmation = 18;
+}
+
+message IntakeConfirmation {
+  bool identity_confirmed = 1;
+  string reproductive_status = 2;
+  string birthdate_precision = 3;
+  string microchip_status = 4;
 }
 
 message VitalsTrendPoint {
@@ -1826,4 +1899,9 @@ message AnonymizeClientDataResponse {
   int32 records_anonymized = 1;
   int32 summaries_cleared = 2;
   int32 consents_anonymized = 3;
+}
+
+message GetPassportValidityRequest {
+  string pet_id = 1;
+  AccessContext access = 2;
 }

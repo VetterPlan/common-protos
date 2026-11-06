@@ -130,6 +130,11 @@ class AppointmentServiceStub:
                 request_serializer=appointment_dot_appointment__pb2.GetPetAppointmentHistoryRequest.SerializeToString,
                 response_deserializer=appointment_dot_appointment__pb2.GetPetAppointmentHistoryResponse.FromString,
                 _registered_method=True)
+        self.GetPetUpcomingAppointment = channel.unary_unary(
+                '/appointment.AppointmentService/GetPetUpcomingAppointment',
+                request_serializer=appointment_dot_appointment__pb2.GetPetUpcomingAppointmentRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.GetPetUpcomingAppointmentResponse.FromString,
+                _registered_method=True)
         self.HasAppointmentSince = channel.unary_unary(
                 '/appointment.AppointmentService/HasAppointmentSince',
                 request_serializer=appointment_dot_appointment__pb2.HasAppointmentSinceRequest.SerializeToString,
@@ -408,6 +413,12 @@ class AppointmentServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def GetPetAppointmentHistory(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetPetUpcomingAppointment(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -698,6 +709,11 @@ def add_AppointmentServiceServicer_to_server(servicer, server):
                     servicer.GetPetAppointmentHistory,
                     request_deserializer=appointment_dot_appointment__pb2.GetPetAppointmentHistoryRequest.FromString,
                     response_serializer=appointment_dot_appointment__pb2.GetPetAppointmentHistoryResponse.SerializeToString,
+            ),
+            'GetPetUpcomingAppointment': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetPetUpcomingAppointment,
+                    request_deserializer=appointment_dot_appointment__pb2.GetPetUpcomingAppointmentRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.GetPetUpcomingAppointmentResponse.SerializeToString,
             ),
             'HasAppointmentSince': grpc.unary_unary_rpc_method_handler(
                     servicer.HasAppointmentSince,
@@ -1335,6 +1351,33 @@ class AppointmentService:
             '/appointment.AppointmentService/GetPetAppointmentHistory',
             appointment_dot_appointment__pb2.GetPetAppointmentHistoryRequest.SerializeToString,
             appointment_dot_appointment__pb2.GetPetAppointmentHistoryResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetPetUpcomingAppointment(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/GetPetUpcomingAppointment',
+            appointment_dot_appointment__pb2.GetPetUpcomingAppointmentRequest.SerializeToString,
+            appointment_dot_appointment__pb2.GetPetUpcomingAppointmentResponse.FromString,
             options,
             channel_credentials,
             insecure,

@@ -105,6 +105,11 @@ class MedHistoryServiceStub:
                 request_serializer=medhistory_dot_medhistory__pb2.GetDewormingCalendarRequest.SerializeToString,
                 response_deserializer=medhistory_dot_medhistory__pb2.DewormingCalendarResponse.FromString,
                 _registered_method=True)
+        self.GetVaccinationCalendar = channel.unary_unary(
+                '/medhistory.MedHistoryService/GetVaccinationCalendar',
+                request_serializer=medhistory_dot_medhistory__pb2.GetVaccinationCalendarRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.VaccinationCalendarResponse.FromString,
+                _registered_method=True)
         self.UpsertReferenceItem = channel.unary_unary(
                 '/medhistory.MedHistoryService/UpsertReferenceItem',
                 request_serializer=medhistory_dot_medhistory__pb2.UpsertReferenceItemRequest.SerializeToString,
@@ -164,6 +169,11 @@ class MedHistoryServiceStub:
                 '/medhistory.MedHistoryService/GetPetMedicalHistory',
                 request_serializer=medhistory_dot_medhistory__pb2.GetPetMedicalHistoryRequest.SerializeToString,
                 response_deserializer=medhistory_dot_medhistory__pb2.GetPetMedicalHistoryResponse.FromString,
+                _registered_method=True)
+        self.GetPassportValidity = channel.unary_unary(
+                '/medhistory.MedHistoryService/GetPassportValidity',
+                request_serializer=medhistory_dot_medhistory__pb2.GetPassportValidityRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.PassportValidity.FromString,
                 _registered_method=True)
         self.ExportPetPassport = channel.unary_unary(
                 '/medhistory.MedHistoryService/ExportPetPassport',
@@ -429,6 +439,12 @@ class MedHistoryServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetVaccinationCalendar(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def UpsertReferenceItem(self, request, context):
         """Crea o edita una fila de vocabulario. Solo admin (se enforza en la gateway).
         Editar el contenido clínico REVIERTE is_validated_by_vet a false: si cambió
@@ -539,6 +555,12 @@ class MedHistoryServiceServicer:
         """Timeline longitudinal del pet + tendencia de vitales. Un pet a la vez,
         nunca listado buscable (guardrail anti-fuga §8).
         """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetPassportValidity(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -837,6 +859,11 @@ def add_MedHistoryServiceServicer_to_server(servicer, server):
                     request_deserializer=medhistory_dot_medhistory__pb2.GetDewormingCalendarRequest.FromString,
                     response_serializer=medhistory_dot_medhistory__pb2.DewormingCalendarResponse.SerializeToString,
             ),
+            'GetVaccinationCalendar': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetVaccinationCalendar,
+                    request_deserializer=medhistory_dot_medhistory__pb2.GetVaccinationCalendarRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.VaccinationCalendarResponse.SerializeToString,
+            ),
             'UpsertReferenceItem': grpc.unary_unary_rpc_method_handler(
                     servicer.UpsertReferenceItem,
                     request_deserializer=medhistory_dot_medhistory__pb2.UpsertReferenceItemRequest.FromString,
@@ -896,6 +923,11 @@ def add_MedHistoryServiceServicer_to_server(servicer, server):
                     servicer.GetPetMedicalHistory,
                     request_deserializer=medhistory_dot_medhistory__pb2.GetPetMedicalHistoryRequest.FromString,
                     response_serializer=medhistory_dot_medhistory__pb2.GetPetMedicalHistoryResponse.SerializeToString,
+            ),
+            'GetPassportValidity': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetPassportValidity,
+                    request_deserializer=medhistory_dot_medhistory__pb2.GetPassportValidityRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.PassportValidity.SerializeToString,
             ),
             'ExportPetPassport': grpc.unary_unary_rpc_method_handler(
                     servicer.ExportPetPassport,
@@ -1355,6 +1387,33 @@ class MedHistoryService:
             _registered_method=True)
 
     @staticmethod
+    def GetVaccinationCalendar(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/GetVaccinationCalendar',
+            medhistory_dot_medhistory__pb2.GetVaccinationCalendarRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.VaccinationCalendarResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
     def UpsertReferenceItem(request,
             target,
             options=(),
@@ -1668,6 +1727,33 @@ class MedHistoryService:
             '/medhistory.MedHistoryService/GetPetMedicalHistory',
             medhistory_dot_medhistory__pb2.GetPetMedicalHistoryRequest.SerializeToString,
             medhistory_dot_medhistory__pb2.GetPetMedicalHistoryResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetPassportValidity(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/GetPassportValidity',
+            medhistory_dot_medhistory__pb2.GetPassportValidityRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.PassportValidity.FromString,
             options,
             channel_credentials,
             insecure,
