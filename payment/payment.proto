@@ -360,6 +360,8 @@ message Payment {
   google.protobuf.Timestamp capture_pending_since = 42;
   google.protobuf.Timestamp upfront_charge_requested_at = 43;
   string order_id = 44;
+  string supply_amount = 45;
+  string supply_amount_at_close = 46;
 }
 
 message Wallet {
@@ -521,6 +523,7 @@ message CreatePaymentRequest {
   string promo_id = 7;
   double discount_amount = 8;
   double iva_amount = 9;
+  string supply_amount = 10;
 }
 
 message AuthorizePaymentRequest {
@@ -537,6 +540,7 @@ message CapturePaymentRequest {
   double amount = 3;
   string card_token = 4;
   string product_amount = 5;
+  string supply_amount = 6;
 }
 
 message VoidPaymentRequest {

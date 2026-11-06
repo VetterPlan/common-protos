@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+package profile;
+
+import "google/protobuf/timestamp.proto";
+
+service VaccineFridgeService {
+  rpc GetVaccineFridge (GetVaccineFridgeRequest) returns (VaccineFridge);
+  rpc SignVaccinationDeclaration (SignVaccinationDeclarationRequest) returns (VaccineFridge);
+  rpc SetVaccineOffer (SetVaccineOfferRequest) returns (VaccineFridge);
+  rpc RemoveVaccineOffer (RemoveVaccineOfferRequest) returns (VaccineFridge);
+  rpc GetVaccineOffersOfVets (GetVaccineOffersOfVetsRequest) returns (GetVaccineOffersOfVetsResponse);
+}
+
+message VaccineType {
+  string key = 1;
+  string label = 2;
+  string protects_against = 3;
+  bool for_dogs = 4;
+  bool for_cats = 5;
+}
+
+message VaccineOffer {
+  string vaccine_type = 1;
+  string label = 2;
+  string price = 3;
+  bool paused = 4;
+  bool atypical = 5;
+  google.protobuf.Timestamp updated_at = 6;
+}
+
+message VaccineFridge {
+  string vet_profile_id = 1;
+  bool declaration_signed = 2;
+  google.protobuf.Timestamp declaration_signed_at = 3;
+  string declaration_version = 4;
+  repeated VaccineOffer offers = 5;
+  repeated VaccineType catalog = 6;
+  string current_declaration_version = 7;
+}
+
+message GetVaccineFridgeRequest {
+  string vet_profile_id = 1;
+}
+
+message SignVaccinationDeclarationRequest {
+  string vet_profile_id = 1;
+  string declaration_version = 2;
+  bool lawful_supplier = 3;
+  bool cold_chain = 4;
+}
+
+message SetVaccineOfferRequest {
+  string vet_profile_id = 1;
+  string vaccine_type = 2;
+  string price = 3;
+  bool paused = 4;
+}
+
+message RemoveVaccineOfferRequest {
+  string vet_profile_id = 1;
+  string vaccine_type = 2;
+}
+
+message GetVaccineOffersOfVetsRequest {
+  repeated string vet_profile_ids = 1;
+  repeated string vaccine_types = 2;
+}
+
+message VetVaccineOffers {
+  string vet_profile_id = 1;
+  repeated VaccineOffer offers = 2;
+}
+
+message GetVaccineOffersOfVetsResponse {
+  repeated VetVaccineOffers vets = 1;
+}

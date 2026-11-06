@@ -67,6 +67,7 @@ service MedHistoryService {
 
   rpc GetDewormingCalendar (GetDewormingCalendarRequest) returns (DewormingCalendarResponse);
   rpc GetVaccinationCalendar (GetVaccinationCalendarRequest) returns (VaccinationCalendarResponse);
+  rpc GetAppliedVaccines (GetAppliedVaccinesRequest) returns (GetAppliedVaccinesResponse);
 
   // Crea o edita una fila de vocabulario. Solo admin (se enforza en la gateway).
   // Editar el contenido clínico REVIERTE is_validated_by_vet a false: si cambió
@@ -916,6 +917,15 @@ enum IntakeReason {
 message GetIntakeStatusRequest {
   repeated string pet_ids = 1;
   bool include_vaccination_eligibility = 2;
+  string due_vaccines_on = 3;
+}
+
+message BookableVaccineDose {
+  string vaccine_code = 1;
+  string type_label = 2;
+  int32 dose_number = 3;
+  int32 dose_total = 4;
+  string due_date = 5;
 }
 
 enum VaccinationEligibility {
@@ -931,6 +941,7 @@ message PetIntakeStatus {
   bool requires_intake = 2;
   IntakeReason reason = 3;
   VaccinationEligibility vaccination_eligibility = 4;
+  repeated BookableVaccineDose due_vaccines = 5;
 }
 
 message GetIntakeStatusResponse {
@@ -1108,6 +1119,22 @@ message DewormingCalendarResponse {
   string as_of = 3;
   repeated DewormingPlanLine lines = 4;
   string planned_by_vet_profile_id = 5;
+}
+
+message GetAppliedVaccinesRequest {
+  string appointment_id = 1;
+}
+
+message AppliedVaccineEntry {
+  string vaccine_code = 1;
+  bool applied = 2;
+  string lot = 3;
+  string not_applied_reason = 4;
+}
+
+message GetAppliedVaccinesResponse {
+  bool record_found = 1;
+  repeated AppliedVaccineEntry entries = 2;
 }
 
 message GetVaccinationCalendarRequest {

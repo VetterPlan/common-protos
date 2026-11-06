@@ -110,6 +110,11 @@ class MedHistoryServiceStub:
                 request_serializer=medhistory_dot_medhistory__pb2.GetVaccinationCalendarRequest.SerializeToString,
                 response_deserializer=medhistory_dot_medhistory__pb2.VaccinationCalendarResponse.FromString,
                 _registered_method=True)
+        self.GetAppliedVaccines = channel.unary_unary(
+                '/medhistory.MedHistoryService/GetAppliedVaccines',
+                request_serializer=medhistory_dot_medhistory__pb2.GetAppliedVaccinesRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.GetAppliedVaccinesResponse.FromString,
+                _registered_method=True)
         self.UpsertReferenceItem = channel.unary_unary(
                 '/medhistory.MedHistoryService/UpsertReferenceItem',
                 request_serializer=medhistory_dot_medhistory__pb2.UpsertReferenceItemRequest.SerializeToString,
@@ -440,6 +445,12 @@ class MedHistoryServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def GetVaccinationCalendar(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetAppliedVaccines(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -863,6 +874,11 @@ def add_MedHistoryServiceServicer_to_server(servicer, server):
                     servicer.GetVaccinationCalendar,
                     request_deserializer=medhistory_dot_medhistory__pb2.GetVaccinationCalendarRequest.FromString,
                     response_serializer=medhistory_dot_medhistory__pb2.VaccinationCalendarResponse.SerializeToString,
+            ),
+            'GetAppliedVaccines': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetAppliedVaccines,
+                    request_deserializer=medhistory_dot_medhistory__pb2.GetAppliedVaccinesRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.GetAppliedVaccinesResponse.SerializeToString,
             ),
             'UpsertReferenceItem': grpc.unary_unary_rpc_method_handler(
                     servicer.UpsertReferenceItem,
@@ -1403,6 +1419,33 @@ class MedHistoryService:
             '/medhistory.MedHistoryService/GetVaccinationCalendar',
             medhistory_dot_medhistory__pb2.GetVaccinationCalendarRequest.SerializeToString,
             medhistory_dot_medhistory__pb2.VaccinationCalendarResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetAppliedVaccines(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/GetAppliedVaccines',
+            medhistory_dot_medhistory__pb2.GetAppliedVaccinesRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.GetAppliedVaccinesResponse.FromString,
             options,
             channel_credentials,
             insecure,

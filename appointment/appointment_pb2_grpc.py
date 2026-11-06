@@ -245,6 +245,26 @@ class AppointmentServiceStub:
                 request_serializer=appointment_dot_appointment__pb2.CloseUnattendedRequest.SerializeToString,
                 response_deserializer=appointment_dot_appointment__pb2.AppointmentResponse.FromString,
                 _registered_method=True)
+        self.DeclareVaccinesNotBrought = channel.unary_unary(
+                '/appointment.AppointmentService/DeclareVaccinesNotBrought',
+                request_serializer=appointment_dot_appointment__pb2.DeclareVaccinesNotBroughtRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+                _registered_method=True)
+        self.AnswerVaccinesNotBrought = channel.unary_unary(
+                '/appointment.AppointmentService/AnswerVaccinesNotBrought',
+                request_serializer=appointment_dot_appointment__pb2.AnswerVaccinesNotBroughtRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+                _registered_method=True)
+        self.ProposeVaccineSwap = channel.unary_unary(
+                '/appointment.AppointmentService/ProposeVaccineSwap',
+                request_serializer=appointment_dot_appointment__pb2.ProposeVaccineSwapRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+                _registered_method=True)
+        self.AnswerVaccineSwap = channel.unary_unary(
+                '/appointment.AppointmentService/AnswerVaccineSwap',
+                request_serializer=appointment_dot_appointment__pb2.AnswerVaccineSwapRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+                _registered_method=True)
         self.ListCompletedAppointments = channel.unary_unary(
                 '/appointment.AppointmentService/ListCompletedAppointments',
                 request_serializer=appointment_dot_appointment__pb2.ListCompletedAppointmentsRequest.SerializeToString,
@@ -556,6 +576,30 @@ class AppointmentServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def DeclareVaccinesNotBrought(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def AnswerVaccinesNotBrought(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ProposeVaccineSwap(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def AnswerVaccineSwap(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def ListCompletedAppointments(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -823,6 +867,26 @@ def add_AppointmentServiceServicer_to_server(servicer, server):
             'CloseUnattended': grpc.unary_unary_rpc_method_handler(
                     servicer.CloseUnattended,
                     request_deserializer=appointment_dot_appointment__pb2.CloseUnattendedRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.AppointmentResponse.SerializeToString,
+            ),
+            'DeclareVaccinesNotBrought': grpc.unary_unary_rpc_method_handler(
+                    servicer.DeclareVaccinesNotBrought,
+                    request_deserializer=appointment_dot_appointment__pb2.DeclareVaccinesNotBroughtRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.AppointmentResponse.SerializeToString,
+            ),
+            'AnswerVaccinesNotBrought': grpc.unary_unary_rpc_method_handler(
+                    servicer.AnswerVaccinesNotBrought,
+                    request_deserializer=appointment_dot_appointment__pb2.AnswerVaccinesNotBroughtRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.AppointmentResponse.SerializeToString,
+            ),
+            'ProposeVaccineSwap': grpc.unary_unary_rpc_method_handler(
+                    servicer.ProposeVaccineSwap,
+                    request_deserializer=appointment_dot_appointment__pb2.ProposeVaccineSwapRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.AppointmentResponse.SerializeToString,
+            ),
+            'AnswerVaccineSwap': grpc.unary_unary_rpc_method_handler(
+                    servicer.AnswerVaccineSwap,
+                    request_deserializer=appointment_dot_appointment__pb2.AnswerVaccineSwapRequest.FromString,
                     response_serializer=appointment_dot_appointment__pb2.AppointmentResponse.SerializeToString,
             ),
             'ListCompletedAppointments': grpc.unary_unary_rpc_method_handler(
@@ -1971,6 +2035,114 @@ class AppointmentService:
             target,
             '/appointment.AppointmentService/CloseUnattended',
             appointment_dot_appointment__pb2.CloseUnattendedRequest.SerializeToString,
+            appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DeclareVaccinesNotBrought(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/DeclareVaccinesNotBrought',
+            appointment_dot_appointment__pb2.DeclareVaccinesNotBroughtRequest.SerializeToString,
+            appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def AnswerVaccinesNotBrought(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/AnswerVaccinesNotBrought',
+            appointment_dot_appointment__pb2.AnswerVaccinesNotBroughtRequest.SerializeToString,
+            appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ProposeVaccineSwap(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/ProposeVaccineSwap',
+            appointment_dot_appointment__pb2.ProposeVaccineSwapRequest.SerializeToString,
+            appointment_dot_appointment__pb2.AppointmentResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def AnswerVaccineSwap(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/AnswerVaccineSwap',
+            appointment_dot_appointment__pb2.AnswerVaccineSwapRequest.SerializeToString,
             appointment_dot_appointment__pb2.AppointmentResponse.FromString,
             options,
             channel_credentials,

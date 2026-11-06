@@ -56,6 +56,10 @@ service AppointmentService {
   rpc ConfirmGroupAdjustment (ConfirmGroupAdjustmentRequest) returns (AppointmentResponse);
   rpc DeclineGroupAdjustment (DeclineGroupAdjustmentRequest) returns (AppointmentResponse);
   rpc CloseUnattended (CloseUnattendedRequest) returns (AppointmentResponse);
+  rpc DeclareVaccinesNotBrought (DeclareVaccinesNotBroughtRequest) returns (AppointmentResponse);
+  rpc AnswerVaccinesNotBrought (AnswerVaccinesNotBroughtRequest) returns (AppointmentResponse);
+  rpc ProposeVaccineSwap (ProposeVaccineSwapRequest) returns (AppointmentResponse);
+  rpc AnswerVaccineSwap (AnswerVaccineSwapRequest) returns (AppointmentResponse);
   rpc ListCompletedAppointments (ListCompletedAppointmentsRequest) returns (ListCompletedAppointmentsResponse);
   rpc ListVetCancellations (ListVetCancellationsRequest) returns (ListVetCancellationsResponse);
   rpc AnonymizeClientData (AnonymizeClientDataRequest) returns (AnonymizeClientDataResponse);
@@ -312,6 +316,45 @@ message Appointment {
   string intake_reason = 48;
   optional double distance_km = 49;
   optional int32 travel_minutes = 50;
+  repeated AppointmentVaccineLine vaccine_lines = 51;
+  string vaccine_total = 52;
+  bool vaccines_decision_pending = 53;
+}
+
+message DeclareVaccinesNotBroughtRequest {
+  string appointment_id = 1;
+  repeated string vaccine_types = 2;
+}
+
+message AnswerVaccinesNotBroughtRequest {
+  string appointment_id = 1;
+  bool continue_visit = 2;
+}
+
+message ProposeVaccineSwapRequest {
+  string appointment_id = 1;
+  string replaces_vaccine_type = 2;
+  string vaccine_type = 3;
+}
+
+message AnswerVaccineSwapRequest {
+  string appointment_id = 1;
+  string line_id = 2;
+  bool accept = 3;
+}
+
+message AppointmentVaccineLine {
+  string id = 1;
+  string vaccine_type = 2;
+  string vaccine_code = 3;
+  string dose_label = 4;
+  string due_date = 5;
+  string price = 6;
+  string status = 7;
+  string lot = 8;
+  string not_applied_reason = 9;
+  string replaces_line_id = 10;
+  string pet_id = 11;
 }
 
 enum NoShowFeeOutcome {
@@ -418,6 +461,8 @@ message AvailableVet {
   bool is_preferred = 13;              // true if preferred_vet_id matches
   double lat = 14;                     // Vet location for map display
   double lng = 15;
+  string vaccine_total = 16;
+  repeated AppointmentVaccineLine vaccine_lines = 17;
 }
 
 message ServiceCatalogItem {
@@ -601,6 +646,7 @@ message GetAvailableVetsRequest {
   string preferred_vet_id = 13;        // Optional: boost in ranking
   string client_profile_id = 14;       // Bucket determinista del experimento de exposición
   string pet_age_band = 15;            // puppy | adult | senior — segmento del caso
+  repeated string pet_ids = 16;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -658,6 +704,7 @@ message GetNextAvailableSlotsRequest {
   bool prefer_vet_directory = 6;
   SlotMode mode = 7;
   int32 pet_count = 8;
+  repeated string pet_ids = 9;
 }
 
 enum SlotMode {
@@ -711,6 +758,7 @@ message SlotVetPreview {
   double price = 6;
   int32 eta_minutes = 7;
   string avatar_url = 8;
+  string vaccine_total = 9;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
