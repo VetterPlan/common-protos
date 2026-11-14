@@ -40,7 +40,9 @@ service AppointmentService {
   rpc UpdateVetLocation (UpdateVetLocationRequest) returns (UpdateVetLocationResponse);
   rpc GetAppointmentTracking (GetAppointmentTrackingRequest) returns (GetAppointmentTrackingResponse);
   rpc GetAppointmentHistory (GetAppointmentHistoryRequest) returns (GetAppointmentHistoryResponse);
-  rpc GetVaccineRecommendations (GetVaccineRecommendationsRequest) returns (GetVaccineRecommendationsResponse);
+  rpc GetVaccineRecommendations (GetVaccineRecommendationsRequest) returns (GetVaccineRecommendationsResponse) {
+    option deprecated = true;
+  }
   rpc GetFollowUpRecommendations (GetFollowUpRecommendationsRequest) returns (GetFollowUpRecommendationsResponse);
   rpc SubmitReview (SubmitReviewRequest) returns (ReviewResponse);
   rpc GetVetRatingSummary (GetVetRatingSummaryRequest) returns (VetRatingSummaryResponse);
@@ -320,6 +322,7 @@ message Appointment {
   repeated AppointmentVaccineLine vaccine_lines = 51;
   string vaccine_total = 52;
   bool vaccines_decision_pending = 53;
+  string proposed_vaccine_total = 54;
 }
 
 message DeclareVaccinesNotBroughtRequest {
@@ -784,6 +787,12 @@ message SlotVetPreview {
   int32 eta_minutes = 7;
   string avatar_url = 8;
   string vaccine_total = 9;
+  repeated PetVaccineTotal pet_vaccine_totals = 10;
+}
+
+message PetVaccineTotal {
+  string pet_id = 1;
+  string total = 2;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════

@@ -1175,6 +1175,9 @@ message VaccinationCalendarDose {
   string condition = 10;
   string given_on = 11;
   string given_source = 12;
+  string given_lot = 13;
+  string given_by_vet_profile_id = 14;
+  bool bookable = 15;
 }
 
 enum RecommendedTestStatus {
@@ -1217,6 +1220,9 @@ message ReportVaccineReactionRequest {
   repeated string symptoms = 3;
   string onset = 4;
   AccessContext access = 5;
+  string appointment_id = 6;
+  string vaccine_type = 7;
+  string client_report_id = 8;
 }
 
 message VaccineReactionReport {
@@ -1718,6 +1724,7 @@ enum ConsentCategory {
   CONSENT_CATEGORY_UNSPECIFIED = 0;
   CONSENT_CATEGORY_GENERAL = 1;      // consulta, vacunación, desparasitación
   CONSENT_CATEGORY_PROCEDURE = 2;    // ecografía, ECG, radiografía
+  CONSENT_CATEGORY_VACCINATION = 3;
 }
 
 enum ConsentTemplateStatus {
@@ -1775,6 +1782,14 @@ message RequestConsentSignatureRequest {
   string client_profile_id = 11;
   string client_user_id = 12;
   string client_reason = 13;
+  repeated ConsentVaccineLine vaccine_lines = 14;
+}
+
+message ConsentVaccineLine {
+  string pet_name = 1;
+  string vaccine_label = 2;
+  string dose_label = 3;
+  string price = 4;
 }
 
 message RequestConsentSignatureResponse {

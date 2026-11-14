@@ -380,6 +380,9 @@ message Vaccination {
   VaccineDoseStatus dose_status = 13;
   repeated string protections = 14;
   VaccinationSource source = 15;
+  string appointment_id = 16;
+  string brand = 17;
+  string ica_registration = 18;
 }
 
 enum VaccinationSource {
@@ -492,6 +495,9 @@ message AddVaccinationRequest {
   string administered_by = 5;
   string batch_number = 6;
   string notes = 7;
+  string appointment_id = 8;
+  string brand = 9;
+  string ica_registration = 10;
 }
 
 message GetVaccinationsRequest {

@@ -71,6 +71,7 @@ message ProductFields {
   string sale_condition = 19;
   string storage_instructions = 20;
   string application_instructions = 21;
+  string min_age_weeks = 22;
 }
 
 message StockSummary {
@@ -397,6 +398,7 @@ message QuoteHomeOrderRequest {
   string client_profile_id = 1;
   string address_id = 2;
   repeated CartItem items = 3;
+  bool skip_balance = 4;
 }
 
 message HomeOrderQuote {
@@ -405,6 +407,11 @@ message HomeOrderQuote {
   string total = 3;
   string address_text = 4;
   repeated QuotedLine lines = 5;
+  string balance_applied = 6;
+  string amount_to_card = 7;
+  int32 delivers_within_hours = 8;
+  string alarm_question = 9;
+  int32 alarm_question_version = 10;
 }
 
 message CreateHomeOrderRequest {
@@ -414,6 +421,8 @@ message CreateHomeOrderRequest {
   string expected_total = 4;
   string payment_method_id = 5;
   string signs_of_illness = 6;
+  bool skip_balance = 7;
+  int32 alarm_question_version = 8;
 }
 
 message GetOrderRequest {
@@ -448,6 +457,7 @@ message ShippingSettings {
   string base_fee = 2;
   string fee_per_km = 3;
   string free_from_value = 4;
+  int32 delivery_hours = 5;
 }
 
 message SetShippingSettingsRequest {

@@ -498,6 +498,7 @@ message CreateOrderPaymentRequest {
   string total = 3;
   repeated OrderPaymentLine lines = 4;
   string payment_method_id = 5;
+  bool skip_wallet = 6;
 }
 
 message GetPaymentByOrderRequest {
