@@ -338,6 +338,7 @@ message ProposePetCorrectionsRequest {
 
 message ListPetCorrectionsRequest {
   string pet_id = 1;
+  bool proposed_by_caller = 2;
 }
 
 message PetCorrectionsResponse {
