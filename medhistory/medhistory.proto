@@ -341,6 +341,7 @@ enum AttachmentType {
   // La orden de ayudas diagnósticas que firma el vet (Fase 4e). Se adjunta al
   // registro para que el dueño la vea y la descargue por el camino de siempre.
   ATTACHMENT_TYPE_DIAGNOSTIC_ORDER = 9;
+  ATTACHMENT_TYPE_PRESCRIPTION = 10;
 }
 
 // Requerimiento de un bloque dentro de una receta (matriz §16.8).
@@ -1375,6 +1376,7 @@ message FinalizeConsultationRecordRequest {
   // no puede divergir de lo que haría el cierre. No cambia el registro ni deja
   // un `finalize_rejected` en la bitácora.
   bool dry_run = 3;
+  bool core_only = 4;
 }
 
 // Bloque o campo que impide finalizar.
