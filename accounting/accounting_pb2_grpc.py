@@ -319,6 +319,36 @@ class AccountingServiceStub:
                 request_serializer=accounting_dot_accounting__pb2.SetAccountCostCenterRequirementRequest.SerializeToString,
                 response_deserializer=accounting_dot_accounting__pb2.Account.FromString,
                 _registered_method=True)
+        self.ListReportDefinitions = channel.unary_unary(
+                '/accounting.AccountingService/ListReportDefinitions',
+                request_serializer=accounting_dot_accounting__pb2.Empty.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.ListReportDefinitionsResponse.FromString,
+                _registered_method=True)
+        self.GetReportDefinition = channel.unary_unary(
+                '/accounting.AccountingService/GetReportDefinition',
+                request_serializer=accounting_dot_accounting__pb2.GetReportDefinitionRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.ReportDefinition.FromString,
+                _registered_method=True)
+        self.SaveReportDefinition = channel.unary_unary(
+                '/accounting.AccountingService/SaveReportDefinition',
+                request_serializer=accounting_dot_accounting__pb2.SaveReportDefinitionRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.ReportDefinition.FromString,
+                _registered_method=True)
+        self.RunReport = channel.unary_unary(
+                '/accounting.AccountingService/RunReport',
+                request_serializer=accounting_dot_accounting__pb2.RunReportRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.ReportResult.FromString,
+                _registered_method=True)
+        self.GetGroupedTrialBalance = channel.unary_unary(
+                '/accounting.AccountingService/GetGroupedTrialBalance',
+                request_serializer=accounting_dot_accounting__pb2.GroupedTrialBalanceRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.GroupedTrialBalance.FromString,
+                _registered_method=True)
+        self.DownloadGroupedTrialBalance = channel.unary_unary(
+                '/accounting.AccountingService/DownloadGroupedTrialBalance',
+                request_serializer=accounting_dot_accounting__pb2.GroupedTrialBalanceRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.XlsxFile.FromString,
+                _registered_method=True)
 
 
 class AccountingServiceServicer:
@@ -666,6 +696,42 @@ class AccountingServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ListReportDefinitions(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetReportDefinition(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SaveReportDefinition(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RunReport(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetGroupedTrialBalance(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DownloadGroupedTrialBalance(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AccountingServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -953,6 +1019,36 @@ def add_AccountingServiceServicer_to_server(servicer, server):
                     servicer.SetAccountCostCenterRequirement,
                     request_deserializer=accounting_dot_accounting__pb2.SetAccountCostCenterRequirementRequest.FromString,
                     response_serializer=accounting_dot_accounting__pb2.Account.SerializeToString,
+            ),
+            'ListReportDefinitions': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListReportDefinitions,
+                    request_deserializer=accounting_dot_accounting__pb2.Empty.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.ListReportDefinitionsResponse.SerializeToString,
+            ),
+            'GetReportDefinition': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetReportDefinition,
+                    request_deserializer=accounting_dot_accounting__pb2.GetReportDefinitionRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.ReportDefinition.SerializeToString,
+            ),
+            'SaveReportDefinition': grpc.unary_unary_rpc_method_handler(
+                    servicer.SaveReportDefinition,
+                    request_deserializer=accounting_dot_accounting__pb2.SaveReportDefinitionRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.ReportDefinition.SerializeToString,
+            ),
+            'RunReport': grpc.unary_unary_rpc_method_handler(
+                    servicer.RunReport,
+                    request_deserializer=accounting_dot_accounting__pb2.RunReportRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.ReportResult.SerializeToString,
+            ),
+            'GetGroupedTrialBalance': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetGroupedTrialBalance,
+                    request_deserializer=accounting_dot_accounting__pb2.GroupedTrialBalanceRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.GroupedTrialBalance.SerializeToString,
+            ),
+            'DownloadGroupedTrialBalance': grpc.unary_unary_rpc_method_handler(
+                    servicer.DownloadGroupedTrialBalance,
+                    request_deserializer=accounting_dot_accounting__pb2.GroupedTrialBalanceRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.XlsxFile.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -2494,6 +2590,168 @@ class AccountingService:
             '/accounting.AccountingService/SetAccountCostCenterRequirement',
             accounting_dot_accounting__pb2.SetAccountCostCenterRequirementRequest.SerializeToString,
             accounting_dot_accounting__pb2.Account.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListReportDefinitions(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/ListReportDefinitions',
+            accounting_dot_accounting__pb2.Empty.SerializeToString,
+            accounting_dot_accounting__pb2.ListReportDefinitionsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetReportDefinition(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/GetReportDefinition',
+            accounting_dot_accounting__pb2.GetReportDefinitionRequest.SerializeToString,
+            accounting_dot_accounting__pb2.ReportDefinition.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SaveReportDefinition(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/SaveReportDefinition',
+            accounting_dot_accounting__pb2.SaveReportDefinitionRequest.SerializeToString,
+            accounting_dot_accounting__pb2.ReportDefinition.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RunReport(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/RunReport',
+            accounting_dot_accounting__pb2.RunReportRequest.SerializeToString,
+            accounting_dot_accounting__pb2.ReportResult.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetGroupedTrialBalance(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/GetGroupedTrialBalance',
+            accounting_dot_accounting__pb2.GroupedTrialBalanceRequest.SerializeToString,
+            accounting_dot_accounting__pb2.GroupedTrialBalance.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DownloadGroupedTrialBalance(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/DownloadGroupedTrialBalance',
+            accounting_dot_accounting__pb2.GroupedTrialBalanceRequest.SerializeToString,
+            accounting_dot_accounting__pb2.XlsxFile.FromString,
             options,
             channel_credentials,
             insecure,

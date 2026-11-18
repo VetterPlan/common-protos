@@ -72,6 +72,13 @@ service AccountingService {
   rpc UpsertVoucherType(UpsertVoucherTypeRequest) returns (VoucherType);
   rpc SetTemplateVoucherType(SetTemplateVoucherTypeRequest) returns (ListVoucherTypesResponse);
   rpc SetAccountCostCenterRequirement(SetAccountCostCenterRequirementRequest) returns (Account);
+
+  rpc ListReportDefinitions(Empty) returns (ListReportDefinitionsResponse);
+  rpc GetReportDefinition(GetReportDefinitionRequest) returns (ReportDefinition);
+  rpc SaveReportDefinition(SaveReportDefinitionRequest) returns (ReportDefinition);
+  rpc RunReport(RunReportRequest) returns (ReportResult);
+  rpc GetGroupedTrialBalance(GroupedTrialBalanceRequest) returns (GroupedTrialBalance);
+  rpc DownloadGroupedTrialBalance(GroupedTrialBalanceRequest) returns (XlsxFile);
 }
 
 message Empty {}
@@ -708,6 +715,8 @@ message DownloadStatementRequest {
   string to_date = 3;
   string as_of = 4;
   string cost_center_code = 5;
+  string third_party_id = 6;
+  bool monthly = 7;
 }
 
 message CostCenter {
@@ -759,4 +768,98 @@ message SetAccountCostCenterRequirementRequest {
   string account_code = 2;
   bool required = 3;
   string effective_from = 4;
+}
+
+message ReportRowDefinition {
+  int32 position = 1;
+  string label = 2;
+  string kind = 3;
+  repeated string account_prefixes = 4;
+  int32 sign = 5;
+  repeated int32 subtotal_terms = 6;
+  bool show_accounts = 7;
+  string style = 8;
+}
+
+message ReportDefinition {
+  string id = 1;
+  string code = 2;
+  string name = 3;
+  string kind = 4;
+  string basis = 5;
+  string effective_from = 6;
+  repeated ReportRowDefinition rows = 7;
+  string created_by = 8;
+  string created_at = 9;
+}
+
+message ListReportDefinitionsResponse {
+  repeated ReportDefinition definitions = 1;
+}
+
+message GetReportDefinitionRequest {
+  string code = 1;
+  string on = 2;
+}
+
+message SaveReportDefinitionRequest {
+  string actor_user_id = 1;
+  string code = 2;
+  string name = 3;
+  string kind = 4;
+  string basis = 5;
+  string effective_from = 6;
+  repeated ReportRowDefinition rows = 7;
+}
+
+message RunReportRequest {
+  string code = 1;
+  string from_date = 2;
+  string to_date = 3;
+  string as_of = 4;
+  string cost_center_code = 5;
+  string third_party_id = 6;
+  bool monthly = 7;
+}
+
+message ReportLine {
+  int32 position = 1;
+  string label = 2;
+  string style = 3;
+  string account_code = 4;
+  repeated string values = 5;
+}
+
+message ReportResult {
+  string code = 1;
+  string name = 2;
+  string basis = 3;
+  string definition_effective_from = 4;
+  repeated string columns = 5;
+  repeated ReportLine lines = 6;
+  bool has_unclassified = 7;
+}
+
+message GroupedTrialBalanceRequest {
+  string from_date = 1;
+  string to_date = 2;
+  string group_by = 3;
+}
+
+message GroupedTrialBalanceRow {
+  string account_code = 1;
+  string account_name = 2;
+  string group_key = 3;
+  string group_name = 4;
+  string opening_balance = 5;
+  string debits = 6;
+  string credits = 7;
+  string closing_balance = 8;
+}
+
+message GroupedTrialBalance {
+  string from_date = 1;
+  string to_date = 2;
+  string group_by = 3;
+  repeated GroupedTrialBalanceRow rows = 4;
 }
