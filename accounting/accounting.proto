@@ -95,6 +95,7 @@ service AccountingService {
   rpc ComputeBudgetScenario(BudgetScenarioRequest) returns (BudgetComputation);
   rpc CompareBudgetScenarios(CompareBudgetScenariosRequest) returns (CompareBudgetScenariosResponse);
   rpc GetBudgetVsActual(BudgetScenarioRequest) returns (BudgetVsActual);
+  rpc PreviewPositionCost(PreviewPositionCostRequest) returns (PositionCostPreview);
 
   rpc ListExportLayouts(Empty) returns (ListExportLayoutsResponse);
   rpc SaveExportLayout(SaveExportLayoutRequest) returns (ExportLayout);
@@ -1389,4 +1390,21 @@ message CashMonth {
 
 message CashHistory {
   repeated CashMonth months = 1;
+}
+
+message PreviewPositionCostRequest {
+  string scenario_id = 1;
+  string period = 2;
+  string contract = 3;
+  string monthly_amount = 4;
+  int32 arl_class = 5;
+}
+
+message PositionCostPreview {
+  string period = 1;
+  string company_cost = 2;
+  string worker_net = 3;
+  string contribution_base = 4;
+  repeated NamedValue concepts = 5;
+  repeated string notes = 6;
 }

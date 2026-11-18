@@ -419,6 +419,11 @@ class AccountingServiceStub:
                 request_serializer=accounting_dot_accounting__pb2.BudgetScenarioRequest.SerializeToString,
                 response_deserializer=accounting_dot_accounting__pb2.BudgetVsActual.FromString,
                 _registered_method=True)
+        self.PreviewPositionCost = channel.unary_unary(
+                '/accounting.AccountingService/PreviewPositionCost',
+                request_serializer=accounting_dot_accounting__pb2.PreviewPositionCostRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.PositionCostPreview.FromString,
+                _registered_method=True)
         self.ListExportLayouts = channel.unary_unary(
                 '/accounting.AccountingService/ListExportLayouts',
                 request_serializer=accounting_dot_accounting__pb2.Empty.SerializeToString,
@@ -931,6 +936,12 @@ class AccountingServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def PreviewPositionCost(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def ListExportLayouts(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -1372,6 +1383,11 @@ def add_AccountingServiceServicer_to_server(servicer, server):
                     servicer.GetBudgetVsActual,
                     request_deserializer=accounting_dot_accounting__pb2.BudgetScenarioRequest.FromString,
                     response_serializer=accounting_dot_accounting__pb2.BudgetVsActual.SerializeToString,
+            ),
+            'PreviewPositionCost': grpc.unary_unary_rpc_method_handler(
+                    servicer.PreviewPositionCost,
+                    request_deserializer=accounting_dot_accounting__pb2.PreviewPositionCostRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.PositionCostPreview.SerializeToString,
             ),
             'ListExportLayouts': grpc.unary_unary_rpc_method_handler(
                     servicer.ListExportLayouts,
@@ -3498,6 +3514,33 @@ class AccountingService:
             '/accounting.AccountingService/GetBudgetVsActual',
             accounting_dot_accounting__pb2.BudgetScenarioRequest.SerializeToString,
             accounting_dot_accounting__pb2.BudgetVsActual.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def PreviewPositionCost(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/PreviewPositionCost',
+            accounting_dot_accounting__pb2.PreviewPositionCostRequest.SerializeToString,
+            accounting_dot_accounting__pb2.PositionCostPreview.FromString,
             options,
             channel_credentials,
             insecure,
