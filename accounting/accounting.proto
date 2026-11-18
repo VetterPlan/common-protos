@@ -1127,6 +1127,7 @@ message BudgetMonth {
   repeated NamedValue payroll_by_concept = 21;
   repeated NamedValue founder_pay = 22;
   repeated NamedValue founder_cost = 23;
+  repeated NamedValue volume_by_service = 24;
 }
 
 message BudgetFounderSolution {
