@@ -82,6 +82,19 @@ service AccountingService {
 
   rpc ListPayrollParameterSets(Empty) returns (ListPayrollParameterSetsResponse);
   rpc CreatePayrollParameterSet(CreatePayrollParameterSetRequest) returns (PayrollParameterSet);
+
+  rpc ListBudgetScenarios(Empty) returns (ListBudgetScenariosResponse);
+  rpc GetBudgetScenario(BudgetScenarioRequest) returns (BudgetScenario);
+  rpc CreateBudgetScenario(CreateBudgetScenarioRequest) returns (BudgetScenario);
+  rpc UpdateBudgetScenario(UpdateBudgetScenarioRequest) returns (BudgetScenario);
+  rpc ApproveBudgetScenario(BudgetScenarioRequest) returns (BudgetScenario);
+  rpc ArchiveBudgetScenario(BudgetScenarioRequest) returns (BudgetScenario);
+  rpc UpsertBudgetLine(UpsertBudgetLineRequest) returns (BudgetScenario);
+  rpc RemoveBudgetLine(RemoveBudgetLineRequest) returns (BudgetScenario);
+  rpc SetBudgetOverride(SetBudgetOverrideRequest) returns (BudgetScenario);
+  rpc ComputeBudgetScenario(BudgetScenarioRequest) returns (BudgetComputation);
+  rpc CompareBudgetScenarios(CompareBudgetScenariosRequest) returns (CompareBudgetScenariosResponse);
+  rpc GetBudgetVsActual(BudgetScenarioRequest) returns (BudgetVsActual);
 }
 
 message Empty {}
@@ -899,4 +912,273 @@ message CreatePayrollParameterSetRequest {
   int32 weekly_hours = 4;
   repeated PayrollFspBracket brackets = 5;
   string reason = 6;
+}
+
+message BudgetServiceLine {
+  string id = 1;
+  int32 position = 2;
+  string name = 3;
+  string revenue_model = 4;
+  string monthly_volume = 5;
+  string growth_percent = 6;
+  string average_price = 7;
+  string platform_rate = 8;
+  string vet_rate = 9;
+  string supply_rate = 10;
+  string unit_cost = 11;
+  string attached_to_id = 12;
+  string attach_ratio = 13;
+  string account_prefix = 14;
+}
+
+message BudgetCostLine {
+  string id = 1;
+  int32 position = 2;
+  string name = 3;
+  string kind = 4;
+  string amount = 5;
+  string currency = 6;
+  string annual_indexation_percent = 7;
+  string rate = 8;
+  string per_transaction_fee = 9;
+  string service_id = 10;
+  string period = 11;
+  string account_prefix = 12;
+}
+
+message BudgetFinancingLine {
+  string id = 1;
+  string name = 2;
+  string kind = 3;
+  string amount = 4;
+  string period = 5;
+}
+
+message BudgetPosition {
+  string id = 1;
+  string title = 2;
+  int32 headcount = 3;
+  string contract = 4;
+  string monthly_amount = 5;
+  int32 arl_class = 6;
+  string start_period = 7;
+  string end_period = 8;
+  string daytime_overtime_hours = 9;
+  string sunday_hours = 10;
+  string non_salary_pay = 11;
+}
+
+message BudgetFounder {
+  string id = 1;
+  string partner_id = 2;
+  string partner_name = 3;
+  string contract = 4;
+  string amount_mode = 5;
+  string fixed_amount = 6;
+  string profit_share_percent = 7;
+  string split = 8;
+  string weight = 9;
+  string start_mode = 10;
+  string start_period = 11;
+  int32 arl_class = 12;
+}
+
+message BudgetOverride {
+  string id = 1;
+  string line_kind = 2;
+  string line_id = 3;
+  string period = 4;
+  string value = 5;
+}
+
+message BudgetScenario {
+  string id = 1;
+  string name = 2;
+  string group_name = 3;
+  string start_period = 4;
+  int32 horizon_months = 5;
+  string status = 6;
+  bool employer_exempt = 7;
+  string opening_cash = 8;
+  string reserve_months = 9;
+  string reserve_amount = 10;
+  int32 confirmation_months = 11;
+  string confirmation_percent = 12;
+  int32 vat_period_months = 13;
+  string usd_rate = 14;
+  string gateway_rate = 15;
+  string gateway_fixed_fee = 16;
+  string parameters_frozen_at = 17;
+  string approved_by = 18;
+  string copied_from_id = 19;
+  string created_at = 20;
+  repeated BudgetServiceLine services = 21;
+  repeated BudgetCostLine costs = 22;
+  repeated BudgetFinancingLine financing = 23;
+  repeated BudgetPosition positions = 24;
+  repeated BudgetFounder founders = 25;
+  repeated BudgetOverride overrides = 26;
+}
+
+message ListBudgetScenariosResponse {
+  repeated BudgetScenario scenarios = 1;
+}
+
+message BudgetScenarioRequest {
+  string actor_user_id = 1;
+  string id = 2;
+}
+
+message CreateBudgetScenarioRequest {
+  string actor_user_id = 1;
+  string name = 2;
+  string group_name = 3;
+  string start_period = 4;
+  int32 horizon_months = 5;
+  string copy_from_id = 6;
+  bool from_real = 7;
+}
+
+message UpdateBudgetScenarioRequest {
+  string actor_user_id = 1;
+  string id = 2;
+  string name = 3;
+  string group_name = 4;
+  string start_period = 5;
+  int32 horizon_months = 6;
+  bool employer_exempt = 7;
+  string opening_cash = 8;
+  string reserve_months = 9;
+  string reserve_amount = 10;
+  int32 confirmation_months = 11;
+  string confirmation_percent = 12;
+  int32 vat_period_months = 13;
+  string usd_rate = 14;
+  string gateway_rate = 15;
+  string gateway_fixed_fee = 16;
+}
+
+message UpsertBudgetLineRequest {
+  string actor_user_id = 1;
+  string scenario_id = 2;
+  oneof line {
+    BudgetServiceLine service = 3;
+    BudgetCostLine cost = 4;
+    BudgetFinancingLine financing = 5;
+    BudgetPosition position = 6;
+    BudgetFounder founder = 7;
+  }
+}
+
+message RemoveBudgetLineRequest {
+  string actor_user_id = 1;
+  string scenario_id = 2;
+  string kind = 3;
+  string line_id = 4;
+}
+
+message SetBudgetOverrideRequest {
+  string actor_user_id = 1;
+  string scenario_id = 2;
+  string line_kind = 3;
+  string line_id = 4;
+  string period = 5;
+  string value = 6;
+  bool remove = 7;
+}
+
+message BudgetMonth {
+  string period = 1;
+  string revenue = 2;
+  string vat_collected = 3;
+  string cost_of_sales = 4;
+  string variable_costs = 5;
+  string gross_margin = 6;
+  string fixed_costs = 7;
+  string payroll_cost = 8;
+  string founders_cost = 9;
+  string taxes = 10;
+  string operating_result = 11;
+  string net_result = 12;
+  string dividends = 13;
+  string financing_in = 14;
+  string cash_in = 15;
+  string cash_out = 16;
+  string closing_cash = 17;
+  string reserve_required = 18;
+  repeated NamedValue revenue_by_service = 19;
+  repeated NamedValue cost_by_line = 20;
+  repeated NamedValue payroll_by_concept = 21;
+  repeated NamedValue founder_pay = 22;
+  repeated NamedValue founder_cost = 23;
+}
+
+message BudgetFounderSolution {
+  bool fits = 1;
+  string pool = 2;
+  string start_period = 3;
+  string breach_period = 4;
+  string shortfall = 5;
+  repeated NamedValue amounts = 6;
+}
+
+message BudgetServiceUnit {
+  string service_id = 1;
+  string name = 2;
+  string average_price = 3;
+  string client_total = 4;
+  string vet_receives = 5;
+  string vat = 6;
+  string gateway_cost = 7;
+  string revenue = 8;
+  string cost_of_sales = 9;
+}
+
+message BudgetComputation {
+  string scenario_id = 1;
+  repeated BudgetMonth months = 2;
+  string break_even_period = 3;
+  string cash_runs_out_period = 4;
+  string reserve_breach_period = 5;
+  repeated string notes = 6;
+  BudgetFounderSolution solution = 7;
+  repeated BudgetServiceUnit units = 8;
+  string opening_cash = 9;
+  string opening_accumulated_results = 10;
+}
+
+message CompareBudgetScenariosRequest {
+  repeated string ids = 1;
+}
+
+message BudgetSummary {
+  string scenario_id = 1;
+  string name = 2;
+  string total_revenue = 3;
+  string total_net_result = 4;
+  string closing_cash = 5;
+  string break_even_period = 6;
+  string founders_pool = 7;
+  string founders_start_period = 8;
+  bool founders_fit = 9;
+}
+
+message CompareBudgetScenariosResponse {
+  repeated BudgetSummary summaries = 1;
+}
+
+message BudgetVsActualRow {
+  string line = 1;
+  string period = 2;
+  string budgeted = 3;
+  string actual = 4;
+  string variance = 5;
+  bool recorded = 6;
+}
+
+message BudgetVsActual {
+  string scenario_id = 1;
+  repeated BudgetVsActualRow rows = 2;
+  bool confirmation_met = 3;
+  string confirmation_message = 4;
 }

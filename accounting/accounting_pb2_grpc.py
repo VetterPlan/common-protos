@@ -359,6 +359,66 @@ class AccountingServiceStub:
                 request_serializer=accounting_dot_accounting__pb2.CreatePayrollParameterSetRequest.SerializeToString,
                 response_deserializer=accounting_dot_accounting__pb2.PayrollParameterSet.FromString,
                 _registered_method=True)
+        self.ListBudgetScenarios = channel.unary_unary(
+                '/accounting.AccountingService/ListBudgetScenarios',
+                request_serializer=accounting_dot_accounting__pb2.Empty.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.ListBudgetScenariosResponse.FromString,
+                _registered_method=True)
+        self.GetBudgetScenario = channel.unary_unary(
+                '/accounting.AccountingService/GetBudgetScenario',
+                request_serializer=accounting_dot_accounting__pb2.BudgetScenarioRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.BudgetScenario.FromString,
+                _registered_method=True)
+        self.CreateBudgetScenario = channel.unary_unary(
+                '/accounting.AccountingService/CreateBudgetScenario',
+                request_serializer=accounting_dot_accounting__pb2.CreateBudgetScenarioRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.BudgetScenario.FromString,
+                _registered_method=True)
+        self.UpdateBudgetScenario = channel.unary_unary(
+                '/accounting.AccountingService/UpdateBudgetScenario',
+                request_serializer=accounting_dot_accounting__pb2.UpdateBudgetScenarioRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.BudgetScenario.FromString,
+                _registered_method=True)
+        self.ApproveBudgetScenario = channel.unary_unary(
+                '/accounting.AccountingService/ApproveBudgetScenario',
+                request_serializer=accounting_dot_accounting__pb2.BudgetScenarioRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.BudgetScenario.FromString,
+                _registered_method=True)
+        self.ArchiveBudgetScenario = channel.unary_unary(
+                '/accounting.AccountingService/ArchiveBudgetScenario',
+                request_serializer=accounting_dot_accounting__pb2.BudgetScenarioRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.BudgetScenario.FromString,
+                _registered_method=True)
+        self.UpsertBudgetLine = channel.unary_unary(
+                '/accounting.AccountingService/UpsertBudgetLine',
+                request_serializer=accounting_dot_accounting__pb2.UpsertBudgetLineRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.BudgetScenario.FromString,
+                _registered_method=True)
+        self.RemoveBudgetLine = channel.unary_unary(
+                '/accounting.AccountingService/RemoveBudgetLine',
+                request_serializer=accounting_dot_accounting__pb2.RemoveBudgetLineRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.BudgetScenario.FromString,
+                _registered_method=True)
+        self.SetBudgetOverride = channel.unary_unary(
+                '/accounting.AccountingService/SetBudgetOverride',
+                request_serializer=accounting_dot_accounting__pb2.SetBudgetOverrideRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.BudgetScenario.FromString,
+                _registered_method=True)
+        self.ComputeBudgetScenario = channel.unary_unary(
+                '/accounting.AccountingService/ComputeBudgetScenario',
+                request_serializer=accounting_dot_accounting__pb2.BudgetScenarioRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.BudgetComputation.FromString,
+                _registered_method=True)
+        self.CompareBudgetScenarios = channel.unary_unary(
+                '/accounting.AccountingService/CompareBudgetScenarios',
+                request_serializer=accounting_dot_accounting__pb2.CompareBudgetScenariosRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.CompareBudgetScenariosResponse.FromString,
+                _registered_method=True)
+        self.GetBudgetVsActual = channel.unary_unary(
+                '/accounting.AccountingService/GetBudgetVsActual',
+                request_serializer=accounting_dot_accounting__pb2.BudgetScenarioRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.BudgetVsActual.FromString,
+                _registered_method=True)
 
 
 class AccountingServiceServicer:
@@ -754,6 +814,78 @@ class AccountingServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ListBudgetScenarios(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetBudgetScenario(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CreateBudgetScenario(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def UpdateBudgetScenario(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ApproveBudgetScenario(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ArchiveBudgetScenario(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def UpsertBudgetLine(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RemoveBudgetLine(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetBudgetOverride(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ComputeBudgetScenario(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CompareBudgetScenarios(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetBudgetVsActual(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AccountingServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -1081,6 +1213,66 @@ def add_AccountingServiceServicer_to_server(servicer, server):
                     servicer.CreatePayrollParameterSet,
                     request_deserializer=accounting_dot_accounting__pb2.CreatePayrollParameterSetRequest.FromString,
                     response_serializer=accounting_dot_accounting__pb2.PayrollParameterSet.SerializeToString,
+            ),
+            'ListBudgetScenarios': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListBudgetScenarios,
+                    request_deserializer=accounting_dot_accounting__pb2.Empty.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.ListBudgetScenariosResponse.SerializeToString,
+            ),
+            'GetBudgetScenario': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetBudgetScenario,
+                    request_deserializer=accounting_dot_accounting__pb2.BudgetScenarioRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.BudgetScenario.SerializeToString,
+            ),
+            'CreateBudgetScenario': grpc.unary_unary_rpc_method_handler(
+                    servicer.CreateBudgetScenario,
+                    request_deserializer=accounting_dot_accounting__pb2.CreateBudgetScenarioRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.BudgetScenario.SerializeToString,
+            ),
+            'UpdateBudgetScenario': grpc.unary_unary_rpc_method_handler(
+                    servicer.UpdateBudgetScenario,
+                    request_deserializer=accounting_dot_accounting__pb2.UpdateBudgetScenarioRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.BudgetScenario.SerializeToString,
+            ),
+            'ApproveBudgetScenario': grpc.unary_unary_rpc_method_handler(
+                    servicer.ApproveBudgetScenario,
+                    request_deserializer=accounting_dot_accounting__pb2.BudgetScenarioRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.BudgetScenario.SerializeToString,
+            ),
+            'ArchiveBudgetScenario': grpc.unary_unary_rpc_method_handler(
+                    servicer.ArchiveBudgetScenario,
+                    request_deserializer=accounting_dot_accounting__pb2.BudgetScenarioRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.BudgetScenario.SerializeToString,
+            ),
+            'UpsertBudgetLine': grpc.unary_unary_rpc_method_handler(
+                    servicer.UpsertBudgetLine,
+                    request_deserializer=accounting_dot_accounting__pb2.UpsertBudgetLineRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.BudgetScenario.SerializeToString,
+            ),
+            'RemoveBudgetLine': grpc.unary_unary_rpc_method_handler(
+                    servicer.RemoveBudgetLine,
+                    request_deserializer=accounting_dot_accounting__pb2.RemoveBudgetLineRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.BudgetScenario.SerializeToString,
+            ),
+            'SetBudgetOverride': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetBudgetOverride,
+                    request_deserializer=accounting_dot_accounting__pb2.SetBudgetOverrideRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.BudgetScenario.SerializeToString,
+            ),
+            'ComputeBudgetScenario': grpc.unary_unary_rpc_method_handler(
+                    servicer.ComputeBudgetScenario,
+                    request_deserializer=accounting_dot_accounting__pb2.BudgetScenarioRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.BudgetComputation.SerializeToString,
+            ),
+            'CompareBudgetScenarios': grpc.unary_unary_rpc_method_handler(
+                    servicer.CompareBudgetScenarios,
+                    request_deserializer=accounting_dot_accounting__pb2.CompareBudgetScenariosRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.CompareBudgetScenariosResponse.SerializeToString,
+            ),
+            'GetBudgetVsActual': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetBudgetVsActual,
+                    request_deserializer=accounting_dot_accounting__pb2.BudgetScenarioRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.BudgetVsActual.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -2838,6 +3030,330 @@ class AccountingService:
             '/accounting.AccountingService/CreatePayrollParameterSet',
             accounting_dot_accounting__pb2.CreatePayrollParameterSetRequest.SerializeToString,
             accounting_dot_accounting__pb2.PayrollParameterSet.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListBudgetScenarios(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/ListBudgetScenarios',
+            accounting_dot_accounting__pb2.Empty.SerializeToString,
+            accounting_dot_accounting__pb2.ListBudgetScenariosResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetBudgetScenario(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/GetBudgetScenario',
+            accounting_dot_accounting__pb2.BudgetScenarioRequest.SerializeToString,
+            accounting_dot_accounting__pb2.BudgetScenario.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CreateBudgetScenario(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/CreateBudgetScenario',
+            accounting_dot_accounting__pb2.CreateBudgetScenarioRequest.SerializeToString,
+            accounting_dot_accounting__pb2.BudgetScenario.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def UpdateBudgetScenario(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/UpdateBudgetScenario',
+            accounting_dot_accounting__pb2.UpdateBudgetScenarioRequest.SerializeToString,
+            accounting_dot_accounting__pb2.BudgetScenario.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ApproveBudgetScenario(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/ApproveBudgetScenario',
+            accounting_dot_accounting__pb2.BudgetScenarioRequest.SerializeToString,
+            accounting_dot_accounting__pb2.BudgetScenario.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ArchiveBudgetScenario(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/ArchiveBudgetScenario',
+            accounting_dot_accounting__pb2.BudgetScenarioRequest.SerializeToString,
+            accounting_dot_accounting__pb2.BudgetScenario.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def UpsertBudgetLine(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/UpsertBudgetLine',
+            accounting_dot_accounting__pb2.UpsertBudgetLineRequest.SerializeToString,
+            accounting_dot_accounting__pb2.BudgetScenario.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def RemoveBudgetLine(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/RemoveBudgetLine',
+            accounting_dot_accounting__pb2.RemoveBudgetLineRequest.SerializeToString,
+            accounting_dot_accounting__pb2.BudgetScenario.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SetBudgetOverride(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/SetBudgetOverride',
+            accounting_dot_accounting__pb2.SetBudgetOverrideRequest.SerializeToString,
+            accounting_dot_accounting__pb2.BudgetScenario.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ComputeBudgetScenario(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/ComputeBudgetScenario',
+            accounting_dot_accounting__pb2.BudgetScenarioRequest.SerializeToString,
+            accounting_dot_accounting__pb2.BudgetComputation.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CompareBudgetScenarios(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/CompareBudgetScenarios',
+            accounting_dot_accounting__pb2.CompareBudgetScenariosRequest.SerializeToString,
+            accounting_dot_accounting__pb2.CompareBudgetScenariosResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetBudgetVsActual(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/GetBudgetVsActual',
+            accounting_dot_accounting__pb2.BudgetScenarioRequest.SerializeToString,
+            accounting_dot_accounting__pb2.BudgetVsActual.FromString,
             options,
             channel_credentials,
             insecure,
