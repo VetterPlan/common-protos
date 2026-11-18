@@ -264,6 +264,31 @@ class AccountingServiceStub:
                 request_serializer=accounting_dot_accounting__pb2.SetAccountMappingRequest.SerializeToString,
                 response_deserializer=accounting_dot_accounting__pb2.AccountMapping.FromString,
                 _registered_method=True)
+        self.DownloadJournal = channel.unary_unary(
+                '/accounting.AccountingService/DownloadJournal',
+                request_serializer=accounting_dot_accounting__pb2.DateRangeRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.XlsxFile.FromString,
+                _registered_method=True)
+        self.DownloadTrialBalance = channel.unary_unary(
+                '/accounting.AccountingService/DownloadTrialBalance',
+                request_serializer=accounting_dot_accounting__pb2.DateRangeRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.XlsxFile.FromString,
+                _registered_method=True)
+        self.DownloadAccountLedger = channel.unary_unary(
+                '/accounting.AccountingService/DownloadAccountLedger',
+                request_serializer=accounting_dot_accounting__pb2.GetAccountLedgerRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.XlsxFile.FromString,
+                _registered_method=True)
+        self.DownloadStatement = channel.unary_unary(
+                '/accounting.AccountingService/DownloadStatement',
+                request_serializer=accounting_dot_accounting__pb2.DownloadStatementRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.XlsxFile.FromString,
+                _registered_method=True)
+        self.DownloadClosingPackage = channel.unary_unary(
+                '/accounting.AccountingService/DownloadClosingPackage',
+                request_serializer=accounting_dot_accounting__pb2.PeriodRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.XlsxFile.FromString,
+                _registered_method=True)
 
 
 class AccountingServiceServicer:
@@ -545,6 +570,36 @@ class AccountingServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def DownloadJournal(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DownloadTrialBalance(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DownloadAccountLedger(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DownloadStatement(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def DownloadClosingPackage(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AccountingServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -777,6 +832,31 @@ def add_AccountingServiceServicer_to_server(servicer, server):
                     servicer.SetAccountMapping,
                     request_deserializer=accounting_dot_accounting__pb2.SetAccountMappingRequest.FromString,
                     response_serializer=accounting_dot_accounting__pb2.AccountMapping.SerializeToString,
+            ),
+            'DownloadJournal': grpc.unary_unary_rpc_method_handler(
+                    servicer.DownloadJournal,
+                    request_deserializer=accounting_dot_accounting__pb2.DateRangeRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.XlsxFile.SerializeToString,
+            ),
+            'DownloadTrialBalance': grpc.unary_unary_rpc_method_handler(
+                    servicer.DownloadTrialBalance,
+                    request_deserializer=accounting_dot_accounting__pb2.DateRangeRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.XlsxFile.SerializeToString,
+            ),
+            'DownloadAccountLedger': grpc.unary_unary_rpc_method_handler(
+                    servicer.DownloadAccountLedger,
+                    request_deserializer=accounting_dot_accounting__pb2.GetAccountLedgerRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.XlsxFile.SerializeToString,
+            ),
+            'DownloadStatement': grpc.unary_unary_rpc_method_handler(
+                    servicer.DownloadStatement,
+                    request_deserializer=accounting_dot_accounting__pb2.DownloadStatementRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.XlsxFile.SerializeToString,
+            ),
+            'DownloadClosingPackage': grpc.unary_unary_rpc_method_handler(
+                    servicer.DownloadClosingPackage,
+                    request_deserializer=accounting_dot_accounting__pb2.PeriodRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.XlsxFile.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -2021,6 +2101,141 @@ class AccountingService:
             '/accounting.AccountingService/SetAccountMapping',
             accounting_dot_accounting__pb2.SetAccountMappingRequest.SerializeToString,
             accounting_dot_accounting__pb2.AccountMapping.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DownloadJournal(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/DownloadJournal',
+            accounting_dot_accounting__pb2.DateRangeRequest.SerializeToString,
+            accounting_dot_accounting__pb2.XlsxFile.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DownloadTrialBalance(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/DownloadTrialBalance',
+            accounting_dot_accounting__pb2.DateRangeRequest.SerializeToString,
+            accounting_dot_accounting__pb2.XlsxFile.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DownloadAccountLedger(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/DownloadAccountLedger',
+            accounting_dot_accounting__pb2.GetAccountLedgerRequest.SerializeToString,
+            accounting_dot_accounting__pb2.XlsxFile.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DownloadStatement(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/DownloadStatement',
+            accounting_dot_accounting__pb2.DownloadStatementRequest.SerializeToString,
+            accounting_dot_accounting__pb2.XlsxFile.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def DownloadClosingPackage(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/DownloadClosingPackage',
+            accounting_dot_accounting__pb2.PeriodRequest.SerializeToString,
+            accounting_dot_accounting__pb2.XlsxFile.FromString,
             options,
             channel_credentials,
             insecure,

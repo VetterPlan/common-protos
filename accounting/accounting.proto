@@ -59,6 +59,12 @@ service AccountingService {
   rpc GetPlatformImportStatus(Empty) returns (PlatformImportStatus);
   rpc ListAccountMappings(Empty) returns (ListAccountMappingsResponse);
   rpc SetAccountMapping(SetAccountMappingRequest) returns (AccountMapping);
+
+  rpc DownloadJournal(DateRangeRequest) returns (XlsxFile);
+  rpc DownloadTrialBalance(DateRangeRequest) returns (XlsxFile);
+  rpc DownloadAccountLedger(GetAccountLedgerRequest) returns (XlsxFile);
+  rpc DownloadStatement(DownloadStatementRequest) returns (XlsxFile);
+  rpc DownloadClosingPackage(PeriodRequest) returns (XlsxFile);
 }
 
 message Empty {}
@@ -659,4 +665,17 @@ message SetAccountMappingRequest {
   string account_code = 3;
   string effective_from = 4;
   string reason = 5;
+}
+
+message XlsxFile {
+  string filename = 1;
+  bytes content = 2;
+}
+
+message DownloadStatementRequest {
+  string report_code = 1;
+  string from_date = 2;
+  string to_date = 3;
+  string as_of = 4;
+  string cost_center_code = 5;
 }
