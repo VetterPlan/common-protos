@@ -100,6 +100,11 @@ service AccountingService {
   rpc SaveExportLayout(SaveExportLayoutRequest) returns (ExportLayout);
   rpc ExportForAccountant(ExportForAccountantRequest) returns (ExportFile);
   rpc ImportChartOfAccounts(ImportChartOfAccountsRequest) returns (ChartImportResult);
+
+  rpc SummarizeJournal(ListJournalEntriesRequest) returns (JournalSummary);
+  rpc GetPartyBalances(PartyBalancesRequest) returns (PartyBalancesResponse);
+  rpc GetAccountBalances(AccountBalancesRequest) returns (AccountBalancesResponse);
+  rpc GetCostAnalysis(CostAnalysisRequest) returns (CostAnalysis);
 }
 
 message Empty {}
@@ -422,6 +427,10 @@ message ListJournalEntriesRequest {
   bool missing_support_only = 6;
   int32 page_size = 7;
   string page_token = 8;
+  string source = 9;
+  string search = 10;
+  bool reversals_only = 11;
+  string cost_center_code = 12;
 }
 
 message ListJournalEntriesResponse {
@@ -435,6 +444,7 @@ message Period {
   string closed_at = 3;
   string closed_by = 4;
   string reason = 5;
+  int32 entry_count = 6;
 }
 
 message ListPeriodsRequest {
@@ -1250,4 +1260,118 @@ message ChartImportResult {
   repeated string matched = 3;
   repeated string different_name = 4;
   repeated string refused = 5;
+}
+
+message JournalDay {
+  string date = 1;
+  int32 entries = 2;
+  int32 manual_entries = 3;
+  int32 platform_entries = 4;
+  string inflow = 5;
+  string outflow = 6;
+  string platform_total = 7;
+}
+
+message JournalSummary {
+  int32 entries = 1;
+  int32 manual_entries = 2;
+  int32 platform_entries = 3;
+  int32 missing_support = 4;
+  int32 reversals = 5;
+  string inflow = 6;
+  string outflow = 7;
+  repeated JournalDay days = 8;
+}
+
+message PartyBalancesRequest {
+  string account_prefix = 1;
+  string as_of = 2;
+}
+
+message PartyBalance {
+  ThirdParty third_party = 1;
+  string balance = 2;
+}
+
+message PartyBalancesResponse {
+  repeated PartyBalance balances = 1;
+}
+
+message AccountBalancesRequest {
+  repeated string prefixes = 1;
+  string as_of = 2;
+}
+
+message AccountBalance {
+  string account_code = 1;
+  string account_name = 2;
+  string balance = 3;
+}
+
+message AccountBalancesResponse {
+  repeated AccountBalance balances = 1;
+}
+
+message CostAnalysisRequest {
+  string period = 1;
+  int32 months = 2;
+  string gateway_weight_alert = 3;
+}
+
+message GroupAmount {
+  string group = 1;
+  string amount = 2;
+}
+
+message CostMonth {
+  string period = 1;
+  repeated GroupAmount groups = 2;
+  string total = 3;
+}
+
+message SupplierCost {
+  ThirdParty third_party = 1;
+  string account_code = 2;
+  string account_name = 3;
+  int32 invoices = 4;
+  string month = 5;
+  string total = 6;
+  bool foreign = 7;
+}
+
+message SupplierMonthAmount {
+  string third_party_id = 1;
+  string account_code = 2;
+  string amount = 3;
+}
+
+message DuplicateExpense {
+  string supplier_name = 1;
+  int64 first_number = 2;
+  int64 second_number = 3;
+  string amount = 4;
+}
+
+message VisitCosts {
+  int32 visits = 1;
+  string revenue = 2;
+  string month_expenses = 3;
+  int32 visits_with_gateway_fee = 4;
+  string gateway_fee = 5;
+  string gateway_revenue = 6;
+  int32 heavy_visits = 7;
+  string heaviest_ceiling = 8;
+}
+
+message CostAnalysis {
+  repeated CostMonth months = 1;
+  repeated SupplierCost suppliers = 2;
+  repeated SupplierMonthAmount expenses_this_month = 3;
+  repeated DuplicateExpense duplicates = 4;
+  int32 unsupported_expenses = 5;
+  string unsupported_value = 6;
+  string foreign_month_value = 7;
+  string first_exchange_rate = 8;
+  string last_exchange_rate = 9;
+  VisitCosts visits = 10;
 }

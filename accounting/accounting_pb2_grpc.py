@@ -439,6 +439,26 @@ class AccountingServiceStub:
                 request_serializer=accounting_dot_accounting__pb2.ImportChartOfAccountsRequest.SerializeToString,
                 response_deserializer=accounting_dot_accounting__pb2.ChartImportResult.FromString,
                 _registered_method=True)
+        self.SummarizeJournal = channel.unary_unary(
+                '/accounting.AccountingService/SummarizeJournal',
+                request_serializer=accounting_dot_accounting__pb2.ListJournalEntriesRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.JournalSummary.FromString,
+                _registered_method=True)
+        self.GetPartyBalances = channel.unary_unary(
+                '/accounting.AccountingService/GetPartyBalances',
+                request_serializer=accounting_dot_accounting__pb2.PartyBalancesRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.PartyBalancesResponse.FromString,
+                _registered_method=True)
+        self.GetAccountBalances = channel.unary_unary(
+                '/accounting.AccountingService/GetAccountBalances',
+                request_serializer=accounting_dot_accounting__pb2.AccountBalancesRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.AccountBalancesResponse.FromString,
+                _registered_method=True)
+        self.GetCostAnalysis = channel.unary_unary(
+                '/accounting.AccountingService/GetCostAnalysis',
+                request_serializer=accounting_dot_accounting__pb2.CostAnalysisRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.CostAnalysis.FromString,
+                _registered_method=True)
 
 
 class AccountingServiceServicer:
@@ -930,6 +950,30 @@ class AccountingServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SummarizeJournal(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetPartyBalances(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetAccountBalances(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetCostAnalysis(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AccountingServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -1337,6 +1381,26 @@ def add_AccountingServiceServicer_to_server(servicer, server):
                     servicer.ImportChartOfAccounts,
                     request_deserializer=accounting_dot_accounting__pb2.ImportChartOfAccountsRequest.FromString,
                     response_serializer=accounting_dot_accounting__pb2.ChartImportResult.SerializeToString,
+            ),
+            'SummarizeJournal': grpc.unary_unary_rpc_method_handler(
+                    servicer.SummarizeJournal,
+                    request_deserializer=accounting_dot_accounting__pb2.ListJournalEntriesRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.JournalSummary.SerializeToString,
+            ),
+            'GetPartyBalances': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetPartyBalances,
+                    request_deserializer=accounting_dot_accounting__pb2.PartyBalancesRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.PartyBalancesResponse.SerializeToString,
+            ),
+            'GetAccountBalances': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetAccountBalances,
+                    request_deserializer=accounting_dot_accounting__pb2.AccountBalancesRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.AccountBalancesResponse.SerializeToString,
+            ),
+            'GetCostAnalysis': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetCostAnalysis,
+                    request_deserializer=accounting_dot_accounting__pb2.CostAnalysisRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.CostAnalysis.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -3526,6 +3590,114 @@ class AccountingService:
             '/accounting.AccountingService/ImportChartOfAccounts',
             accounting_dot_accounting__pb2.ImportChartOfAccountsRequest.SerializeToString,
             accounting_dot_accounting__pb2.ChartImportResult.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SummarizeJournal(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/SummarizeJournal',
+            accounting_dot_accounting__pb2.ListJournalEntriesRequest.SerializeToString,
+            accounting_dot_accounting__pb2.JournalSummary.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetPartyBalances(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/GetPartyBalances',
+            accounting_dot_accounting__pb2.PartyBalancesRequest.SerializeToString,
+            accounting_dot_accounting__pb2.PartyBalancesResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetAccountBalances(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/GetAccountBalances',
+            accounting_dot_accounting__pb2.AccountBalancesRequest.SerializeToString,
+            accounting_dot_accounting__pb2.AccountBalancesResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetCostAnalysis(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/GetCostAnalysis',
+            accounting_dot_accounting__pb2.CostAnalysisRequest.SerializeToString,
+            accounting_dot_accounting__pb2.CostAnalysis.FromString,
             options,
             channel_credentials,
             insecure,
