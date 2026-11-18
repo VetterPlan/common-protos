@@ -289,6 +289,36 @@ class AccountingServiceStub:
                 request_serializer=accounting_dot_accounting__pb2.PeriodRequest.SerializeToString,
                 response_deserializer=accounting_dot_accounting__pb2.XlsxFile.FromString,
                 _registered_method=True)
+        self.ListCostCenters = channel.unary_unary(
+                '/accounting.AccountingService/ListCostCenters',
+                request_serializer=accounting_dot_accounting__pb2.Empty.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.ListCostCentersResponse.FromString,
+                _registered_method=True)
+        self.UpsertCostCenter = channel.unary_unary(
+                '/accounting.AccountingService/UpsertCostCenter',
+                request_serializer=accounting_dot_accounting__pb2.UpsertCostCenterRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.CostCenter.FromString,
+                _registered_method=True)
+        self.ListVoucherTypes = channel.unary_unary(
+                '/accounting.AccountingService/ListVoucherTypes',
+                request_serializer=accounting_dot_accounting__pb2.Empty.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.ListVoucherTypesResponse.FromString,
+                _registered_method=True)
+        self.UpsertVoucherType = channel.unary_unary(
+                '/accounting.AccountingService/UpsertVoucherType',
+                request_serializer=accounting_dot_accounting__pb2.UpsertVoucherTypeRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.VoucherType.FromString,
+                _registered_method=True)
+        self.SetTemplateVoucherType = channel.unary_unary(
+                '/accounting.AccountingService/SetTemplateVoucherType',
+                request_serializer=accounting_dot_accounting__pb2.SetTemplateVoucherTypeRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.ListVoucherTypesResponse.FromString,
+                _registered_method=True)
+        self.SetAccountCostCenterRequirement = channel.unary_unary(
+                '/accounting.AccountingService/SetAccountCostCenterRequirement',
+                request_serializer=accounting_dot_accounting__pb2.SetAccountCostCenterRequirementRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.Account.FromString,
+                _registered_method=True)
 
 
 class AccountingServiceServicer:
@@ -600,6 +630,42 @@ class AccountingServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ListCostCenters(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def UpsertCostCenter(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ListVoucherTypes(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def UpsertVoucherType(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetTemplateVoucherType(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetAccountCostCenterRequirement(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AccountingServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -857,6 +923,36 @@ def add_AccountingServiceServicer_to_server(servicer, server):
                     servicer.DownloadClosingPackage,
                     request_deserializer=accounting_dot_accounting__pb2.PeriodRequest.FromString,
                     response_serializer=accounting_dot_accounting__pb2.XlsxFile.SerializeToString,
+            ),
+            'ListCostCenters': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListCostCenters,
+                    request_deserializer=accounting_dot_accounting__pb2.Empty.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.ListCostCentersResponse.SerializeToString,
+            ),
+            'UpsertCostCenter': grpc.unary_unary_rpc_method_handler(
+                    servicer.UpsertCostCenter,
+                    request_deserializer=accounting_dot_accounting__pb2.UpsertCostCenterRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.CostCenter.SerializeToString,
+            ),
+            'ListVoucherTypes': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListVoucherTypes,
+                    request_deserializer=accounting_dot_accounting__pb2.Empty.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.ListVoucherTypesResponse.SerializeToString,
+            ),
+            'UpsertVoucherType': grpc.unary_unary_rpc_method_handler(
+                    servicer.UpsertVoucherType,
+                    request_deserializer=accounting_dot_accounting__pb2.UpsertVoucherTypeRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.VoucherType.SerializeToString,
+            ),
+            'SetTemplateVoucherType': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetTemplateVoucherType,
+                    request_deserializer=accounting_dot_accounting__pb2.SetTemplateVoucherTypeRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.ListVoucherTypesResponse.SerializeToString,
+            ),
+            'SetAccountCostCenterRequirement': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetAccountCostCenterRequirement,
+                    request_deserializer=accounting_dot_accounting__pb2.SetAccountCostCenterRequirementRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.Account.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -2236,6 +2332,168 @@ class AccountingService:
             '/accounting.AccountingService/DownloadClosingPackage',
             accounting_dot_accounting__pb2.PeriodRequest.SerializeToString,
             accounting_dot_accounting__pb2.XlsxFile.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListCostCenters(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/ListCostCenters',
+            accounting_dot_accounting__pb2.Empty.SerializeToString,
+            accounting_dot_accounting__pb2.ListCostCentersResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def UpsertCostCenter(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/UpsertCostCenter',
+            accounting_dot_accounting__pb2.UpsertCostCenterRequest.SerializeToString,
+            accounting_dot_accounting__pb2.CostCenter.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListVoucherTypes(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/ListVoucherTypes',
+            accounting_dot_accounting__pb2.Empty.SerializeToString,
+            accounting_dot_accounting__pb2.ListVoucherTypesResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def UpsertVoucherType(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/UpsertVoucherType',
+            accounting_dot_accounting__pb2.UpsertVoucherTypeRequest.SerializeToString,
+            accounting_dot_accounting__pb2.VoucherType.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SetTemplateVoucherType(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/SetTemplateVoucherType',
+            accounting_dot_accounting__pb2.SetTemplateVoucherTypeRequest.SerializeToString,
+            accounting_dot_accounting__pb2.ListVoucherTypesResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SetAccountCostCenterRequirement(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/SetAccountCostCenterRequirement',
+            accounting_dot_accounting__pb2.SetAccountCostCenterRequirementRequest.SerializeToString,
+            accounting_dot_accounting__pb2.Account.FromString,
             options,
             channel_credentials,
             insecure,

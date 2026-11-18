@@ -65,6 +65,13 @@ service AccountingService {
   rpc DownloadAccountLedger(GetAccountLedgerRequest) returns (XlsxFile);
   rpc DownloadStatement(DownloadStatementRequest) returns (XlsxFile);
   rpc DownloadClosingPackage(PeriodRequest) returns (XlsxFile);
+
+  rpc ListCostCenters(Empty) returns (ListCostCentersResponse);
+  rpc UpsertCostCenter(UpsertCostCenterRequest) returns (CostCenter);
+  rpc ListVoucherTypes(Empty) returns (ListVoucherTypesResponse);
+  rpc UpsertVoucherType(UpsertVoucherTypeRequest) returns (VoucherType);
+  rpc SetTemplateVoucherType(SetTemplateVoucherTypeRequest) returns (ListVoucherTypesResponse);
+  rpc SetAccountCostCenterRequirement(SetAccountCostCenterRequirementRequest) returns (Account);
 }
 
 message Empty {}
@@ -109,6 +116,8 @@ message Account {
   bool postable = 5;
   int32 level = 6;
   string account_class = 7;
+  bool requires_cost_center = 8;
+  string requires_cost_center_from = 9;
 }
 
 message ListAccountsRequest {
@@ -133,6 +142,13 @@ message ThirdParty {
   string document_number = 3;
   string name = 4;
   string last_expense_account_code = 5;
+  string person_type = 6;
+  string address = 7;
+  string municipality_code = 8;
+  string email = 9;
+  string phone = 10;
+  string fiscal_responsibilities = 11;
+  string verification_digit = 12;
 }
 
 message ListThirdPartiesRequest {
@@ -148,6 +164,12 @@ message UpsertThirdPartyRequest {
   string document_type = 2;
   string document_number = 3;
   string name = 4;
+  string person_type = 5;
+  string address = 6;
+  string municipality_code = 7;
+  string email = 8;
+  string phone = 9;
+  string fiscal_responsibilities = 10;
 }
 
 message Partner {
@@ -243,6 +265,7 @@ message RecordExpenseRequest {
   string description = 14;
   string recurring_expense_id = 15;
   ForeignCurrency foreign_currency = 16;
+  string cost_center_code = 17;
 }
 
 message RecordSupplierPaymentRequest {
@@ -296,6 +319,7 @@ message RecordDebtPaymentRequest {
   string interest_amount = 6;
   string bank_account_code = 7;
   string description = 8;
+  string cost_center_code = 9;
 }
 
 message ManualLine {
@@ -304,6 +328,7 @@ message ManualLine {
   string credit = 3;
   string third_party_id = 4;
   string description = 5;
+  string cost_center_code = 6;
 }
 
 message PostManualEntryRequest {
@@ -332,6 +357,7 @@ message JournalLine {
   string credit = 5;
   ThirdParty third_party = 6;
   string description = 7;
+  string cost_center_code = 8;
 }
 
 message JournalEntry {
@@ -350,6 +376,8 @@ message JournalEntry {
   repeated Attachment attachments = 13;
   string total = 14;
   ForeignCurrency foreign_currency = 15;
+  string voucher_type = 16;
+  int64 voucher_number = 17;
 }
 
 message GetJournalEntryRequest {
@@ -653,6 +681,7 @@ message AccountMapping {
   string actor_user_id = 7;
   string created_at = 8;
   bool current = 9;
+  string cost_center_code = 10;
 }
 
 message ListAccountMappingsResponse {
@@ -665,6 +694,7 @@ message SetAccountMappingRequest {
   string account_code = 3;
   string effective_from = 4;
   string reason = 5;
+  string cost_center_code = 6;
 }
 
 message XlsxFile {
@@ -678,4 +708,55 @@ message DownloadStatementRequest {
   string to_date = 3;
   string as_of = 4;
   string cost_center_code = 5;
+}
+
+message CostCenter {
+  string code = 1;
+  string name = 2;
+  string siigo_code = 3;
+  bool active = 4;
+}
+
+message ListCostCentersResponse {
+  repeated CostCenter cost_centers = 1;
+}
+
+message UpsertCostCenterRequest {
+  string actor_user_id = 1;
+  string code = 2;
+  string name = 3;
+  string siigo_code = 4;
+  bool active = 5;
+}
+
+message VoucherType {
+  string code = 1;
+  string name = 2;
+  string siigo_code = 3;
+  int64 next_number = 4;
+  repeated string templates = 5;
+}
+
+message ListVoucherTypesResponse {
+  repeated VoucherType voucher_types = 1;
+}
+
+message UpsertVoucherTypeRequest {
+  string actor_user_id = 1;
+  string code = 2;
+  string name = 3;
+  string siigo_code = 4;
+}
+
+message SetTemplateVoucherTypeRequest {
+  string actor_user_id = 1;
+  string template = 2;
+  string voucher_type = 3;
+}
+
+message SetAccountCostCenterRequirementRequest {
+  string actor_user_id = 1;
+  string account_code = 2;
+  bool required = 3;
+  string effective_from = 4;
 }
