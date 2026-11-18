@@ -105,6 +105,7 @@ service AccountingService {
   rpc GetPartyBalances(PartyBalancesRequest) returns (PartyBalancesResponse);
   rpc GetAccountBalances(AccountBalancesRequest) returns (AccountBalancesResponse);
   rpc GetCostAnalysis(CostAnalysisRequest) returns (CostAnalysis);
+  rpc GetCashHistory(CashHistoryRequest) returns (CashHistory);
 }
 
 message Empty {}
@@ -1375,4 +1376,17 @@ message CostAnalysis {
   string first_exchange_rate = 8;
   string last_exchange_rate = 9;
   VisitCosts visits = 10;
+}
+
+message CashHistoryRequest {
+  int32 months = 1;
+}
+
+message CashMonth {
+  string period = 1;
+  string closing_cash = 2;
+}
+
+message CashHistory {
+  repeated CashMonth months = 1;
 }

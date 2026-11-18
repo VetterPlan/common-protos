@@ -459,6 +459,11 @@ class AccountingServiceStub:
                 request_serializer=accounting_dot_accounting__pb2.CostAnalysisRequest.SerializeToString,
                 response_deserializer=accounting_dot_accounting__pb2.CostAnalysis.FromString,
                 _registered_method=True)
+        self.GetCashHistory = channel.unary_unary(
+                '/accounting.AccountingService/GetCashHistory',
+                request_serializer=accounting_dot_accounting__pb2.CashHistoryRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.CashHistory.FromString,
+                _registered_method=True)
 
 
 class AccountingServiceServicer:
@@ -974,6 +979,12 @@ class AccountingServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetCashHistory(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AccountingServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -1401,6 +1412,11 @@ def add_AccountingServiceServicer_to_server(servicer, server):
                     servicer.GetCostAnalysis,
                     request_deserializer=accounting_dot_accounting__pb2.CostAnalysisRequest.FromString,
                     response_serializer=accounting_dot_accounting__pb2.CostAnalysis.SerializeToString,
+            ),
+            'GetCashHistory': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetCashHistory,
+                    request_deserializer=accounting_dot_accounting__pb2.CashHistoryRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.CashHistory.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -3698,6 +3714,33 @@ class AccountingService:
             '/accounting.AccountingService/GetCostAnalysis',
             accounting_dot_accounting__pb2.CostAnalysisRequest.SerializeToString,
             accounting_dot_accounting__pb2.CostAnalysis.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetCashHistory(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/GetCashHistory',
+            accounting_dot_accounting__pb2.CashHistoryRequest.SerializeToString,
+            accounting_dot_accounting__pb2.CashHistory.FromString,
             options,
             channel_credentials,
             insecure,
