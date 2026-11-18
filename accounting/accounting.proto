@@ -79,6 +79,9 @@ service AccountingService {
   rpc RunReport(RunReportRequest) returns (ReportResult);
   rpc GetGroupedTrialBalance(GroupedTrialBalanceRequest) returns (GroupedTrialBalance);
   rpc DownloadGroupedTrialBalance(GroupedTrialBalanceRequest) returns (XlsxFile);
+
+  rpc ListPayrollParameterSets(Empty) returns (ListPayrollParameterSetsResponse);
+  rpc CreatePayrollParameterSet(CreatePayrollParameterSetRequest) returns (PayrollParameterSet);
 }
 
 message Empty {}
@@ -862,4 +865,38 @@ message GroupedTrialBalance {
   string to_date = 2;
   string group_by = 3;
   repeated GroupedTrialBalanceRow rows = 4;
+}
+
+message NamedValue {
+  string name = 1;
+  string value = 2;
+}
+
+message PayrollFspBracket {
+  string from_wages = 1;
+  string rate = 2;
+}
+
+message PayrollParameterSet {
+  string id = 1;
+  string effective_from = 2;
+  repeated NamedValue values = 3;
+  int32 weekly_hours = 4;
+  repeated PayrollFspBracket brackets = 5;
+  string reason = 6;
+  string created_by = 7;
+  string created_at = 8;
+}
+
+message ListPayrollParameterSetsResponse {
+  repeated PayrollParameterSet parameter_sets = 1;
+}
+
+message CreatePayrollParameterSetRequest {
+  string actor_user_id = 1;
+  string effective_from = 2;
+  repeated NamedValue values = 3;
+  int32 weekly_hours = 4;
+  repeated PayrollFspBracket brackets = 5;
+  string reason = 6;
 }

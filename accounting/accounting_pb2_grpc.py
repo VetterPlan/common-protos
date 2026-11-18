@@ -349,6 +349,16 @@ class AccountingServiceStub:
                 request_serializer=accounting_dot_accounting__pb2.GroupedTrialBalanceRequest.SerializeToString,
                 response_deserializer=accounting_dot_accounting__pb2.XlsxFile.FromString,
                 _registered_method=True)
+        self.ListPayrollParameterSets = channel.unary_unary(
+                '/accounting.AccountingService/ListPayrollParameterSets',
+                request_serializer=accounting_dot_accounting__pb2.Empty.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.ListPayrollParameterSetsResponse.FromString,
+                _registered_method=True)
+        self.CreatePayrollParameterSet = channel.unary_unary(
+                '/accounting.AccountingService/CreatePayrollParameterSet',
+                request_serializer=accounting_dot_accounting__pb2.CreatePayrollParameterSetRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.PayrollParameterSet.FromString,
+                _registered_method=True)
 
 
 class AccountingServiceServicer:
@@ -732,6 +742,18 @@ class AccountingServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ListPayrollParameterSets(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def CreatePayrollParameterSet(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AccountingServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -1049,6 +1071,16 @@ def add_AccountingServiceServicer_to_server(servicer, server):
                     servicer.DownloadGroupedTrialBalance,
                     request_deserializer=accounting_dot_accounting__pb2.GroupedTrialBalanceRequest.FromString,
                     response_serializer=accounting_dot_accounting__pb2.XlsxFile.SerializeToString,
+            ),
+            'ListPayrollParameterSets': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListPayrollParameterSets,
+                    request_deserializer=accounting_dot_accounting__pb2.Empty.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.ListPayrollParameterSetsResponse.SerializeToString,
+            ),
+            'CreatePayrollParameterSet': grpc.unary_unary_rpc_method_handler(
+                    servicer.CreatePayrollParameterSet,
+                    request_deserializer=accounting_dot_accounting__pb2.CreatePayrollParameterSetRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.PayrollParameterSet.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -2752,6 +2784,60 @@ class AccountingService:
             '/accounting.AccountingService/DownloadGroupedTrialBalance',
             accounting_dot_accounting__pb2.GroupedTrialBalanceRequest.SerializeToString,
             accounting_dot_accounting__pb2.XlsxFile.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListPayrollParameterSets(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/ListPayrollParameterSets',
+            accounting_dot_accounting__pb2.Empty.SerializeToString,
+            accounting_dot_accounting__pb2.ListPayrollParameterSetsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CreatePayrollParameterSet(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/CreatePayrollParameterSet',
+            accounting_dot_accounting__pb2.CreatePayrollParameterSetRequest.SerializeToString,
+            accounting_dot_accounting__pb2.PayrollParameterSet.FromString,
             options,
             channel_credentials,
             insecure,
