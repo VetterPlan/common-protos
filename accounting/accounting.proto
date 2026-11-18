@@ -95,6 +95,11 @@ service AccountingService {
   rpc ComputeBudgetScenario(BudgetScenarioRequest) returns (BudgetComputation);
   rpc CompareBudgetScenarios(CompareBudgetScenariosRequest) returns (CompareBudgetScenariosResponse);
   rpc GetBudgetVsActual(BudgetScenarioRequest) returns (BudgetVsActual);
+
+  rpc ListExportLayouts(Empty) returns (ListExportLayoutsResponse);
+  rpc SaveExportLayout(SaveExportLayoutRequest) returns (ExportLayout);
+  rpc ExportForAccountant(ExportForAccountantRequest) returns (ExportFile);
+  rpc ImportChartOfAccounts(ImportChartOfAccountsRequest) returns (ChartImportResult);
 }
 
 message Empty {}
@@ -141,6 +146,7 @@ message Account {
   string account_class = 7;
   bool requires_cost_center = 8;
   string requires_cost_center_from = 9;
+  string external_code = 10;
 }
 
 message ListAccountsRequest {
@@ -1181,4 +1187,67 @@ message BudgetVsActual {
   repeated BudgetVsActualRow rows = 2;
   bool confirmation_met = 3;
   string confirmation_message = 4;
+}
+
+message ExportLayoutColumn {
+  string header = 1;
+  string source = 2;
+  string fixed_value = 3;
+}
+
+message ExportLayout {
+  string id = 1;
+  string code = 2;
+  string name = 3;
+  string format = 4;
+  string delimiter = 5;
+  string date_format = 6;
+  string decimal_separator = 7;
+  repeated ExportLayoutColumn columns = 8;
+  string effective_from = 9;
+  string created_by = 10;
+  string created_at = 11;
+}
+
+message ListExportLayoutsResponse {
+  repeated ExportLayout layouts = 1;
+  repeated string sources = 2;
+}
+
+message SaveExportLayoutRequest {
+  string actor_user_id = 1;
+  string code = 2;
+  string name = 3;
+  string format = 4;
+  string delimiter = 5;
+  string date_format = 6;
+  string decimal_separator = 7;
+  repeated ExportLayoutColumn columns = 8;
+  string effective_from = 9;
+}
+
+message ExportForAccountantRequest {
+  string layout_code = 1;
+  string from_date = 2;
+  string to_date = 3;
+}
+
+message ExportFile {
+  string filename = 1;
+  bytes content = 2;
+  string content_type = 3;
+}
+
+message ImportChartOfAccountsRequest {
+  string actor_user_id = 1;
+  string content = 2;
+  bool apply = 3;
+}
+
+message ChartImportResult {
+  bool applied = 1;
+  repeated string created = 2;
+  repeated string matched = 3;
+  repeated string different_name = 4;
+  repeated string refused = 5;
 }

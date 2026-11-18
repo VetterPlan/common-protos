@@ -419,6 +419,26 @@ class AccountingServiceStub:
                 request_serializer=accounting_dot_accounting__pb2.BudgetScenarioRequest.SerializeToString,
                 response_deserializer=accounting_dot_accounting__pb2.BudgetVsActual.FromString,
                 _registered_method=True)
+        self.ListExportLayouts = channel.unary_unary(
+                '/accounting.AccountingService/ListExportLayouts',
+                request_serializer=accounting_dot_accounting__pb2.Empty.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.ListExportLayoutsResponse.FromString,
+                _registered_method=True)
+        self.SaveExportLayout = channel.unary_unary(
+                '/accounting.AccountingService/SaveExportLayout',
+                request_serializer=accounting_dot_accounting__pb2.SaveExportLayoutRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.ExportLayout.FromString,
+                _registered_method=True)
+        self.ExportForAccountant = channel.unary_unary(
+                '/accounting.AccountingService/ExportForAccountant',
+                request_serializer=accounting_dot_accounting__pb2.ExportForAccountantRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.ExportFile.FromString,
+                _registered_method=True)
+        self.ImportChartOfAccounts = channel.unary_unary(
+                '/accounting.AccountingService/ImportChartOfAccounts',
+                request_serializer=accounting_dot_accounting__pb2.ImportChartOfAccountsRequest.SerializeToString,
+                response_deserializer=accounting_dot_accounting__pb2.ChartImportResult.FromString,
+                _registered_method=True)
 
 
 class AccountingServiceServicer:
@@ -886,6 +906,30 @@ class AccountingServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def ListExportLayouts(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SaveExportLayout(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ExportForAccountant(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ImportChartOfAccounts(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AccountingServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -1273,6 +1317,26 @@ def add_AccountingServiceServicer_to_server(servicer, server):
                     servicer.GetBudgetVsActual,
                     request_deserializer=accounting_dot_accounting__pb2.BudgetScenarioRequest.FromString,
                     response_serializer=accounting_dot_accounting__pb2.BudgetVsActual.SerializeToString,
+            ),
+            'ListExportLayouts': grpc.unary_unary_rpc_method_handler(
+                    servicer.ListExportLayouts,
+                    request_deserializer=accounting_dot_accounting__pb2.Empty.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.ListExportLayoutsResponse.SerializeToString,
+            ),
+            'SaveExportLayout': grpc.unary_unary_rpc_method_handler(
+                    servicer.SaveExportLayout,
+                    request_deserializer=accounting_dot_accounting__pb2.SaveExportLayoutRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.ExportLayout.SerializeToString,
+            ),
+            'ExportForAccountant': grpc.unary_unary_rpc_method_handler(
+                    servicer.ExportForAccountant,
+                    request_deserializer=accounting_dot_accounting__pb2.ExportForAccountantRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.ExportFile.SerializeToString,
+            ),
+            'ImportChartOfAccounts': grpc.unary_unary_rpc_method_handler(
+                    servicer.ImportChartOfAccounts,
+                    request_deserializer=accounting_dot_accounting__pb2.ImportChartOfAccountsRequest.FromString,
+                    response_serializer=accounting_dot_accounting__pb2.ChartImportResult.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -3354,6 +3418,114 @@ class AccountingService:
             '/accounting.AccountingService/GetBudgetVsActual',
             accounting_dot_accounting__pb2.BudgetScenarioRequest.SerializeToString,
             accounting_dot_accounting__pb2.BudgetVsActual.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ListExportLayouts(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/ListExportLayouts',
+            accounting_dot_accounting__pb2.Empty.SerializeToString,
+            accounting_dot_accounting__pb2.ListExportLayoutsResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SaveExportLayout(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/SaveExportLayout',
+            accounting_dot_accounting__pb2.SaveExportLayoutRequest.SerializeToString,
+            accounting_dot_accounting__pb2.ExportLayout.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ExportForAccountant(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/ExportForAccountant',
+            accounting_dot_accounting__pb2.ExportForAccountantRequest.SerializeToString,
+            accounting_dot_accounting__pb2.ExportFile.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ImportChartOfAccounts(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/accounting.AccountingService/ImportChartOfAccounts',
+            accounting_dot_accounting__pb2.ImportChartOfAccountsRequest.SerializeToString,
+            accounting_dot_accounting__pb2.ChartImportResult.FromString,
             options,
             channel_credentials,
             insecure,
