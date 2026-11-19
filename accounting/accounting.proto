@@ -984,6 +984,9 @@ message BudgetPosition {
   string daytime_overtime_hours = 9;
   string sunday_hours = 10;
   string non_salary_pay = 11;
+  string raise_mode = 12;
+  string annual_raise_percent = 13;
+  string wage_multiple = 14;
 }
 
 message BudgetFounder {
@@ -1036,6 +1039,7 @@ message BudgetScenario {
   repeated BudgetPosition positions = 24;
   repeated BudgetFounder founders = 25;
   repeated BudgetOverride overrides = 26;
+  string assumed_minimum_wage_increase_percent = 27;
 }
 
 message ListBudgetScenariosResponse {
@@ -1074,6 +1078,7 @@ message UpdateBudgetScenarioRequest {
   string usd_rate = 14;
   string gateway_rate = 15;
   string gateway_fixed_fee = 16;
+  string assumed_minimum_wage_increase_percent = 17;
 }
 
 message UpsertBudgetLineRequest {
@@ -1398,6 +1403,10 @@ message PreviewPositionCostRequest {
   string contract = 3;
   string monthly_amount = 4;
   int32 arl_class = 5;
+  string start_period = 6;
+  string raise_mode = 7;
+  string annual_raise_percent = 8;
+  string wage_multiple = 9;
 }
 
 message PositionCostPreview {
@@ -1407,4 +1416,5 @@ message PositionCostPreview {
   string contribution_base = 4;
   repeated NamedValue concepts = 5;
   repeated string notes = 6;
+  string monthly_amount = 7;
 }
