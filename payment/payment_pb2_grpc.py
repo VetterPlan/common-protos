@@ -138,6 +138,21 @@ class PaymentServiceStub:
                 request_serializer=payment_dot_payment__pb2.ConfirmRefundDeliveredRequest.SerializeToString,
                 response_deserializer=payment_dot_payment__pb2.RefundResponse.FromString,
                 _registered_method=True)
+        self.ReportRefundUndeliverable = channel.unary_unary(
+                '/payment.PaymentService/ReportRefundUndeliverable',
+                request_serializer=payment_dot_payment__pb2.ReportRefundUndeliverableRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.RefundResponse.FromString,
+                _registered_method=True)
+        self.GetFailedRefundCredit = channel.unary_unary(
+                '/payment.PaymentService/GetFailedRefundCredit',
+                request_serializer=payment_dot_payment__pb2.GetFailedRefundCreditRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.FailedRefundCreditResponse.FromString,
+                _registered_method=True)
+        self.AbandonFailedRefundCredit = channel.unary_unary(
+                '/payment.PaymentService/AbandonFailedRefundCredit',
+                request_serializer=payment_dot_payment__pb2.AbandonFailedRefundCreditRequest.SerializeToString,
+                response_deserializer=payment_dot_payment__pb2.FailedRefundCreditResponse.FromString,
+                _registered_method=True)
         self.GetClientCollectionStatus = channel.unary_unary(
                 '/payment.PaymentService/GetClientCollectionStatus',
                 request_serializer=payment_dot_payment__pb2.GetClientCollectionStatusRequest.SerializeToString,
@@ -575,6 +590,24 @@ class PaymentServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def ConfirmRefundDelivered(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ReportRefundUndeliverable(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetFailedRefundCredit(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def AbandonFailedRefundCredit(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -1070,6 +1103,21 @@ def add_PaymentServiceServicer_to_server(servicer, server):
                     servicer.ConfirmRefundDelivered,
                     request_deserializer=payment_dot_payment__pb2.ConfirmRefundDeliveredRequest.FromString,
                     response_serializer=payment_dot_payment__pb2.RefundResponse.SerializeToString,
+            ),
+            'ReportRefundUndeliverable': grpc.unary_unary_rpc_method_handler(
+                    servicer.ReportRefundUndeliverable,
+                    request_deserializer=payment_dot_payment__pb2.ReportRefundUndeliverableRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.RefundResponse.SerializeToString,
+            ),
+            'GetFailedRefundCredit': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetFailedRefundCredit,
+                    request_deserializer=payment_dot_payment__pb2.GetFailedRefundCreditRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.FailedRefundCreditResponse.SerializeToString,
+            ),
+            'AbandonFailedRefundCredit': grpc.unary_unary_rpc_method_handler(
+                    servicer.AbandonFailedRefundCredit,
+                    request_deserializer=payment_dot_payment__pb2.AbandonFailedRefundCreditRequest.FromString,
+                    response_serializer=payment_dot_payment__pb2.FailedRefundCreditResponse.SerializeToString,
             ),
             'GetClientCollectionStatus': grpc.unary_unary_rpc_method_handler(
                     servicer.GetClientCollectionStatus,
@@ -1887,6 +1935,87 @@ class PaymentService:
             '/payment.PaymentService/ConfirmRefundDelivered',
             payment_dot_payment__pb2.ConfirmRefundDeliveredRequest.SerializeToString,
             payment_dot_payment__pb2.RefundResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ReportRefundUndeliverable(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/ReportRefundUndeliverable',
+            payment_dot_payment__pb2.ReportRefundUndeliverableRequest.SerializeToString,
+            payment_dot_payment__pb2.RefundResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetFailedRefundCredit(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/GetFailedRefundCredit',
+            payment_dot_payment__pb2.GetFailedRefundCreditRequest.SerializeToString,
+            payment_dot_payment__pb2.FailedRefundCreditResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def AbandonFailedRefundCredit(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/payment.PaymentService/AbandonFailedRefundCredit',
+            payment_dot_payment__pb2.AbandonFailedRefundCreditRequest.SerializeToString,
+            payment_dot_payment__pb2.FailedRefundCreditResponse.FromString,
             options,
             channel_credentials,
             insecure,

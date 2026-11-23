@@ -38,6 +38,9 @@ service PaymentService {
   rpc GetRefundsByClient (GetRefundsByClientRequest) returns (RefundsResponse);
   rpc ListRefundsAwaitingDelivery (ListRefundsAwaitingDeliveryRequest) returns (RefundsResponse);
   rpc ConfirmRefundDelivered (ConfirmRefundDeliveredRequest) returns (RefundResponse);
+  rpc ReportRefundUndeliverable (ReportRefundUndeliverableRequest) returns (RefundResponse);
+  rpc GetFailedRefundCredit (GetFailedRefundCreditRequest) returns (FailedRefundCreditResponse);
+  rpc AbandonFailedRefundCredit (AbandonFailedRefundCreditRequest) returns (FailedRefundCreditResponse);
   rpc GetClientCollectionStatus (GetClientCollectionStatusRequest) returns (GetClientCollectionStatusResponse);
   rpc ListFailedCollections (ListFailedCollectionsRequest) returns (ListFailedCollectionsResponse);
   rpc ListPayments (ListPaymentsRequest) returns (ListPaymentsResponse);
@@ -569,6 +572,28 @@ message ConfirmRefundDeliveredRequest {
   string refund_id = 1;
   string delivery_reference = 2;
   string actor_user_id = 3;
+}
+
+message ReportRefundUndeliverableRequest {
+  string refund_id = 1;
+  string reason = 2;
+  string actor_user_id = 3;
+}
+
+message GetFailedRefundCreditRequest {
+  string payment_id = 1;
+}
+
+message AbandonFailedRefundCreditRequest {
+  string payment_id = 1;
+  string reason = 2;
+  string actor_user_id = 3;
+}
+
+message FailedRefundCreditResponse {
+  string payment_id = 1;
+  double credit_left = 2;
+  string debit_note_id = 3;
 }
 
 message ChargeNoShowFeeRequest {
