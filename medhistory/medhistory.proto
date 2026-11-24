@@ -1249,6 +1249,7 @@ message ListVaccineReactionReportsRequest {
   bool pending_ica_only = 1;
   int32 limit = 2;
   AccessContext access = 3;
+  string appointment_id = 4;
 }
 
 message ListVaccineReactionReportsResponse {

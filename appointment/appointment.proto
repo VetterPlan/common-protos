@@ -323,6 +323,7 @@ message Appointment {
   string vaccine_total = 52;
   bool vaccines_decision_pending = 53;
   string proposed_vaccine_total = 54;
+  VaccinesDecision vaccines_decision = 55;
 }
 
 message DeclareVaccinesNotBroughtRequest {
@@ -361,6 +362,12 @@ message CountConfirmedVaccineAppointmentsRequest {
 
 message ConfirmedVaccineAppointmentCount {
   string vaccine_type = 1;
+  int32 appointments = 2;
+  repeated FrozenVaccinePriceCount frozen_prices = 3;
+}
+
+message FrozenVaccinePriceCount {
+  string price = 1;
   int32 appointments = 2;
 }
 
@@ -643,6 +650,7 @@ message GetAppointmentRequest {
   string appointment_id = 1;
   bool include_status_history = 2;
   repeated string requester_profile_ids = 3;
+  bool include_group = 4;
 }
 
 message GetClientAppointmentsRequest {
