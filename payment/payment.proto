@@ -979,6 +979,8 @@ message VetTaxProfile {
   repeated string missing_to_invoice = 32;
   repeated string rut_activity_codes = 33;
   bool has_veterinary_activity = 34;
+  google.protobuf.Timestamp review_due_by = 35;
+  bool review_overdue = 36;
 }
 
 message SetVetTaxProfileRequest {
