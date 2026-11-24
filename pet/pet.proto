@@ -255,6 +255,7 @@ message Pet {
   int32 prefilled_field_count = 31;
   IdentityConfirmation identity_confirmation = 32;
   google.protobuf.Timestamp declared_weight_at = 33;
+  google.protobuf.Timestamp weight_measured_at = 34;
 }
 
 message IdentityConfirmation {

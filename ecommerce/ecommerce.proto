@@ -423,6 +423,7 @@ message CreateHomeOrderRequest {
   string signs_of_illness = 6;
   bool skip_balance = 7;
   int32 alarm_question_version = 8;
+  string idempotency_key = 9;
 }
 
 message GetOrderRequest {
