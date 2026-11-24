@@ -936,6 +936,7 @@ message BookableVaccineDose {
   int32 dose_number = 3;
   int32 dose_total = 4;
   string due_date = 5;
+  string bookable_from = 6;
 }
 
 enum VaccinationEligibility {
@@ -1142,6 +1143,7 @@ message AppliedVaccineEntry {
   bool applied = 2;
   string lot = 3;
   string not_applied_reason = 4;
+  repeated string missing_fields = 5;
 }
 
 message GetAppliedVaccinesResponse {
@@ -1179,6 +1181,7 @@ message VaccinationCalendarDose {
   string given_lot = 13;
   string given_by_vet_profile_id = 14;
   bool bookable = 15;
+  string bookable_from = 16;
 }
 
 enum RecommendedTestStatus {
@@ -1384,6 +1387,7 @@ message ValidationIssue {
   string block_key = 1;
   string field_path = 2;
   string message = 3;
+  string code = 4;
 }
 
 message FinalizeConsultationRecordResponse {
