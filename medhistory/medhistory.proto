@@ -1318,6 +1318,7 @@ message StartConsultationRecordRequest {
   string breed_name = 12;
   string breed_size = 13;
   IntakeReason intake_reason = 14;
+  repeated string planned_vaccine_codes = 15;
 }
 
 message ConsultationRecordResponse {

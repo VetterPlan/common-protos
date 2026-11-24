@@ -381,6 +381,7 @@ message AppointmentVaccineLine {
   string not_applied_reason = 9;
   string replaces_line_id = 10;
   string pet_id = 11;
+  repeated string record_codes = 12;
 }
 
 enum NoShowFeeOutcome {

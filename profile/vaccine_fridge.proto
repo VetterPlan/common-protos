@@ -61,6 +61,7 @@ message SetVaccineOfferRequest {
   string vaccine_type = 2;
   string price = 3;
   bool paused = 4;
+  bool keep_pause = 5;
 }
 
 message RemoveVaccineOfferRequest {
