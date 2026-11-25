@@ -70,6 +70,8 @@ service MedHistoryService {
   rpc GetAppliedVaccines (GetAppliedVaccinesRequest) returns (GetAppliedVaccinesResponse);
   rpc SetVaccinationReminders (SetVaccinationRemindersRequest) returns (SetVaccinationRemindersResponse);
   rpc GetMutedVaccinationReminders (GetMutedVaccinationRemindersRequest) returns (GetMutedVaccinationRemindersResponse);
+  rpc SetDewormingReminders (SetDewormingRemindersRequest) returns (SetDewormingRemindersResponse);
+  rpc GetMutedDewormingReminders (GetMutedVaccinationRemindersRequest) returns (GetMutedVaccinationRemindersResponse);
   rpc ReportVaccineReaction (ReportVaccineReactionRequest) returns (VaccineReactionReport);
   rpc ListVaccineReactionReports (ListVaccineReactionReportsRequest) returns (ListVaccineReactionReportsResponse);
   rpc MarkVaccineReactionReportedToIca (MarkVaccineReactionReportedToIcaRequest) returns (VaccineReactionReport);
@@ -1132,6 +1134,7 @@ message DewormingCalendarResponse {
   string as_of = 3;
   repeated DewormingPlanLine lines = 4;
   string planned_by_vet_profile_id = 5;
+  bool reminders_enabled = 6;
 }
 
 message GetAppliedVaccinesRequest {
@@ -1277,6 +1280,16 @@ message SetVaccinationRemindersRequest {
 }
 
 message SetVaccinationRemindersResponse {
+  bool enabled = 1;
+}
+
+message SetDewormingRemindersRequest {
+  string pet_id = 1;
+  bool enabled = 2;
+  AccessContext access = 3;
+}
+
+message SetDewormingRemindersResponse {
   bool enabled = 1;
 }
 

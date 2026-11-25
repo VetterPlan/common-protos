@@ -125,6 +125,16 @@ class MedHistoryServiceStub:
                 request_serializer=medhistory_dot_medhistory__pb2.GetMutedVaccinationRemindersRequest.SerializeToString,
                 response_deserializer=medhistory_dot_medhistory__pb2.GetMutedVaccinationRemindersResponse.FromString,
                 _registered_method=True)
+        self.SetDewormingReminders = channel.unary_unary(
+                '/medhistory.MedHistoryService/SetDewormingReminders',
+                request_serializer=medhistory_dot_medhistory__pb2.SetDewormingRemindersRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.SetDewormingRemindersResponse.FromString,
+                _registered_method=True)
+        self.GetMutedDewormingReminders = channel.unary_unary(
+                '/medhistory.MedHistoryService/GetMutedDewormingReminders',
+                request_serializer=medhistory_dot_medhistory__pb2.GetMutedVaccinationRemindersRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.GetMutedVaccinationRemindersResponse.FromString,
+                _registered_method=True)
         self.ReportVaccineReaction = channel.unary_unary(
                 '/medhistory.MedHistoryService/ReportVaccineReaction',
                 request_serializer=medhistory_dot_medhistory__pb2.ReportVaccineReactionRequest.SerializeToString,
@@ -488,6 +498,18 @@ class MedHistoryServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def GetMutedVaccinationReminders(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetDewormingReminders(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetMutedDewormingReminders(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -942,6 +964,16 @@ def add_MedHistoryServiceServicer_to_server(servicer, server):
             ),
             'GetMutedVaccinationReminders': grpc.unary_unary_rpc_method_handler(
                     servicer.GetMutedVaccinationReminders,
+                    request_deserializer=medhistory_dot_medhistory__pb2.GetMutedVaccinationRemindersRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.GetMutedVaccinationRemindersResponse.SerializeToString,
+            ),
+            'SetDewormingReminders': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetDewormingReminders,
+                    request_deserializer=medhistory_dot_medhistory__pb2.SetDewormingRemindersRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.SetDewormingRemindersResponse.SerializeToString,
+            ),
+            'GetMutedDewormingReminders': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetMutedDewormingReminders,
                     request_deserializer=medhistory_dot_medhistory__pb2.GetMutedVaccinationRemindersRequest.FromString,
                     response_serializer=medhistory_dot_medhistory__pb2.GetMutedVaccinationRemindersResponse.SerializeToString,
             ),
@@ -1578,6 +1610,60 @@ class MedHistoryService:
             request,
             target,
             '/medhistory.MedHistoryService/GetMutedVaccinationReminders',
+            medhistory_dot_medhistory__pb2.GetMutedVaccinationRemindersRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.GetMutedVaccinationRemindersResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SetDewormingReminders(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/SetDewormingReminders',
+            medhistory_dot_medhistory__pb2.SetDewormingRemindersRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.SetDewormingRemindersResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetMutedDewormingReminders(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/GetMutedDewormingReminders',
             medhistory_dot_medhistory__pb2.GetMutedVaccinationRemindersRequest.SerializeToString,
             medhistory_dot_medhistory__pb2.GetMutedVaccinationRemindersResponse.FromString,
             options,
