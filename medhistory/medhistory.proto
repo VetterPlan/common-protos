@@ -663,6 +663,7 @@ message ConsultationRecord {
   LifeStage life_stage = 40;
   google.protobuf.Timestamp passport_valid_until = 41;
   repeated ValidationIssue unrecorded_at_close = 42;
+  ConsultationPurpose booking_purpose = 43;
 }
 
 message OwnerSections {
@@ -932,6 +933,11 @@ message VisitBaselineResponse {
   optional double last_vet_weight_kg = 3;
   google.protobuf.Timestamp last_vet_weight_at = 4;
   double weight_change_alert_pct = 5;
+}
+
+enum ConsultationPurpose {
+  CONSULTATION_PURPOSE_UNSPECIFIED = 0;
+  CONSULTATION_PURPOSE_DEWORMING = 1;
 }
 
 enum IntakeReason {
@@ -1348,6 +1354,8 @@ message StartConsultationRecordRequest {
   string breed_size = 13;
   IntakeReason intake_reason = 14;
   repeated string planned_vaccine_codes = 15;
+  ConsultationPurpose booking_purpose = 16;
+  bool pet_age_known = 17;
 }
 
 message ConsultationRecordResponse {

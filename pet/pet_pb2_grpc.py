@@ -93,6 +93,11 @@ class PetServiceStub:
                 request_serializer=pet_dot_pet__pb2.RespondToPetCorrectionRequest.SerializeToString,
                 response_deserializer=pet_dot_pet__pb2.RespondToPetCorrectionResponse.FromString,
                 _registered_method=True)
+        self.ApplyVetVerifiedPetIdentity = channel.unary_unary(
+                '/pet.PetService/ApplyVetVerifiedPetIdentity',
+                request_serializer=pet_dot_pet__pb2.ProposePetCorrectionsRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.PetCorrectionsResponse.FromString,
+                _registered_method=True)
         self.ListVaccinationCardRows = channel.unary_unary(
                 '/pet.PetService/ListVaccinationCardRows',
                 request_serializer=pet_dot_pet__pb2.ListVaccinationCardRowsRequest.SerializeToString,
@@ -334,6 +339,12 @@ class PetServiceServicer:
         raise NotImplementedError('Method not implemented!')
 
     def RespondToPetCorrection(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def ApplyVetVerifiedPetIdentity(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -642,6 +653,11 @@ def add_PetServiceServicer_to_server(servicer, server):
                     servicer.RespondToPetCorrection,
                     request_deserializer=pet_dot_pet__pb2.RespondToPetCorrectionRequest.FromString,
                     response_serializer=pet_dot_pet__pb2.RespondToPetCorrectionResponse.SerializeToString,
+            ),
+            'ApplyVetVerifiedPetIdentity': grpc.unary_unary_rpc_method_handler(
+                    servicer.ApplyVetVerifiedPetIdentity,
+                    request_deserializer=pet_dot_pet__pb2.ProposePetCorrectionsRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.PetCorrectionsResponse.SerializeToString,
             ),
             'ListVaccinationCardRows': grpc.unary_unary_rpc_method_handler(
                     servicer.ListVaccinationCardRows,
@@ -1083,6 +1099,33 @@ class PetService:
             '/pet.PetService/RespondToPetCorrection',
             pet_dot_pet__pb2.RespondToPetCorrectionRequest.SerializeToString,
             pet_dot_pet__pb2.RespondToPetCorrectionResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def ApplyVetVerifiedPetIdentity(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/pet.PetService/ApplyVetVerifiedPetIdentity',
+            pet_dot_pet__pb2.ProposePetCorrectionsRequest.SerializeToString,
+            pet_dot_pet__pb2.PetCorrectionsResponse.FromString,
             options,
             channel_credentials,
             insecure,

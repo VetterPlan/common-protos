@@ -43,6 +43,7 @@ service PetService {
   rpc ProposePetCorrections (ProposePetCorrectionsRequest) returns (PetCorrectionsResponse);
   rpc ListPetCorrections (ListPetCorrectionsRequest) returns (PetCorrectionsResponse);
   rpc RespondToPetCorrection (RespondToPetCorrectionRequest) returns (RespondToPetCorrectionResponse);
+  rpc ApplyVetVerifiedPetIdentity (ProposePetCorrectionsRequest) returns (PetCorrectionsResponse);
   rpc ListVaccinationCardRows (ListVaccinationCardRowsRequest) returns (VaccinationCardRowsResponse);
   rpc VerifyVaccinationCardRows (VerifyVaccinationCardRowsRequest) returns (VaccinationCardRowsResponse);
   rpc ReviseVaccinationCardRows (ReviseVaccinationCardRowsRequest) returns (VaccinationCardRowsResponse);
@@ -310,6 +311,7 @@ enum PetCorrectionStatus {
   PET_CORRECTION_STATUS_PENDING = 1;
   PET_CORRECTION_STATUS_ACCEPTED = 2;
   PET_CORRECTION_STATUS_DECLINED = 3;
+  PET_CORRECTION_STATUS_APPLIED_BY_VET = 4;
 }
 
 message PetCorrection {
@@ -919,6 +921,7 @@ enum CardRowStatus {
   CARD_ROW_STATUS_UNSPECIFIED = 0;
   CARD_ROW_STATUS_PENDING = 1;
   CARD_ROW_STATUS_VERIFIED = 2;
+  CARD_ROW_STATUS_DISCARDED = 3;
 }
 
 message VaccinationCardRow {
@@ -939,6 +942,7 @@ message VaccinationCardRow {
   repeated string protections = 15;
   CardRowOrigin origin = 16;
   bool owner_edited = 17;
+  string discard_reason = 18;
 }
 
 message ListVaccinationCardRowsRequest {
@@ -954,6 +958,7 @@ message VaccinationCardRowsResponse {
   int32 low_confidence_count = 5;
   int32 verified_count = 6;
   google.protobuf.Timestamp owner_confirmed_at = 7;
+  int32 discarded_count = 8;
 }
 
 enum CardRowOrigin {
@@ -991,6 +996,8 @@ message CardRowVerification {
   string vaccine_name = 2;
   string date_administered = 3;
   string batch_number = 4;
+  bool discard = 5;
+  string discard_reason = 6;
 }
 
 message VerifyVaccinationCardRowsRequest {

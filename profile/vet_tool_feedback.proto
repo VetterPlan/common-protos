@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package profile;
+
+import "google/protobuf/timestamp.proto";
+
+service VetToolFeedbackService {
+  rpc SubmitVetToolFeedback (SubmitVetToolFeedbackRequest) returns (VetToolFeedback);
+  rpc ListVetToolFeedback (ListVetToolFeedbackRequest) returns (ListVetToolFeedbackResponse);
+}
+
+message SubmitVetToolFeedbackRequest {
+  string vet_profile_id = 1;
+  string appointment_id = 2;
+  string record_id = 3;
+  int32 rating = 4;
+  string comment = 5;
+  string context = 6;
+  string app_version = 7;
+}
+
+message VetToolFeedback {
+  string id = 1;
+  string vet_profile_id = 2;
+  string appointment_id = 3;
+  string record_id = 4;
+  int32 rating = 5;
+  string comment = 6;
+  string context = 7;
+  string app_version = 8;
+  google.protobuf.Timestamp created_at = 9;
+  string vet_name = 10;
+}
+
+message ListVetToolFeedbackRequest {
+  string context = 1;
+  string vet_profile_id = 2;
+  int32 limit = 3;
+  int32 offset = 4;
+}
+
+message ListVetToolFeedbackResponse {
+  repeated VetToolFeedback items = 1;
+  int32 total = 2;
+}
