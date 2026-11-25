@@ -324,6 +324,13 @@ message Appointment {
   bool vaccines_decision_pending = 53;
   string proposed_vaccine_total = 54;
   VaccinesDecision vaccines_decision = 55;
+  BookingPurpose booking_purpose = 56;
+  string booking_purpose_product_name = 57;
+}
+
+enum BookingPurpose {
+  BOOKING_PURPOSE_UNSPECIFIED = 0;
+  BOOKING_PURPOSE_DEWORMING = 1;
 }
 
 message DeclareVaccinesNotBroughtRequest {
