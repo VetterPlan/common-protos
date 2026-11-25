@@ -837,6 +837,17 @@ message SuggestedVaccination {
   string condition = 8;
 }
 
+message SuggestedDeworming {
+  string product_code = 1;
+  string parasite_target = 2;
+  string first_dose_date = 3;
+  int32 doses = 4;
+  int32 interval_days = 5;
+  string reason = 6;
+  string source = 7;
+  EvidenceLevel evidence = 8;
+}
+
 message GetIntakeSuggestionsRequest {
   string record_id = 1;
   AccessContext access = 2;
@@ -850,6 +861,7 @@ message GetIntakeSuggestionsResponse {
   bool vaccine_history_unavailable = 5;
   repeated SuggestedVaccination vaccination_plan = 6;
   bool birthdate_unknown = 7;
+  repeated SuggestedDeworming deworming_plan = 8;
 }
 
 enum RecordTab {

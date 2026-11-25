@@ -374,6 +374,9 @@ message Order {
   bool prescription_required = 21;
   string prescription_issued_at = 22;
   string prescription_vet_profile_id = 23;
+  string balance_applied = 24;
+  string amount_to_card = 25;
+  int32 delivers_within_hours = 26;
 }
 
 message IssueOrderPrescriptionRequest {
@@ -472,6 +475,7 @@ message SuggestHomeProductRequest {
   string symptoms = 3;
   repeated string vet_plan_clinical_ids = 4;
   string signs_of_illness = 5;
+  bool only_vet_plan = 6;
 }
 
 message HomeProductSuggestion {
