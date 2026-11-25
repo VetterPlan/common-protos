@@ -325,6 +325,16 @@ class AppointmentServiceStub:
                 request_serializer=appointment_dot_appointment__pb2.ResolveNoShowFeeReviewRequest.SerializeToString,
                 response_deserializer=appointment_dot_appointment__pb2.ResolveNoShowFeeReviewResponse.FromString,
                 _registered_method=True)
+        self.GetVisitTimeLimitSettings = channel.unary_unary(
+                '/appointment.AppointmentService/GetVisitTimeLimitSettings',
+                request_serializer=appointment_dot_appointment__pb2.GetVisitTimeLimitSettingsRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.VisitTimeLimitSettings.FromString,
+                _registered_method=True)
+        self.SetVisitTimeLimitSettings = channel.unary_unary(
+                '/appointment.AppointmentService/SetVisitTimeLimitSettings',
+                request_serializer=appointment_dot_appointment__pb2.SetVisitTimeLimitSettingsRequest.SerializeToString,
+                response_deserializer=appointment_dot_appointment__pb2.VisitTimeLimitSettings.FromString,
+                _registered_method=True)
 
 
 class AppointmentServiceServicer:
@@ -677,6 +687,18 @@ class AppointmentServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetVisitTimeLimitSettings(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SetVisitTimeLimitSettings(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_AppointmentServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -959,6 +981,16 @@ def add_AppointmentServiceServicer_to_server(servicer, server):
                     servicer.ResolveNoShowFeeReview,
                     request_deserializer=appointment_dot_appointment__pb2.ResolveNoShowFeeReviewRequest.FromString,
                     response_serializer=appointment_dot_appointment__pb2.ResolveNoShowFeeReviewResponse.SerializeToString,
+            ),
+            'GetVisitTimeLimitSettings': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetVisitTimeLimitSettings,
+                    request_deserializer=appointment_dot_appointment__pb2.GetVisitTimeLimitSettingsRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.VisitTimeLimitSettings.SerializeToString,
+            ),
+            'SetVisitTimeLimitSettings': grpc.unary_unary_rpc_method_handler(
+                    servicer.SetVisitTimeLimitSettings,
+                    request_deserializer=appointment_dot_appointment__pb2.SetVisitTimeLimitSettingsRequest.FromString,
+                    response_serializer=appointment_dot_appointment__pb2.VisitTimeLimitSettings.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -2484,6 +2516,60 @@ class AppointmentService:
             '/appointment.AppointmentService/ResolveNoShowFeeReview',
             appointment_dot_appointment__pb2.ResolveNoShowFeeReviewRequest.SerializeToString,
             appointment_dot_appointment__pb2.ResolveNoShowFeeReviewResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetVisitTimeLimitSettings(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/GetVisitTimeLimitSettings',
+            appointment_dot_appointment__pb2.GetVisitTimeLimitSettingsRequest.SerializeToString,
+            appointment_dot_appointment__pb2.VisitTimeLimitSettings.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def SetVisitTimeLimitSettings(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/appointment.AppointmentService/SetVisitTimeLimitSettings',
+            appointment_dot_appointment__pb2.SetVisitTimeLimitSettingsRequest.SerializeToString,
+            appointment_dot_appointment__pb2.VisitTimeLimitSettings.FromString,
             options,
             channel_credentials,
             insecure,

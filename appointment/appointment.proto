@@ -74,6 +74,8 @@ service AppointmentService {
   rpc RestoreVetStrike (RestoreVetStrikeRequest) returns (RestoreVetStrikeResponse);
   rpc ListNoShowFeeReviews (ListNoShowFeeReviewsRequest) returns (ListNoShowFeeReviewsResponse);
   rpc ResolveNoShowFeeReview (ResolveNoShowFeeReviewRequest) returns (ResolveNoShowFeeReviewResponse);
+  rpc GetVisitTimeLimitSettings (GetVisitTimeLimitSettingsRequest) returns (VisitTimeLimitSettings);
+  rpc SetVisitTimeLimitSettings (SetVisitTimeLimitSettingsRequest) returns (VisitTimeLimitSettings);
 }
 
 message ListAppointmentsRequest {
@@ -237,6 +239,7 @@ enum StatusChangeReason {
   STATUS_CHANGE_REASON_CLIENT_CONFIRMED_ADJUSTMENT = 25; // El cliente confirmó la visita ajustada
   STATUS_CHANGE_REASON_CLIENT_DECLINED_ADJUSTMENT = 26;  // El cliente canceló todo el grupo, gratis
   STATUS_CHANGE_REASON_VET_REPORTED_UNATTENDED = 27;     // El vet cerró una mascota sin atender
+  STATUS_CHANGE_REASON_SYSTEM_TIME_LIMIT = 28;
 }
 
 enum VetDeclineReason {
@@ -326,6 +329,7 @@ message Appointment {
   VaccinesDecision vaccines_decision = 55;
   BookingPurpose booking_purpose = 56;
   string booking_purpose_product_name = 57;
+  google.protobuf.Timestamp time_limit_at = 58;
 }
 
 enum BookingPurpose {
@@ -1250,4 +1254,18 @@ message GetPetUpcomingAppointmentResponse {
   string status = 5;
   string intake_reason = 6;
   string service_type = 7;
+}
+
+message GetVisitTimeLimitSettingsRequest {}
+
+message VisitTimeLimitSettings {
+  bool enabled = 1;
+  int32 margin_minutes = 2;
+  google.protobuf.Timestamp updated_at = 3;
+  string updated_by_user_id = 4;
+}
+
+message SetVisitTimeLimitSettingsRequest {
+  bool enabled = 1;
+  int32 margin_minutes = 2;
 }

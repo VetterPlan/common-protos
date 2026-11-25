@@ -662,6 +662,7 @@ message ConsultationRecord {
   bool intake = 39;
   LifeStage life_stage = 40;
   google.protobuf.Timestamp passport_valid_until = 41;
+  repeated ValidationIssue unrecorded_at_close = 42;
 }
 
 message OwnerSections {
@@ -809,6 +810,8 @@ message PassportValidity {
   optional double last_measured_weight_kg = 8;
   optional double declared_weight_kg = 9;
   optional double declared_weight_change_pct = 10;
+  string closing_record_id = 11;
+  google.protobuf.Timestamp closing_deadline = 12;
 }
 
 enum EvidenceLevel {
@@ -1390,6 +1393,7 @@ message MarkPendingFinalizationRequest {
   // Uno de los dos. appointment_id es el que usa appointment-service.
   string record_id = 1;
   string appointment_id = 2;
+  bool close_at_time_limit = 3;
 }
 
 message AbandonConsultationRecordRequest {

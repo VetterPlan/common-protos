@@ -154,6 +154,7 @@ service PetService {
   rpc GetOwnerAiConsent (GetOwnerAiConsentRequest) returns (OwnerAiConsentResponse);
   rpc ListOwnerAiConsents (ListOwnerAiConsentsRequest) returns (ListOwnerAiConsentsResponse);
   rpc GetVisitAiAllowed (GetVisitAiAllowedRequest) returns (GetVisitAiAllowedResponse);
+  rpc CheckMicrochipAvailable (CheckMicrochipAvailableRequest) returns (CheckMicrochipAvailableResponse);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -824,6 +825,15 @@ message GetVisitAiAllowedRequest {
 
 message GetVisitAiAllowedResponse {
   repeated string allowed_client_profile_ids = 1;
+}
+
+message CheckMicrochipAvailableRequest {
+  string pet_id = 1;
+  string microchip_id = 2;
+}
+
+message CheckMicrochipAvailableResponse {
+  bool available = 1;
 }
 
 message ConsentEvidence {

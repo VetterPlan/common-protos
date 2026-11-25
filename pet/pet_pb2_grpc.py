@@ -248,6 +248,11 @@ class PetServiceStub:
                 request_serializer=pet_dot_pet__pb2.GetVisitAiAllowedRequest.SerializeToString,
                 response_deserializer=pet_dot_pet__pb2.GetVisitAiAllowedResponse.FromString,
                 _registered_method=True)
+        self.CheckMicrochipAvailable = channel.unary_unary(
+                '/pet.PetService/CheckMicrochipAvailable',
+                request_serializer=pet_dot_pet__pb2.CheckMicrochipAvailableRequest.SerializeToString,
+                response_deserializer=pet_dot_pet__pb2.CheckMicrochipAvailableResponse.FromString,
+                _registered_method=True)
 
 
 class PetServiceServicer:
@@ -579,6 +584,12 @@ class PetServiceServicer:
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def CheckMicrochipAvailable(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_PetServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -786,6 +797,11 @@ def add_PetServiceServicer_to_server(servicer, server):
                     servicer.GetVisitAiAllowed,
                     request_deserializer=pet_dot_pet__pb2.GetVisitAiAllowedRequest.FromString,
                     response_serializer=pet_dot_pet__pb2.GetVisitAiAllowedResponse.SerializeToString,
+            ),
+            'CheckMicrochipAvailable': grpc.unary_unary_rpc_method_handler(
+                    servicer.CheckMicrochipAvailable,
+                    request_deserializer=pet_dot_pet__pb2.CheckMicrochipAvailableRequest.FromString,
+                    response_serializer=pet_dot_pet__pb2.CheckMicrochipAvailableResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -1904,6 +1920,33 @@ class PetService:
             '/pet.PetService/GetVisitAiAllowed',
             pet_dot_pet__pb2.GetVisitAiAllowedRequest.SerializeToString,
             pet_dot_pet__pb2.GetVisitAiAllowedResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def CheckMicrochipAvailable(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/pet.PetService/CheckMicrochipAvailable',
+            pet_dot_pet__pb2.CheckMicrochipAvailableRequest.SerializeToString,
+            pet_dot_pet__pb2.CheckMicrochipAvailableResponse.FromString,
             options,
             channel_credentials,
             insecure,

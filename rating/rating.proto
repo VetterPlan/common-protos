@@ -111,6 +111,7 @@ enum MeasuredKind {
   MEASURED_KIND_CANCELLATION    = 2;
   MEASURED_KIND_NO_SHOW         = 3;
   MEASURED_KIND_FAULT_ATTRIBUTED = 4;  // culpa verificada por Constancia
+  MEASURED_KIND_RECORD_LEFT_INCOMPLETE = 5;
 }
 
 enum ContestResolution {
