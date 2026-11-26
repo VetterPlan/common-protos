@@ -1254,6 +1254,7 @@ message GetPetUpcomingAppointmentResponse {
   string status = 5;
   string intake_reason = 6;
   string service_type = 7;
+  string booking_purpose = 8;
 }
 
 message GetVisitTimeLimitSettingsRequest {}

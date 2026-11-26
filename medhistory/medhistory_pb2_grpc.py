@@ -85,6 +85,11 @@ class MedHistoryServiceStub:
                 request_serializer=medhistory_dot_medhistory__pb2.GetReferenceDataRequest.SerializeToString,
                 response_deserializer=medhistory_dot_medhistory__pb2.GetReferenceDataResponse.FromString,
                 _registered_method=True)
+        self.GetApplicationGuide = channel.unary_unary(
+                '/medhistory.MedHistoryService/GetApplicationGuide',
+                request_serializer=medhistory_dot_medhistory__pb2.GetApplicationGuideRequest.SerializeToString,
+                response_deserializer=medhistory_dot_medhistory__pb2.ApplicationGuide.FromString,
+                _registered_method=True)
         self.CountFinalizedRecords = channel.unary_unary(
                 '/medhistory.MedHistoryService/CountFinalizedRecords',
                 request_serializer=medhistory_dot_medhistory__pb2.CountFinalizedRecordsRequest.SerializeToString,
@@ -434,6 +439,12 @@ class MedHistoryServiceServicer:
         rangos de vitales, hallazgos por sistema, etc.). Es lo que llena los
         desplegables que el template declara en `reference_table`.
         """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def GetApplicationGuide(self, request, context):
+        """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -927,6 +938,11 @@ def add_MedHistoryServiceServicer_to_server(servicer, server):
                     request_deserializer=medhistory_dot_medhistory__pb2.GetReferenceDataRequest.FromString,
                     response_serializer=medhistory_dot_medhistory__pb2.GetReferenceDataResponse.SerializeToString,
             ),
+            'GetApplicationGuide': grpc.unary_unary_rpc_method_handler(
+                    servicer.GetApplicationGuide,
+                    request_deserializer=medhistory_dot_medhistory__pb2.GetApplicationGuideRequest.FromString,
+                    response_serializer=medhistory_dot_medhistory__pb2.ApplicationGuide.SerializeToString,
+            ),
             'CountFinalizedRecords': grpc.unary_unary_rpc_method_handler(
                     servicer.CountFinalizedRecords,
                     request_deserializer=medhistory_dot_medhistory__pb2.CountFinalizedRecordsRequest.FromString,
@@ -1396,6 +1412,33 @@ class MedHistoryService:
             '/medhistory.MedHistoryService/GetReferenceData',
             medhistory_dot_medhistory__pb2.GetReferenceDataRequest.SerializeToString,
             medhistory_dot_medhistory__pb2.GetReferenceDataResponse.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def GetApplicationGuide(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            '/medhistory.MedHistoryService/GetApplicationGuide',
+            medhistory_dot_medhistory__pb2.GetApplicationGuideRequest.SerializeToString,
+            medhistory_dot_medhistory__pb2.ApplicationGuide.FromString,
             options,
             channel_credentials,
             insecure,

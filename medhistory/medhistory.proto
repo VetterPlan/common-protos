@@ -41,6 +41,7 @@ service MedHistoryService {
   // rangos de vitales, hallazgos por sistema, etc.). Es lo que llena los
   // desplegables que el template declara en `reference_table`.
   rpc GetReferenceData (GetReferenceDataRequest) returns (GetReferenceDataResponse);
+  rpc GetApplicationGuide (GetApplicationGuideRequest) returns (ApplicationGuide);
 
   // B-7 — el PRIMER agregado de este servicio, y por eso lleva escrito por qué
   // se le permite existir.
@@ -866,6 +867,7 @@ message GetIntakeSuggestionsResponse {
   repeated SuggestedVaccination vaccination_plan = 6;
   bool birthdate_unknown = 7;
   repeated SuggestedDeworming deworming_plan = 8;
+  bool deworming_history_unavailable = 9;
 }
 
 enum RecordTab {
@@ -1566,6 +1568,7 @@ message GetPetMedicalHistoryResponse {
   repeated PetProblem problems = 10;
   OwnerNarrative owner_narrative = 11;
   PassportValidity passport_validity = 12;
+  repeated VaccineReactionReport owner_reported_reactions = 13;
 }
 
 message ExportPetPassportRequest {
@@ -2071,4 +2074,21 @@ message AnonymizeClientDataResponse {
 message GetPassportValidityRequest {
   string pet_id = 1;
   AccessContext access = 2;
+}
+
+message GetApplicationGuideRequest {
+  string presentation = 1;
+}
+
+message ApplicationGuideStep {
+  string code = 1;
+  string presentation = 2;
+  int32 position = 3;
+  string text = 4;
+  string image_key = 5;
+}
+
+message ApplicationGuide {
+  string presentation = 1;
+  repeated ApplicationGuideStep steps = 2;
 }
